@@ -2,8 +2,6 @@ AC_PREREQ([2.68])
 AC_INIT([bmc], [0.0], [http://delysid.org/bmc/])
 AC_CONFIG_SRCDIR([brltr.cpp])
 BMC_SUMMARY_BEGIN
-brltty_source_directory="`dirname "${0}"`"
-
 AC_SUBST([PACKAGE_TITLE], ["`echo "${PACKAGE_NAME}" | sed -e 'y%abcdefghijklmnopqrstuvwxyz%ABCDEFGHIJKLMNOPQRSTUVWXYZ%'`"])
 AC_DEFINE_UNQUOTED([PACKAGE_TITLE], ["${PACKAGE_TITLE}"],
                    [Define this to be a string containing the package title.])
@@ -85,7 +83,7 @@ BRLTTY_ARG_DISABLE(
    [],
 [dnl
    AC_PATH_PROG([ICU_CONFIG], [icu-config])
-   test -n "${ICU_CONFIG}" && ${ICU_CONFIG} --exists && {
+   test -n "${ICU_CONFIG}" && ${ICU_CONFIG} --exists >/dev/null && {
       icu_includes="`${ICU_CONFIG} --cppflags-searchpath`"
       icu_libraries="`${ICU_CONFIG} --ldflags`"
       AC_DEFINE_UNQUOTED([HAVE_ICU], [1],
@@ -109,7 +107,6 @@ BRLTTY_ARG_DISABLE(
       AC_HAVE_LIBRARY([iconv])
    ])
 ])
-
 
 AC_CHECK_HEADERS([syslog.h])
 AC_CHECK_HEADERS([sys/file.h])
@@ -255,43 +252,6 @@ AC_SUBST([LIBCXXFLAGS])
 
 AC_SUBST([archive_prefix], [lib])
 AC_SUBST([archive_extension], [a])
-
-case "${host_os}"
-in
-   cygwin*)
-      library_prefix="cyg"
-      ;;
-   mingw*)
-      library_prefix=""
-      ;;
-   *)
-      library_prefix="${archive_prefix}"
-      ;;
-esac
-AC_SUBST([library_prefix])
-
-case "${host_os}"
-in
-   hpux*)
-      library_extension="sl"
-      ;;
-   cygwin*|mingw*)
-      library_extension="dll"
-      ;;
-   darwin*)
-      library_extension="dylib"
-      ;;
-   *)
-      library_extension="so"
-      ;;
-esac
-AC_SUBST([library_extension])
-AC_DEFINE_UNQUOTED([LIBRARY_EXTENSION], ["${library_extension}"],
-                   [Define this to be a string containing the library extension.])
-
-AC_SUBST([module_name], ["${library_prefix}${PACKAGE_NAME}"])
-AC_DEFINE_UNQUOTED([MODULE_NAME], ["${module_name}"],
-                   [Define this to be a string containing the base module name.])
 
 AC_CACHE_CHECK([for static archive extension], [brltty_cv_ext_arc], [dnl
 case "${host_os}"
