@@ -11,8 +11,14 @@ TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
 	tbl2hex.@OBJEXT@
 TEST_OBJECTS=test.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ \
 	brlsym.@OBJEXT@ music.@OBJEXT@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
 
 all: test
+
+install: brltr
+	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
 
 main: test main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
 	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc

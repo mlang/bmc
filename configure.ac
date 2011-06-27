@@ -11,11 +11,8 @@ AC_DEFINE_UNQUOTED([PACKAGE_TITLE], ["${PACKAGE_TITLE}"],
 AC_SUBST([package_date], ["`date "+%Y/%m/%d"`"])
 
 AC_CONFIG_HEADER([config.h])
-AC_PREFIX_DEFAULT([])
 AC_CONFIG_AUX_DIR([acdir])
 AC_CANONICAL_SYSTEM
-
-BRLTTY_PORTABLE_DIRECTORY([includedir], [/usr])
 
 BMC_SUMMARY_ITEM([sysconfdir], [sysconfdir])
 
@@ -406,17 +403,10 @@ BRLTTY_ARG_DISABLE(
 )
 AC_SUBST([INSTALL_OPTION_STRIP])
 
-original_prefix="${prefix}"
-test "${prefix}" = "NONE" && prefix=""
-original_exec_prefix="${exec_prefix}"
-test "${exec_prefix}" = "NONE" && exec_prefix="${prefix}"
-BRLTTY_VAR_EXPAND([brltty_reference_directory], [${program_directory}])
 BRLTTY_DEFINE_DIRECTORY([TABLES_DIRECTORY], [${tables_directory}],
                         [Define this to be a string containing the path to the data files directory.])
 BRLTTY_DEFINE_DIRECTORY([CONFIGURATION_DIRECTORY], [${sysconfdir}],
                         [Define this to be a string containing the path to the configuration directory.])
-prefix="${original_prefix}"
-exec_prefix="${original_exec_prefix}"
 
 BMC_SUMMARY_END
 

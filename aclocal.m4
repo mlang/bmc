@@ -195,27 +195,6 @@ AC_DEFUN([BMC_SUMMARY_ITEM], [dnl
 bmc_summary_lines="${bmc_summary_lines}
    $1: ${$2}"])
 
-AC_DEFUN([BRLTTY_PORTABLE_DIRECTORY], [dnl
-   BRLTTY_TOPLEVEL_DIRECTORY([$1], [$2], [prefix])])
-
-AC_DEFUN([BRLTTY_ARCHITECTURE_DIRECTORY], [dnl
-if test "${exec_prefix}" = "NONE"
-then
-   BRLTTY_TOPLEVEL_DIRECTORY([$1], [$2], [exec_prefix])
-fi])
-
-AC_DEFUN([BRLTTY_TOPLEVEL_DIRECTORY], [dnl
-if test "${prefix}" = "NONE"
-then
-   if test -z "${execute_root}"
-   then
-      [if test `expr "${$1} " : '\${$3}/[^/]*$'` -gt 0]
-      then
-         $1="`echo ${$1} | sed -e 's%/%$2/%'`"
-      fi
-   fi
-fi])
-
 AC_DEFUN([BRLTTY_EXECUTABLE_PATH], [dnl
 [if test `expr "${$1} " : '[^/ ][^/ ]*/'` -gt 0]
 then
