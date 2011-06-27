@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>BMC &ndash; Developer's documentation</title>
+</head>
+<body>
+<h1>BMC &ndash; Braille Music Compiler</h1>
+<h2>Disclaimer</h2>
+<p>This is an experimental project.  As such, it is not ready for end users.
+Many of the technologies in use currently are not explored fully
+yet and might still be identified as inappropriate for the task at hand.
+In other words: This project is under construction!
+However, if you are interested in programming and braille music, this
+disclaimer should not discourage you from contributing.</p>
+<h2>Why C++?</h2>
+<p>Because C++ is a great language, and allows for compilation to native
+code on basically every platform in existance.</p>
+<p>One big disadvantage of using C++ to implement a cross-platform
+accessible program is that there is no cross-platform GUI library,
+a deficiency that Java does solve nicely.</p>
+<h2>Goals</h2>
+<ul>
+<li>Parse braille music code:<ul>
+<li>Resolve value ambiguities</li>
+<li>Expand braille repeation instructions as well as simile signs</li>
+<li>Calculate octaves for all notes and intervals</li>
+</ul></li>
+<li>Output:<ul>
+<li>To MusicXML</li>
+<li>To MIDI</li>
+</ul></li>
+</ul>
+<h2>Boost libraries</h2>
+<p>All boost dependencies are header only.  This means that it is not necessary
+to compile your version of boost, you can simply point
+the build system to the toplevel directory containing the boost distribution.</p>
+<p>The following Boost libraries are used in this project.</p>
+<ul>
+<li><a href="http://boost.org/doc/libs/1_46_1/libs/fusion/index.html">Fusion</a>
+(<a href="http://boost.org/doc/libs/1_46_1/libs/fusion/doc/html/fusion/adapted/adapt_struct.html">BOOST_FUSION_ADAPT_STRUCT</a>)</li>
+<li><a href="http://boost.org/doc/libs/1_46_1/libs/rational/index.html">Rational</a></li>
+<li><a href="http://boost.org/doc/libs/1_46_1/libs/spirit/doc/html/index.html">Spirit</a></li>
+<li><a href="http://boost.org/doc/libs/1_46_1/libs/test/doc/html/index.html">Test</a></li>
+</ul>
+<h2>Braille tables</h2>
+<p>The braille table (ttb) parsing code has been taken
+from <a href="http://mielke.cc/brltty/">BRLTTY</a> and stripped
+down a little to remove unused functionality.</p>
+</body>
+</html>
+

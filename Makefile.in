@@ -1,0 +1,49 @@
+BOOST_DIRECTORY=/tmp/boost
+
+CPPFLAGS=@DEFS@
+CFLAGS=@CFLAGS@ -Wextra @SYSCFLAGS@
+CXXFLAGS=@CXXFLAGS@ -I$(BOOST_DIRECTORY)
+
+TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
+	charset.@OBJEXT@ dataarea.@OBJEXT@ datafile.@OBJEXT@ file.@OBJEXT@ \
+	log.@OBJEXT@ misc.@OBJEXT@ unicode.@OBJEXT@
+TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
+	tbl2hex.@OBJEXT@
+TEST_OBJECTS=test.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ \
+	brlsym.@OBJEXT@ music.@OBJEXT@
+
+all: test
+
+main: test main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
+	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc
+
+test: $(TEST_OBJECTS) ttb.a
+	$(CXX) -o $@ $(TEST_OBJECTS) ttb.a @icu_libraries@
+	@./$@ --log_level=all
+
+brltr: brltr.@OBJEXT@ ttb.a
+	g++ -o $@ brltr.o ttb.a @LIBS@ @icu_libraries@
+
+clean:
+	rm -f *.@OBJEXT@ *.a text.auto.h brltr main tbl2hex test
+
+full_clean: clean
+	rm -rf autom4te.cache/ config.cache config.log config.status \
+	configure Makefile config.h
+
+ttb.a: $(TTB_OBJECTS)
+	$(AR) -sr $@ $(TTB_OBJECTS)
+
+brltr.@OBJEXT@: brltr.cpp config.h
+	$(CXX) $(CPPFLAGS) -c $<
+
+tbl2hex: $(TBL2HEX_OBJECTS)
+	$(CC) -o $@ $(TBL2HEX_OBJECTS) @icu_libraries@
+
+text.auto.h: tbl2hex
+	./$< Tables/@text_table@.ttb > $@
+
+ttb_translate.c: text.auto.h
+measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
+numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
+brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
