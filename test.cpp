@@ -49,6 +49,9 @@ public:
   result_type operator()(music::braille::ambiguous::rest const&) const {
     return true;
   }
+  result_type operator()(music::braille::ambiguous::value_distinction const&) const {
+    return false;
+  }
 };
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
