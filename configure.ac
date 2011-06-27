@@ -88,11 +88,6 @@ BRLTTY_ARG_DISABLE(
       icu_libraries="`${ICU_CONFIG} --ldflags`"
       AC_DEFINE_UNQUOTED([HAVE_ICU], [1],
                          [Define this if Unicode-based internationalization support is to be included.])
-
-      if test "${brltty_standalone_programs}" = "yes"
-      then
-         icu_libraries="`echo ${icu_libraries} | sed -e 's/\(-l\)\(icu\)/\1s\2/g'`"
-      fi
    }
 ])
 AC_SUBST([icu_includes])

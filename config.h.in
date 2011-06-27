@@ -1,23 +1,5 @@
-/*
- * BRLTTY - A background process providing access to the console screen (when in
- *          text mode) for a blind person using a refreshable braille display.
- *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
- *
- * BRLTTY comes with ABSOLUTELY NO WARRANTY.
- *
- * This is free software, placed under the terms of the
- * GNU General Public License, as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any
- * later version. Please see the file LICENSE-GPL for details.
- *
- * Web Page: http://mielke.cc/brltty/
- *
- * This software is maintained by Dave Mielke <dave@mielke.cc>.
- */
-
-#ifndef BRLTTY_INCLUDED_CONFIG
-#define BRLTTY_INCLUDED_CONFIG
+#ifndef BMC_INCLUDED_CONFIG_H
+#define BMC_INCLUDED_CONFIG_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -113,15 +95,6 @@ extern "C" {
 /* Define this to be a string containing the name of the default configuration file. */
 #undef CONFIGURATION_FILE
 
-/* Define this to be a string containing the base module name. */
-#undef MODULE_NAME
-
-/* Define this to be a string containing the module extension. */
-#undef MODULE_EXTENSION
-
-/* Define this to be a string containing the library extension. */
-#undef LIBRARY_EXTENSION
-
 /* Define this to be a string containing the path to the default text table. */
 #undef TEXT_TABLE
 
@@ -129,10 +102,9 @@ extern "C" {
 #undef ENABLE_I18N_SUPPORT
 
 #define TEXT_TABLE_EXTENSION ".ttb"
-#define TEXT_SUBTABLE_EXTENSION ".tti"
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* BRLTTY_INCLUDED_CONFIG */
+#endif /* BMC_INCLUDED_CONFIG_H */
