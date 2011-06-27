@@ -72,6 +72,12 @@ struct finger_symbols : brl_symbols<unsigned>
 };
 extern finger_symbols finger_sign;
 
+struct value_distinction_symbols : brl_symbols<ambiguous::value_distinction>
+{
+  value_distinction_symbols();
+};
+extern value_distinction_symbols value_distinction_sign;
+
 }}
 
 #endif

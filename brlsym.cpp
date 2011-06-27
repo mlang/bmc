@@ -126,5 +126,15 @@ finger_symbols::finger_symbols()
 
 finger_symbols finger_sign;
 
+value_distinction_symbols::value_distinction_symbols()
+{
+  add(L"⠣⠂", ambiguous::distinct)
+     (L"⠠⠣⠂", ambiguous::small_follows)
+     (L"⠘⠣⠂", ambiguous::large_follows)
+     ;
+}
+
+value_distinction_symbols value_distinction_sign;
+
 }}
 

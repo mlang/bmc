@@ -45,7 +45,9 @@ struct chord {
   std::vector<interval> intervals;
 };
 
-typedef boost::variant<note, rest, chord> sign;
+enum value_distinction { distinct, large_follows, small_follows };
+
+typedef boost::variant<note, rest, chord, value_distinction> sign;
 typedef std::vector<sign> pmia_voice;
 typedef std::vector<pmia_voice> pmia;
 typedef std::vector<pmia> fmia;

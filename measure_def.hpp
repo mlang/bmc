@@ -14,7 +14,7 @@ measure_grammar<Iterator>::measure_grammar()
   start = fmia % fmia_separator;
   fmia = pmia % pmia_sign;
   pmia = pmia_voice % pmia_voice_sign;
-  pmia_voice = +(chord | note | rest);
+  pmia_voice = +(chord | note | rest | value_distinction_sign);
 
   note = -accidental_sign
       >> -octave_sign
