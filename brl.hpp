@@ -1,7 +1,7 @@
 #if !defined(BRL_HPP)
 #define BRL_HPP
 
-#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi_parse.hpp>
 #include "ttb.h"
 #include "brldots.h"
 
@@ -36,9 +36,10 @@ namespace music { namespace braille {
             , typename Context, typename Skipper, typename Attribute
             >
     bool parse( Iterator& first, Iterator const& last
-              , Context&, Skipper&, Attribute&
+              , Context&, Skipper& skipper, Attribute&
               ) const
     {
+      boost::spirit::qi::skip_over(first, last, skipper);
       unsigned char d = convertCharacterToDots(textTable, *first);
       d &= ~(BRL_DOT7 | BRL_DOT8);
       if (d == dots) {
