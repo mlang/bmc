@@ -52,10 +52,10 @@ struct simile {
 };
 
 typedef boost::variant<note, rest, chord, value_distinction, simile> sign;
-typedef std::vector<sign> pmia_voice;
-typedef std::vector<pmia_voice> pmia;
-typedef std::vector<pmia> fmia;
-typedef std::vector<fmia> measure;
+typedef std::vector<sign> partial_measure_voice;
+typedef std::vector<partial_measure_voice> partial_measure;
+typedef std::vector<partial_measure> voice;
+typedef std::vector<voice> measure;
 
 }}}
 

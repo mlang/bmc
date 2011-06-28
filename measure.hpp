@@ -13,9 +13,9 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure
   measure_grammar();
 
   boost::spirit::qi::rule<Iterator, ambiguous::measure()> start;
-  boost::spirit::qi::rule<Iterator, ambiguous::fmia()> fmia;
-  boost::spirit::qi::rule<Iterator, ambiguous::pmia()> pmia;
-  boost::spirit::qi::rule<Iterator, ambiguous::pmia_voice()> pmia_voice;
+  boost::spirit::qi::rule<Iterator, ambiguous::voice()> fmia;
+  boost::spirit::qi::rule<Iterator, ambiguous::partial_measure()> pmia;
+  boost::spirit::qi::rule<Iterator, ambiguous::partial_measure_voice()> pmia_voice;
   boost::spirit::qi::rule<Iterator, ambiguous::note()> note;
   boost::spirit::qi::rule<Iterator, ambiguous::rest()> rest;
   boost::spirit::qi::rule<Iterator, ambiguous::chord()> chord;
