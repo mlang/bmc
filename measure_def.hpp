@@ -3,6 +3,7 @@
 #include "measure.hpp"
 #include "brl.hpp"
 #include "brlsym.hpp"
+#include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
 namespace music { namespace braille {
@@ -14,7 +15,7 @@ measure_grammar<Iterator>::measure_grammar()
   start = fmia % fmia_separator;
   fmia = pmia % pmia_sign;
   pmia = pmia_voice % pmia_voice_sign;
-  pmia_voice = +(chord | note | rest | value_distinction_sign);
+  pmia_voice = +(chord | note | rest | value_distinction_sign | simile);
 
   note = -accidental_sign
       >> -octave_sign
@@ -31,6 +32,8 @@ measure_grammar<Iterator>::measure_grammar()
   boost::spirit::eps_type eps;
   boost::spirit::_val_type _val;
   music::braille::brl_type brl;
+
+  simile = -octave_sign >> brl(2356);
   whitespace = space | brl(0);
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 

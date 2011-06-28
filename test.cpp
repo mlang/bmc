@@ -1,5 +1,5 @@
 #include "numbers.hpp"
-#include <boost/spirit/include/qi_parse.hpp>
+#include <boost/spirit/include/qi.hpp>
 #include "ttb.h"
 
 #define BOOST_TEST_MODULE bmc_test
@@ -50,6 +50,9 @@ public:
     return true;
   }
   result_type operator()(music::braille::ambiguous::value_distinction const&) const {
+    return false;
+  }
+  result_type operator()(music::braille::ambiguous::simile const&) const {
     return false;
   }
 };

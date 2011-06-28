@@ -47,7 +47,11 @@ struct chord {
 
 enum value_distinction { distinct, large_follows, small_follows };
 
-typedef boost::variant<note, rest, chord, value_distinction> sign;
+struct simile {
+  boost::optional<unsigned> octave;
+};
+
+typedef boost::variant<note, rest, chord, value_distinction, simile> sign;
 typedef std::vector<sign> pmia_voice;
 typedef std::vector<pmia_voice> pmia;
 typedef std::vector<pmia> fmia;
@@ -79,6 +83,11 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,
   (music::braille::ambiguous::note, base)
   (std::vector<music::braille::ambiguous::interval>, intervals)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::simile,
+  (boost::optional<unsigned>, octave)
 )
 
 #endif
