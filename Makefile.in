@@ -53,3 +53,4 @@ ttb_translate.c: text.auto.h
 measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
 brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
+test.@OBJEXT@: brl.hpp value_proxy.hpp

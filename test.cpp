@@ -109,7 +109,8 @@ public:
   void operator()(music::braille::ambiguous::rest& rest) {
     proxies.push_back(music::braille::value_proxy(rest, category));
   }
-  void operator()(music::braille::ambiguous::chord&) {
+  void operator()(music::braille::ambiguous::chord& chord) {
+    proxies.push_back(music::braille::value_proxy(chord, category));
   }
   void operator()(music::braille::ambiguous::value_distinction) {
   }
@@ -119,7 +120,7 @@ public:
 
 BOOST_AUTO_TEST_CASE(value_proxy_test) {
   textTable = compileTextTable("Tables/de.ttb");
-  std::wstring const input(L"un");
+  std::wstring const input(L"u46*");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
@@ -131,13 +132,14 @@ BOOST_AUTO_TEST_CASE(value_proxy_test) {
   BOOST_CHECK(attribute.size() == 1);
   BOOST_CHECK(attribute[0].size() == 1);
   BOOST_CHECK(attribute[0][0].size() == 1);
-  BOOST_CHECK(attribute[0][0][0].size() == 2);
+  BOOST_CHECK(attribute[0][0][0].size() == 3);
   value_proxy_collector collector(music::braille::large);
   std::for_each(attribute[0][0][0].begin(), attribute[0][0][0].end(),
                 boost::apply_visitor(collector));
-  BOOST_CHECK(collector.result().size() == 2);
+  BOOST_CHECK(collector.result().size() == 3);
   BOOST_CHECK(collector.result()[0].as_rational() == music::rational(1, 2));
-  BOOST_CHECK(collector.result()[1].as_rational() == music::rational(1, 2));
+  BOOST_CHECK(collector.result()[1].as_rational() == music::rational(1, 4));
+  BOOST_CHECK(collector.result()[2].as_rational() == music::rational(1, 4));
   destroyTextTable(textTable);
 }
 

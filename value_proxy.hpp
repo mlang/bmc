@@ -26,6 +26,13 @@ public:
     BOOST_ASSERT(*final_type == music::rational(0));
   }
 
+  value_proxy(ambiguous::chord& chord, value_category const& category)
+  : value_type(chord.base.ambiguous_value), category(category), dots(chord.base.dots)
+  , final_type(&chord.base.type)
+  {
+    BOOST_ASSERT(*final_type == music::rational(0));
+  }
+
   rational as_rational() const {
     rational base;
     switch (value_type) {
