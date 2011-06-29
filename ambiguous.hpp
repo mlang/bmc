@@ -4,32 +4,31 @@
 
 namespace music { namespace braille { namespace ambiguous {
 
-struct value {
-  value() {}
-  value(rational v1, rational v2) {
-    values.push_back(v1);
-    values.push_back(v2);
-  }
-  std::vector<rational> values;
+enum value
+{
+  whole_or_16th, half_or_32th, quarter_or_64th, eighth_or_128th
 };
 
-struct pitch_and_value : value {
-  pitch_and_value() : value(), step(C) {}
-  pitch_and_value(diatonic_step step, rational v1, rational v2)
-  : value(v1, v2), step(step) {}
+struct pitch_and_value {
+  pitch_and_value() {}
+  pitch_and_value(diatonic_step step, value val) : value_(val), step(step) {}
   diatonic_step step;
+  value value_;
 };
 
 struct note {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
-  pitch_and_value pitch_value;
+  diatonic_step step;
+  value ambiguous_value;
+  rational type;
   unsigned dots;
   boost::optional<unsigned> finger;
 };
 
 struct rest {
-  value val;
+  value ambiguous_value;
+  rational type;
   unsigned dots;
 };
 
@@ -60,15 +59,21 @@ typedef std::vector<voice> measure;
 }}}
 
 BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::pitch_and_value,
+  (music::diatonic_step, step)
+  (music::braille::ambiguous::value, value_)
+)
+BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::rest,
-  (music::braille::ambiguous::value, val)
+  (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::note,
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave)
-  (music::braille::ambiguous::pitch_and_value, pitch_value)
+  (music::diatonic_step, step)
+  (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
   (boost::optional<unsigned>, finger)
 )

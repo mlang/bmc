@@ -93,3 +93,51 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   destroyTextTable(textTable);
 }
 
+#include "value_proxy.hpp"
+
+class value_proxy_collector : public boost::static_visitor<void> {
+  std::vector<music::braille::value_proxy> proxies;
+  music::braille::value_category category;
+public:
+  value_proxy_collector(music::braille::value_category category) : category(category) {}
+  std::vector<music::braille::value_proxy> result() const {
+    return proxies;
+  }
+  void operator()(music::braille::ambiguous::note& note) {
+    proxies.push_back(music::braille::value_proxy(note, category));
+  }
+  void operator()(music::braille::ambiguous::rest& rest) {
+    proxies.push_back(music::braille::value_proxy(rest, category));
+  }
+  void operator()(music::braille::ambiguous::chord&) {
+  }
+  void operator()(music::braille::ambiguous::value_distinction) {
+  }
+  void operator()(music::braille::ambiguous::simile&) {
+  }
+};
+
+BOOST_AUTO_TEST_CASE(value_proxy_test) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::wstring const input(L"un");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::measure_grammar<iterator_type> parser_type;
+  parser_type parser;
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK(attribute.size() == 1);
+  BOOST_CHECK(attribute[0].size() == 1);
+  BOOST_CHECK(attribute[0][0].size() == 1);
+  BOOST_CHECK(attribute[0][0][0].size() == 2);
+  value_proxy_collector collector(music::braille::large);
+  std::for_each(attribute[0][0][0].begin(), attribute[0][0][0].end(),
+                boost::apply_visitor(collector));
+  BOOST_CHECK(collector.result().size() == 2);
+  BOOST_CHECK(collector.result()[0].as_rational() == music::rational(1, 2));
+  BOOST_CHECK(collector.result()[1].as_rational() == music::rational(1, 2));
+  destroyTextTable(textTable);
+}
+
