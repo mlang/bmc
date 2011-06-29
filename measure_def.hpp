@@ -29,7 +29,7 @@ measure_grammar<Iterator>::measure_grammar()
        ;
   rest = rest_sign >> dots;
   chord = note >> +interval;
-  interval = -accidental_sign >> -octave_sign >> interval_sign >> finger_sign;
+  interval = -accidental_sign >> -octave_sign >> interval_sign >> -finger_sign;
 
   boost::spirit::standard_wide::space_type space;
   boost::spirit::eol_type eol;
