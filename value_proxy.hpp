@@ -76,7 +76,7 @@ public:
       if (last_value == value(note)) {
         possibilities.push_back(value_proxy(note, large));
       } else {
-        last_value == ambiguous::unknown;
+        last_value = ambiguous::unknown;
         choice = both;
       }
     } else if (choice == just_small) {
@@ -84,7 +84,7 @@ public:
       if (last_value == value(note)) {
         possibilities.push_back(value_proxy(note, small));
       } else {
-        last_value == ambiguous::unknown;
+        last_value = ambiguous::unknown;
         choice = both;
       }
     }

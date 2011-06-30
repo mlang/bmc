@@ -11,7 +11,7 @@ enum value
 
 struct pitch_and_value {
   pitch_and_value() {}
-  pitch_and_value(diatonic_step step, value val) : value_(val), step(step) {}
+  pitch_and_value(diatonic_step step, value val) : step(step), value_(val) {}
   diatonic_step step;
   value value_;
 };
