@@ -6,7 +6,7 @@ namespace music { namespace braille { namespace ambiguous {
 
 enum value
 {
-  whole_or_16th, half_or_32th, quarter_or_64th, eighth_or_128th
+  whole_or_16th, half_or_32th, quarter_or_64th, eighth_or_128th, unknown
 };
 
 struct pitch_and_value {
