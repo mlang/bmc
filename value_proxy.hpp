@@ -170,7 +170,6 @@ disambiguate( std::vector< std::vector< std::vector<value_proxy> > >::iterator c
   if (first == last) {
     result.push_back(voice_stack);
   } else {
-    std::vector< std::vector< std::vector<value_proxy> > > result;
     for (std::vector< std::vector<value_proxy> >::iterator
          iter = first->begin(); iter != first->end(); ++iter)
     {
@@ -202,15 +201,16 @@ disambiguate( ambiguous::partial_measure& partial_measure
                                   max_length));
   }
   if (!voices.empty()) {
-    for (std::vector< std::vector<value_proxy> >::iterator
-         notes = voices.begin()->begin(); notes != voices.begin()->end(); ++notes)
+    for (std::vector< std::vector<value_proxy> >::const_iterator
+         notes = voices.begin()->begin(); notes != voices.begin()->end();
+         ++notes)
     {
-      rational length = duration(*notes);
-      std::vector< std::vector<value_proxy> > x;
-      x.push_back(*notes);
+      std::vector< std::vector<value_proxy> > voice_stack;
+      voice_stack.push_back(*notes);
       std::vector< std::vector< std::vector<value_proxy> > >
-      tmp = disambiguate(voices.begin() + 1, voices.end(), x, length);
-      result.insert(result.end(), tmp.begin(), tmp.end());
+      interpretations = disambiguate(voices.begin() + 1, voices.end(),
+                                     voice_stack, duration(*notes));
+      result.insert(result.end(), interpretations.begin(), interpretations.end());
     }
   }
   return result;
