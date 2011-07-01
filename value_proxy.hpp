@@ -160,6 +160,33 @@ duration( std::vector<value_proxy> const& proxies )
 }
 
 std::vector< std::vector< std::vector<value_proxy> > >
+disambiguate( std::vector< std::vector< std::vector<value_proxy> > >::iterator const& first
+            , std::vector< std::vector< std::vector<value_proxy> > >::iterator const& last
+            , std::vector< std::vector<value_proxy> > voice_stack
+            , rational const& length
+            )
+{
+  std::vector< std::vector< std::vector<value_proxy> > > result;
+  if (first == last) {
+    result.push_back(voice_stack);
+  } else {
+    std::vector< std::vector< std::vector<value_proxy> > > result;
+    for (std::vector< std::vector<value_proxy> >::iterator
+         iter = first->begin(); iter != first->end(); ++iter)
+    {
+      if (duration(*iter) == length) {
+        std::vector< std::vector< std::vector<value_proxy> > > tmp;
+        std::vector< std::vector<value_proxy> > vs(voice_stack);
+        vs.push_back(*iter);
+        tmp = disambiguate(first + 1, last, vs, length);
+        result.insert(result.end(), tmp.begin(), tmp.end());
+      }
+    }
+  }
+  return result;
+}
+
+std::vector< std::vector< std::vector<value_proxy> > >
 disambiguate( ambiguous::partial_measure& partial_measure
             , rational const& max_length
             )
@@ -174,11 +201,16 @@ disambiguate( ambiguous::partial_measure& partial_measure
     voices.push_back(disambiguate(candidates.begin(), candidates.end(),
                                   max_length));
   }
-  if (!voices.is_empty()) {
+  if (!voices.empty()) {
     for (std::vector< std::vector<value_proxy> >::iterator
          iter = voices.begin()->begin(); iter != voices.begin()->end(); ++iter)
     {
       rational length = duration(*iter);
+      std::vector< std::vector<value_proxy> >
+      x(*voices.begin());
+      std::vector< std::vector< std::vector<value_proxy> > >
+      tmp = disambiguate(voices.begin() + 1, voices.end(), x, length);
+      result.insert(result.end(), tmp.begin(), tmp.end());
     }
   }
   return result;
