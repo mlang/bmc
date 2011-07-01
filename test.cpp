@@ -168,19 +168,19 @@ BOOST_AUTO_TEST_CASE(value_proxy_list_test) {
   std::vector< std::vector<music::braille::value_proxy> >
   interpretations = music::braille::disambiguate(candidates.begin(), candidates.end(), music::rational(1));
   BOOST_CHECK(interpretations.size() == 4);
-  std::vector< std::vector< std::vector<music::braille::value_proxy> > >
-  partial_measure_interpretations = music::braille::disambiguate(attribute[0][0], music::rational(1));
+  music::braille::proxied_partial_measure
+  partial_measure_interpretations(attribute[0][0], music::rational(1));
   BOOST_CHECK(partial_measure_interpretations.size() == 4);
-  for (std::vector< std::vector< std::vector<music::braille::value_proxy> > >::iterator
+  for (music::braille::proxied_partial_measure::const_iterator
        i = partial_measure_interpretations.begin();
        i != partial_measure_interpretations.end(); ++i)
   {
     std::cout << '[';
-    for (std::vector< std::vector<music::braille::value_proxy> >::iterator
+    for (std::vector< std::vector<music::braille::value_proxy> >::const_iterator
          j = i->begin(); j != i->end(); ++j)
     {
       std::cout << '[';
-      for (std::vector<music::braille::value_proxy>::iterator
+      for (std::vector<music::braille::value_proxy>::const_iterator
            k = j->begin(); k != j->end(); ++k)
       {
         std::cout << k->as_rational();

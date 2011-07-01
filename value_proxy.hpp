@@ -159,62 +159,64 @@ duration( std::vector<value_proxy> const& proxies )
   return value;
 }
 
-std::vector< std::vector< std::vector<value_proxy> > >
-disambiguate( std::vector< std::vector< std::vector<value_proxy> > >::iterator const& first
-            , std::vector< std::vector< std::vector<value_proxy> > >::iterator const& last
-            , std::vector< std::vector<value_proxy> > voice_stack
-            , rational const& length
-            )
+class proxied_partial_measure
+: public std::vector< std::vector< std::vector<value_proxy> > >
 {
-  std::vector< std::vector< std::vector<value_proxy> > > result;
-  if (first == last) {
-    result.push_back(voice_stack);
-  } else {
-    for (std::vector< std::vector<value_proxy> >::iterator
-         iter = first->begin(); iter != first->end(); ++iter)
+  static std::vector< std::vector< std::vector<value_proxy> > >
+  recurse( std::vector< std::vector< std::vector<value_proxy> > >::iterator const& first
+         , std::vector< std::vector< std::vector<value_proxy> > >::iterator const& last
+         , std::vector< std::vector<value_proxy> > voice_stack
+         , rational const& length
+         )
+  {
+    std::vector< std::vector< std::vector<value_proxy> > > result;
+    if (first == last) {
+      result.push_back(voice_stack);
+    } else {
+      for (std::vector< std::vector<value_proxy> >::iterator
+           iter = first->begin(); iter != first->end(); ++iter)
+      {
+        if (duration(*iter) == length) {
+          std::vector< std::vector< std::vector<value_proxy> > > tmp;
+          std::vector< std::vector<value_proxy> > vs(voice_stack);
+          vs.push_back(*iter);
+          tmp = disambiguate(first + 1, last, vs, length);
+          result.insert(result.end(), tmp.begin(), tmp.end());
+        }
+      }
+    }
+    return result;
+  }
+public:
+  proxied_partial_measure( ambiguous::partial_measure& partial_measure
+                         , rational const& max_length
+                         )
+  : std::vector< std::vector< std::vector<value_proxy> > >()
+  {
+    std::vector< std::vector< std::vector<value_proxy> > > voices;
+    for (ambiguous::partial_measure::iterator
+         partial_voice = partial_measure.begin();
+         partial_voice != partial_measure.end(); ++partial_voice)
     {
-      if (duration(*iter) == length) {
-        std::vector< std::vector< std::vector<value_proxy> > > tmp;
-        std::vector< std::vector<value_proxy> > vs(voice_stack);
-        vs.push_back(*iter);
-        tmp = disambiguate(first + 1, last, vs, length);
-        result.insert(result.end(), tmp.begin(), tmp.end());
+      value_proxy_list candidates(*partial_voice);
+      voices.push_back(disambiguate(candidates.begin(), candidates.end(),
+                                    max_length));
+    }
+    if (!voices.empty()) {
+      for (std::vector< std::vector<value_proxy> >::const_iterator
+           notes = voices.begin()->begin(); notes != voices.begin()->end();
+           ++notes)
+      {
+        std::vector< std::vector<value_proxy> > voice_stack;
+        voice_stack.push_back(*notes);
+        std::vector< std::vector< std::vector<value_proxy> > >
+        interpretations = recurse(voices.begin() + 1, voices.end(),
+                                  voice_stack, duration(*notes));
+        insert(end(), interpretations.begin(), interpretations.end());
       }
     }
   }
-  return result;
-}
-
-std::vector< std::vector< std::vector<value_proxy> > >
-disambiguate( ambiguous::partial_measure& partial_measure
-            , rational const& max_length
-            )
-{
-  std::vector< std::vector< std::vector<value_proxy> > > result;
-  std::vector< std::vector< std::vector<value_proxy> > > voices;
-  for (ambiguous::partial_measure::iterator
-       partial_voice = partial_measure.begin();
-       partial_voice != partial_measure.end(); ++partial_voice)
-  {
-    value_proxy_list candidates(*partial_voice);
-    voices.push_back(disambiguate(candidates.begin(), candidates.end(),
-                                  max_length));
-  }
-  if (!voices.empty()) {
-    for (std::vector< std::vector<value_proxy> >::const_iterator
-         notes = voices.begin()->begin(); notes != voices.begin()->end();
-         ++notes)
-    {
-      std::vector< std::vector<value_proxy> > voice_stack;
-      voice_stack.push_back(*notes);
-      std::vector< std::vector< std::vector<value_proxy> > >
-      interpretations = disambiguate(voices.begin() + 1, voices.end(),
-                                     voice_stack, duration(*notes));
-      result.insert(result.end(), interpretations.begin(), interpretations.end());
-    }
-  }
-  return result;
-}
+};
 
 }}
 
