@@ -171,6 +171,26 @@ BOOST_AUTO_TEST_CASE(value_proxy_list_test) {
   std::vector< std::vector< std::vector<music::braille::value_proxy> > >
   partial_measure_interpretations = music::braille::disambiguate(attribute[0][0], music::rational(1));
   BOOST_CHECK(partial_measure_interpretations.size() == 4);
+  for (std::vector< std::vector< std::vector<music::braille::value_proxy> > >::iterator
+       i = partial_measure_interpretations.begin();
+       i != partial_measure_interpretations.end(); ++i)
+  {
+    std::cout << '[';
+    for (std::vector< std::vector<music::braille::value_proxy> >::iterator
+         j = i->begin(); j != i->end(); ++j)
+    {
+      std::cout << '[';
+      for (std::vector<music::braille::value_proxy>::iterator
+           k = j->begin(); k != j->end(); ++k)
+      {
+        std::cout << k->as_rational();
+        if (k != j->end() - 1) std::cout << ' ';
+      }      
+      std::cout << ']';
+    }
+    std::cout << ']';
+  }
+
   destroyTextTable(textTable);
 }
 

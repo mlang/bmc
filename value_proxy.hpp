@@ -203,11 +203,11 @@ disambiguate( ambiguous::partial_measure& partial_measure
   }
   if (!voices.empty()) {
     for (std::vector< std::vector<value_proxy> >::iterator
-         iter = voices.begin()->begin(); iter != voices.begin()->end(); ++iter)
+         notes = voices.begin()->begin(); notes != voices.begin()->end(); ++notes)
     {
-      rational length = duration(*iter);
-      std::vector< std::vector<value_proxy> >
-      x(*voices.begin());
+      rational length = duration(*notes);
+      std::vector< std::vector<value_proxy> > x;
+      x.push_back(*notes);
       std::vector< std::vector< std::vector<value_proxy> > >
       tmp = disambiguate(voices.begin() + 1, voices.end(), x, length);
       result.insert(result.end(), tmp.begin(), tmp.end());
