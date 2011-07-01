@@ -92,6 +92,7 @@ public:
       possibilities.push_back(value_proxy(note, large));
       possibilities.push_back(value_proxy(note, small));
     }
+    BOOST_ASSERT(possibilities.size() <= 2);
     push_back(possibilities);
   }
   void operator()(ambiguous::value_distinction value_distinction) {
@@ -116,6 +117,72 @@ private:
     return value(chord.base);
   }
 };
+
+std::vector< std::vector<value_proxy> >
+disambiguate( value_proxy_list::const_iterator const& first
+            , value_proxy_list::const_iterator const& last
+            , rational const& max_length
+            )
+{
+  std::vector< std::vector<value_proxy> > result;
+  if (first == last) return result;
+  for (std::vector<value_proxy>::const_iterator
+       iter = first->begin(); iter != first->end(); ++iter) {
+    if (iter->as_rational() <= max_length) {
+      if (first+1 == last) {
+        std::vector<value_proxy> tail;
+        tail.push_back(*iter);
+        result.push_back(tail);
+      } else {
+        std::vector< std::vector<value_proxy> >
+        tail = disambiguate(first + 1, last, max_length - iter->as_rational());
+        for (std::vector< std::vector<value_proxy> >::iterator
+             tail_iter = tail.begin(); tail_iter != tail.end(); ++tail_iter) {
+          tail_iter->insert(tail_iter->begin(), *iter);
+          result.push_back(*tail_iter);
+        }
+      }
+    }
+  }
+  return result;
+}
+
+rational
+duration( std::vector<value_proxy> const& proxies )
+{
+  rational value;
+  for (std::vector<value_proxy>::const_iterator
+       iter = proxies.begin(); iter != proxies.end(); ++iter)
+  {
+    value += iter->as_rational();
+  }
+  return value;
+}
+
+std::vector< std::vector< std::vector<value_proxy> > >
+disambiguate( ambiguous::partial_measure& partial_measure
+            , rational const& max_length
+            )
+{
+  std::vector< std::vector< std::vector<value_proxy> > > result;
+  std::vector< std::vector< std::vector<value_proxy> > > voices;
+  for (ambiguous::partial_measure::iterator
+       partial_voice = partial_measure.begin();
+       partial_voice != partial_measure.end(); ++partial_voice)
+  {
+    value_proxy_list candidates(*partial_voice);
+    voices.push_back(disambiguate(candidates.begin(), candidates.end(),
+                                  max_length));
+  }
+  if (!voices.is_empty()) {
+    for (std::vector< std::vector<value_proxy> >::iterator
+         iter = voices.begin()->begin(); iter != voices.begin()->end(); ++iter)
+    {
+      rational length = duration(*iter);
+    }
+  }
+  return result;
+}
 
 }}
 

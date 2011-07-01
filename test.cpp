@@ -165,6 +165,9 @@ BOOST_AUTO_TEST_CASE(value_proxy_list_test) {
   BOOST_CHECK(candidates[0].size() == 1); 
   BOOST_CHECK(candidates[1].size() == 2);
   BOOST_CHECK(candidates[2].size() == 2);
+  std::vector< std::vector<music::braille::value_proxy> >
+  interpretations = music::braille::disambiguate(candidates.begin(), candidates.end(), music::rational(1));
+  BOOST_CHECK(interpretations.size() == 4);
   destroyTextTable(textTable);
 }
 

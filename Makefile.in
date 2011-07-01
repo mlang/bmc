@@ -25,7 +25,7 @@ main: test main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
 
 test: $(TEST_OBJECTS) ttb.a
 	$(CXX) -o $@ $(TEST_OBJECTS) ttb.a @icu_libraries@
-	@./$@ --log_level=all
+	@./$@
 
 brltr: brltr.@OBJEXT@ ttb.a
 	g++ -o $@ brltr.o ttb.a @LIBS@ @icu_libraries@
