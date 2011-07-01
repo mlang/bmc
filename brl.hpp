@@ -40,8 +40,8 @@ namespace music { namespace braille {
               ) const
     {
       boost::spirit::qi::skip_over(first, last, skipper);
-      unsigned char d = convertCharacterToDots(textTable, *first);
-      d &= ~(BRL_DOT7 | BRL_DOT8);
+      unsigned char
+      d = convertCharacterToDots(textTable, *first) & ~(BRL_DOT7 | BRL_DOT8);
       if (d == dots) {
         ++first;
         return true;

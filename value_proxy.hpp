@@ -241,6 +241,7 @@ class proxied_voice
          , rational const& max_length
          )
   {
+    BOOST_ASSERT(max_length >= 0);
     std::vector< std::vector< std::vector< std::vector<value_proxy> > > > result;
     if (first == last) {
       result.push_back(part_stack);
@@ -278,5 +279,67 @@ public:
   }
 };
 
-}}
+rational
+duration( std::vector< std::vector< std::vector<value_proxy> > > const& proxies )
+{
+  rational value;
+  for (std::vector< std::vector< std::vector<value_proxy> > >::const_iterator
+       iter = proxies.begin(); iter != proxies.end(); ++iter)
+  {
+    value += duration(*iter);
+  }
+  return value;
+}
 
+class proxied_measure
+: public std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >
+{
+  static std::vector<value_type>
+  recurse( ambiguous::measure::iterator const& first
+         , ambiguous::measure::iterator const& last
+         , value_type voice_stack
+         , rational const& max_length
+         , rational const& real_length
+         )
+  {
+    BOOST_ASSERT(max_length >= 0);
+    std::vector< value_type > result;
+    if (first == last) {
+      result.push_back(voice_stack);
+    } else {
+      proxied_voice pv(*first, max_length);
+      for (proxied_voice::iterator
+           possibility = pv.begin(); possibility != pv.end(); ++possibility)
+      {
+	if (real_length == duration(*possibility)) {
+	  value_type vs(voice_stack);
+	  vs.push_back(*possibility);
+	  std::vector< value_type >
+	  interpretations = recurse(first + 1, last, vs, max_length, real_length);
+	  result.insert(result.end(), interpretations.begin(), interpretations.end());
+	}
+      }
+    }
+    return result;
+  }
+public:
+  proxied_measure(ambiguous::measure measure, rational max_length)
+  : std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >()
+  {
+    if (!measure.empty()) {
+      proxied_voice pv(*measure.begin(), max_length);
+      for (proxied_voice::iterator
+           possibility = pv.begin(); possibility != pv.end(); ++possibility)
+      {
+	value_type voice_stack;
+        voice_stack.push_back(*possibility);
+	std::vector< value_type >
+        interpretations = recurse(measure.begin() + 1, measure.end(),
+                                  voice_stack, max_length, duration(*possibility));
+        insert(end(), interpretations.begin(), interpretations.end());
+      }
+    }
+  }
+};
+
+}}
