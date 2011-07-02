@@ -195,6 +195,33 @@ BOOST_AUTO_TEST_CASE(value_proxy_list_test) {
   destroyTextTable(textTable);
 }
 
+BOOST_AUTO_TEST_CASE(proxied_partial_measure_voice_test) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::wstring const input(L">2,u46*");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::measure_grammar<iterator_type> parser_type;
+  parser_type parser;
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK(attribute.size() == 1);
+  BOOST_CHECK(attribute[0].size() == 1);
+  BOOST_CHECK(attribute[0][0].size() == 1);
+  BOOST_CHECK(attribute[0][0][0].size() == 4);
+  music::braille::value_proxy_list candidates(attribute[0][0][0]);
+  BOOST_CHECK(candidates.size() == attribute[0][0][0].size() - 1);
+  BOOST_CHECK(candidates[0].size() == 1); 
+  BOOST_CHECK(candidates[1].size() == 2);
+  BOOST_CHECK(candidates[2].size() == 2);
+  music::braille::proxied_partial_measure_voice
+  interpretations(attribute[0][0][0], music::rational(1));
+  BOOST_CHECK(interpretations.size() == 4);
+
+  destroyTextTable(textTable);
+}
+
 BOOST_AUTO_TEST_CASE(proxied_voice_test1) {
   textTable = compileTextTable("Tables/de.ttb");
   std::wstring const input(L">2,u46*");

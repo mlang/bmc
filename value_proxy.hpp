@@ -1,3 +1,4 @@
+#include <boost/foreach.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 
 namespace music { namespace braille {
@@ -150,6 +151,56 @@ disambiguate( value_proxy_list::const_iterator const& first
   return result;
 }
 
+class proxied_partial_measure_voice
+: public std::vector< std::vector<value_proxy> >
+{
+  static
+  std::vector<value_type>
+  recurse( value_proxy_list::iterator const& first
+	 , value_proxy_list::iterator const& last
+	 , const_reference stack
+         , rational const& max_length
+         )
+  {
+    std::vector<value_type> result;
+    if (first == last) {
+      result.push_back(stack);
+    } else {
+      BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
+		    *first) {
+	if (possibility.as_rational() <= max_length) {
+	  value_type new_stack(stack);
+	  new_stack.push_back(possibility);
+	  boost::range::insert(result, result.end(),
+			       recurse(first + 1, last, new_stack,
+				       max_length - possibility.as_rational()));
+	}
+      }
+    }
+    return result;
+  }  
+public:
+  proxied_partial_measure_voice( ambiguous::partial_measure_voice& voice
+			       , rational const& max_length
+			       )
+  : std::vector< std::vector<value_proxy> >()
+  {
+    value_proxy_list vpl(voice);
+    if (!vpl.empty()) {
+      BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
+		    vpl.front()) {
+	if (possibility.as_rational() <= max_length) {
+	  value_type stack;
+	  stack.push_back(possibility);
+	  boost::range::insert(*this, end(),
+			       recurse(vpl.begin() + 1, vpl.end(), stack,
+				       max_length - possibility.as_rational()));
+	}
+      }
+    }
+  }
+};
+
 rational
 duration( std::vector<value_proxy> const& proxies )
 {
@@ -248,15 +299,14 @@ class proxied_voice
     if (first == last) {
       result.push_back(part_stack);
     } else {
-      proxied_partial_measure ppm(*first, max_length);
-      for (proxied_partial_measure::iterator
-           possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
+      BOOST_FOREACH(proxied_partial_measure::value_type const& possibility,
+		    proxied_partial_measure(*first, max_length))
       {
         value_type stack(part_stack);
-        stack.push_back(*possibility);
+        stack.push_back(possibility);
 	boost::range::insert(result, result.end(),
 			     recurse(first + 1, last, stack,
-				     max_length - duration(*possibility)));
+				     max_length - duration(possibility)));
       }
     }
     return result;
@@ -266,15 +316,14 @@ public:
   : std::vector< std::vector< std::vector< std::vector<value_proxy> > > >()
   {
     if (!voice.empty()) {
-      proxied_partial_measure ppm(*voice.begin(), max_length);
-      for (proxied_partial_measure::iterator
-           possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
+      BOOST_FOREACH(proxied_partial_measure::value_type const& possibility,
+		    proxied_partial_measure(voice.front(), max_length))
       {
         value_type stack;
-        stack.push_back(*possibility);
+        stack.push_back(possibility);
 	boost::range::insert(*this, end(),
 			     recurse(voice.begin() + 1, voice.end(), stack,
-				     max_length - duration(*possibility)));
+				     max_length - duration(possibility)));
       }
     }
   }
@@ -307,15 +356,15 @@ class proxied_measure
     if (first == last) {
       result.push_back(voice_stack);
     } else {
-      proxied_voice pv(*first, max_length);
-      for (proxied_voice::iterator
-           possibility = pv.begin(); possibility != pv.end(); ++possibility)
+      BOOST_FOREACH(proxied_voice::value_type const& possibility,
+		    proxied_voice(*first, max_length))
       {
-	if (real_length == duration(*possibility)) {
+	if (real_length == duration(possibility)) {
 	  value_type stack(voice_stack);
-	  stack.push_back(*possibility);
+	  stack.push_back(possibility);
 	  boost::range::insert(result, result.end(),
-			       recurse(first + 1, last, stack, max_length, real_length));
+			       recurse(first + 1, last, stack,
+				       max_length, real_length));
 	}
       }
     }
@@ -327,16 +376,15 @@ public:
   {
     if (!measure.empty()) {
       BOOST_ASSERT(max_length >= 0);
-      proxied_voice pv(*measure.begin(), max_length);
-      for (proxied_voice::iterator
-           possibility = pv.begin(); possibility != pv.end(); ++possibility)
+      BOOST_FOREACH(proxied_voice::value_type const& possibility,
+		    proxied_voice(measure.front(), max_length))
       {
 	value_type stack;
-        stack.push_back(*possibility);
+        stack.push_back(possibility);
 	boost::range::insert(*this, end(),
 			     recurse(measure.begin() + 1, measure.end(),
 				     stack,
-				     max_length, duration(*possibility)));
+				     max_length, duration(possibility)));
       }
     }
   }
