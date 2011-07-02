@@ -305,7 +305,7 @@ BOOST_AUTO_TEST_CASE(proxied_measure_test1) {
   BOOST_CHECK(attribute[1][0][0].size() == 1);
   music::braille::proxied_measure
   measure_interpretations(attribute, music::rational(3, 4));
-  //BOOST_CHECK(voice_interpretations.size() == 4);
+  BOOST_CHECK(measure_interpretations.size() == 4);
   for (music::braille::proxied_measure::const_iterator
        i = measure_interpretations.begin(); i != measure_interpretations.end();
        ++i)

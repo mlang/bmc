@@ -1,3 +1,5 @@
+#include <boost/range/algorithm_ext/insert.hpp>
+
 namespace music { namespace braille {
 
 enum value_category
@@ -16,21 +18,21 @@ public:
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , final_type(&note.type)
   {
-    BOOST_ASSERT(*final_type == music::rational(0));
+    BOOST_ASSERT(*final_type == music::rational());
   }
 
   value_proxy(ambiguous::rest& rest, value_category const& category)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , final_type(&rest.type)
   {
-    BOOST_ASSERT(*final_type == music::rational(0));
+    BOOST_ASSERT(*final_type == music::rational());
   }
 
   value_proxy(ambiguous::chord& chord, value_category const& category)
   : value_type(chord.base.ambiguous_value), category(category), dots(chord.base.dots)
   , final_type(&chord.base.type)
   {
-    BOOST_ASSERT(*final_type == music::rational(0));
+    BOOST_ASSERT(*final_type == music::rational());
   }
 
   rational as_rational() const {
@@ -49,15 +51,15 @@ public:
       base = rational(1, category==large? 8: 128);
       break;
     default:
-      std::cout << "value type: " << value_type << std::endl;
       BOOST_ASSERT(false);
     }
     return base;
   }
 };
 
-class value_proxy_list : public std::vector< std::vector<value_proxy> >,
-                         public boost::static_visitor<void>
+class value_proxy_list
+: public std::vector< std::vector<value_proxy> >
+, public boost::static_visitor<void>
 {
   enum choices { just_large, just_small, both };
   choices choice;
@@ -167,7 +169,7 @@ class proxied_partial_measure
   std::vector< value_type >
   recurse( std::vector< std::vector< std::vector<value_proxy> > >::iterator const& first
          , std::vector< std::vector< std::vector<value_proxy> > >::iterator const& last
-         , std::vector< std::vector<value_proxy> > voice_stack
+         , reference voice_stack
          , rational const& length
          )
   {
@@ -179,11 +181,10 @@ class proxied_partial_measure
            iter = first->begin(); iter != first->end(); ++iter)
       {
         if (duration(*iter) == length) {
-          std::vector< value_type > tmp;
-          value_type vs(voice_stack);
-          vs.push_back(*iter);
-          tmp = recurse(first + 1, last, vs, length);
-          result.insert(result.end(), tmp.begin(), tmp.end());
+          value_type stack(voice_stack);
+          stack.push_back(*iter);
+	  boost::range::insert(result, result.end(),
+			       recurse(first + 1, last, stack, length));
         }
       }
     }
@@ -209,12 +210,11 @@ public:
            notes = voices.begin()->begin(); notes != voices.begin()->end();
            ++notes)
       {
-        std::vector< std::vector<value_proxy> > voice_stack;
-        voice_stack.push_back(*notes);
-        std::vector< std::vector< std::vector<value_proxy> > >
-        interpretations = recurse(voices.begin() + 1, voices.end(),
-                                  voice_stack, duration(*notes));
-        insert(end(), interpretations.begin(), interpretations.end());
+        value_type stack;
+        stack.push_back(*notes);
+	boost::range::insert(*this, end(),
+			     recurse(voices.begin() + 1, voices.end(), stack,
+				     duration(*notes)));
       }
     }
   }
@@ -239,7 +239,7 @@ class proxied_voice
   std::vector< value_type >
   recurse( ambiguous::voice::iterator const& first
          , ambiguous::voice::iterator const& last
-         , value_type part_stack
+         , reference part_stack
          , rational const& max_length
          )
   {
@@ -252,11 +252,11 @@ class proxied_voice
       for (proxied_partial_measure::iterator
            possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
       {
-        std::vector< value_type > tmp;
-        value_type ps(part_stack);
-        ps.push_back(*possibility);
-        tmp = recurse(first + 1, last, ps, max_length - duration(*possibility));
-        result.insert(result.end(), tmp.begin(), tmp.end());
+        value_type stack(part_stack);
+        stack.push_back(*possibility);
+	boost::range::insert(result, result.end(),
+			     recurse(first + 1, last, stack,
+				     max_length - duration(*possibility)));
       }
     }
     return result;
@@ -270,12 +270,11 @@ public:
       for (proxied_partial_measure::iterator
            possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
       {
-        value_type part_stack;
-        part_stack.push_back(*possibility);
-        std::vector< value_type >
-        interpretations = recurse(voice.begin() + 1, voice.end(),
-                                  part_stack, max_length - duration(*possibility));
-        insert(end(), interpretations.begin(), interpretations.end());
+        value_type stack;
+        stack.push_back(*possibility);
+	boost::range::insert(*this, end(),
+			     recurse(voice.begin() + 1, voice.end(), stack,
+				     max_length - duration(*possibility)));
       }
     }
   }
@@ -299,12 +298,11 @@ class proxied_measure
   static std::vector<value_type>
   recurse( ambiguous::measure::iterator const& first
          , ambiguous::measure::iterator const& last
-         , value_type voice_stack
+         , reference voice_stack
          , rational const& max_length
          , rational const& real_length
          )
   {
-    BOOST_ASSERT(max_length >= 0);
     std::vector< value_type > result;
     if (first == last) {
       result.push_back(voice_stack);
@@ -314,11 +312,10 @@ class proxied_measure
            possibility = pv.begin(); possibility != pv.end(); ++possibility)
       {
 	if (real_length == duration(*possibility)) {
-	  value_type vs(voice_stack);
-	  vs.push_back(*possibility);
-	  std::vector< value_type >
-	  interpretations = recurse(first + 1, last, vs, max_length, real_length);
-	  result.insert(result.end(), interpretations.begin(), interpretations.end());
+	  value_type stack(voice_stack);
+	  stack.push_back(*possibility);
+	  boost::range::insert(result, result.end(),
+			       recurse(first + 1, last, stack, max_length, real_length));
 	}
       }
     }
@@ -329,16 +326,17 @@ public:
   : std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >()
   {
     if (!measure.empty()) {
+      BOOST_ASSERT(max_length >= 0);
       proxied_voice pv(*measure.begin(), max_length);
       for (proxied_voice::iterator
            possibility = pv.begin(); possibility != pv.end(); ++possibility)
       {
-	value_type voice_stack;
-        voice_stack.push_back(*possibility);
-	std::vector< value_type >
-        interpretations = recurse(measure.begin() + 1, measure.end(),
-                                  voice_stack, max_length, duration(*possibility));
-        insert(end(), interpretations.begin(), interpretations.end());
+	value_type stack;
+        stack.push_back(*possibility);
+	boost::range::insert(*this, end(),
+			     recurse(measure.begin() + 1, measure.end(),
+				     stack,
+				     max_length, duration(*possibility)));
       }
     }
   }
