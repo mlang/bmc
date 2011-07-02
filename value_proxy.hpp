@@ -163,14 +163,15 @@ duration( std::vector<value_proxy> const& proxies )
 class proxied_partial_measure
 : public std::vector< std::vector< std::vector<value_proxy> > >
 {
-  static std::vector< std::vector< std::vector<value_proxy> > >
+  static
+  std::vector< value_type >
   recurse( std::vector< std::vector< std::vector<value_proxy> > >::iterator const& first
          , std::vector< std::vector< std::vector<value_proxy> > >::iterator const& last
          , std::vector< std::vector<value_proxy> > voice_stack
          , rational const& length
          )
   {
-    std::vector< std::vector< std::vector<value_proxy> > > result;
+    std::vector< value_type > result;
     if (first == last) {
       result.push_back(voice_stack);
     } else {
@@ -178,8 +179,8 @@ class proxied_partial_measure
            iter = first->begin(); iter != first->end(); ++iter)
       {
         if (duration(*iter) == length) {
-          std::vector< std::vector< std::vector<value_proxy> > > tmp;
-          std::vector< std::vector<value_proxy> > vs(voice_stack);
+          std::vector< value_type > tmp;
+          value_type vs(voice_stack);
           vs.push_back(*iter);
           tmp = recurse(first + 1, last, vs, length);
           result.insert(result.end(), tmp.begin(), tmp.end());
@@ -234,15 +235,16 @@ duration( std::vector< std::vector<value_proxy> > const& proxies )
 class proxied_voice
 : public std::vector< std::vector< std::vector< std::vector<value_proxy> > > >
 {
-  static std::vector< std::vector< std::vector< std::vector<value_proxy> > > >
+  static
+  std::vector< value_type >
   recurse( ambiguous::voice::iterator const& first
          , ambiguous::voice::iterator const& last
-         , std::vector< std::vector< std::vector<value_proxy> > > part_stack
+         , value_type part_stack
          , rational const& max_length
          )
   {
     BOOST_ASSERT(max_length >= 0);
-    std::vector< std::vector< std::vector< std::vector<value_proxy> > > > result;
+    std::vector< value_type > result;
     if (first == last) {
       result.push_back(part_stack);
     } else {
@@ -250,8 +252,8 @@ class proxied_voice
       for (proxied_partial_measure::iterator
            possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
       {
-        std::vector< std::vector< std::vector< std::vector<value_proxy> > > > tmp;
-        std::vector< std::vector< std::vector<value_proxy> > > ps(part_stack);
+        std::vector< value_type > tmp;
+        value_type ps(part_stack);
         ps.push_back(*possibility);
         tmp = recurse(first + 1, last, ps, max_length - duration(*possibility));
         result.insert(result.end(), tmp.begin(), tmp.end());
@@ -260,7 +262,7 @@ class proxied_voice
     return result;
   }
 public:
-  proxied_voice(ambiguous::voice voice, rational max_length)
+  proxied_voice(ambiguous::voice& voice, rational max_length)
   : std::vector< std::vector< std::vector< std::vector<value_proxy> > > >()
   {
     if (!voice.empty()) {
@@ -268,9 +270,9 @@ public:
       for (proxied_partial_measure::iterator
            possibility = ppm.begin(); possibility != ppm.end(); ++possibility)
       {
-        std::vector< std::vector< std::vector<value_proxy> > > part_stack;
+        value_type part_stack;
         part_stack.push_back(*possibility);
-        std::vector< std::vector< std::vector< std::vector<value_proxy> > > >
+        std::vector< value_type >
         interpretations = recurse(voice.begin() + 1, voice.end(),
                                   part_stack, max_length - duration(*possibility));
         insert(end(), interpretations.begin(), interpretations.end());
@@ -323,7 +325,7 @@ class proxied_measure
     return result;
   }
 public:
-  proxied_measure(ambiguous::measure measure, rational max_length)
+  proxied_measure(ambiguous::measure& measure, rational max_length)
   : std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >()
   {
     if (!measure.empty()) {
