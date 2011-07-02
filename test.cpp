@@ -145,56 +145,6 @@ BOOST_AUTO_TEST_CASE(value_proxy_test) {
   destroyTextTable(textTable);
 }
 
-BOOST_AUTO_TEST_CASE(value_proxy_list_test) {
-  textTable = compileTextTable("Tables/de.ttb");
-  std::wstring const input(L">2,u46*");
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::measure_grammar<iterator_type> parser_type;
-  parser_type parser;
-  parser_type::start_type::attr_type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 1);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[0][0].size() == 1);
-  BOOST_CHECK(attribute[0][0][0].size() == 4);
-  music::braille::value_proxy_list candidates(attribute[0][0][0]);
-  BOOST_CHECK(candidates.size() == attribute[0][0][0].size() - 1);
-  BOOST_CHECK(candidates[0].size() == 1); 
-  BOOST_CHECK(candidates[1].size() == 2);
-  BOOST_CHECK(candidates[2].size() == 2);
-  std::vector< std::vector<music::braille::value_proxy> >
-  interpretations = music::braille::disambiguate(candidates.begin(), candidates.end(), music::rational(1));
-  BOOST_CHECK(interpretations.size() == 4);
-  music::braille::proxied_partial_measure
-  partial_measure_interpretations(attribute[0][0], music::rational(1));
-  BOOST_CHECK(partial_measure_interpretations.size() == 4);
-  for (music::braille::proxied_partial_measure::const_iterator
-       i = partial_measure_interpretations.begin();
-       i != partial_measure_interpretations.end(); ++i)
-  {
-    std::cout << '[';
-    for (std::vector< std::vector<music::braille::value_proxy> >::const_iterator
-         j = i->begin(); j != i->end(); ++j)
-    {
-      std::cout << '[';
-      for (std::vector<music::braille::value_proxy>::const_iterator
-           k = j->begin(); k != j->end(); ++k)
-      {
-        std::cout << k->as_rational();
-        if (k != j->end() - 1) std::cout << ' ';
-      }      
-      std::cout << ']';
-    }
-    std::cout << ']';
-  }
-  std::cout << std::endl;
-
-  destroyTextTable(textTable);
-}
-
 BOOST_AUTO_TEST_CASE(proxied_partial_measure_voice_test) {
   textTable = compileTextTable("Tables/de.ttb");
   std::wstring const input(L">2,u46*");
