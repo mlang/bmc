@@ -157,7 +157,7 @@ public:
   : std::vector< std::vector<value_proxy> >()
   {
     value_proxy_list vpl(voice);
-    if (!vpl.empty()) {
+    if (not vpl.empty()) {
       BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
 		    vpl.front()) {
 	if (possibility.as_rational() <= max_length) {
@@ -218,7 +218,7 @@ public:
                          )
   : std::vector< std::vector< std::vector<value_proxy> > >()
   {
-    if (!partial_measure.empty()) {
+    if (not partial_measure.empty()) {
       BOOST_FOREACH(proxied_partial_measure_voice::const_reference possibility,
 		    proxied_partial_measure_voice(partial_measure.front(),
 						  max_length))
@@ -278,7 +278,7 @@ public:
   proxied_voice(ambiguous::voice& voice, rational max_length)
   : std::vector< std::vector< std::vector< std::vector<value_proxy> > > >()
   {
-    if (!voice.empty()) {
+    if (not voice.empty()) {
       BOOST_FOREACH(proxied_partial_measure::const_reference possibility,
 		    proxied_partial_measure(voice.front(), max_length))
       {
@@ -301,6 +301,14 @@ duration( std::vector< std::vector< std::vector<value_proxy> > > const& proxies 
   {
     value += duration(*iter);
   }
+  return value;
+}
+
+rational
+duration( std::vector< std::vector< std::vector< std::vector<value_proxy> > > > const& proxies )
+{
+  rational value;
+  if (not proxies.empty()) value = duration(proxies.front());
   return value;
 }
 
@@ -334,21 +342,28 @@ class proxied_measure
     return result;
   }
 public:
-  proxied_measure(ambiguous::measure& measure, rational max_length)
+  proxied_measure(ambiguous::measure& measure, rational max_duration)
   : std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >()
   {
-    if (!measure.empty()) {
-      BOOST_ASSERT(max_length >= 0);
+    if (not measure.empty()) {
+      BOOST_ASSERT(max_duration >= 0);
       BOOST_FOREACH(proxied_voice::const_reference possibility,
-		    proxied_voice(measure.front(), max_length))
+		    proxied_voice(measure.front(), max_duration))
       {
 	value_type stack;
         stack.push_back(possibility);
 	boost::range::insert(*this, end(),
 			     recurse(measure.begin() + 1, measure.end(),
-				     stack,
-				     max_length, duration(possibility)));
+                                     stack,
+                                     max_duration, duration(possibility)));
       }
+    }
+
+    if (size() > 1) {
+      iterator interpretation = begin();
+      while (interpretation != end())
+	interpretation = duration(*interpretation) == max_duration?
+                         interpretation + 1: erase(interpretation);
     }
   }
 };
