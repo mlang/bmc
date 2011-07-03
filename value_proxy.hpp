@@ -1,6 +1,7 @@
 #include <numeric>
 #include <boost/foreach.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
+#include "ambiguous.hpp"
 
 namespace music { namespace braille {
 
@@ -180,7 +181,7 @@ public:
 };
 
 rational
-operator + (rational const& r, value_proxy const& v)
+operator+(rational const& r, value_proxy const& v)
 {
   return r + duration(v);
 }
@@ -191,8 +192,10 @@ duration( std::vector<value_proxy> const& proxies )
   return std::accumulate(proxies.begin(), proxies.end(), rational(0));
 }
 
-class proxied_partial_measure
-: public std::vector< std::vector< std::vector<value_proxy> > >
+typedef std::vector< std::vector<value_proxy> > proxied_partial_measure;
+
+class partial_measure_interpretations
+: public std::vector< proxied_partial_measure >
 {
   static
   std::vector<value_type>
@@ -219,10 +222,10 @@ class proxied_partial_measure
     return result;
   }
 public:
-  proxied_partial_measure( ambiguous::partial_measure& partial_measure
-                         , rational const& max_length
-                         )
-  : std::vector< std::vector< std::vector<value_proxy> > >()
+  partial_measure_interpretations( ambiguous::partial_measure& partial_measure
+                                 , rational const& max_length
+                                 )
+  : std::vector< proxied_partial_measure >()
   {
     if (not partial_measure.empty()) {
       BOOST_FOREACH(proxied_partial_measure_voice::const_reference possibility,
@@ -232,7 +235,8 @@ public:
         stack.push_back(possibility);
 	boost::range::insert(*this, end(),
 			     recurse(partial_measure.begin() + 1,
-				     partial_measure.end(), stack,
+				     partial_measure.end(),
+				     value_type(1, possibility),
 				     duration(possibility)));
       }
     }
@@ -240,21 +244,23 @@ public:
 };
 
 rational
-duration( std::vector< std::vector<value_proxy> > const& voices )
+duration( proxied_partial_measure const& voices )
 {
   rational value(0);
   if (not voices.empty()) {
     value = duration(voices.front());
-    for (std::vector< std::vector<value_proxy> >::const_iterator
-         iter = voices.begin() + 1; iter != voices.end(); ++iter) {
-      BOOST_ASSERT(duration(voices.front()) == duration(*iter));
+    for (proxied_partial_measure::const_iterator
+         voice = voices.begin() + 1; voice != voices.end(); ++voice) {
+      BOOST_ASSERT(value == duration(*voice));
     }
   }
   return value;
 }
 
-class proxied_voice
-: public std::vector< std::vector< std::vector< std::vector<value_proxy> > > >
+typedef std::vector< proxied_partial_measure > proxied_voice;
+
+class voice_interpretations
+: public std::vector< proxied_voice >
 {
   static
   std::vector<value_type>
@@ -269,8 +275,8 @@ class proxied_voice
     if (begin == end) {
       result.push_back(stack);
     } else {
-      BOOST_FOREACH(proxied_partial_measure::const_reference possibility,
-		    proxied_partial_measure(*begin, max_length)) {
+      BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
+		    partial_measure_interpretations(*begin, max_length)) {
         value_type new_stack(stack);
         new_stack.push_back(possibility);
 	boost::range::insert(result, result.end(),
@@ -281,12 +287,12 @@ class proxied_voice
     return result;
   }
 public:
-  proxied_voice(ambiguous::voice& voice, rational max_length)
-  : std::vector< std::vector< std::vector< std::vector<value_proxy> > > >()
+  voice_interpretations(ambiguous::voice& voice, rational max_length)
+  : std::vector< proxied_voice >()
   {
     if (not voice.empty()) {
-      BOOST_FOREACH(proxied_partial_measure::const_reference possibility,
-		    proxied_partial_measure(voice.front(), max_length)) {
+      BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
+		    partial_measure_interpretations(voice.front(), max_length)) {
         value_type stack;
         stack.push_back(possibility);
 	boost::range::insert(*this, end(),
@@ -298,27 +304,29 @@ public:
 };
 
 rational
-operator + (rational const& r, std::vector< std::vector<value_proxy> > const& p)
+operator + (rational const& r, proxied_partial_measure const& p)
 {
   return r + duration(p);
 }
 
 rational
-duration( std::vector< std::vector< std::vector<value_proxy> > > const& parts )
+duration( proxied_voice const& parts )
 {
   return std::accumulate(parts.begin(), parts.end(), rational(0));
 }
 
+typedef std::vector< proxied_voice > proxied_measure;
+
 rational
-duration( std::vector< std::vector< std::vector< std::vector<value_proxy> > > > const& voices )
+duration( proxied_measure const& voices )
 {
   rational value;
   if (not voices.empty()) value = duration(voices.front());
   return value;
 }
 
-class proxied_measure
-: public std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >
+class measure_interpretations
+: public std::vector< proxied_measure >
 {
   static std::vector<value_type>
   recurse( ambiguous::measure::iterator const& begin
@@ -331,8 +339,8 @@ class proxied_measure
     if (begin == end) {
       result.push_back(stack);
     } else {
-      BOOST_FOREACH(proxied_voice::const_reference possibility,
-		    proxied_voice(*begin, max_length)) {
+      BOOST_FOREACH(voice_interpretations::const_reference possibility,
+		    voice_interpretations(*begin, max_length)) {
 	if (real_length == duration(possibility)) {
 	  value_type new_stack(stack);
 	  new_stack.push_back(possibility);
@@ -345,13 +353,13 @@ class proxied_measure
     return result;
   }
 public:
-  proxied_measure(ambiguous::measure& measure, rational max_duration)
-  : std::vector< std::vector< std::vector< std::vector< std::vector<value_proxy> > > > >()
+  measure_interpretations(ambiguous::measure& measure, rational max_duration)
+  : std::vector<proxied_measure>()
   {
     if (not measure.empty()) {
       BOOST_ASSERT(max_duration >= 0);
-      BOOST_FOREACH(proxied_voice::const_reference possibility,
-		    proxied_voice(measure.front(), max_duration)) {
+      BOOST_FOREACH(voice_interpretations::const_reference possibility,
+		    voice_interpretations(measure.front(), max_duration)) {
 	value_type stack;
         stack.push_back(possibility);
 	boost::range::insert(*this, end(),

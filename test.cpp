@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(proxied_partial_measure_voice_test) {
   destroyTextTable(textTable);
 }
 
-BOOST_AUTO_TEST_CASE(proxied_voice_test1) {
+BOOST_AUTO_TEST_CASE(voice_interpretations_test1) {
   textTable = compileTextTable("Tables/de.ttb");
   std::wstring const input(L">2,u46*");
   typedef std::wstring::const_iterator iterator_type;
@@ -187,14 +187,14 @@ BOOST_AUTO_TEST_CASE(proxied_voice_test1) {
   BOOST_CHECK(attribute[0].size() == 1);
   BOOST_CHECK(attribute[0][0].size() == 1);
   BOOST_CHECK(attribute[0][0][0].size() == 4);
-  music::braille::proxied_voice
-  voice_interpretations(attribute[0], music::rational(1));
-  BOOST_CHECK(voice_interpretations.size() == 4);
-  for (music::braille::proxied_voice::const_iterator
-       i = voice_interpretations.begin(); i != voice_interpretations.end(); ++i)
+  music::braille::voice_interpretations
+  interpretations(attribute[0], music::rational(1));
+  BOOST_CHECK(interpretations.size() == 4);
+  for (music::braille::voice_interpretations::const_iterator
+       i = interpretations.begin(); i != interpretations.end(); ++i)
   {
     std::cout << '[';
-    for (std::vector< std::vector< std::vector<music::braille::value_proxy> > >::const_iterator
+    for (music::braille::proxied_voice::const_iterator
          j = i->begin(); j != i->end(); ++j)
     {
       std::cout << '[';
@@ -218,7 +218,7 @@ BOOST_AUTO_TEST_CASE(proxied_voice_test1) {
   destroyTextTable(textTable);
 }
 
-BOOST_AUTO_TEST_CASE(proxied_voice_test2) {
+BOOST_AUTO_TEST_CASE(voice_interpretations_test2) {
   textTable = compileTextTable("Tables/de.ttb");
   std::wstring const input(L"v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
@@ -233,14 +233,14 @@ BOOST_AUTO_TEST_CASE(proxied_voice_test2) {
   BOOST_CHECK(attribute[0].size() == 2);
   BOOST_CHECK(attribute[0][0].size() == 1);
   BOOST_CHECK(attribute[0][0][0].size() == 1);
-  music::braille::proxied_voice
-  voice_interpretations(attribute[0], music::rational(3, 4));
-  BOOST_CHECK(voice_interpretations.size() == 4);
-  for (music::braille::proxied_voice::const_iterator
-       i = voice_interpretations.begin(); i != voice_interpretations.end(); ++i)
+  music::braille::voice_interpretations
+  interpretations(attribute[0], music::rational(3, 4));
+  BOOST_CHECK(interpretations.size() == 4);
+  for (music::braille::voice_interpretations::const_iterator
+       i = interpretations.begin(); i != interpretations.end(); ++i)
   {
     std::cout << '[';
-    for (std::vector< std::vector< std::vector<music::braille::value_proxy> > >::const_iterator
+    for (music::braille::proxied_voice::const_iterator
          j = i->begin(); j != i->end(); ++j)
     {
       std::cout << '[';
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(proxied_voice_test2) {
   destroyTextTable(textTable);
 }
 
-BOOST_AUTO_TEST_CASE(proxied_measure_test1) {
+BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   textTable = compileTextTable("Tables/de.ttb");
   std::wstring const input(L"_r72`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
@@ -280,19 +280,19 @@ BOOST_AUTO_TEST_CASE(proxied_measure_test1) {
   BOOST_CHECK(attribute[1].size() == 2);
   BOOST_CHECK(attribute[1][0].size() == 1);
   BOOST_CHECK(attribute[1][0][0].size() == 1);
-  music::braille::proxied_measure
-  measure_interpretations(attribute, music::rational(3, 4));
-  BOOST_CHECK(measure_interpretations.size() == 1);
-  for (music::braille::proxied_measure::const_iterator
-       i = measure_interpretations.begin(); i != measure_interpretations.end();
+  music::braille::measure_interpretations
+  interpretations(attribute, music::rational(3, 4));
+  BOOST_CHECK(interpretations.size() == 1);
+  for (music::braille::measure_interpretations::const_iterator
+       i = interpretations.begin(); i != interpretations.end();
        ++i)
   {
     std::cout << '[';
-    for (std::vector< std::vector< std::vector< std::vector<music::braille::value_proxy> > > >::const_iterator
+    for (music::braille::proxied_measure::const_iterator
          j = i->begin(); j != i->end(); ++j)
     {
       std::cout << '[';
-      for (std::vector< std::vector< std::vector<music::braille::value_proxy> > >::const_iterator
+      for (music::braille::proxied_measure::value_type::const_iterator
            k = j->begin(); k != j->end(); ++k)
       {
 	std::cout << '[';
