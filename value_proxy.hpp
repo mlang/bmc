@@ -66,11 +66,14 @@ class value_proxy_list
 : public std::vector< std::vector< std::vector<value_proxy> > >
 {
 public:
-  class large_follows : public boost::static_visitor<bool>
+  class distinction_sign : public boost::static_visitor<bool>
   {
+    ambiguous::value_distinction expected_distinction;
   public:
+    distinction_sign(ambiguous::value_distinction const& distinction)
+    : expected_distinction(distinction) {}
     bool operator()(ambiguous::value_distinction const& distinction) const {
-      if (distinction == ambiguous::large_follows) return true;
+      if (distinction == expected_distinction) return true;
       return false;
     }
     template<class T> bool operator()(T const&) const { return false; }
@@ -153,24 +156,33 @@ public:
     void operator()(ambiguous::simile&) {}
     void operator()(ambiguous::value_distinction&) {}
   };
-  class large_notes : public value_type, public boost::static_visitor<void>
+  class same_category
+  : public value_type
+  , public boost::static_visitor<void>
   {
+    value_category category;
   public:
-    large_notes( ambiguous::partial_measure_voice::iterator const& begin
-	       , ambiguous::partial_measure_voice::iterator const& end
-	       )
+    same_category( ambiguous::partial_measure_voice::iterator const& begin
+	         , ambiguous::partial_measure_voice::iterator const& end
+	         , value_category const& category
+	         )
     : std::vector< std::vector<value_proxy> >()
+    , category(category)
     {
       std::for_each(begin, end, boost::apply_visitor(*this));
     }
     template<class Value>
     void operator()(Value& note) {
       value_type possibilities;
-      possibilities.push_back(value_proxy(note, large));
+      possibilities.push_back(value_proxy(note, category));
       push_back(possibilities);
     }
-    void operator()(ambiguous::simile&) {}
-    void operator()(ambiguous::value_distinction&) {}
+    void operator()(ambiguous::simile&) {
+      BOOST_ASSERT(false);
+    }
+    void operator()(ambiguous::value_distinction&) {
+      BOOST_ASSERT(false);
+    }
   };
 
   class notegroup : public combinations
@@ -215,6 +227,27 @@ public:
     }
   };
 
+private:
+  ambiguous::partial_measure_voice::iterator
+  same_category_end( ambiguous::partial_measure_voice::iterator& begin
+	           , ambiguous::partial_measure_voice::iterator const& end
+		   , ambiguous::value_distinction const& distinction
+                   )
+  {
+    if (boost::apply_visitor(distinction_sign(distinction), *begin)) {
+      begin = begin + 1;
+      ambiguous::partial_measure_voice::iterator iter(begin);
+      if (iter != end &&
+	  boost::apply_visitor(is_value(), *iter)) {
+	ambiguous::value initial(boost::apply_visitor(get_value(), *iter++));
+	while (iter != end && apply_visitor(get_value(), *iter) == initial) {
+	  ++iter;
+	}
+	return iter;
+      }
+    }
+    return begin;
+  }
   ambiguous::partial_measure_voice::iterator
   notegroup_end( ambiguous::partial_measure_voice::iterator const& begin
 	       , ambiguous::partial_measure_voice::iterator const& end
@@ -233,6 +266,8 @@ public:
     }
     return begin;
   }
+
+public:
   value_proxy_list(ambiguous::partial_measure_voice& voice)
   : std::vector< std::vector< std::vector<value_proxy> > >()
   {
@@ -241,19 +276,17 @@ public:
       ambiguous::partial_measure_voice::iterator end;
       if ((end = notegroup_end(begin, voice.end())) != begin) {
 	push_back(notegroup(begin, end));
-      } else if (boost::apply_visitor(large_follows(), *begin)) {
-	begin = begin + 1;
-	end = begin;
-	if (end != voice.end() && boost::apply_visitor(is_value(), *end)) {
-	  ambiguous::value initial(boost::apply_visitor(get_value(), *end++));
-	  while (end != voice.end() && apply_visitor(get_value(), *end) == initial) {
-	    ++end;
-	  }
-	  push_back(large_notes(begin, end));
-	}
+      } else if ((end = same_category_end(begin, voice.end(),
+					  ambiguous::large_follows)) != begin) {
+	push_back(same_category(begin, end, large));
+      } else if ((end = same_category_end(begin, voice.end(),
+					  ambiguous::small_follows)) != begin) {
+	push_back(same_category(begin, end, small));
       } else {
-	end = begin + 1;
-	push_back(combinations(begin, end));
+	if (end != voice.end()) {
+	  end = begin + 1;
+	  push_back(combinations(begin, end));
+	}
       }
       std::advance(begin, std::distance(begin, end));
     }
