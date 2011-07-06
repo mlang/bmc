@@ -371,3 +371,56 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
 
   destroyTextTable(textTable);
 }
+
+BOOST_AUTO_TEST_CASE(notegroup_test1) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::wstring const input(L"!yefg{ijd_n");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::measure_grammar<iterator_type> parser_type;
+  parser_type parser;
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK(attribute.size() == 1);
+  BOOST_CHECK(attribute[0].size() == 1);
+  BOOST_CHECK(attribute[0][0].size() == 1);
+  BOOST_CHECK(attribute[0][0][0].size() == 9);
+  music::braille::measure_interpretations
+  interpretations(attribute, music::rational(4, 4));
+  BOOST_CHECK(interpretations.size() == 1);
+  for (music::braille::measure_interpretations::const_iterator
+       i = interpretations.begin(); i != interpretations.end();
+       ++i)
+  {
+    std::cout << '[';
+    for (music::braille::proxied_measure::const_iterator
+         j = i->begin(); j != i->end(); ++j)
+    {
+      std::cout << '[';
+      for (music::braille::proxied_measure::value_type::const_iterator
+           k = j->begin(); k != j->end(); ++k)
+      {
+	std::cout << '[';
+	for (std::vector< std::vector<music::braille::value_proxy> >::const_iterator
+	     l = k->begin(); l != k->end(); ++l)
+	{
+	  std::cout << '[';
+	  for (std::vector<music::braille::value_proxy>::const_iterator
+		 m = l->begin(); m != l->end(); ++m)
+	    {
+	      std::cout << m->as_rational();
+	      if (m != l->end() - 1) std::cout << ' ';
+	    }     
+	  std::cout << ']';
+	}     
+	std::cout << ']';
+      }
+      std::cout << ']';
+    }
+    std::cout << ']' << std::endl;
+  }
+
+  destroyTextTable(textTable);
+}
