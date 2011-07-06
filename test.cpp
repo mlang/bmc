@@ -390,37 +390,19 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   music::braille::measure_interpretations
   interpretations(attribute, music::rational(4, 4));
   BOOST_CHECK(interpretations.size() == 1);
-  for (music::braille::measure_interpretations::const_iterator
-       i = interpretations.begin(); i != interpretations.end();
-       ++i)
-  {
-    std::cout << '[';
-    for (music::braille::proxied_measure::const_iterator
-         j = i->begin(); j != i->end(); ++j)
-    {
-      std::cout << '[';
-      for (music::braille::proxied_measure::value_type::const_iterator
-           k = j->begin(); k != j->end(); ++k)
-      {
-	std::cout << '[';
-	for (std::vector< std::vector<music::braille::value_proxy> >::const_iterator
-	     l = k->begin(); l != k->end(); ++l)
-	{
-	  std::cout << '[';
-	  for (std::vector<music::braille::value_proxy>::const_iterator
-		 m = l->begin(); m != l->end(); ++m)
-	    {
-	      std::cout << m->as_rational();
-	      if (m != l->end() - 1) std::cout << ' ';
-	    }     
-	  std::cout << ']';
-	}     
-	std::cout << ']';
-      }
-      std::cout << ']';
-    }
-    std::cout << ']' << std::endl;
-  }
+  BOOST_CHECK(interpretations[0].size() == 1);
+  BOOST_CHECK(interpretations[0][0].size() == 1);
+  BOOST_CHECK(interpretations[0][0][0].size() == 1);
+  BOOST_CHECK(interpretations[0][0][0][0].size() == 9);
+  BOOST_CHECK(interpretations[0][0][0][0][0].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][1].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][2].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][3].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][4].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][5].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][6].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][7].as_rational() == music::rational(1, 16));
+  BOOST_CHECK(interpretations[0][0][0][0][8].as_rational() == music::rational(1, 2));
 
   destroyTextTable(textTable);
 }
