@@ -3,15 +3,23 @@
 #include "measure.hpp"
 #include "brl.hpp"
 #include "brlsym.hpp"
+#include "error_handler.hpp"
+#include "annotation.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/phoenix_function.hpp>
 
 namespace music { namespace braille {
 
-template <typename Iterator>
-measure_grammar<Iterator>::measure_grammar()
-  : measure_grammar::base_type(start, "measure")
+template<typename Iterator>
+measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handler)
+: measure_grammar::base_type(start, "measure")
 {
+  typedef boost::phoenix::function< braille::error_handler<Iterator> >
+          error_handler_function;
+  typedef boost::phoenix::function< annotation<Iterator> >
+          annotation_function;
+
   start = fmia % fmia_separator;
   fmia = pmia % pmia_sign;
   pmia = pmia_voice % pmia_voice_sign;
@@ -43,6 +51,9 @@ measure_grammar<Iterator>::measure_grammar()
   fmia_separator = brl(126) >> brl(345) >> -(+eol >> *whitespace);
   pmia_sign = brl(46) >> brl(13) >> -(+eol >> *whitespace);
   pmia_voice_sign = brl(5) >> brl(2) >> -(+eol >> *whitespace);
+
+  boost::spirit::qi::on_success(start,
+  				annotation_function(error_handler.iters)(_val, _1));
 }
 
 }}

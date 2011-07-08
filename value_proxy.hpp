@@ -1,3 +1,7 @@
+#if !defined(BMC_VALUE_PROXAY_HPP)
+#define BMC_VALUE_PROXAY_HPP
+
+#include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -40,7 +44,7 @@ public:
 
   void set_type(ambiguous::value type) { value_type = type; }
 
-  rational as_rational() const {
+  rational undotted_duration() const {
     rational base;
     switch (value_type) {
     case ambiguous::whole_or_16th:
@@ -58,7 +62,17 @@ public:
     default:
       BOOST_ASSERT(false);
     }
-    return base * 2 - base / pow(2, dots);
+    return base;
+  }
+
+  void set_final_type()
+  {
+    *final_type = undotted_duration();
+  }
+
+  rational
+  as_rational() const {
+    return undotted_duration() * 2 - undotted_duration() / pow(2, dots);
   }
 };
 
@@ -78,7 +92,7 @@ public:
     }
     template<class T> bool operator()(T const&) const { return false; }
   };
-  class is_value : public boost::static_visitor<bool>
+  class has_value : public boost::static_visitor<bool>
   {
   public:
     bool operator()(ambiguous::note const&) const { return true; }
@@ -238,7 +252,7 @@ private:
       begin = begin + 1;
       ambiguous::partial_measure_voice::iterator iter(begin);
       if (iter != end &&
-	  boost::apply_visitor(is_value(), *iter)) {
+	  boost::apply_visitor(has_value(), *iter)) {
 	ambiguous::value initial(boost::apply_visitor(get_value(), *iter++));
 	while (iter != end && apply_visitor(get_value(), *iter) == initial) {
 	  ++iter;
@@ -253,11 +267,11 @@ private:
 	       , ambiguous::partial_measure_voice::iterator const& end
                )
   {
-    if (boost::apply_visitor(is_value(), *begin)) {
+    if (boost::apply_visitor(has_value(), *begin)) {
       if (boost::apply_visitor(get_value(), *begin) != ambiguous::eighth_or_128th) {
 	ambiguous::partial_measure_voice::iterator iter = begin + 1;
 	while (iter != end &&
-	       boost::apply_visitor(is_value(), *iter) &&
+	       boost::apply_visitor(has_value(), *iter) &&
 	       boost::apply_visitor(get_value(), *iter) == ambiguous::eighth_or_128th) {
 	  ++iter;
 	}
@@ -269,7 +283,7 @@ private:
 
 public:
   value_proxy_list(ambiguous::partial_measure_voice& voice)
-  : std::vector< std::vector< std::vector<value_proxy> > >()
+  : std::vector<value_type>()
   {
     ambiguous::partial_measure_voice::iterator begin = voice.begin();
     while (begin != voice.end()) {
@@ -283,7 +297,7 @@ public:
 					  ambiguous::small_follows)) != begin) {
 	push_back(same_category(begin, end, small));
       } else {
-	if (end != voice.end()) {
+	if (begin != voice.end()) {
 	  end = begin + 1;
 	  push_back(combinations(begin, end));
 	}
@@ -370,8 +384,7 @@ class partial_measure_interpretations
   std::vector<value_type>
   recurse( ambiguous::partial_measure::iterator const& begin
          , ambiguous::partial_measure::iterator const& end
-         , const_reference stack
-         , rational const& length
+         , const_reference stack, rational const& length
          )
   {
     std::vector<value_type> result;
@@ -525,15 +538,14 @@ public:
   : std::vector<proxied_measure>()
   , max_duration(max_duration)
   {
-    if (not measure.empty()) {
-      BOOST_ASSERT(max_duration >= 0);
-      BOOST_FOREACH(voice_interpretations::const_reference possibility,
-		    voice_interpretations(measure.front(), max_duration)) {
-	boost::range::insert(*this, end(),
-			     recurse(measure.begin() + 1, measure.end(),
-                                     value_type(1, possibility),
-                                     duration(possibility)));
-      }
+    BOOST_ASSERT(not measure.empty());
+    BOOST_ASSERT(max_duration >= 0);
+    BOOST_FOREACH(voice_interpretations::const_reference possibility,
+                  voice_interpretations(measure.front(), max_duration)) {
+      boost::range::insert(*this, end(),
+                           recurse(measure.begin() + 1, measure.end(),
+                                   value_type(1, possibility),
+                                   duration(possibility)));
     }
 
     if (size() > 1)
@@ -542,4 +554,16 @@ public:
   }
 };
 
+void
+accept(proxied_measure& measure)
+{
+  BOOST_FOREACH(proxied_measure::reference voice, measure)
+    BOOST_FOREACH(proxied_voice::reference part, voice)
+      BOOST_FOREACH(proxied_partial_measure::reference partial_voice, part)
+        BOOST_FOREACH(proxied_partial_voice::reference value, partial_voice)
+          value.set_final_type();
+}
+
 }}
+
+#endif

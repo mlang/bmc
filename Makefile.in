@@ -15,13 +15,13 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 
-all: test
+all: main
 
 install: brltr
 	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
 
-main: test main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
-	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc
+main: test main.@OBJEXT@ brlsym.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
+	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc
 
 test: $(TEST_OBJECTS) ttb.a
 	$(CXX) -o $@ $(TEST_OBJECTS) ttb.a @icu_libraries@

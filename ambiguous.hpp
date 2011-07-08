@@ -1,5 +1,9 @@
 #ifndef AMBIGUOUS_HPP
 #define AMBIGUOUS_HPP
+#include <vector>
+#include <boost/fusion/adapted/struct/adapt_struct.hpp>
+#include <boost/optional.hpp>
+#include <boost/variant.hpp>
 #include "music.hpp"
 
 namespace music { namespace braille { namespace ambiguous {
@@ -16,20 +20,25 @@ struct pitch_and_value {
   value value_;
 };
 
-struct note {
+struct locatable
+{
+  std::size_t id;
+};
+
+struct rhythmic_base : locatable {
+  value ambiguous_value;
+  unsigned dots;
+  rational type;
+};
+
+struct note : rhythmic_base {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   diatonic_step step;
-  value ambiguous_value;
-  rational type;
-  unsigned dots;
   boost::optional<unsigned> finger;
 };
 
-struct rest {
-  value ambiguous_value;
-  rational type;
-  unsigned dots;
+struct rest : rhythmic_base {
 };
 
 struct interval {
@@ -39,7 +48,7 @@ struct interval {
   boost::optional<unsigned> finger;
 };
 
-struct chord {
+struct chord : locatable {
   note base;
   std::vector<interval> intervals;
 };
@@ -54,7 +63,10 @@ typedef boost::variant<note, rest, chord, value_distinction, simile> sign;
 typedef std::vector<sign> partial_measure_voice;
 typedef std::vector<partial_measure_voice> partial_measure;
 typedef std::vector<partial_measure> voice;
-typedef std::vector<voice> measure;
+
+struct measure : std::vector<voice>, locatable
+{
+};
 
 }}}
 

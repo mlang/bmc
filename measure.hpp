@@ -4,13 +4,14 @@
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 #include "ambiguous.hpp"
+#include "error_handler.hpp"
 
 namespace music { namespace braille {
 
 template <typename Iterator>
 struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure()>
 {
-  measure_grammar();
+  measure_grammar(error_handler<Iterator>&);
 
   boost::spirit::qi::rule<Iterator, ambiguous::measure()> start;
   boost::spirit::qi::rule<Iterator, ambiguous::voice()> fmia;
