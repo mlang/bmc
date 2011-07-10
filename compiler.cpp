@@ -1,11 +1,8 @@
-#if !defined(BMC_VALUE_PROXAY_HPP)
-#define BMC_VALUE_PROXAY_HPP
-
+#include "compiler.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
-#include "ambiguous.hpp"
 
 namespace music { namespace braille {
 
@@ -233,7 +230,7 @@ public:
       proxy.set_type(faked_type);
       group.push_back(proxy);
     }
-    void operator()(ambiguous::value_distinction& value_distinction) {
+    void operator()(ambiguous::value_distinction&) {
       BOOST_ASSERT(false);
     }
     void operator()(ambiguous::simile&) {
@@ -246,7 +243,7 @@ private:
   same_category_end( ambiguous::partial_measure_voice::iterator& begin
 	           , ambiguous::partial_measure_voice::iterator const& end
 		   , ambiguous::value_distinction const& distinction
-                   )
+                   ) const
   {
     if (boost::apply_visitor(distinction_sign(distinction), *begin)) {
       begin = begin + 1;
@@ -265,7 +262,7 @@ private:
   ambiguous::partial_measure_voice::iterator
   notegroup_end( ambiguous::partial_measure_voice::iterator const& begin
 	       , ambiguous::partial_measure_voice::iterator const& end
-               )
+               ) const
   {
     if (boost::apply_visitor(has_value(), *begin)) {
       if (boost::apply_visitor(get_value(), *begin) != ambiguous::eighth_or_128th) {
@@ -564,6 +561,23 @@ accept(proxied_measure& measure)
           value.set_final_type();
 }
 
+compiler::result_type
+compiler::operator()(ambiguous::measure& measure) const
+{
+  measure_interpretations interpretations(measure, global_time_signature);
+
+  if (interpretations.size() != 1) {
+    if (interpretations.empty()) {
+      report_error(measure.id, "No possible interpretations");
+    } else {
+      report_error(measure.id, "Several possible interpretations");
+    }
+    return false;
+  }
+
+  accept(interpretations.front());
+  return true;
+}
+
 }}
 
-#endif

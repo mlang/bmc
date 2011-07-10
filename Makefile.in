@@ -9,7 +9,7 @@ TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
 	log.@OBJEXT@ misc.@OBJEXT@ unicode.@OBJEXT@
 TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
 	tbl2hex.@OBJEXT@
-TEST_OBJECTS=test.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ \
+TEST_OBJECTS=test.@OBJEXT@ compiler.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ \
 	brlsym.@OBJEXT@ music.@OBJEXT@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -20,8 +20,8 @@ all: main
 install: brltr
 	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
 
-main: test main.@OBJEXT@ brlsym.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
-	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc
+main: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a
+	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a -lpthread -licuuc
 
 test: $(TEST_OBJECTS) ttb.a
 	$(CXX) -o $@ $(TEST_OBJECTS) ttb.a @icu_libraries@
@@ -53,4 +53,5 @@ ttb_translate.c: text.auto.h
 measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
 brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
-test.@OBJEXT@: brl.hpp value_proxy.hpp
+compiler.@OBJEXT@: compiler.hpp
+test.@OBJEXT@: brl.hpp
