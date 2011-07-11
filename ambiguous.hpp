@@ -60,13 +60,17 @@ struct simile {
 };
 
 typedef boost::variant<note, rest, chord, value_distinction, simile> sign;
-typedef std::vector<sign> partial_measure_voice;
-typedef std::vector<partial_measure_voice> partial_measure;
+typedef std::vector<sign> partial_voice;
+typedef std::vector<partial_voice> partial_measure;
 typedef std::vector<partial_measure> voice;
 
 struct measure : std::vector<voice>, locatable
 {
 };
+
+typedef std::vector< boost::variant<measure> > staff;
+typedef std::vector<staff> part;
+typedef std::vector<part> score;
 
 }}}
 

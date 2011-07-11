@@ -225,6 +225,26 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
                                    attribute[0][0][0][7]));
   BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 2)),
                                    attribute[0][0][0][8]));
+  destroyTextTable(textTable);
+}
+
+#include "score.hpp"
+
+BOOST_AUTO_TEST_CASE(score_solo__test1) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  music::braille::error_handler<iterator_type> errors(begin, end);
+  parser_type parser(errors);
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.size(), 1);
+  music::braille::compiler compile(errors);
+  BOOST_CHECK(compile(attribute));
 
   destroyTextTable(textTable);
 }

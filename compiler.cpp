@@ -21,27 +21,24 @@ public:
   value_proxy(ambiguous::note& note, value_category const& category)
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , final_type(&note.type)
-  {
-    BOOST_ASSERT(*final_type == music::rational());
-  }
+  { BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , final_type(&rest.type)
-  {
-    BOOST_ASSERT(*final_type == music::rational());
-  }
+  { BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category)
   : value_type(chord.base.ambiguous_value), category(category), dots(chord.base.dots)
   , final_type(&chord.base.type)
+  { BOOST_ASSERT(*final_type == music::rational()); }
+
+  void set_type(ambiguous::value type)
+  { value_type = type; }
+
+  rational
+  undotted_duration() const
   {
-    BOOST_ASSERT(*final_type == music::rational());
-  }
-
-  void set_type(ambiguous::value type) { value_type = type; }
-
-  rational undotted_duration() const {
     rational base;
     switch (value_type) {
     case ambiguous::whole_or_16th:
@@ -63,60 +60,69 @@ public:
   }
 
   void set_final_type()
-  {
-    *final_type = undotted_duration();
-  }
+  { *final_type = undotted_duration(); }
 
-  rational
-  as_rational() const {
-    return undotted_duration() * 2 - undotted_duration() / pow(2, dots);
-  }
+  rational as_rational() const
+  { return undotted_duration() * 2 - undotted_duration() / pow(2, dots); }
 };
 
 class value_proxy_list
 : public std::vector< std::vector< std::vector<value_proxy> > >
 {
 public:
-  class distinction_sign : public boost::static_visitor<bool>
+  class distinction_sign
+  : public boost::static_visitor<bool>
   {
     ambiguous::value_distinction expected_distinction;
   public:
     distinction_sign(ambiguous::value_distinction const& distinction)
-    : expected_distinction(distinction) {}
-    bool operator()(ambiguous::value_distinction const& distinction) const {
-      if (distinction == expected_distinction) return true;
-      return false;
-    }
-    template<class T> bool operator()(T const&) const { return false; }
+    : expected_distinction(distinction)
+    {}
+
+    result_type
+    operator()(ambiguous::value_distinction const& distinction) const
+    { return distinction == expected_distinction; }
+
+    template<class T>
+    result_type operator()(T const&) const
+    { return false; }
   };
-  class has_value : public boost::static_visitor<bool>
+
+  class has_value
+  : public boost::static_visitor<bool>
   {
   public:
-    bool operator()(ambiguous::note const&) const { return true; }
-    bool operator()(ambiguous::rest const&) const { return true; }
-    bool operator()(ambiguous::chord const&) const { return true; }
-    bool operator()(ambiguous::value_distinction const&) const { return false; }
-    bool operator()(ambiguous::simile const&) const { return false; }
+    result_type operator()(ambiguous::note const&) const
+    { return true; }
+
+    result_type operator()(ambiguous::rest const&) const
+    { return true; }
+
+    result_type operator()(ambiguous::chord const&) const
+    { return true; }
+
+    result_type operator()(ambiguous::value_distinction const&) const
+    { return false; }
+
+    result_type operator()(ambiguous::simile const&) const
+    { return false; }
   };
-  class get_value : public boost::static_visitor<ambiguous::value>
+  class get_value
+  : public boost::static_visitor<ambiguous::value>
   {
   public:
-    result_type operator()(ambiguous::note const& note) const {
-      return note.ambiguous_value;
-    }
-    result_type operator()(ambiguous::rest const& rest) const {
-      return rest.ambiguous_value;
-    }
-    result_type operator()(ambiguous::chord const& chord) const {
-      return chord.base.ambiguous_value;
-    }
-    result_type operator()(ambiguous::value_distinction const&) const {
-      return ambiguous::unknown;
-    }
-    result_type operator()(ambiguous::simile const&) const {
-      return ambiguous::unknown;
-    }
+    result_type operator()(ambiguous::note const& note) const
+    { return note.ambiguous_value; }
+    result_type operator()(ambiguous::rest const& rest) const
+    { return rest.ambiguous_value; }
+    result_type operator()(ambiguous::chord const& chord) const
+    { return chord.base.ambiguous_value; }
+    result_type operator()(ambiguous::value_distinction const&) const
+    { return ambiguous::unknown; }
+    result_type operator()(ambiguous::simile const&) const
+    { return ambiguous::unknown; }
   };
+
   class combinations
   : public value_type
   , public boost::static_visitor<void>
@@ -142,9 +148,9 @@ public:
       return result;
     }
   public:
-    combinations( ambiguous::partial_measure_voice::iterator const& begin
-	        , ambiguous::partial_measure_voice::iterator const& end
-	        )
+    combinations( ambiguous::partial_voice::iterator const& begin
+                , ambiguous::partial_voice::iterator const& end
+                )
     : std::vector< std::vector<value_proxy> >()
     {
       std::for_each(begin, end, boost::apply_visitor(*this));
@@ -158,53 +164,55 @@ public:
       values.clear();
     }
     template<class Value>
-    void operator()(Value& note) {
+    void operator()(Value& value) {
       value_type possibilities;
-      possibilities.push_back(value_proxy(note, large));
-      possibilities.push_back(value_proxy(note, small));
+      possibilities.push_back(value_proxy(value, large));
+      possibilities.push_back(value_proxy(value, small));
       values.push_back(possibilities);
     }
-    void operator()(ambiguous::simile&) {}
-    void operator()(ambiguous::value_distinction&) {}
+    void operator()(ambiguous::simile&)
+    {}
+    void operator()(ambiguous::value_distinction&)
+    {}
   };
+
   class same_category
   : public value_type
   , public boost::static_visitor<void>
   {
     value_category category;
   public:
-    same_category( ambiguous::partial_measure_voice::iterator const& begin
-	         , ambiguous::partial_measure_voice::iterator const& end
-	         , value_category const& category
+    same_category( ambiguous::partial_voice::iterator const& begin
+                 , ambiguous::partial_voice::iterator const& end
+                 , value_category const& category
 	         )
     : std::vector< std::vector<value_proxy> >()
     , category(category)
-    {
-      std::for_each(begin, end, boost::apply_visitor(*this));
-    }
+    { std::for_each(begin, end, boost::apply_visitor(*this)); }
+
     template<class Value>
-    void operator()(Value& note) {
+    void operator()(Value& value)
+    {
       value_type possibilities;
-      possibilities.push_back(value_proxy(note, category));
+      possibilities.push_back(value_proxy(value, category));
       push_back(possibilities);
     }
-    void operator()(ambiguous::simile&) {
-      BOOST_ASSERT(false);
-    }
-    void operator()(ambiguous::value_distinction&) {
-      BOOST_ASSERT(false);
-    }
+    void operator()(ambiguous::simile&)
+    { BOOST_ASSERT(false); }
+    void operator()(ambiguous::value_distinction&)
+    { BOOST_ASSERT(false); }
   };
 
-  class notegroup : public combinations
+  class notegroup
+  : public combinations
   {
     value_type group;
     value_category category;
     ambiguous::value faked_type;
   public:
-    notegroup( ambiguous::partial_measure_voice::iterator const& begin
-	     , ambiguous::partial_measure_voice::iterator const& end
-	     )
+    notegroup( ambiguous::partial_voice::iterator const& begin
+             , ambiguous::partial_voice::iterator const& end
+             )
     : combinations(begin, end)
     {
       BOOST_ASSERT(begin != end);
@@ -224,30 +232,30 @@ public:
       BOOST_FOREACH(const_reference element, *this)
         BOOST_ASSERT(front().size() == element.size());
     }
+
     template<class Value>
-    void operator()(Value& note) {
-      value_proxy proxy(note, category);
+    void operator()(Value& value)
+    {
+      value_proxy proxy(value, category);
       proxy.set_type(faked_type);
       group.push_back(proxy);
     }
-    void operator()(ambiguous::value_distinction&) {
-      BOOST_ASSERT(false);
-    }
-    void operator()(ambiguous::simile&) {
-      BOOST_ASSERT(false);
-    }
+    void operator()(ambiguous::value_distinction&)
+    { BOOST_ASSERT(false); }
+    void operator()(ambiguous::simile&)
+    { BOOST_ASSERT(false); }
   };
 
 private:
-  ambiguous::partial_measure_voice::iterator
-  same_category_end( ambiguous::partial_measure_voice::iterator& begin
-	           , ambiguous::partial_measure_voice::iterator const& end
+  ambiguous::partial_voice::iterator
+  same_category_end( ambiguous::partial_voice::iterator& begin
+	           , ambiguous::partial_voice::iterator const& end
 		   , ambiguous::value_distinction const& distinction
                    ) const
   {
     if (boost::apply_visitor(distinction_sign(distinction), *begin)) {
       begin = begin + 1;
-      ambiguous::partial_measure_voice::iterator iter(begin);
+      ambiguous::partial_voice::iterator iter(begin);
       if (iter != end &&
 	  boost::apply_visitor(has_value(), *iter)) {
 	ambiguous::value initial(boost::apply_visitor(get_value(), *iter++));
@@ -259,14 +267,14 @@ private:
     }
     return begin;
   }
-  ambiguous::partial_measure_voice::iterator
-  notegroup_end( ambiguous::partial_measure_voice::iterator const& begin
-	       , ambiguous::partial_measure_voice::iterator const& end
+  ambiguous::partial_voice::iterator
+  notegroup_end( ambiguous::partial_voice::iterator const& begin
+               , ambiguous::partial_voice::iterator const& end
                ) const
   {
     if (boost::apply_visitor(has_value(), *begin)) {
       if (boost::apply_visitor(get_value(), *begin) != ambiguous::eighth_or_128th) {
-	ambiguous::partial_measure_voice::iterator iter = begin + 1;
+	ambiguous::partial_voice::iterator iter = begin + 1;
 	while (iter != end &&
 	       boost::apply_visitor(has_value(), *iter) &&
 	       boost::apply_visitor(get_value(), *iter) == ambiguous::eighth_or_128th) {
@@ -279,12 +287,12 @@ private:
   }
 
 public:
-  value_proxy_list(ambiguous::partial_measure_voice& voice)
+  value_proxy_list(ambiguous::partial_voice& voice)
   : std::vector<value_type>()
   {
-    ambiguous::partial_measure_voice::iterator begin = voice.begin();
+    ambiguous::partial_voice::iterator begin = voice.begin();
     while (begin != voice.end()) {
-      ambiguous::partial_measure_voice::iterator end;
+      ambiguous::partial_voice::iterator end;
       if ((end = notegroup_end(begin, voice.end())) != begin) {
 	push_back(notegroup(begin, end));
       } else if ((end = same_category_end(begin, voice.end(),
@@ -352,7 +360,7 @@ class partial_voice_interpretations
     return result;
   }  
 public:
-  partial_voice_interpretations( ambiguous::partial_measure_voice& voice
+  partial_voice_interpretations( ambiguous::partial_voice& voice
 			       , rational const& max_length
 			       )
   : std::vector<proxied_partial_voice>()
@@ -478,15 +486,11 @@ public:
 
 rational
 operator+(rational const& r, proxied_partial_measure const& p)
-{
-  return r + duration(p);
-}
+{ return r + duration(p); }
 
 rational
 duration( proxied_voice const& parts )
-{
-  return boost::accumulate(parts, rational(0));
-}
+{ return boost::accumulate(parts, rational(0)); }
 
 typedef std::vector<proxied_voice> proxied_measure;
 
@@ -577,6 +581,14 @@ compiler::operator()(ambiguous::measure& measure) const
 
   accept(interpretations.front());
   return true;
+}
+
+compiler::result_type
+compiler::operator()(ambiguous::score& score) const
+{
+  BOOST_FOREACH(ambiguous::score::reference part, score)
+    BOOST_FOREACH(ambiguous::part::reference staff, part)
+    { std::for_each(staff.begin(), staff.end(), boost::apply_visitor(*this)); }
 }
 
 }}

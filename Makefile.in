@@ -9,8 +9,8 @@ TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
 	log.@OBJEXT@ misc.@OBJEXT@ unicode.@OBJEXT@
 TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
 	tbl2hex.@OBJEXT@
-TEST_OBJECTS=test.@OBJEXT@ compiler.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ \
-	brlsym.@OBJEXT@ music.@OBJEXT@
+TEST_OBJECTS=test.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ \
+	numbers.@OBJEXT@ brlsym.@OBJEXT@ music.@OBJEXT@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
