@@ -1,4 +1,4 @@
-AC_PREREQ([2.68])
+AC_PREREQ([2.67])
 AC_INIT([bmc], [0.0], [http://delysid.org/bmc/])
 AC_CONFIG_SRCDIR([brltr.cpp])
 BMC_SUMMARY_BEGIN
