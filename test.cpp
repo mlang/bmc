@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
 
 BOOST_AUTO_TEST_CASE(score_solo__test1) {
   textTable = compileTextTable("Tables/de.ttb");
-  std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿");
+  std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿2k");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
