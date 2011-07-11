@@ -16,9 +16,9 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute == music::time_signature(12, 8));
-  BOOST_CHECK(attribute == music::rational(3, 2));
-  BOOST_CHECK(attribute.numerator() == 12);
+  BOOST_CHECK_EQUAL(attribute, music::time_signature(12, 8));
+  BOOST_CHECK_EQUAL(attribute, music::rational(3, 2));
+  BOOST_CHECK_EQUAL(attribute.numerator(), 12);
   destroyTextTable(textTable);
 }
 
@@ -69,10 +69,10 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 1);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[0][0].size() == 1);
-  BOOST_CHECK(attribute[0][0][0].size() == 2);
+  BOOST_CHECK_EQUAL(attribute.size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0][0][0].size(), 2);
   BOOST_CHECK(apply_visitor(is_rest(), attribute[0][0][0][0]));
   BOOST_CHECK(apply_visitor(is_rest(), attribute[0][0][0][1]));
   destroyTextTable(textTable);
@@ -90,8 +90,8 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 2);
-  BOOST_CHECK(attribute[0].size() == 1);
+  BOOST_CHECK_EQUAL(attribute.size(), 2);
+  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
   destroyTextTable(textTable);
 }
 
@@ -109,11 +109,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 2);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[1].size() == 2);
-  BOOST_CHECK(attribute[1][0].size() == 1);
-  BOOST_CHECK(attribute[1][0][0].size() == 1);
+  BOOST_CHECK_EQUAL(attribute.size(), 2);
+  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute[1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[1][0][0].size(), 1);
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -133,11 +133,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 2);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[1].size() == 2);
-  BOOST_CHECK(attribute[1][0].size() == 1);
-  BOOST_CHECK(attribute[1][0][0].size() == 1);
+  BOOST_CHECK_EQUAL(attribute.size(), 2);
+  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute[1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[1][0][0].size(), 1);
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -157,10 +157,10 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 1);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[0][0].size() == 1);
-  BOOST_CHECK(attribute[0][0][0].size() == 9);
+  BOOST_CHECK_EQUAL(attribute.size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute[0][0][0].size(), 9);
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
