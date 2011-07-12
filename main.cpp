@@ -1,7 +1,7 @@
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"
-#include "measure.hpp"
+#include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
 #include "ttb.h"
 
@@ -19,21 +19,22 @@ main()
   iterator_type iter = source.begin();
   iterator_type end = source.end();
   music::braille::error_handler<iterator_type> error_handler(iter, end);
-  typedef music::braille::measure_grammar<iterator_type> parser_type;
+  typedef music::braille::score_grammar<iterator_type> parser_type;
   parser_type parser(error_handler);                              // Our parser
-  parser_type::start_type::attr_type measure;
+  parser_type::start_type::attr_type score;
 
-  bool success = boost::spirit::qi::parse(iter, end, parser, measure);
+  bool const success = boost::spirit::qi::parse(iter, end, parser, score);
 
   if (success && iter == end) {
     music::braille::compiler compile(error_handler);
-    if (compile(measure)) {
+    if (compile(score)) {
+      return 0;
     }
   } else {
     std::wcout << "Parse failure\n";
   }
 
-  return 0;
+  return 1;
 }
 
 
