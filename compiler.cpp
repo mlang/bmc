@@ -39,24 +39,18 @@ public:
   rational
   undotted_duration() const
   {
-    rational base;
     switch (value_type) {
     case ambiguous::whole_or_16th:
-      base = rational(1, category==large? 1: 16);
-      break;
+      return rational(1, category==large? 1: 16);
     case ambiguous::half_or_32th:
-      base = rational(1, category==large? 2: 32);
-      break;
+      return rational(1, category==large? 2: 32);
     case ambiguous::quarter_or_64th:
-      base = rational(1, category==large? 4: 64);
-      break;
+      return rational(1, category==large? 4: 64);
     case ambiguous::eighth_or_128th:
-      base = rational(1, category==large? 8: 128);
-      break;
+      return rational(1, category==large? 8: 128);
     default:
       BOOST_ASSERT(false);
     }
-    return base;
   }
 
   void set_final_type()
@@ -102,16 +96,12 @@ public:
   public:
     result_type operator()(ambiguous::note const&) const
     { return true; }
-
     result_type operator()(ambiguous::rest const&) const
     { return true; }
-
     result_type operator()(ambiguous::chord const&) const
     { return true; }
-
     result_type operator()(ambiguous::value_distinction const&) const
     { return false; }
-
     result_type operator()(ambiguous::simile const&) const
     { return false; }
   };
@@ -124,7 +114,7 @@ public:
     result_type operator()(ambiguous::rest const& rest) const
     { return rest.ambiguous_value; }
     result_type operator()(ambiguous::chord const& chord) const
-    { return chord.base.ambiguous_value; }
+    { return (*this)(chord.base); }
     result_type operator()(ambiguous::value_distinction const&) const
     { return ambiguous::unknown; }
     result_type operator()(ambiguous::simile const&) const
@@ -136,6 +126,7 @@ public:
   , public boost::static_visitor<void>
   {
     std::vector<value_type> values;
+
     std::vector<value_type>
     recurse( std::vector<value_type>::iterator const& begin
 	   , std::vector<value_type>::iterator const& end
@@ -165,7 +156,7 @@ public:
                 , ambiguous::partial_voice::iterator const& end
 		, rational const& max_duration
                 )
-    : std::vector< value_type >()
+    : std::vector<value_type>()
     {
       std::for_each(begin, end, boost::apply_visitor(*this));
       if (not values.empty()) {
@@ -178,6 +169,7 @@ public:
       }
       values.clear();
     }
+
     template<class Value>
     void operator()(Value& value) {
       value_type possibilities;
@@ -207,11 +199,7 @@ public:
 
     template<class Value>
     void operator()(Value& value)
-    {
-      value_type possibilities;
-      possibilities.push_back(value_proxy(value, category));
-      push_back(possibilities);
-    }
+    { push_back(value_type(1, value_proxy(value, category))); }
     void operator()(ambiguous::simile&)
     { BOOST_ASSERT(false); }
     void operator()(ambiguous::value_distinction&)
@@ -588,9 +576,9 @@ compiler::operator()(ambiguous::measure& measure) const
 
   if (interpretations.size() != 1) {
     if (interpretations.empty()) {
-      report_error(measure.id, "No possible interpretations");
+      report_error(measure.id, L"No possible interpretations");
     } else {
-      report_error(measure.id, "Several possible interpretations");
+      report_error(measure.id, L"Several possible interpretations");
     }
     return false;
   }

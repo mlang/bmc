@@ -30,17 +30,17 @@ namespace music { namespace braille {
       int line;
       Iterator line_start = get_pos(err_pos, line);
       if (err_pos != last) {
-        std::cout << "<INPUT>:"
-                  << line << ':' << std::distance(line_start, err_pos) + 1
-                  << ": "
-                  << message << ": " << what << std::endl;
-	std::cout << get_line(line_start) << std::endl;
-	for (; line_start != err_pos; ++line_start)
-	  std::cout << ' ';
-	std::cout << '^' << std::endl;
+        std::wcerr << L"<INPUT>:"
+                  << line << L':' << std::distance(line_start, err_pos) + 1
+                  << L": "
+                  << message << L": " << what
+                  << std::endl;
+	std::wcerr << get_line(line_start) << std::endl;
+	for (; line_start != err_pos; ++line_start) std::wcerr << L' ';
+	std::wcerr << '^' << std::endl;
       } else {
-	std::cout << "Unexpected end of file. ";
-	std::cout << message << what << " line " << line << std::endl;
+	std::wcerr << "Unexpected end of file. ";
+	std::wcerr << message << what << L" line " << line << std::endl;
       }
     }
 
@@ -64,12 +64,12 @@ namespace music { namespace braille {
       return line_start;
     }
 
-    std::string get_line(Iterator err_pos) const
+    std::wstring get_line(Iterator err_pos) const
     {
       Iterator i = err_pos;
       // position i to the next EOL
       while (i != last && (*i != '\r' && *i != '\n')) ++i;
-      return std::string(err_pos, i);
+      return std::wstring(err_pos, i);
     }
 
     Iterator first;

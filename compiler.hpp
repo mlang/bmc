@@ -11,7 +11,7 @@ namespace music { namespace braille {
 
 class compiler
 {
-  boost::function<void(int tag, std::string const& what)> report_error;
+  boost::function<void(int tag, std::wstring const& what)> report_error;
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
@@ -23,7 +23,7 @@ public:
     using boost::phoenix::arg_names::_2;
     report_error =
       boost::phoenix::function<ErrorHandler>(error_handler)
-      ("Error", _2, boost::phoenix::cref(error_handler.iters)[_1]);
+      (L"Error", _2, boost::phoenix::cref(error_handler.iters)[_1]);
   }
 
   result_type operator()(ambiguous::measure& measure) const;
