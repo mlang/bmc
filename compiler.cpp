@@ -1,5 +1,6 @@
 #include "compiler.hpp"
 #include <cmath>
+#include <sstream>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -569,6 +570,28 @@ accept(proxied_measure& measure)
           value.set_final_type();
 }
 
+template<typename Char>
+std::basic_ostream<Char>&
+operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
+{
+  BOOST_FOREACH(proxied_measure::const_reference voice, measure) {
+    os << '[';
+    BOOST_FOREACH(proxied_voice::const_reference part, voice) {
+      os << '{';
+      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part) {
+        os << '(';
+        BOOST_FOREACH(proxied_partial_voice::const_reference value, partial_voice) {
+          os << '<' << value.as_rational().numerator() << '/' << value.as_rational().denominator() << '>';
+        }
+        os << ')';
+      }
+      os << '}';
+    }
+    os << ']';
+  }
+  return os;
+}
+
 compiler::result_type
 compiler::operator()(ambiguous::measure& measure) const
 {
@@ -578,7 +601,12 @@ compiler::operator()(ambiguous::measure& measure) const
     if (interpretations.empty()) {
       report_error(measure.id, L"No possible interpretations");
     } else {
-      report_error(measure.id, L"Several possible interpretations");
+      std::wstringstream s;
+      s << interpretations.size() << L" possible interpretations:";
+      BOOST_FOREACH(proxied_measure const& measure, interpretations) {
+        s << std::endl << measure;
+      }
+      report_error(measure.id, s.str());
     }
     return false;
   }
