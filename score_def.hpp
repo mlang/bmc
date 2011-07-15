@@ -31,6 +31,9 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::eol_type eol;
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;
+  boost::spirit::qi::_2_type _2;
+  boost::spirit::qi::_3_type _3;
+  boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
   solo_part = staff > eom >> -eol;
   keyboard_paragraph = eps[resize(_val, 2)]
@@ -60,6 +63,11 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   left_hand_sign = brl(456) >> brl(345) > optional_dot;
   eom = brl(126) >> brl(13);
   optional_dot = !dots_123 | &(brl(3) >> dots_123) > brl(3);
+
+
+  boost::spirit::qi::on_error<boost::spirit::qi::fail>(start,
+    error_handler_function(error_handler)
+    (L"error: expecting ", L"<something>"/*_4*/, _3));
 }
 
 }}
