@@ -618,9 +618,15 @@ compiler::operator()(ambiguous::measure& measure) const
 compiler::result_type
 compiler::operator()(ambiguous::score& score) const
 {
+  bool success = true;
   BOOST_FOREACH(ambiguous::score::reference part, score)
     BOOST_FOREACH(ambiguous::part::reference staff, part)
-    { std::for_each(staff.begin(), staff.end(), boost::apply_visitor(*this)); }
+    {
+      ambiguous::staff::iterator iterator(staff.begin());
+      while (success && iterator != staff.end()) 
+        success = boost::apply_visitor(*this, *iterator++);
+    }
+  return success;
 }
 
 }}
