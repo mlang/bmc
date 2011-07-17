@@ -7,6 +7,12 @@ namespace music {
 
 typedef boost::rational<int> rational;
 
+inline rational::int_type floor(rational const& r)
+{ return boost::rational_cast<rational::int_type>(r); }
+
+rational gcd(rational const& a, rational const& b)
+{ return b == rational(0)?  a: gcd(b, a - b * floor(a / b)); }
+
 typedef rational time_modification;
 
 // arithmetic with time_signatures is useful, so derive from rational

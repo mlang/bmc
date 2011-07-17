@@ -249,3 +249,10 @@ BOOST_AUTO_TEST_CASE(score_solo__test1) {
   destroyTextTable(textTable);
 }
 
+BOOST_AUTO_TEST_CASE(rational_gcd) {
+  music::rational a(1, 4), b(1, 8);
+  BOOST_CHECK_EQUAL(music::gcd(a, b), b);
+  BOOST_CHECK_EQUAL(music::gcd(music::rational(1, 8), music::rational(1, 12)),
+                    music::rational(1, 24));
+}
+
