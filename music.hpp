@@ -10,8 +10,11 @@ typedef boost::rational<int> rational;
 inline rational::int_type floor(rational const& r)
 { return boost::rational_cast<rational::int_type>(r); }
 
+inline rational operator% (rational const& lhs, rational const& rhs)
+{ return lhs - rhs * floor(lhs / rhs); }
+
 rational gcd(rational const& a, rational const& b)
-{ return b == rational(0)?  a: gcd(b, a - b * floor(a / b)); }
+{ return b == rational(0)? a: gcd(b, a % b); }
 
 typedef rational time_modification;
 
