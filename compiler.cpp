@@ -264,9 +264,8 @@ private:
       if (iter != end &&
 	  boost::apply_visitor(has_value(), *iter)) {
 	ambiguous::value initial(boost::apply_visitor(get_value(), *iter++));
-	while (iter != end && apply_visitor(get_value(), *iter) == initial) {
+	while (iter != end && apply_visitor(get_value(), *iter) == initial)
 	  ++iter;
-	}
 	return iter;
       }
     }
@@ -282,9 +281,8 @@ private:
 	ambiguous::partial_voice::iterator iter = begin + 1;
 	while (iter != end &&
 	       boost::apply_visitor(has_value(), *iter) &&
-	       boost::apply_visitor(get_value(), *iter) == ambiguous::eighth_or_128th) {
+	       boost::apply_visitor(get_value(), *iter) == ambiguous::eighth_or_128th)
 	  ++iter;
-	}
 	if (std::distance(begin, iter) > 2) return iter;
       }
     }
@@ -293,7 +291,7 @@ private:
 
 public:
   value_proxy_list( ambiguous::partial_voice& voice
-		  , rational const& max_duration
+                  , rational const& max_duration
                   )
   : std::vector<value_type>()
   {
@@ -368,12 +366,13 @@ public:
   {
     value_proxy_list vpl(voice, max_length);
     if (not vpl.empty()) {
+      value_proxy_list::iterator const tail = vpl.begin() + 1;
       BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
 		    vpl.front()) {
 	rational const value_duration(duration(possibility));
 	if (value_duration <= max_length) {
 	  boost::range::insert(*this, end(),
-			       recurse(vpl.begin() + 1, vpl.end(),
+			       recurse(tail, vpl.end(),
 				       possibility,
 				       max_length - value_duration));
 	}
