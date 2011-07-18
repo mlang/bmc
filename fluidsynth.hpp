@@ -12,6 +12,7 @@ class fluidsynth
   fluid_audio_driver_t *audio_driver;
   midi::event_queue queue;
   unsigned int ppq, bpm;
+  rational current_position;
 public:
   fluidsynth(std::string const& soundfont);
   fluidsynth(fluidsynth const&) = delete;
@@ -24,6 +25,8 @@ public:
 
   void operator()(braille::ambiguous::score const&);
   void operator()(braille::ambiguous::measure const&);
+private:
+  void play();
 };
 
 }

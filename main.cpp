@@ -1,6 +1,7 @@
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"
+#include "fluidsynth.hpp"
 #include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
 #include "ttb.h"
@@ -20,7 +21,7 @@ main()
   iterator_type end = source.end();
   music::braille::error_handler<iterator_type> error_handler(iter, end);
   typedef music::braille::score_grammar<iterator_type> parser_type;
-  parser_type parser(error_handler);                              // Our parser
+  parser_type parser(error_handler);
   parser_type::start_type::attr_type score;
 
   bool const success = boost::spirit::qi::parse(iter, end, parser, score);
@@ -28,6 +29,10 @@ main()
   if (success && iter == end) {
     music::braille::compiler compile(error_handler);
     if (compile(score)) {
+      std::thread player(music::fluidsynth("/usr/share/sounds/sf2/FluidR3_GM.sf2"),
+                         score);
+      player.join();
+
       return 0;
     }
   } else {

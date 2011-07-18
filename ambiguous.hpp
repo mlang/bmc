@@ -31,14 +31,25 @@ struct rhythmic_base : locatable {
   rational type;
 };
 
-struct note : rhythmic_base {
+struct rhythmic
+{
+  virtual rational as_rational() const = 0;
+};
+
+struct note : rhythmic_base, rhythmic
+{
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   diatonic_step step;
   boost::optional<unsigned> finger;
+  virtual rational as_rational() const
+  { return type * 2 - type / pow(2, dots); }
 };
 
-struct rest : rhythmic_base {
+struct rest : rhythmic_base, rhythmic
+{
+  virtual rational as_rational() const
+  { return type * 2 - type / pow(2, dots); }
 };
 
 struct interval {
@@ -48,9 +59,11 @@ struct interval {
   boost::optional<unsigned> finger;
 };
 
-struct chord : locatable {
+struct chord : locatable, rhythmic {
   note base;
   std::vector<interval> intervals;
+  virtual rational as_rational() const
+  { return base.as_rational(); }
 };
 
 enum value_distinction { distinct, large_follows, small_follows };
