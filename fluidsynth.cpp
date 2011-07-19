@@ -108,34 +108,41 @@ struct duration_visitor : boost::static_visitor<rational>
   { return rational(0); }
 };
 
-rational
-operator+(rational const& r, braille::ambiguous::sign const& element)
-{ return r + boost::apply_visitor(duration_visitor(), element); }
-
-rational
-duration(braille::ambiguous::partial_voice const& partial_voice)
-{ rational accumulator(0);
-  for(braille::ambiguous::partial_voice::const_reference sign: partial_voice)
-    accumulator = accumulator + sign;
-  return accumulator;
 }
+
+namespace boost {
+  template<typename IntType>
+  inline rational<IntType>
+  operator+( rational<IntType> const& r
+           , music::braille::ambiguous::sign const& sign)
+  { return r + apply_visitor(music::duration_visitor(), sign); }
+}
+
+namespace music {
+
+inline rational
+duration(braille::ambiguous::partial_voice const& partial_voice)
+{ return boost::accumulate(partial_voice, rational(0)); }
 
 rational
 duration(braille::ambiguous::partial_measure const& partial_measure)
 { return duration(partial_measure.front()); }
 
-rational
-operator+(rational const& r, braille::ambiguous::voice::const_reference p)
-{ return r + duration(p); }
+}
+
+namespace boost {
+  template<typename IntType>
+  inline rational<IntType>
+  operator+( rational<IntType> const& r
+           , music::braille::ambiguous::voice::const_reference p)
+  { return r + music::duration(p); }
+}
+
+namespace music {
 
 rational
 duration(braille::ambiguous::voice const& voice)
-{
-  rational accumulator(0);
-  for(braille::ambiguous::voice::const_reference partial_measure: voice)
-    accumulator = accumulator + partial_measure;
-  return accumulator;
-}
+{ return boost::accumulate(voice, rational(0)); }
 
 rational
 duration(braille::ambiguous::measure const& measure)
