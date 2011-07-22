@@ -5,6 +5,7 @@
 #include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
 #include "ttb.h"
+#include <thread>
 
 int
 main()
