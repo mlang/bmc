@@ -5,6 +5,7 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include "music.hpp"
+#include <cmath>
 
 namespace music { namespace braille { namespace ambiguous {
 
