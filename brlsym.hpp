@@ -11,7 +11,7 @@ namespace music { namespace braille {
 
 struct tst_braillify {
   template <typename Char> Char operator()(Char ch) const {
-    return UNICODE_BRAILLE_ROW | (convertCharacterToDots(textTable, ch)&0X3F);
+    return ch < 0X20? ch: UNICODE_BRAILLE_ROW | (convertCharacterToDots(textTable, ch)&0X3F);
   }
 };
 

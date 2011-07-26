@@ -40,6 +40,7 @@ namespace music { namespace braille {
               ) const
     {
       boost::spirit::qi::skip_over(first, last, skipper);
+      if (*first < 0X20) return false;
       unsigned char
       d = convertCharacterToDots(textTable, *first) & ~(BRL_DOT7 | BRL_DOT8);
       if (d == dots) {
@@ -50,7 +51,8 @@ namespace music { namespace braille {
     }
 
     template<typename Context>
-    boost::spirit::info what(Context&) const { return "brl"; }
+    boost::spirit::info what(Context&) const
+    { return boost::spirit::info("brl"); }
 
   private:
     Int const dots;
