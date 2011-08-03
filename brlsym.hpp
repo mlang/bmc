@@ -78,6 +78,12 @@ struct value_distinction_symbols : brl_symbols<ambiguous::value_distinction>
 };
 extern value_distinction_symbols value_distinction_sign;
 
+struct articulation_symbols : brl_symbols<ambiguous::articulation>
+{
+  articulation_symbols();
+};
+extern articulation_symbols articulation_sign;
+
 }}
 
 #endif

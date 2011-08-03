@@ -101,9 +101,8 @@ public:
     { return true; }
     result_type operator()(ambiguous::chord const&) const
     { return true; }
-    result_type operator()(ambiguous::value_distinction const&) const
-    { return false; }
-    result_type operator()(ambiguous::simile const&) const
+    template<typename T>
+    result_type operator()(T const&) const
     { return false; }
   };
   class get_value
@@ -116,9 +115,8 @@ public:
     { return rest.ambiguous_value; }
     result_type operator()(ambiguous::chord const& chord) const
     { return (*this)(chord.base); }
-    result_type operator()(ambiguous::value_distinction const&) const
-    { return ambiguous::unknown; }
-    result_type operator()(ambiguous::simile const&) const
+    template<typename T>
+    result_type operator()(T const&) const
     { return ambiguous::unknown; }
   };
 
@@ -182,6 +180,8 @@ public:
     {}
     void operator()(ambiguous::value_distinction&)
     {}
+    void operator()(ambiguous::hand_sign&)
+    {}
   };
 
   class same_category
@@ -205,6 +205,8 @@ public:
     { BOOST_ASSERT(false); }
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
+    void operator()(ambiguous::hand_sign&)
+    {}
   };
 
   class notegroup
@@ -247,6 +249,8 @@ public:
     }
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
+    void operator()(ambiguous::hand_sign&)
+    {}
     void operator()(ambiguous::simile&)
     { BOOST_ASSERT(false); }
   };

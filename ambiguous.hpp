@@ -37,8 +37,11 @@ struct rhythmic
   virtual rational as_rational() const = 0;
 };
 
+enum articulation { prallprall };
+
 struct note : rhythmic_base, rhythmic
 {
+  std::vector<articulation> articulations;
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   diatonic_step step;
@@ -69,11 +72,13 @@ struct chord : locatable, rhythmic {
 
 enum value_distinction { distinct, large_follows, small_follows };
 
+enum hand_sign { right_hand, left_hand };
+
 struct simile {
   boost::optional<unsigned> octave;
 };
 
-typedef boost::variant<note, rest, chord, value_distinction, simile> sign;
+typedef boost::variant<note, rest, chord, value_distinction, hand_sign, simile> sign;
 typedef std::vector<sign> partial_voice;
 typedef std::vector<partial_voice> partial_measure;
 typedef std::vector<partial_measure> voice;
@@ -100,6 +105,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::note,
+  (std::vector<music::braille::ambiguous::articulation>, articulations)
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave)
   (music::diatonic_step, step)

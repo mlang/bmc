@@ -143,5 +143,13 @@ value_distinction_symbols::value_distinction_symbols()
 
 value_distinction_symbols value_distinction_sign;
 
+articulation_symbols::articulation_symbols()
+{
+  add(L"⠐⠖", ambiguous::prallprall)
+     ;
+}
+
+articulation_symbols articulation_sign;
+
 }}
 

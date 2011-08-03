@@ -40,21 +40,11 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
 
 class is_rest: public boost::static_visitor<bool> {
 public:
-  result_type operator()(music::braille::ambiguous::note const&) const {
-    return false;
-  }
-  result_type operator()(music::braille::ambiguous::chord const&) const {
-    return false;
-  }
-  result_type operator()(music::braille::ambiguous::rest const&) const {
-    return true;
-  }
-  result_type operator()(music::braille::ambiguous::value_distinction const&) const {
-    return false;
-  }
-  result_type operator()(music::braille::ambiguous::simile const&) const {
-    return false;
-  }
+  template<typename T>
+  result_type operator()(T const&) const
+  { return false; }
+  result_type operator()(music::braille::ambiguous::rest const&) const
+  { return true; }
 };
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
@@ -181,9 +171,8 @@ public:
   { return rest.type == expected; }
   bool operator()(music::braille::ambiguous::chord const& chord) const
   { return (*this)(chord.base); }
-  bool operator()(music::braille::ambiguous::value_distinction const&) const
-  { return false; }
-  bool operator()(music::braille::ambiguous::simile const&) const
+  template<typename T>
+  bool operator()(T const&) const
   { return false; }
 };
 
