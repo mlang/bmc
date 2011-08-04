@@ -37,7 +37,12 @@ struct rhythmic
   virtual rational as_rational() const = 0;
 };
 
-enum articulation { prallprall };
+enum articulation { short_trill, extended_short_trill };
+
+typedef std::pair<unsigned, unsigned> finger_change;
+typedef boost::variant<unsigned, finger_change> fingering;
+
+struct slur {};
 
 struct note : rhythmic_base, rhythmic
 {
@@ -45,7 +50,9 @@ struct note : rhythmic_base, rhythmic
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   diatonic_step step;
-  boost::optional<unsigned> finger;
+  std::vector<slur> slurs;
+  boost::optional<fingering> finger;
+  bool tied;
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
@@ -60,7 +67,7 @@ struct interval {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   music::interval steps;
-  boost::optional<unsigned> finger;
+  boost::optional<fingering> finger;
 };
 
 struct chord : locatable, rhythmic {
@@ -78,7 +85,10 @@ struct simile {
   boost::optional<unsigned> octave;
 };
 
-typedef boost::variant<note, rest, chord, value_distinction, hand_sign, simile> sign;
+enum barline { begin_repeat, end_repeat };
+
+typedef boost::variant< note, rest, chord
+                      , value_distinction, hand_sign, simile, barline> sign;
 typedef std::vector<sign> partial_voice;
 typedef std::vector<partial_voice> partial_measure;
 typedef std::vector<partial_measure> voice;
@@ -111,14 +121,16 @@ BOOST_FUSION_ADAPT_STRUCT(
   (music::diatonic_step, step)
   (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
-  (boost::optional<unsigned>, finger)
+  (std::vector<music::braille::ambiguous::slur>, slurs)
+  (boost::optional<music::braille::ambiguous::fingering>, finger)
+  (bool, tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::interval,
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave)
   (music::interval, steps)
-  (boost::optional<unsigned>, finger)
+  (boost::optional<music::braille::ambiguous::fingering>, finger)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,

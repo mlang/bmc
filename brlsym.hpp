@@ -84,6 +84,18 @@ struct articulation_symbols : brl_symbols<ambiguous::articulation>
 };
 extern articulation_symbols articulation_sign;
 
+struct tie_symbol : brl_symbols<>
+{
+  tie_symbol();
+};
+extern tie_symbol tie_sign;
+
+struct barline_symbols : brl_symbols<ambiguous::barline>
+{
+  barline_symbols();
+};
+extern barline_symbols barline_sign;
+
 }}
 
 #endif

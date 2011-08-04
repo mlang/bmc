@@ -145,11 +145,28 @@ value_distinction_symbols value_distinction_sign;
 
 articulation_symbols::articulation_symbols()
 {
-  add(L"⠐⠖", ambiguous::prallprall)
+  add(L"⠐⠖", ambiguous::short_trill)
+     (L"⠰⠖", ambiguous::extended_short_trill)
      ;
 }
 
 articulation_symbols articulation_sign;
+
+tie_symbol::tie_symbol()
+{
+  add(L"⠈⠉");
+}
+
+tie_symbol tie_sign;
+
+barline_symbols::barline_symbols()
+{
+  add(L"⠣⠶", ambiguous::begin_repeat)
+     (L"⠣⠆", ambiguous::end_repeat)
+     ;
+}
+
+barline_symbols barline_sign;
 
 }}
 

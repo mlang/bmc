@@ -182,6 +182,8 @@ public:
     {}
     void operator()(ambiguous::hand_sign&)
     {}
+    void operator()(ambiguous::barline&)
+    {}
   };
 
   class same_category
@@ -206,6 +208,8 @@ public:
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
     void operator()(ambiguous::hand_sign&)
+    {}
+    void operator()(ambiguous::barline&)
     {}
   };
 
@@ -250,6 +254,8 @@ public:
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
     void operator()(ambiguous::hand_sign&)
+    {}
+    void operator()(ambiguous::barline&)
     {}
     void operator()(ambiguous::simile&)
     { BOOST_ASSERT(false); }
@@ -459,7 +465,6 @@ class voice_interpretations
          , rational const& max_length
          )
   {
-    BOOST_ASSERT(max_length >= 0);
     std::vector<value_type> result;
     if (begin == end) {
       result.push_back(stack);
@@ -543,7 +548,7 @@ class measure_interpretations
     return result;
   }
 public:
-  measure_interpretations(ambiguous::measure& measure, rational max_duration)
+  measure_interpretations(ambiguous::measure& measure, rational const& max_duration)
   : std::vector<proxied_measure>()
   , max_duration(max_duration)
   {

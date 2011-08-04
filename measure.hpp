@@ -21,9 +21,11 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure
   boost::spirit::qi::rule<Iterator, ambiguous::rest()> rest;
   boost::spirit::qi::rule<Iterator, ambiguous::chord()> chord;
   boost::spirit::qi::rule<Iterator, ambiguous::interval()> interval;
+  boost::spirit::qi::rule<Iterator, ambiguous::fingering()> fingering;
   boost::spirit::qi::rule<Iterator, ambiguous::hand_sign()> hand_sign;
   boost::spirit::qi::rule<Iterator, ambiguous::simile()> simile;
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
+  boost::spirit::qi::rule<Iterator, ambiguous::slur()> slur_sign;
   boost::spirit::qi::rule<Iterator>
   fmia_separator, pmia_sign, pmia_voice_sign, optional_dot, whitespace;
 };
