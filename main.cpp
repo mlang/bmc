@@ -14,12 +14,11 @@ main()
 
   textTable = compileTextTable("Tables/de.ttb");
 
-  std::istreambuf_iterator<wchar_t> wcin_begin = std::wcin.rdbuf();
-  std::istreambuf_iterator<wchar_t> wcin_end;
+  std::istreambuf_iterator<wchar_t> wcin_begin(std::wcin.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
   typedef std::wstring::const_iterator iterator_type;
   iterator_type iter = source.begin();
-  iterator_type end = source.end();
+  iterator_type const end = source.end();
   music::braille::error_handler<iterator_type> error_handler(iter, end);
   typedef music::braille::score_grammar<iterator_type> parser_type;
   parser_type parser(error_handler);
@@ -36,8 +35,6 @@ main()
 
       return 0;
     }
-  } else {
-    std::wcout << "Parse failure\n";
   }
 
   return 1;

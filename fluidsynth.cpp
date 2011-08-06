@@ -76,22 +76,24 @@ fluidsynth::play()
   std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
-class push_to : public boost::static_visitor<void>
+class midi_performer : public boost::static_visitor<void>
 {
   midi::event_queue& queue;
   rational& position;
 public:
-  push_to(midi::event_queue& queue, rational& position)
+  midi_performer(midi::event_queue& queue, rational& position)
   : queue(queue), position(position) {}
-  result_type operator()(braille::ambiguous::note const& note) const {
+  result_type operator()(braille::ambiguous::note const& note) const
+  {
     queue.push(midi::note_on(position, 0, 60, 90, note.as_rational()));
     position += note.as_rational();
   }
-  result_type operator()(braille::ambiguous::rest const& rest) const {
-    position += rest.as_rational();
-  }
-  result_type operator()(braille::ambiguous::chord const& chord) const {
+  result_type operator()(braille::ambiguous::rest const& rest) const
+  { position += rest.as_rational(); }
+  result_type operator()(braille::ambiguous::chord const& chord) const
+  {
     (*this)(chord.base);
+    // ...
   }
   template<typename T> result_type operator()(T const&) const {}
 };
@@ -158,9 +160,9 @@ fluidsynth::operator()(braille::ambiguous::measure const& measure)
       rational part_position(voice_position);
       for(braille::ambiguous::partial_voice partial_voice: partial_measure) {
         rational position(part_position);
-        push_to pusher(queue, position);
+        midi_performer perform(queue, position);
         std::for_each(partial_voice.begin(), partial_voice.end(),
-                      boost::apply_visitor(pusher));
+                      boost::apply_visitor(perform));
       }
       voice_position += duration(partial_measure);      
     }
