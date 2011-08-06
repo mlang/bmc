@@ -126,6 +126,7 @@ public:
   {
     std::vector<value_type> values;
 
+    static
     std::vector<value_type>
     recurse( std::vector<value_type>::iterator const& begin
 	   , std::vector<value_type>::iterator const& end
@@ -562,9 +563,15 @@ public:
                                    duration(possibility)));
     }
 
-    if (size() > 1)
+    if (size() > 1 && contains_complete_measure())
       for (iterator measure = begin(); measure != end();
            measure = duration(*measure) != max_duration? erase(measure): measure + 1);
+  }
+  bool contains_complete_measure() const {
+    for (const_iterator measure = begin(); measure != end(); ++measure) {
+      if (max_duration == duration(*measure)) return true;
+    }
+    return false;
   }
 };
 
