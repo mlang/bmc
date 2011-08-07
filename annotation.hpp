@@ -21,7 +21,7 @@ struct annotation
   {
   }
 
-  void operator()(ambiguous::measure& ast, Iterator pos) const
+  void operator()(ambiguous::locatable& ast, Iterator pos) const
   {
     std::size_t id = iters.size();
     iters.push_back(pos);

@@ -13,8 +13,10 @@ inline rational::int_type floor(rational const& r)
 inline rational operator% (rational const& lhs, rational const& rhs)
 { return lhs - rhs * floor(lhs / rhs); }
 
+rational const zero = {0};
+
 inline rational gcd(rational const& a, rational const& b)
-{ return b == rational(0)? a: gcd(b, a % b); }
+{ return b == zero? a: gcd(b, a % b); }
 
 typedef rational time_modification;
 

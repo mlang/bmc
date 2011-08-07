@@ -255,9 +255,9 @@ public:
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
     void operator()(ambiguous::hand_sign&)
-    {}
+    { BOOST_ASSERT(false); }
     void operator()(ambiguous::barline&)
-    {}
+    { BOOST_ASSERT(false); }
     void operator()(ambiguous::simile&)
     { BOOST_ASSERT(false); }
   };
@@ -614,6 +614,7 @@ compiler::operator()(ambiguous::measure& measure) const
 
   if (interpretations.size() != 1) {
     if (interpretations.empty()) {
+      std::wcout << measure[0][0][0].size() << std::endl;
       report_error(measure.id, L"No possible interpretations");
     } else {
       std::wstringstream s;
@@ -631,11 +632,16 @@ compiler::operator()(ambiguous::measure& measure) const
 }
 
 compiler::result_type
-compiler::operator()(ambiguous::score& score) const
+compiler::operator()(ambiguous::score& score)
 {
   bool success = true;
-  BOOST_FOREACH(ambiguous::score::reference part, score)
-    BOOST_FOREACH(ambiguous::part::reference staff, part)
+
+  if (score.time_sig) {
+    global_time_signature = *(score.time_sig);
+  }
+
+  BOOST_FOREACH(ambiguous::part part, score.parts)
+    BOOST_FOREACH(ambiguous::staff staff, part)
     {
       ambiguous::staff::iterator iterator(staff.begin());
       while (success && iterator != staff.end()) 

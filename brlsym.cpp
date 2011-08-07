@@ -145,8 +145,16 @@ value_distinction_symbols value_distinction_sign;
 
 articulation_symbols::articulation_symbols()
 {
-  add(L"⠐⠖", ambiguous::short_trill)
+  add(L"⠐⠢", ambiguous::appoggiatura)
+     (L"⠢", ambiguous::short_appoggiatura)
+     (L"⠲", ambiguous::turn_between_notes)
+     (L"⠠⠲", ambiguous::turn_above_or_below_note)
+     (L"⠲⠇", ambiguous::inverted_turn_between_notes)
+     (L"⠠⠲⠇", ambiguous::inverted_turn_above_or_below_note)
+     (L"⠐⠖", ambiguous::short_trill)
      (L"⠰⠖", ambiguous::extended_short_trill)
+     (L"⠐⠖⠇", ambiguous::mordent)
+     (L"⠰⠖⠇", ambiguous::extended_mordent)
      ;
 }
 

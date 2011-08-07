@@ -37,7 +37,13 @@ struct rhythmic
   virtual rational as_rational() const = 0;
 };
 
-enum articulation { short_trill, extended_short_trill };
+enum articulation {
+  appoggiatura, short_appoggiatura,
+  short_trill, extended_short_trill,
+  turn_between_notes, turn_above_or_below_note,
+  inverted_turn_between_notes, inverted_turn_above_or_below_note,
+  mordent, extended_mordent
+};
 
 typedef std::pair<unsigned, unsigned> finger_change;
 typedef boost::variant<unsigned, finger_change> fingering;
@@ -98,8 +104,13 @@ struct measure : std::vector<voice>, locatable
 };
 
 typedef std::vector< boost::variant<measure> > staff;
+
 typedef std::vector<staff> part;
-typedef std::vector<part> score;
+
+struct score {
+  boost::optional<time_signature> time_sig;
+  std::vector<part> parts;
+};
 
 }}}
 
@@ -141,6 +152,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::simile,
   (boost::optional<unsigned>, octave)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::score,
+  (boost::optional<music::time_signature>, time_sig)
+  (std::vector<music::braille::ambiguous::part>, parts)
 )
 
 #endif

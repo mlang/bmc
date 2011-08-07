@@ -43,10 +43,10 @@ fluidsynth::operator()(midi::note_off const& note)
 void
 fluidsynth::operator()(braille::ambiguous::score const& score)
 {
-  for(braille::ambiguous::part const& part: score) {
+  for(braille::ambiguous::part const& part: score.parts) {
     for(braille::ambiguous::staff const& staff: part)
     {
-      current_position = rational(0);
+      current_position = zero;
       std::for_each(staff.begin(), staff.end(), boost::apply_visitor(*this));
     }
   }

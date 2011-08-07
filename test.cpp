@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(attribute[0].size() == 1);
   BOOST_CHECK(attribute[0][0].size() == 1);
   BOOST_CHECK(attribute[0][0][0].size() == 9);
-  BOOST_CHECK(errors.iters.size() == 1);
+  BOOST_CHECK_EQUAL(errors.iters.size(), 19);
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
@@ -231,7 +231,9 @@ BOOST_AUTO_TEST_CASE(score_solo__test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 2);
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 

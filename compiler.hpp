@@ -27,7 +27,7 @@ public:
   }
 
   result_type operator()(ambiguous::measure& measure) const;
-  result_type operator()(ambiguous::score& score) const;
+  result_type operator()(ambiguous::score& score);
 };
 
 }}

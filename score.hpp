@@ -6,6 +6,7 @@
 #include "ambiguous.hpp"
 #include "error_handler.hpp"
 #include "measure.hpp"
+#include "numbers.hpp"
 
 namespace music { namespace braille {
 
@@ -19,6 +20,7 @@ struct score_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::score()>
   boost::spirit::qi::rule<Iterator, ambiguous::part()> keyboard_paragraph;
   boost::spirit::qi::rule<Iterator, ambiguous::staff()> staff;
   measure_grammar<Iterator> measure;
+  time_signature_grammar<Iterator> time_signature;
   boost::spirit::qi::rule<Iterator> right_hand_sign, left_hand_sign;
   boost::spirit::qi::rule<Iterator> eom;
   boost::spirit::qi::rule<Iterator> optional_dot;

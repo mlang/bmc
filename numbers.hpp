@@ -1,3 +1,6 @@
+#if !defined(BMC_NUMBERS_HPP)
+#define BMC_NUMBERS_HPP
+
 #include "config.hpp"
 #include "music.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
@@ -34,3 +37,6 @@ struct time_signature_grammar : boost::spirit::qi::grammar<Iterator, time_signat
 };
 
 }}
+
+#endif
+
