@@ -1,5 +1,6 @@
 #ifndef AMBIGUOUS_HPP
 #define AMBIGUOUS_HPP
+#include <list>
 #include <vector>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/optional.hpp>
@@ -42,6 +43,8 @@ enum articulation {
   short_trill, extended_short_trill,
   turn_between_notes, turn_above_or_below_note,
   inverted_turn_between_notes, inverted_turn_above_or_below_note,
+  staccato, staccatissimo, mezzo_staccato,
+  agogic_accent, accent,
   mordent, extended_mordent
 };
 
@@ -57,7 +60,7 @@ struct note : rhythmic_base, rhythmic
   boost::optional<unsigned> octave;
   diatonic_step step;
   std::vector<slur> slurs;
-  boost::optional<fingering> finger;
+  std::list<fingering> fingers;
   bool tied;
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
@@ -73,7 +76,7 @@ struct interval {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
   music::interval steps;
-  boost::optional<fingering> finger;
+  std::list<fingering> fingers;
 };
 
 struct chord : locatable, rhythmic {
@@ -133,7 +136,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
   (std::vector<music::braille::ambiguous::slur>, slurs)
-  (boost::optional<music::braille::ambiguous::fingering>, finger)
+  (std::list<music::braille::ambiguous::fingering>, fingers)
   (bool, tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
@@ -141,7 +144,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave)
   (music::interval, steps)
-  (boost::optional<music::braille::ambiguous::fingering>, finger)
+  (std::list<music::braille::ambiguous::fingering>, fingers)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,
