@@ -240,6 +240,28 @@ BOOST_AUTO_TEST_CASE(score_solo__test1) {
   destroyTextTable(textTable);
 }
 
+BOOST_AUTO_TEST_CASE(score_solo_test2) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::locale::global(std::locale(""));
+  std::wstring const input(L"#c/\n⠐⠞⠃⠝⠞⠎⠚⠂⠈⠉⠞⠟⠗⠁⠎⠾⠽⠐⠢⠕⠽⠚⠊⠓2k");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  music::braille::error_handler<iterator_type> errors(begin, end);
+  parser_type parser(errors);
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 1);
+  music::braille::compiler compile(errors);
+  BOOST_CHECK(compile(attribute));
+
+  destroyTextTable(textTable);
+}
+
 BOOST_AUTO_TEST_CASE(rational_gcd) {
   music::rational a(1, 4), b(1, 8);
   BOOST_CHECK_EQUAL(music::gcd(a, b), b);

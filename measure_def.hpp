@@ -44,7 +44,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
                                  at_c<4>(_val) = at_c<1>(_1)]
       >> dots                   [at_c<5>(_val) = _1]
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
-      >> fingering             [at_c<7>(_val) = _1]
+      >> fingering              [at_c<7>(_val) = _1]
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
       >> (-tie_sign)            [at_c<8>(_val) = true]
        ;

@@ -17,25 +17,49 @@ class value_proxy
   ambiguous::value value_type;
   value_category category;
   unsigned dots;
+
+  rational duration;
   rational* final_type;
+
+  void init() {
+    rational const base(undotted_duration());
+    duration = base * 2 - base / pow(2, dots);
+  }
+
 public:
   value_proxy(ambiguous::note& note, value_category const& category)
-  : value_type(note.ambiguous_value), category(category), dots(note.dots)
+  : value_type(note.ambiguous_value), category(category)
+  , dots(note.dots)
   , final_type(&note.type)
-  { BOOST_ASSERT(*final_type == music::rational()); }
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
+
+  value_proxy(ambiguous::note& note, value_category const& category, ambiguous::value value_type)
+  : value_type(value_type), category(category)
+  , dots(note.dots)
+  , final_type(&note.type)
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , final_type(&rest.type)
-  { BOOST_ASSERT(*final_type == music::rational()); }
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
+
+  value_proxy(ambiguous::rest& rest, value_category const& category, ambiguous::value value_type)
+  : value_type(value_type), category(category), dots(rest.dots)
+  , final_type(&rest.type)
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category)
-  : value_type(chord.base.ambiguous_value), category(category), dots(chord.base.dots)
+  : value_type(chord.base.ambiguous_value), category(category)
+  , dots(chord.base.dots)
   , final_type(&chord.base.type)
-  { BOOST_ASSERT(*final_type == music::rational()); }
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
-  void set_type(ambiguous::value type)
-  { value_type = type; }
+  value_proxy(ambiguous::chord& chord, value_category const& category, ambiguous::value value_type)
+  : value_type(value_type), category(category)
+  , dots(chord.base.dots)
+  , final_type(&chord.base.type)
+  { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
   rational
   undotted_duration() const
@@ -58,10 +82,7 @@ public:
   { *final_type = undotted_duration(); }
 
   rational as_rational() const
-  {
-    rational const base(undotted_duration());
-    return base * 2 - base / pow(2, dots);
-  }
+  { return duration; }
 };
 
 inline
@@ -170,8 +191,29 @@ public:
       values.clear();
     }
 
-    template<class Value>
-    void operator()(Value& value) {
+    void operator()(ambiguous::note& note) {
+      if (not (std::find(note.articulations.begin(),
+                         note.articulations.end(),
+                         ambiguous::appoggiatura)
+               != note.articulations.end()
+               ||
+               std::find(note.articulations.begin(),
+                         note.articulations.end(),
+                         ambiguous::short_appoggiatura)
+               != note.articulations.end())) {
+        value_type possibilities;
+        possibilities.push_back(value_proxy(note, large));
+        possibilities.push_back(value_proxy(note, small));
+        values.push_back(possibilities);
+      }
+    }
+    void operator()(ambiguous::rest& value) {
+      value_type possibilities;
+      possibilities.push_back(value_proxy(value, large));
+      possibilities.push_back(value_proxy(value, small));
+      values.push_back(possibilities);
+    }
+    void operator()(ambiguous::chord& value) {
       value_type possibilities;
       possibilities.push_back(value_proxy(value, large));
       possibilities.push_back(value_proxy(value, small));
@@ -248,9 +290,7 @@ public:
     template<class Value>
     void operator()(Value& value)
     {
-      value_proxy proxy(value, category);
-      proxy.set_type(faked_type);
-      group.push_back(proxy);
+      group.push_back(value_proxy(value, category, faked_type));
     }
     void operator()(ambiguous::value_distinction&)
     { BOOST_ASSERT(false); }
@@ -355,16 +395,20 @@ class partial_voice_interpretations
       result.push_back(stack);
     } else {
       value_proxy_list::iterator const tail = begin + 1;
-      BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
-		    *begin) {
-	rational const value_duration(duration(possibility));
-	if (value_duration <= max_length) {
-	  value_type new_stack(stack);
-	  boost::range::insert(new_stack, new_stack.end(), possibility);
-	  boost::range::insert(result, result.end(),
-			       recurse(tail, end, new_stack,
-				       max_length - value_duration));
-	}
+      if (begin->empty()) {
+        return recurse(tail, end, stack, max_length);
+      } else {
+        BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
+                      *begin) {
+          rational const value_duration(duration(possibility));
+          if (value_duration <= max_length) {
+            value_type new_stack(stack);
+            boost::range::insert(new_stack, new_stack.end(), possibility);
+            boost::range::insert(result, result.end(),
+                                 recurse(tail, end, new_stack,
+                                         max_length - value_duration));
+          }
+        }
       }
     }
     return result;
@@ -378,15 +422,21 @@ public:
     value_proxy_list vpl(voice, max_length);
     if (not vpl.empty()) {
       value_proxy_list::iterator const tail = vpl.begin() + 1;
-      BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
-		    vpl.front()) {
-	rational const value_duration(duration(possibility));
-	if (value_duration <= max_length) {
-	  boost::range::insert(*this, end(),
-			       recurse(tail, vpl.end(),
-				       possibility,
-				       max_length - value_duration));
-	}
+      if (vpl.front().empty()) {
+        value_type stack;
+        boost::range::insert(*this, end(),
+                             recurse(tail, vpl.end(), stack, max_length));
+      } else {
+        BOOST_FOREACH(value_proxy_list::value_type::const_reference possibility,
+  		      vpl.front()) {
+	  rational const value_duration(duration(possibility));
+	  if (value_duration <= max_length) {
+	    boost::range::insert(*this, end(),
+	  	 	         recurse(tail, vpl.end(),
+			                 possibility,
+				         max_length - value_duration));
+          }
+        }
       }
     }
   }
@@ -614,7 +664,6 @@ compiler::operator()(ambiguous::measure& measure) const
 
   if (interpretations.size() != 1) {
     if (interpretations.empty()) {
-      std::wcout << measure[0][0][0].size() << std::endl;
       report_error(measure.id, L"No possible interpretations");
     } else {
       std::wstringstream s;
