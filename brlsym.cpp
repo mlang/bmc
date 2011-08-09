@@ -160,6 +160,10 @@ articulation_symbols::articulation_symbols()
      (L"⠰⠖", ambiguous::extended_short_trill)
      (L"⠐⠖⠇", ambiguous::mordent)
      (L"⠰⠖⠇", ambiguous::extended_mordent)
+     (L"⠜⠅", ambiguous::arpeggio_up)
+     (L"⠐⠜⠅", ambiguous::arpeggio_up_multi_staff)
+     (L"⠜⠅⠅", ambiguous::arpeggio_down)
+     (L"⠐⠜⠅⠅", ambiguous::arpeggio_down_multi_staff)
      ;
 }
 

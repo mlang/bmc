@@ -45,7 +45,9 @@ enum articulation {
   inverted_turn_between_notes, inverted_turn_above_or_below_note,
   staccato, staccatissimo, mezzo_staccato,
   agogic_accent, accent,
-  mordent, extended_mordent
+  mordent, extended_mordent,
+  arpeggio_up, arpeggio_up_multi_staff,
+  arpeggio_down, arpeggio_down_multi_staff
 };
 
 typedef std::pair<unsigned, unsigned> finger_change;
