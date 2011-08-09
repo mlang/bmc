@@ -85,7 +85,7 @@ public:
   : queue(queue), position(position) {}
   result_type operator()(braille::ambiguous::note const& note) const
   {
-    queue.push(midi::note_on(position, 0, 60, 90, note.as_rational()));
+    queue.push(midi::note_on(position, 0, 60 + note.step, 90, note.as_rational()));
     position += note.as_rational();
   }
   result_type operator()(braille::ambiguous::rest const& rest) const
@@ -153,7 +153,7 @@ duration(braille::ambiguous::measure const& measure)
 void
 fluidsynth::operator()(braille::ambiguous::measure const& measure)
 {
-  std::cout << current_position << std::endl;
+  //std::wcout << current_position << std::endl;
   for(braille::ambiguous::voice const& voice: measure) {
     rational voice_position(current_position);
     for(braille::ambiguous::partial_measure partial_measure: voice) {
