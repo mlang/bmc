@@ -490,7 +490,7 @@ public:
 };
 
 rational
-duration( proxied_partial_measure const& voices )
+duration(proxied_partial_measure const& voices)
 {
   rational value(0);
   if (not voices.empty()) {
@@ -552,13 +552,13 @@ operator+(rational const& r, proxied_partial_measure const& p)
 { return r + duration(p); }
 
 rational
-duration( proxied_voice const& parts )
+duration(proxied_voice const& parts)
 { return boost::accumulate(parts, rational(0)); }
 
 typedef std::vector<proxied_voice> proxied_measure;
 
 rational
-duration( proxied_measure const& voices )
+duration(proxied_measure const& voices)
 {
   rational value;
   if (not voices.empty()) {
@@ -599,7 +599,9 @@ class measure_interpretations
     return result;
   }
 public:
-  measure_interpretations(ambiguous::measure& measure, rational const& max_duration)
+  measure_interpretations( ambiguous::measure& measure
+                         , rational const& max_duration
+                         )
   : std::vector<proxied_measure>()
   , max_duration(max_duration)
   {
@@ -689,8 +691,8 @@ compiler::operator()(ambiguous::score& score)
     global_time_signature = *(score.time_sig);
   }
 
-  BOOST_FOREACH(ambiguous::part part, score.parts)
-    BOOST_FOREACH(ambiguous::staff staff, part)
+  BOOST_FOREACH(ambiguous::part& part, score.parts)
+    BOOST_FOREACH(ambiguous::staff& staff, part)
     {
       ambiguous::staff::iterator iterator(staff.begin());
       while (success && iterator != staff.end()) 
