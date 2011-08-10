@@ -28,14 +28,12 @@ class value_proxy
 
 public:
   value_proxy(ambiguous::note& note, value_category const& category)
-  : value_type(note.ambiguous_value), category(category)
-  , dots(note.dots)
+  : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , final_type(&note.type)
   { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::note& note, value_category const& category, ambiguous::value value_type)
-  : value_type(value_type), category(category)
-  , dots(note.dots)
+  : value_type(value_type), category(category), dots(note.dots)
   , final_type(&note.type)
   { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
@@ -56,8 +54,7 @@ public:
   { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category, ambiguous::value value_type)
-  : value_type(value_type), category(category)
-  , dots(chord.base.dots)
+  : value_type(value_type), category(category), dots(chord.base.dots)
   , final_type(&chord.base.type)
   { init(); BOOST_ASSERT(*final_type == music::rational()); }
 
