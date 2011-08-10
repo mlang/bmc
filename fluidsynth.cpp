@@ -156,13 +156,11 @@ duration(braille::ambiguous::measure const& measure)
 void
 fluidsynth::operator()(braille::ambiguous::measure const& measure)
 {
-  //std::wcout << current_position << std::endl;
   for(braille::ambiguous::voice const& voice: measure) {
     rational voice_position(current_position);
-    for(braille::ambiguous::partial_measure partial_measure: voice) {
-      rational part_position(voice_position);
-      for(braille::ambiguous::partial_voice partial_voice: partial_measure) {
-        rational position(part_position);
+    for(braille::ambiguous::partial_measure const& partial_measure: voice) {
+      for(braille::ambiguous::partial_voice const& partial_voice: partial_measure) {
+        rational position(voice_position);
         midi_performer perform(queue, position);
         std::for_each(partial_voice.begin(), partial_voice.end(),
                       boost::apply_visitor(perform));
