@@ -521,7 +521,7 @@ class voice_interpretations
   {
     std::vector<value_type> result;
     if (begin == end) {
-      result.push_back(stack);
+      if (not stack.empty()) result.push_back(stack);
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
       BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
@@ -535,19 +535,12 @@ class voice_interpretations
     }
     return result;
   }
+
 public:
   voice_interpretations(ambiguous::voice& voice, rational max_length)
-  : std::vector<proxied_voice>()
-  {
-    if (not voice.empty()) {
-      BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
-		    partial_measure_interpretations(voice.front(), max_length))
-	boost::range::insert(*this, end(),
-			     recurse(voice.begin() + 1, voice.end(),
-				     value_type(1, possibility),
-				     max_length - duration(possibility)));
-    }
-  }
+  : std::vector<proxied_voice>(recurse(voice.begin(), voice.end(),
+                                       value_type(), max_length))
+  {}
 };
 
 rational
