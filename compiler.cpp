@@ -84,7 +84,7 @@ public:
   void set_final_type()
   { *final_type = undotted_duration(); }
 
-  rational as_rational() const
+  rational const& as_rational() const
   { return duration; }
 };
 
@@ -525,12 +525,12 @@ class voice_interpretations
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
       BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
-		    partial_measure_interpretations(*begin, max_length)) {
+                    partial_measure_interpretations(*begin, max_length)) {
         value_type new_stack(stack);
         new_stack.push_back(possibility);
-	boost::range::insert(result, result.end(),
-			     recurse(tail, end, new_stack,
-				     max_length - duration(possibility)));
+        boost::range::insert(result, result.end(),
+                             recurse(tail, end, new_stack,
+                                     max_length - duration(possibility)));
       }
     }
     return result;
@@ -590,13 +590,13 @@ class measure_interpretations
     } else {
       ambiguous::measure::iterator const tail = begin + 1;
       BOOST_FOREACH(voice_interpretations::const_reference possibility,
-		    voice_interpretations(*begin, max_duration)) {
-	if (real_length == duration(possibility)) {
-	  value_type new_stack(stack);
-	  new_stack.push_back(possibility);
-	  boost::range::insert(result, result.end(),
-			       recurse(tail, end, new_stack, real_length));
-	}
+                    voice_interpretations(*begin, max_duration)) {
+        if (real_length == duration(possibility)) {
+          value_type new_stack(stack);
+          new_stack.push_back(possibility);
+          boost::range::insert(result, result.end(),
+                               recurse(tail, end, new_stack, real_length));
+        }
       }
     }
     return result;
