@@ -294,9 +294,12 @@ BOOST_AUTO_TEST_CASE(bwv_988_v01) {
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 32);
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
-
+  BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
+                    music::rational(3, 4));
   destroyTextTable(textTable);
 }
 
