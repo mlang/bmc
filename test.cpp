@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(rational_gcd) {
 
 #include <fstream>
 
-BOOST_AUTO_TEST_CASE(bwv_988_v01) {
+BOOST_AUTO_TEST_CASE(bwv988_v01) {
   textTable = compileTextTable("Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file("input/bwv988-v01.bmc");
