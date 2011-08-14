@@ -116,7 +116,7 @@ struct duration_visitor : boost::static_visitor<rational>
   result_type operator()(braille::ambiguous::chord const& r) const
   { return r.as_rational(); }
   template<typename T> result_type operator()(T const&) const
-  { return rational(0); }
+  { return zero; }
 };
 
 }
@@ -133,7 +133,7 @@ namespace music {
 
 inline rational
 duration(braille::ambiguous::partial_voice const& partial_voice)
-{ return boost::accumulate(partial_voice, rational(0)); }
+{ return boost::accumulate(partial_voice, zero); }
 
 rational
 duration(braille::ambiguous::partial_measure const& partial_measure)
@@ -153,7 +153,7 @@ namespace music {
 
 rational
 duration(braille::ambiguous::voice const& voice)
-{ return boost::accumulate(voice, rational(0)); }
+{ return boost::accumulate(voice, zero); }
 
 rational
 duration(braille::ambiguous::measure const& measure)
