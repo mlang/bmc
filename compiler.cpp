@@ -287,7 +287,8 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
       if (not stack.empty()) result.push_back(stack);
     } else {
       ambiguous::partial_voice::iterator tail;
-      if ((tail = notegroup_end(begin, end)) > begin) {
+      if (position % rational(1, 4) == zero &&
+          (tail = notegroup_end(begin, end)) > begin) {
         { // Large group
           notegroup group(begin, tail, large);
           if (duration(group) <= max_duration) {

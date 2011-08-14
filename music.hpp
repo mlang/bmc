@@ -13,11 +13,23 @@ namespace music {
 
 typedef boost::rational<int> rational;
 
-inline rational::int_type floor(rational const& r)
-{ return boost::rational_cast<rational::int_type>(r); }
+}
 
-inline rational operator% (rational const& lhs, rational const& rhs)
+namespace boost { // Modular arithmetic
+
+template<typename IntType>
+inline IntType
+floor(rational<IntType> const& r)
+{ return rational_cast<IntType>(r); }
+
+template<typename IntType>
+rational<IntType>
+operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
 { return lhs - rhs * floor(lhs / rhs); }
+
+}
+
+namespace music {
 
 rational const zero = {0};
 
