@@ -89,7 +89,7 @@ public:
   { return duration; }
 
   bool operator==(value_proxy const& rhs) const
-  { return final_type == rhs.final_type && as_rational() == rhs.as_rational(); }
+  { return final_type == rhs.final_type && duration == rhs.duration; }
 };
 
 typedef std::vector<value_proxy> proxied_partial_voice;
@@ -181,7 +181,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
   struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
   {
     template<typename Sign>
-    large_and_small(Sign& sign) : std::vector<value_proxy>()
+    large_and_small(Sign& sign)
     { boost::apply_visitor(*this, sign); }
 
     template<class Value>
@@ -224,7 +224,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
              , ambiguous::partial_voice::iterator const& end
              , value_category const& category
              )
-    : proxied_partial_voice(), category(category), type(ambiguous::unknown)
+    : category(category), type(ambiguous::unknown)
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
 
     result_type operator()(ambiguous::note& note)
@@ -252,7 +252,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
   : public proxied_partial_voice
   , public boost::static_visitor<void>
   {
-    value_category category;
+    value_category const category;
   public:
     same_category( ambiguous::partial_voice::iterator const& begin
                  , ambiguous::partial_voice::iterator const& end
@@ -397,21 +397,23 @@ class partial_measure_interpretations
   recurse( ambiguous::partial_measure::iterator const& begin
          , ambiguous::partial_measure::iterator const& end
          , const_reference stack
-         , rational const& length, rational const& position
+         , rational const& length
+         , rational const& position
          )
   {
     std::vector<value_type> result;
     if (begin == end) {
-      result.push_back(stack);
+      if (not stack.empty()) result.push_back(stack);
     } else {
       ambiguous::partial_measure::iterator const tail = begin + 1;
       BOOST_FOREACH(partial_voice_interpretations::const_reference possibility,
                     partial_voice_interpretations(*begin, length, position)) {
-        if (duration(possibility) == length) {
+        if (stack.empty() or (duration(possibility) == length)) {
           value_type new_stack(stack);
           new_stack.push_back(possibility);
           boost::range::insert(result, result.end(),
-                               recurse(tail, end, new_stack, length, position));
+                               recurse(tail, end, new_stack,
+                                       duration(possibility), position));
         }
       }
     }
@@ -422,20 +424,11 @@ public:
                                  , rational const& max_length
                                  , rational const& position
                                  )
-  : std::vector<proxied_partial_measure>()
-  {
-    if (not partial_measure.empty()) {
-      BOOST_FOREACH(partial_voice_interpretations::const_reference possibility,
-                    partial_voice_interpretations(partial_measure.front(),
-                                                  max_length, position)) {
-        boost::range::insert(*this, this->end(),
-                             recurse(partial_measure.begin() + 1,
-                                     partial_measure.end(),
-                                     value_type(1, possibility),
-                                     duration(possibility), position));
-      }
-    }
-  }
+  : std::vector<proxied_partial_measure>(recurse(partial_measure.begin(),
+                                                 partial_measure.end(),
+                                                 value_type(),
+                                                 max_length, position))
+  {}
 };
 
 rational
