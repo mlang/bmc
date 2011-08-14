@@ -8,6 +8,7 @@
 #define BMC_COMPILER_HPP
 
 #include "ambiguous.hpp"
+#include "disambiguate.hpp"
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -18,6 +19,7 @@ namespace music { namespace braille {
 class compiler
 {
   boost::function<void(int tag, std::wstring const& what)> report_error;
+  measure_interpretations anacrusis;
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
@@ -32,7 +34,7 @@ public:
       (L"Error", _2, boost::phoenix::cref(error_handler.iters)[_1]);
   }
 
-  result_type operator()(ambiguous::measure& measure) const;
+  result_type operator()(ambiguous::measure& measure);
   result_type operator()(ambiguous::score& score);
 };
 
