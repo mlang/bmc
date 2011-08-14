@@ -67,6 +67,7 @@ public:
   rational
   undotted_duration() const
   {
+    BOOST_ASSERT(category==large || category==small);
     switch (value_type) {
     case ambiguous::whole_or_16th:
       return rational(1, category==large? 1: 16);
@@ -90,11 +91,6 @@ public:
   bool operator==(value_proxy const& rhs) const
   { return final_type == rhs.final_type && as_rational() == rhs.as_rational(); }
 };
-
-inline
-rational
-duration(value_proxy const& proxy)
-{ return proxy.as_rational(); }
 
 typedef std::vector<value_proxy> proxied_partial_voice;
 
@@ -260,7 +256,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
   public:
     same_category( ambiguous::partial_voice::iterator const& begin
                  , ambiguous::partial_voice::iterator const& end
-                 , value_category category
+                 , value_category const& category
                  )
     : proxied_partial_voice(), category(category)
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
@@ -276,6 +272,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(ambiguous::barline&) {}
     result_type operator()(ambiguous::simile&) {}
   };
+
   static
   std::vector<value_type>
   recurse( ambiguous::partial_voice::iterator begin
@@ -334,21 +331,25 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
       } else if ((tail = same_category_end(begin, end,
                                            ambiguous::large_follows)) > begin) {
         same_category group(begin, tail, large);
-        value_type new_stack(stack);
-        boost::range::insert(new_stack, new_stack.end(), group);
-        boost::range::insert(result, result.end(),
-                             recurse(tail, end, new_stack,
-                                     max_duration - duration(group),
-                                     position + duration(group)));
+        if (duration(group) <= max_duration) {
+          value_type new_stack(stack);
+          boost::range::insert(new_stack, new_stack.end(), group);
+          boost::range::insert(result, result.end(),
+                               recurse(tail, end, new_stack,
+                                       max_duration - duration(group),
+                                       position + duration(group)));
+        }
       } else if ((tail = same_category_end(begin, end,
                                            ambiguous::small_follows)) > begin) {
         same_category group(begin, tail, small);
-        value_type new_stack(stack);
-        boost::range::insert(new_stack, new_stack.end(), group);
-        boost::range::insert(result, result.end(),
-                             recurse(tail, end, new_stack,
-                                     max_duration - duration(group),
-                                     position + duration(group)));
+        if (duration(group) <= max_duration) {
+          value_type new_stack(stack);
+          boost::range::insert(new_stack, new_stack.end(), group);
+          boost::range::insert(result, result.end(),
+                               recurse(tail, end, new_stack,
+                                       max_duration - duration(group),
+                                       position + duration(group)));
+        }
       } else {
         large_and_small possibilities(*begin);
         if (possibilities.empty()) {
