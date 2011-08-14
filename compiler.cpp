@@ -509,47 +509,43 @@ duration(proxied_measure const& voices)
 class measure_interpretations
 : public std::vector<proxied_measure>
 {
-  rational const max_duration;
-
+  static
   std::vector<value_type>
   recurse( ambiguous::measure::iterator const& begin
          , ambiguous::measure::iterator const& end
-         , const_reference stack, rational const& real_length
+         , const_reference stack, rational const& length
          )
   {
     std::vector<value_type> result;
     if (begin == end) {
-      result.push_back(stack);
+      if (not stack.empty()) result.push_back(stack);
     } else {
       ambiguous::measure::iterator const tail = begin + 1;
       BOOST_FOREACH(voice_interpretations::const_reference possibility,
-                    voice_interpretations(*begin, max_duration)) {
-        if (real_length == duration(possibility)) {
+                    voice_interpretations(*begin, length)) {
+        if (stack.empty() or (duration(possibility) == length)) {
           value_type new_stack(stack);
           new_stack.push_back(possibility);
           boost::range::insert(result, result.end(),
-                               recurse(tail, end, new_stack, real_length));
+                               recurse(tail, end, new_stack,
+				       duration(possibility)));
         }
       }
     }
     return result;
   }
+
+  rational const max_duration;
+
 public:
   measure_interpretations( ambiguous::measure& measure
                          , rational const& max_duration
                          )
-  : max_duration(max_duration)
-  , std::vector<value_type>()
+    : std::vector<value_type>(recurse(measure.begin(), measure.end(), value_type(),
+                                    max_duration))
+  , max_duration(max_duration)
   {
-    BOOST_ASSERT(not measure.empty());
     BOOST_ASSERT(max_duration >= 0);
-    BOOST_FOREACH(voice_interpretations::const_reference possibility,
-                  voice_interpretations(measure.front(), max_duration)) {
-      boost::range::insert(*this, end(),
-                           recurse(measure.begin() + 1, measure.end(),
-                                   value_type(1, possibility),
-                                   duration(possibility)));
-    }
 
     if (size() > 1 && contains_complete_measure())
       for (iterator measure = begin(); measure != end();
