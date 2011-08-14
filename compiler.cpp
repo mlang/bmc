@@ -102,7 +102,7 @@ operator+(rational const& r, proxied_partial_voice::const_reference v)
 inline
 rational
 duration(proxied_partial_voice const& values)
-{ return boost::accumulate(values, rational(0)); }
+{ return boost::accumulate(values, zero); }
 
 class partial_voice_interpretations : public std::vector<proxied_partial_voice>
 {
@@ -289,27 +289,32 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
       ambiguous::partial_voice::iterator tail;
       if (position % rational(1, 4) == zero &&
           (tail = notegroup_end(begin, end)) > begin) {
-        { // Large group
-          notegroup group(begin, tail, large);
-          if (duration(group) <= max_duration) {
-            value_type new_stack(stack);
-            boost::range::insert(new_stack, new_stack.end(), group);
-            boost::range::insert(result, result.end(),
-                                 recurse(tail, end, new_stack,
-                                         max_duration - duration(group),
-                                         position + duration(group)));
+        while (std::distance(begin, tail) >= 3) {
+          { // Large group
+            notegroup group(begin, tail, large);
+            if (duration(group) <= max_duration &&
+                (position + duration(group)) % rational(1, 4) == zero) {
+              value_type new_stack(stack);
+              boost::range::insert(new_stack, new_stack.end(), group);
+              boost::range::insert(result, result.end(),
+                                   recurse(tail, end, new_stack,
+                                           max_duration - duration(group),
+                                           position + duration(group)));
+            }
           }
-        }
-        { // Small group
-          notegroup group(begin, tail, small);
-          if (duration(group) <= max_duration) {
-            value_type new_stack(stack);
-            boost::range::insert(new_stack, new_stack.end(), group);
-            boost::range::insert(result, result.end(),
-                                 recurse(tail, end, new_stack,
-                                         max_duration - duration(group),
-                                         position + duration(group)));
+          { // Small group
+            notegroup group(begin, tail, small);
+            if (duration(group) <= max_duration &&
+                (position + duration(group)) % rational(1, 4) == zero) {
+              value_type new_stack(stack);
+              boost::range::insert(new_stack, new_stack.end(), group);
+              boost::range::insert(result, result.end(),
+                                   recurse(tail, end, new_stack,
+                                           max_duration - duration(group),
+                                           position + duration(group)));
+            }
           }
+          --tail;
         }
         large_and_small possibilities(*begin);
         tail = begin + 1;
@@ -455,7 +460,7 @@ operator+(rational const& r, proxied_voice::const_reference part)
 
 rational
 duration(proxied_voice const& parts)
-{ return boost::accumulate(parts, rational(0)); }
+{ return boost::accumulate(parts, zero); }
 
 class voice_interpretations : public std::vector<proxied_voice>
 {
