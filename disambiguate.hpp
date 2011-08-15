@@ -310,7 +310,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
           --tail;
         }
         large_and_small const possibilities(*begin);
-        tail = begin + 1;
+        tail = begin; ++tail;
         if (possibilities.empty()) {
           recurse(tail, end, stack, max_duration, position);
         } else {
@@ -343,14 +343,15 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
         }
       } else {
         large_and_small const possibilities(*begin);
+        tail = begin; ++tail;
         if (possibilities.empty()) {
-          recurse(begin + 1, end, stack, max_duration, position);
+          recurse(tail, end, stack, max_duration, position);
         } else {
           BOOST_FOREACH(large_and_small::const_reference value, possibilities) {
             if (value <= max_duration) {
               value_type new_stack(stack);
               new_stack.push_back(value);
-              recurse(begin + 1, end, new_stack,
+              recurse(tail, end, new_stack,
                       max_duration - value, position + value);
             }
           }
@@ -501,11 +502,16 @@ class measure_interpretations : public std::list<proxied_measure>
   rational max_duration;
 
 public:
-  measure_interpretations() : std::list<proxied_measure>(), max_duration(0) {}
+  measure_interpretations()
+  : std::list<proxied_measure>()
+  , max_duration(0)
+  {}
+
   measure_interpretations(measure_interpretations const& other)
   : std::list<proxied_measure>(other.begin(), other.end())
   , max_duration(other.max_duration)
   {}
+
   measure_interpretations( ambiguous::measure& measure
                          , rational const& max_duration
                          )
