@@ -25,7 +25,7 @@ public:
   typedef bool result_type;
   template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
-  : global_time_signature(4, 4)
+  : global_time_signature(4, 4), anacrusis()
   {
     using boost::phoenix::arg_names::_1;
     using boost::phoenix::arg_names::_2;

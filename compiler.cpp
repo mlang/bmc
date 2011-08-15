@@ -23,6 +23,18 @@ compiler::operator()(ambiguous::measure& measure)
     if (anacrusis.empty()) {
       anacrusis = interpretations;
       return true;
+    } else {
+      if (anacrusis.completes_uniquely(interpretations)) {
+        BOOST_FOREACH(proxied_measure& lhs, anacrusis) {
+          BOOST_FOREACH(proxied_measure& rhs, interpretations) {
+            if (duration(lhs) + duration(rhs) == global_time_signature) {
+              accept(lhs), accept(rhs);
+            }
+          }
+        }
+        anacrusis.clear();
+        return true;
+      }
     }
   }
   if (interpretations.size() != 1) {

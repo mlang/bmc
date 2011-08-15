@@ -501,9 +501,9 @@ class measure_interpretations : public std::list<proxied_measure>
   rational max_duration;
 
 public:
-  measure_interpretations() {}
+  measure_interpretations() : std::list<proxied_measure>(), max_duration(0) {}
   measure_interpretations(measure_interpretations const& other)
-  : std::list<proxied_measure>(other)
+  : std::list<proxied_measure>(other.begin(), other.end())
   , max_duration(other.max_duration)
   {}
   measure_interpretations( ambiguous::measure& measure
@@ -528,6 +528,15 @@ public:
       if (max_duration == duration(*measure)) return true;
     }
     return false;
+  }
+  bool completes_uniquely(measure_interpretations const& other) {
+    int matches = 0;
+    BOOST_FOREACH(const_reference lhs, *this) {
+      BOOST_FOREACH(const_reference rhs, other) {
+        if (duration(lhs) + duration(rhs) == max_duration) ++matches;
+      }
+    }
+    return matches == 1;
   }
 };
 
