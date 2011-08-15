@@ -29,11 +29,11 @@ compiler::operator()(ambiguous::measure& measure)
           BOOST_FOREACH(proxied_measure& rhs, interpretations) {
             if (duration(lhs) + duration(rhs) == global_time_signature) {
               accept(lhs), accept(rhs);
+              anacrusis.clear();
+              return true;
             }
           }
         }
-        anacrusis.clear();
-        return true;
       }
     }
   }
@@ -70,6 +70,7 @@ compiler::operator()(ambiguous::score& score)
       ambiguous::staff::iterator iterator(staff.begin());
       while (success && iterator != staff.end()) 
         success = boost::apply_visitor(*this, *iterator++);
+      if (not anacrusis.empty()) return false;
     }
   return success;
 }
