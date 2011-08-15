@@ -163,23 +163,17 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   destroyTextTable(textTable);
 }
 
-class is_type
-: public boost::static_visitor<bool>
+struct get_type : boost::static_visitor<music::rational>
 {
-  music::rational expected;
-public:
-  is_type(music::rational const& expected)
-  : expected(expected)
-  {}
-  bool operator()(music::braille::ambiguous::note const& note) const
-  { return note.type == expected; }
-  bool operator()(music::braille::ambiguous::rest const& rest) const
-  { return rest.type == expected; }
-  bool operator()(music::braille::ambiguous::chord const& chord) const
+  result_type operator()(music::braille::ambiguous::note const& note) const
+  { return note.type; }
+  result_type operator()(music::braille::ambiguous::rest const& rest) const
+  { return rest.type; }
+  result_type operator()(music::braille::ambiguous::chord const& chord) const
   { return (*this)(chord.base); }
   template<typename T>
-  bool operator()(T const&) const
-  { return false; }
+  result_type operator()(T const&) const
+  { return music::zero; }
 };
 
 BOOST_AUTO_TEST_CASE(compiler_test1) {
@@ -202,24 +196,15 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][0]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][1]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][2]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][3]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][4]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][5]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][6]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 16)),
-                                   attribute[0][0][0][7]));
-  BOOST_CHECK(boost::apply_visitor(is_type(music::rational(1, 2)),
-                                   attribute[0][0][0][8]));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][0]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][1]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][2]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][3]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][4]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][5]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][6]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][7]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][8]), music::rational(1, 2));
   destroyTextTable(textTable);
 }
 
