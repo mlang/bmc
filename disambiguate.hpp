@@ -25,8 +25,7 @@ class value_proxy
   ambiguous::value value_type;
   value_category category;
 
-  rational
-  undotted_duration() const
+  rational undotted_duration() const
   {
     BOOST_ASSERT(category==large || category==small);
     switch (value_type) {
@@ -44,15 +43,15 @@ class value_proxy
   }
 
   unsigned dots;
+
   rational duration;
-
-  rational* final_type;
-
   void init()
   {
     rational const base(undotted_duration());
     duration = base * 2 - base / pow(2, dots);
   }
+
+  rational* final_type;
 
 public:
   value_proxy(ambiguous::note& note, value_category const& category)
@@ -228,8 +227,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(ambiguous::note& note)
     {
       if (type == ambiguous::unknown) type = note.ambiguous_value;
-      value_proxy proxy(note, category, type);
-      push_back(proxy);
+      push_back(value_proxy(note, category, type));
     }
     result_type operator()(ambiguous::rest& rest)
     {
