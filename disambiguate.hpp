@@ -24,9 +24,28 @@ class value_proxy
 {
   ambiguous::value value_type;
   value_category category;
-  unsigned dots;
 
+  rational
+  undotted_duration() const
+  {
+    BOOST_ASSERT(category==large || category==small);
+    switch (value_type) {
+    case ambiguous::whole_or_16th:
+      return rational(1, category==large? 1: 16);
+    case ambiguous::half_or_32th:
+      return rational(1, category==large? 2: 32);
+    case ambiguous::quarter_or_64th:
+      return rational(1, category==large? 4: 64);
+    case ambiguous::eighth_or_128th:
+      return rational(1, category==large? 8: 128);
+    default:
+      BOOST_ASSERT(false);
+    }
+  }
+
+  unsigned dots;
   rational duration;
+
   rational* final_type;
 
   void init()
@@ -67,31 +86,13 @@ public:
   , final_type(&chord.base.type)
   { init(); BOOST_ASSERT(*final_type == zero); }
 
-  rational
-  undotted_duration() const
-  {
-    BOOST_ASSERT(category==large || category==small);
-    switch (value_type) {
-    case ambiguous::whole_or_16th:
-      return rational(1, category==large? 1: 16);
-    case ambiguous::half_or_32th:
-      return rational(1, category==large? 2: 32);
-    case ambiguous::quarter_or_64th:
-      return rational(1, category==large? 4: 64);
-    case ambiguous::eighth_or_128th:
-      return rational(1, category==large? 8: 128);
-    default:
-      BOOST_ASSERT(false);
-    }
-  }
-
-  void set_final_type() const
-  { *final_type = undotted_duration(); }
-
   operator rational() const { return duration; }
 
   bool operator==(value_proxy const& rhs) const
   { return final_type == rhs.final_type && duration == rhs.duration; }
+
+  void set_final_type() const
+  { *final_type = undotted_duration(); }
 };
 
 typedef std::vector<value_proxy> proxied_partial_voice;
@@ -174,6 +175,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     }
     return begin;
   }
+
   struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
   {
     template<typename Sign>
@@ -269,13 +271,12 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(ambiguous::simile&) {}
   };
 
-  void
-  recurse( ambiguous::partial_voice::iterator begin
-         , ambiguous::partial_voice::iterator const& end
-         , const_reference stack
-         , rational const& max_duration
-         , rational const& position
-         )
+  void recurse( ambiguous::partial_voice::iterator begin
+              , ambiguous::partial_voice::iterator const& end
+              , const_reference stack
+              , rational const& max_duration
+              , rational const& position
+              )
   {
     if (begin == end) {
       push_back(stack);
@@ -308,7 +309,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
           }
           --tail;
         }
-        large_and_small possibilities(*begin);
+        large_and_small const possibilities(*begin);
         tail = begin + 1;
         if (possibilities.empty()) {
           recurse(tail, end, stack, max_duration, position);
@@ -341,7 +342,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
                   max_duration - duration(group), position + duration(group));
         }
       } else {
-        large_and_small possibilities(*begin);
+        large_and_small const possibilities(*begin);
         if (possibilities.empty()) {
           recurse(begin + 1, end, stack, max_duration, position);
         } else {
@@ -371,13 +372,12 @@ typedef std::vector<proxied_partial_voice> proxied_partial_measure;
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure>
 {
-  void
-  recurse( ambiguous::partial_measure::iterator const& begin
-         , ambiguous::partial_measure::iterator const& end
-         , const_reference stack
-         , rational const& length
-         , rational const& position
-         )
+  void recurse( ambiguous::partial_measure::iterator const& begin
+              , ambiguous::partial_measure::iterator const& end
+              , const_reference stack
+              , rational const& length
+              , rational const& position
+              )
   {
     if (begin == end) {
       if (not stack.empty()) push_back(stack);
@@ -433,12 +433,11 @@ duration(proxied_voice const& parts)
 
 class voice_interpretations : public std::vector<proxied_voice>
 {
-  void
-  recurse( ambiguous::voice::iterator const& begin
-         , ambiguous::voice::iterator const& end
-         , const_reference stack
-         , rational const& max_length
-         )
+  void recurse( ambiguous::voice::iterator const& begin
+              , ambiguous::voice::iterator const& end
+              , const_reference stack
+              , rational const& max_length
+              )
   {
     if (begin == end) {
       if (not stack.empty()) push_back(stack);
@@ -469,20 +468,20 @@ duration(proxied_measure const& voices)
   if (not voices.empty()) {
     value = duration(voices.front());
     for (proxied_measure::const_iterator
-	 voice = voices.begin() + 1; voice != voices.end(); ++voice) {
+         voice = voices.begin() + 1; voice != voices.end(); ++voice) {
       BOOST_ASSERT(value == duration(*voice));
     }
   }
   return value;
 }
 
-class measure_interpretations : public std::vector<proxied_measure>
+class measure_interpretations : public std::list<proxied_measure>
 {
-  void
-  recurse( ambiguous::measure::iterator const& begin
-         , ambiguous::measure::iterator const& end
-         , const_reference stack, rational const& length
-         )
+  void recurse( ambiguous::measure::iterator const& begin
+              , ambiguous::measure::iterator const& end
+              , const_reference stack
+              , rational const& length
+              )
   {
     if (begin == end) {
       if (not stack.empty()) push_back(stack);
@@ -503,7 +502,10 @@ class measure_interpretations : public std::vector<proxied_measure>
 
 public:
   measure_interpretations() {}
-  measure_interpretations(measure_interpretations const& other) : std::vector<proxied_measure>(other) {}
+  measure_interpretations(measure_interpretations const& other)
+  : std::list<proxied_measure>(other)
+  , max_duration(other.max_duration)
+  {}
   measure_interpretations( ambiguous::measure& measure
                          , rational const& max_duration
                          )
@@ -512,9 +514,14 @@ public:
     BOOST_ASSERT(max_duration >= 0);
     recurse(measure.begin(), measure.end(), value_type(), max_duration);
 
-    if (size() > 1 && contains_complete_measure())
+//    measure_interpretations complete;
+//    BOOST_FOREACH(const_reference possibility, *this) {
+//      if (duration(possibility) == max_duration) complete.push_back(possibility);
+//    }
+//    if (not complete.empty()) *this = complete;
+    if (contains_complete_measure())
       for (iterator measure = begin(); measure != end();
-           measure = duration(*measure) != max_duration? erase(measure): measure + 1);
+           measure = duration(*measure) != max_duration? erase(measure): ++measure);
   }
   bool contains_complete_measure() const {
     for (const_iterator measure = begin(); measure != end(); ++measure) {
