@@ -31,7 +31,7 @@ operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
 
 namespace music {
 
-rational const zero = {0};
+rational const zero = rational(0);
 
 inline rational gcd(rational const& a, rational const& b)
 { return b == zero? a: gcd(b, a % b); }
