@@ -45,7 +45,7 @@ class value_proxy
   unsigned dots;
 
   rational duration;
-  void init()
+  rational calculate_duration()
   {
     rational const base(undotted_duration());
     duration = base * 2 - base / pow(2, dots);
@@ -56,36 +56,42 @@ class value_proxy
 public:
   value_proxy(ambiguous::note& note, value_category const& category)
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
+  , duration(calculate_duration())
   , final_type(&note.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::note& note, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(note.dots)
+  , duration(calculate_duration())
   , final_type(&note.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
+  , duration(calculate_duration())
   , final_type(&rest.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(rest.dots)
+  , duration(calculate_duration())
   , final_type(&rest.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category)
   : value_type(chord.base.ambiguous_value), category(category)
   , dots(chord.base.dots)
+  , duration(calculate_duration())
   , final_type(&chord.base.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(chord.base.dots)
+  , duration(calculate_duration())
   , final_type(&chord.base.type)
-  { init(); BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(*final_type == zero); }
 
-  operator rational() const { return duration; }
+  operator rational const&() const { return duration; }
 
   bool operator==(value_proxy const& rhs) const
   { return final_type == rhs.final_type && duration == rhs.duration; }
