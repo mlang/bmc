@@ -15,12 +15,12 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 
-all: main
+all: bmc
 
 install: brltr
 	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
 
-main: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a fluidsynth.@OBJEXT@
+bmc: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a fluidsynth.@OBJEXT@
 	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a fluidsynth.@OBJEXT@ -lpthread -licuuc -lfluidsynth
 
 test: $(TEST_OBJECTS) ttb.a
@@ -31,7 +31,7 @@ brltr: brltr.@OBJEXT@ ttb.a
 	g++ -o $@ brltr.o ttb.a @LIBS@ @icu_libraries@
 
 clean:
-	rm -f *.@OBJEXT@ *.a text.auto.h brltr main tbl2hex test
+	rm -f *.@OBJEXT@ *.a text.auto.h brltr bmc tbl2hex test
 
 full_clean: clean
 	rm -rf autom4te.cache/ config.cache config.log config.status \
