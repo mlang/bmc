@@ -405,7 +405,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
           value_type new_stack;
           new_stack.push_back(boost::apply_visitor(make_whole_measure_rest(max_duration), *begin));
-          recurse(tail, end, new_stack, position + max_duration, zero);
+          recurse(tail, end, new_stack, zero, position + max_duration);
         }
       }
     }
