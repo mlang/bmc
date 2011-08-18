@@ -78,6 +78,12 @@ public:
   , final_type(&rest.type)
   { BOOST_ASSERT(*final_type == zero); }
 
+  value_proxy(ambiguous::rest& rest, value_category const& category, rational const& duration)
+  : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
+  , duration(duration)
+  , final_type(&rest.type)
+  { BOOST_ASSERT(*final_type == zero); }
+
   value_proxy(ambiguous::chord& chord, value_category const& category)
   : value_type(chord.base.ambiguous_value), category(category)
   , dots(chord.base.dots)
@@ -141,6 +147,26 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     template<typename T>
     result_type operator()(T const&) const
     { return ambiguous::unknown; }
+  };
+  struct maybe_whole_measure_rest : boost::static_visitor<bool>
+  {
+    result_type operator()(ambiguous::rest const& rest) const
+    {
+      return rest.ambiguous_value == ambiguous::whole_or_16th &&
+             rest.dots == 0;
+    }
+    template<typename Sign>
+    result_type operator()(Sign const&) const { return false; }
+  };
+  class make_whole_measure_rest : public boost::static_visitor<value_proxy>
+  {
+    rational const duration;
+  public:
+    make_whole_measure_rest(rational const& duration) : duration(duration) {}
+    result_type operator()(ambiguous::rest& rest) const
+    { return result_type(rest, large, duration); }
+    template<typename Sign>
+    result_type operator()(Sign const&) const { BOOST_ASSERT(false); }
   };
   static
   ambiguous::partial_voice::iterator
@@ -358,6 +384,13 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
                       max_duration - value, position + value);
             }
           }
+        }
+
+        if (stack.empty() && position == 0 && max_duration != 1 &&
+            boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
+          value_type new_stack();
+          new_stack.push_back(boost::apply_visitor(make_whole_measure_rest(max_duration), *begin));
+          recurse(tail, end, new_stack, position + max_duration, zero);
         }
       }
     }
