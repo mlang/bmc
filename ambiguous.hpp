@@ -110,8 +110,10 @@ typedef std::vector<sign> partial_voice;
 typedef std::vector<partial_voice> partial_measure;
 typedef std::vector<partial_measure> voice;
 
-struct measure : std::vector<voice>, locatable
+struct measure : locatable
 {
+  boost::optional<unsigned> ending;
+  std::vector<voice> voices;
 };
 
 typedef std::vector< boost::variant<measure> > staff;
@@ -163,6 +165,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::simile,
   (boost::optional<unsigned>, octave)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::measure,
+  (boost::optional<unsigned>, ending)
+  (std::vector<music::braille::ambiguous::voice>, voices)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

@@ -43,7 +43,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
-  solo_part = staff > eom > -eol;
+  solo_part = eps[resize(_val, 1)] >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))] > eom > -eol;
   keyboard_paragraph = eps[resize(_val, 2)]
   >> right_hand_sign
   >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]

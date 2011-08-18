@@ -157,12 +157,12 @@ duration(braille::ambiguous::voice const& voice)
 
 rational
 duration(braille::ambiguous::measure const& measure)
-{ return duration(measure.front()); }
+{ return duration(measure.voices.front()); }
 
 void
 fluidsynth::operator()(braille::ambiguous::measure const& measure)
 {
-  for(braille::ambiguous::voice const& voice: measure) {
+  for(braille::ambiguous::voice const& voice: measure.voices) {
     rational voice_position(current_position);
     for(braille::ambiguous::partial_measure const& partial_measure: voice) {
       for(braille::ambiguous::partial_voice const& partial_voice: partial_measure) {

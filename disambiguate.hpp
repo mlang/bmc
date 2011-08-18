@@ -209,7 +209,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
              std::find(note.articulations.begin(),
                        note.articulations.end(),
                       ambiguous::short_appoggiatura)
-              != note.articulations.end();
+             != note.articulations.end();
     }
     bool is_grace(ambiguous::rest const& rest) const
     { return false; }
@@ -269,10 +269,9 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     { push_back(value_proxy(rest, category)); }
     result_type operator()(ambiguous::chord& chord)
     { push_back(value_proxy(chord, category)); }
-    result_type operator()(ambiguous::value_distinction&) {}
-    result_type operator()(ambiguous::hand_sign&) {}
-    result_type operator()(ambiguous::barline&) {}
-    result_type operator()(ambiguous::simile&) {}
+
+    template<typename Sign> result_type operator()(Sign const&)
+    { BOOST_ASSERT(false); }
   };
 
   void recurse( ambiguous::partial_voice::iterator begin
@@ -482,8 +481,8 @@ duration(proxied_measure const& voices)
 
 class measure_interpretations : public std::list<proxied_measure>
 {
-  void recurse( ambiguous::measure::iterator const& begin
-              , ambiguous::measure::iterator const& end
+  void recurse( std::vector<ambiguous::voice>::iterator const& begin
+              , std::vector<ambiguous::voice>::iterator const& end
               , const_reference stack
               , rational const& length
               )
@@ -491,7 +490,7 @@ class measure_interpretations : public std::list<proxied_measure>
     if (begin == end) {
       if (not stack.empty()) push_back(stack);
     } else {
-      ambiguous::measure::iterator const tail = begin + 1;
+      std::vector<ambiguous::voice>::iterator const tail = begin + 1;
       BOOST_FOREACH(voice_interpretations::const_reference possibility,
                     voice_interpretations(*begin, length)) {
         if (stack.empty() or (duration(possibility) == length)) {
@@ -522,13 +521,8 @@ public:
   : max_duration(max_duration)
   {
     BOOST_ASSERT(max_duration >= 0);
-    recurse(measure.begin(), measure.end(), value_type(), max_duration);
+    recurse(measure.voices.begin(), measure.voices.end(), value_type(), max_duration);
 
-//    measure_interpretations complete;
-//    BOOST_FOREACH(const_reference possibility, *this) {
-//      if (duration(possibility) == max_duration) complete.push_back(possibility);
-//    }
-//    if (not complete.empty()) *this = complete;
     if (contains_complete_measure())
       for (iterator measure = begin(); measure != end();
            measure = duration(*measure) != max_duration? erase(measure): ++measure);

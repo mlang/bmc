@@ -65,12 +65,12 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0][0][0].size(), 2);
-  BOOST_CHECK(apply_visitor(is_rest(), attribute[0][0][0][0]));
-  BOOST_CHECK(apply_visitor(is_rest(), attribute[0][0][0][1]));
+  BOOST_CHECK_EQUAL(attribute.voices.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 2);
+  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][0]));
+  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][1]));
   destroyTextTable(textTable);
 }
 
@@ -86,8 +86,8 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 2);
-  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
   destroyTextTable(textTable);
 }
 
@@ -105,11 +105,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 2);
-  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute[1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[1][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -129,11 +129,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 2);
-  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute[1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[1][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -153,10 +153,10 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute[0][0][0].size(), 9);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 9);
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -188,23 +188,23 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   parser_type::start_type::attr_type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK(attribute.size() == 1);
-  BOOST_CHECK(attribute[0].size() == 1);
-  BOOST_CHECK(attribute[0][0].size() == 1);
-  BOOST_CHECK(attribute[0][0][0].size() == 9);
+  BOOST_CHECK(attribute.voices.size() == 1);
+  BOOST_CHECK(attribute.voices[0].size() == 1);
+  BOOST_CHECK(attribute.voices[0][0].size() == 1);
+  BOOST_CHECK(attribute.voices[0][0][0].size() == 9);
   BOOST_CHECK_EQUAL(errors.iters.size(), 19);
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][0]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][1]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][2]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][3]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][4]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][5]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][6]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][7]), music::rational(1, 16));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute[0][0][0][8]), music::rational(1, 2));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][0]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][1]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][2]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][3]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][4]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][5]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][6]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][7]), music::rational(1, 16));
+  BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][8]), music::rational(1, 2));
   destroyTextTable(textTable);
 }
 

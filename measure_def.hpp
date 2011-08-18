@@ -27,7 +27,9 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
-  start = fmia % fmia_separator;
+  music::braille::brl_type brl;
+
+  start = -ending >> (fmia % fmia_separator);
   fmia = pmia % pmia_sign;
   pmia = pmia_voice % pmia_voice_sign;
   pmia_voice = +( chord | note | rest
@@ -42,7 +44,6 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   boost::spirit::_1_type _1;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
-  music::braille::brl_type brl;
   note = (*articulation_sign)   [at_c<0>(_val) = _1]
       >> -accidental_sign       [at_c<1>(_val) = _1]
       >> -octave_sign           [at_c<2>(_val) = _1]
@@ -80,6 +81,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   optional_dot = !dots_123 | &(brl(3) >> dots_123) > brl(3);
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(ambiguous::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(ambiguous::left_hand));
+  ending = brl(3456) >> lower_digit_sign;
 
   boost::spirit::qi::on_success(start,
   				annotation_function(error_handler.iters)(_val, _1));

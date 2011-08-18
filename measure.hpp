@@ -10,6 +10,7 @@
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 #include "ambiguous.hpp"
+#include "numbers.hpp"
 #include "error_handler.hpp"
 
 namespace music { namespace braille {
@@ -34,6 +35,8 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure
   boost::spirit::qi::rule<Iterator, ambiguous::slur()> slur_sign;
   boost::spirit::qi::rule<Iterator>
   fmia_separator, pmia_sign, pmia_voice_sign, optional_dot, whitespace;
+  lower_number_grammar<Iterator> lower_number;
+  boost::spirit::qi::rule<Iterator, unsigned()> ending;
 };
 
 }}
