@@ -52,36 +52,42 @@ class value_proxy
   }
 
   rational* final_type;
+  bool* whole_measure_rest;
 
 public:
   value_proxy(ambiguous::note& note, value_category const& category)
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , duration(calculate_duration())
   , final_type(&note.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::note& note, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(note.dots)
   , duration(calculate_duration())
   , final_type(&note.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , duration(calculate_duration())
   , final_type(&rest.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(rest.dots)
   , duration(calculate_duration())
   , final_type(&rest.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::rest& rest, value_category const& category, rational const& duration)
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , duration(duration)
   , final_type(&rest.type)
+  , whole_measure_rest(&rest.whole_measure)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category)
@@ -89,12 +95,14 @@ public:
   , dots(chord.base.dots)
   , duration(calculate_duration())
   , final_type(&chord.base.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ambiguous::chord& chord, value_category const& category, ambiguous::value value_type)
   : value_type(value_type), category(category), dots(chord.base.dots)
   , duration(calculate_duration())
   , final_type(&chord.base.type)
+  , whole_measure_rest(0)
   { BOOST_ASSERT(*final_type == zero); }
 
   operator rational const&() const { return duration; }
@@ -103,7 +111,14 @@ public:
   { return final_type == rhs.final_type && duration == rhs.duration; }
 
   void set_final_type() const
-  { *final_type = undotted_duration(); }
+  {
+    if (whole_measure_rest != 0) {
+      *final_type = duration;
+      *whole_measure_rest = true;
+    } else {
+      *final_type = undotted_duration();
+    }
+  }
 };
 
 typedef std::vector<value_proxy> proxied_partial_voice;

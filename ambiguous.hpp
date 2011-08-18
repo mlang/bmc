@@ -76,6 +76,8 @@ struct note : rhythmic_base, rhythmic
 
 struct rest : rhythmic_base, rhythmic
 {
+  rest() : whole_measure(false) {}
+  bool whole_measure;
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
