@@ -110,7 +110,7 @@ public:
   bool operator==(value_proxy const& rhs) const
   { return final_type == rhs.final_type && duration == rhs.duration; }
 
-  void set_final_type() const
+  void accept() const
   {
     if (whole_measure_rest != 0) {
       *final_type = duration;
@@ -600,7 +600,7 @@ accept(proxied_measure& measure)
     BOOST_FOREACH(proxied_voice::reference part, voice)
       BOOST_FOREACH(proxied_partial_measure::reference partial_voice, part)
         BOOST_FOREACH(proxied_partial_voice::reference value, partial_voice)
-          value.set_final_type();
+          value.accept();
 }
 
 template<typename Char>
