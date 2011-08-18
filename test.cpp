@@ -288,6 +288,32 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   destroyTextTable(textTable);
 }
 
+BOOST_AUTO_TEST_CASE(bwv988_v02) {
+  textTable = compileTextTable("Tables/de.ttb");
+  std::locale::global(std::locale(""));
+  std::wifstream file("input/bwv988-v02.bmc");
+  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
+  std::wstring const input(file_begin, file_end);
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  music::braille::error_handler<iterator_type> errors(begin, end);
+  parser_type parser(errors);
+  parser_type::start_type::attr_type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 34);
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 34);
+  music::braille::compiler compile(errors);
+  BOOST_CHECK(compile(attribute));
+//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
+//                  music::rational(3, 4));
+  destroyTextTable(textTable);
+}
+
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
   textTable = compileTextTable("Tables/de.ttb");
   std::locale::global(std::locale(""));
