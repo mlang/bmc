@@ -54,5 +54,5 @@ measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
 score.@OBJEXT@: score.hpp score_def.hpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
 brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
-compiler.@OBJEXT@: compiler.hpp
+compiler.@OBJEXT@: compiler.hpp disambiguate.hpp
 test.@OBJEXT@: brl.hpp
