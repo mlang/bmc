@@ -33,14 +33,14 @@ compiler::operator()(ambiguous::score& score)
 
       if (not ok) return false;
 
-      last_octave = -1, last_step = -1;
+      calculate_octaves.clear();
     }
   return ok;
 }
 
 compiler::result_type
 compiler::operator()(ambiguous::measure& measure)
-{ return disambiguate(measure) && fill_octaves(measure); }
+{ return disambiguate(measure) && calculate_octaves(measure); }
 
 compiler::result_type
 compiler::disambiguate(ambiguous::measure& measure)
@@ -66,121 +66,23 @@ compiler::disambiguate(ambiguous::measure& measure)
       }
     }
   }
-  if (interpretations.size() != 1) {
-    if (interpretations.empty()) {
-      report_error(measure.id, L"No possible interpretations");
-    } else {
-      std::wstringstream s;
-      s << interpretations.size() << L" possible interpretations:";
-      BOOST_FOREACH(proxied_measure const& measure, interpretations) {
-        s << std::endl << measure;
-      }
-      report_error(measure.id, s.str());
-    }
-    return false;
+
+  if (interpretations.size() == 1) {
+    accept(interpretations.front());
+    return true;
   }
 
-  accept(interpretations.front());
-  return true;
-}
-
-struct is_pitched : boost::static_visitor<bool>
-{
-  result_type operator()(ambiguous::note const&) const { return true; }
-  result_type operator()(ambiguous::chord const&) const { return true; }
-  template<typename Sign>
-  result_type operator()(Sign const&) const { return false; }
-};
-
-struct has_octave : boost::static_visitor<bool>
-{
-  result_type operator()(ambiguous::note const& note) const
-  { return note.octave; }
-  result_type operator()(ambiguous::chord const& chord) const
-  { return (*this)(chord.base); }
-  template<typename Sign>
-  result_type operator()(Sign const&) const
-  { return false; }
-};
-
-struct get_octave : boost::static_visitor<int>
-{
-  result_type operator()(ambiguous::note const& note) const
-  { return note.octave? *note.octave: -1; }
-  result_type operator()(ambiguous::chord const& chord) const
-  { return (*this)(chord.base); }
-  template<typename Sign>
-  result_type operator()(Sign const&) const
-  { return -1; }
-};
-
-class set_octave : public boost::static_visitor<int>
-{
-  unsigned octave;
-public:
-  set_octave(unsigned octave) : octave(octave) {}
-  result_type operator()(ambiguous::note& note) const
-  { return note.real_octave = octave; }
-  result_type operator()(ambiguous::chord& chord) const
-  { return (*this)(chord.base); }
-  template<typename Sign>
-  result_type operator()(Sign const&) const
-  { BOOST_ASSERT(false); return -1; }
-};
-
-struct get_step : boost::static_visitor<int>
-{
-  result_type operator()(ambiguous::note const& note) const
-  { return note.step; }
-  result_type operator()(ambiguous::chord const& chord) const
-  { return (*this)(chord.base); }
-  template<typename Sign>
-  result_type operator()(Sign const&) const { return -1; }
-};
-
-compiler::result_type
-compiler::fill_octaves(ambiguous::measure& measure)
-{
-  BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
-    BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
-      BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
-        bool first_pitched = true;
-        BOOST_FOREACH(ambiguous::sign& sign, partial_voice) {
-          if (boost::apply_visitor(is_pitched(), sign)) {
-            if (first_pitched) {
-              if (not boost::apply_visitor(has_octave(), sign) &&
-                  last_octave == -1) {
-                report_error(measure.id, L"Missing octave mark");
-                return false;
-              }
-              first_pitched = false;
-            }
-
-            if (boost::apply_visitor(has_octave(), sign)) {
-              set_octave const setter(boost::apply_visitor(get_octave(), sign));
-              last_octave = boost::apply_visitor(setter, sign);
-              last_step = boost::apply_visitor(get_step(), sign);
-            } else {
-              int const step(boost::apply_visitor(get_step(), sign));
-              if ((step == 0 and (last_step == 6 or last_step == 5)) or
-                  (step == 1 and last_step == 6)) {
-                last_octave = boost::apply_visitor(set_octave(last_octave + 1),
-                                                   sign);
-              } else if ((step == 6 and (last_step == 0 or last_step == 1)) or
-                         (step == 5 and last_step == 0)) {
-                last_octave = boost::apply_visitor(set_octave(last_octave - 1),
-                                                   sign);
-              } else {
-                boost::apply_visitor(set_octave(last_octave), sign);
-              }
-              last_step = step;
-            }
-          }
-        }
-      }
+  if (interpretations.empty()) {
+    report_error(measure.id, L"No possible interpretations");
+  } else {
+    std::wstringstream s;
+    s << interpretations.size() << L" possible interpretations:";
+    BOOST_FOREACH(proxied_measure const& measure, interpretations) {
+      s << std::endl << measure;
     }
+    report_error(measure.id, s.str());
   }
-  return true;
+  return false;
 }
 
 }}
