@@ -87,17 +87,17 @@ struct get_octave : boost::static_visitor<int>
   result_type operator()(Sign const&) const { return -1; }
 };
 
-class set_octave : public boost::static_visitor<void>
+class set_octave : public boost::static_visitor<int>
 {
   unsigned octave;
 public:
   set_octave(unsigned octave) : octave(octave) {}
   result_type operator()(ambiguous::note& note) const
-  { note.real_octave = octave; }
+  { return note.real_octave = octave; }
   result_type operator()(ambiguous::chord& chord) const
-  { (*this)(chord.base); }
+  { return (*this)(chord.base); }
   template<typename Sign>
-  result_type operator()(Sign const&) const {}
+  result_type operator()(Sign const&) const { return -1; }
 };
 
 struct get_step : boost::static_visitor<int>
@@ -136,18 +136,14 @@ compiler::fill_octaves(ambiguous::measure& measure)
               int const step(boost::apply_visitor(get_step(), sign));
               if ((step == 0 && (last_step == 6 || last_step == 5)) ||
                   (step == 1 && last_step == 6)) {
-                int octave = last_octave + 1;
-                boost::apply_visitor(set_octave(octave), sign);
-                last_octave = octave;
+                last_octave = boost::apply_visitor(set_octave(last_octave + 1),
+                                                   sign);
               } else if ((step == 6 && (last_step == 0 || last_step == 1)) ||
                          (step == 5 && last_step == 0)) {
-                int octave = last_octave - 1;
-                boost::apply_visitor(set_octave(octave), sign);
-                last_octave = octave;
+                last_octave = boost::apply_visitor(set_octave(last_octave - 1),
+                                                   sign);
               } else {
-                int octave = last_octave;
-                boost::apply_visitor(set_octave(octave), sign);
-                last_octave = octave;
+                boost::apply_visitor(set_octave(last_octave), sign);
               }
               last_step = step;
             }
