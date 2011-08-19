@@ -13,7 +13,7 @@ namespace music {
 fluidsynth::fluidsynth(std::string const& soundfont)
 : settings(new_fluid_settings())
 , synth(new_fluid_synth(settings))
-, bpm(90)
+, bpm(80)
 {
   fluid_settings_setstr(settings, "audio.driver", "alsa");
   fluid_settings_setint(settings, "audio.jack.autoconnect", 1);
