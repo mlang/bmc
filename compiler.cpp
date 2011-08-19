@@ -14,6 +14,31 @@
 namespace music { namespace braille {
 
 compiler::result_type
+compiler::operator()(ambiguous::score& score)
+{
+  bool ok = true;
+
+  if (score.time_sig) {
+    global_time_signature = *(score.time_sig);
+  }
+
+  BOOST_FOREACH(ambiguous::part& part, score.parts)
+    BOOST_FOREACH(ambiguous::staff& staff, part)
+    {
+      ambiguous::staff::iterator iterator(staff.begin());
+      while (ok && iterator != staff.end())
+        ok = boost::apply_visitor(*this, *iterator++);
+
+      if (not anacrusis.empty()) return ok = false;
+
+      if (not ok) return false;
+
+      last_octave = -1, last_step = -1;
+    }
+  return ok;
+}
+
+compiler::result_type
 compiler::operator()(ambiguous::measure& measure)
 { return disambiguate(measure) && fill_octaves(measure); }
 
@@ -74,17 +99,19 @@ struct has_octave : boost::static_visitor<bool>
   result_type operator()(ambiguous::chord const& chord) const
   { return (*this)(chord.base); }
   template<typename Sign>
-  result_type operator()(Sign const&) const { return false; }
+  result_type operator()(Sign const&) const
+  { return false; }
 };
 
 struct get_octave : boost::static_visitor<int>
 {
   result_type operator()(ambiguous::note const& note) const
-  { return *note.octave; }
+  { return note.octave? *note.octave: -1; }
   result_type operator()(ambiguous::chord const& chord) const
   { return (*this)(chord.base); }
   template<typename Sign>
-  result_type operator()(Sign const&) const { return -1; }
+  result_type operator()(Sign const&) const
+  { return -1; }
 };
 
 class set_octave : public boost::static_visitor<int>
@@ -97,7 +124,8 @@ public:
   result_type operator()(ambiguous::chord& chord) const
   { return (*this)(chord.base); }
   template<typename Sign>
-  result_type operator()(Sign const&) const { return -1; }
+  result_type operator()(Sign const&) const
+  { BOOST_ASSERT(false); return -1; }
 };
 
 struct get_step : boost::static_visitor<int>
@@ -113,10 +141,8 @@ struct get_step : boost::static_visitor<int>
 compiler::result_type
 compiler::fill_octaves(ambiguous::measure& measure)
 {
-  bool octave_required = measure.voices.size() > 1;
   BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
     BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
-      octave_required = octave_required || part.size() > 1;
       BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
         bool first_pitched = true;
         BOOST_FOREACH(ambiguous::sign& sign, partial_voice) {
@@ -136,12 +162,12 @@ compiler::fill_octaves(ambiguous::measure& measure)
               last_step = boost::apply_visitor(get_step(), sign);
             } else {
               int const step(boost::apply_visitor(get_step(), sign));
-              if ((step == 0 && (last_step == 6 || last_step == 5)) ||
-                  (step == 1 && last_step == 6)) {
+              if ((step == 0 and (last_step == 6 or last_step == 5)) or
+                  (step == 1 and last_step == 6)) {
                 last_octave = boost::apply_visitor(set_octave(last_octave + 1),
                                                    sign);
-              } else if ((step == 6 && (last_step == 0 || last_step == 1)) ||
-                         (step == 5 && last_step == 0)) {
+              } else if ((step == 6 and (last_step == 0 or last_step == 1)) or
+                         (step == 5 and last_step == 0)) {
                 last_octave = boost::apply_visitor(set_octave(last_octave - 1),
                                                    sign);
               } else {
@@ -155,27 +181,6 @@ compiler::fill_octaves(ambiguous::measure& measure)
     }
   }
   return true;
-}
-
-compiler::result_type
-compiler::operator()(ambiguous::score& score)
-{
-  bool success = true;
-
-  if (score.time_sig) {
-    global_time_signature = *(score.time_sig);
-  }
-
-  BOOST_FOREACH(ambiguous::part& part, score.parts)
-    BOOST_FOREACH(ambiguous::staff& staff, part)
-    {
-      ambiguous::staff::iterator iterator(staff.begin());
-      while (success && iterator != staff.end()) 
-        success = boost::apply_visitor(*this, *iterator++);
-      if (not anacrusis.empty()) return false;
-      last_octave = -1, last_step = -1;
-    }
-  return success;
 }
 
 }}
