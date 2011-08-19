@@ -118,19 +118,21 @@ compiler::fill_octaves(ambiguous::measure& measure)
     BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
       octave_required = octave_required || part.size() > 1;
       BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
-        bool first = true;
+        bool first_pitched = true;
         BOOST_FOREACH(ambiguous::sign& sign, partial_voice) {
-          if (boost::apply_visitor(is_pitched(), sign) && first) {
-            if (not boost::apply_visitor(has_octave(), sign) && last_octave == -1) {
-              report_error(measure.id, L"Missing octave mark?");
-              return false;
-            }
-            first = false;
-          }
           if (boost::apply_visitor(is_pitched(), sign)) {
+            if (first_pitched) {
+              if (not boost::apply_visitor(has_octave(), sign) &&
+                  last_octave == -1) {
+                report_error(measure.id, L"Missing octave mark");
+                return false;
+              }
+              first_pitched = false;
+            }
+
             if (boost::apply_visitor(has_octave(), sign)) {
-              last_octave = boost::apply_visitor(get_octave(), sign);
-              boost::apply_visitor(set_octave(last_octave), sign);
+              set_octave const setter(boost::apply_visitor(get_octave(), sign));
+              last_octave = boost::apply_visitor(setter, sign);
               last_step = boost::apply_visitor(get_step(), sign);
             } else {
               int const step(boost::apply_visitor(get_step(), sign));
