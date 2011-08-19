@@ -81,7 +81,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   optional_dot = !dots_123 | &(brl(3) >> dots_123) > brl(3);
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(ambiguous::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(ambiguous::left_hand));
-  ending = brl(3456) >> lower_digit_sign;
+  ending = brl(3456) >> lower_digit_sign > optional_dot;
 
   boost::spirit::qi::on_success(start,
   				annotation_function(error_handler.iters)(_val, _1));
