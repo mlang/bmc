@@ -15,6 +15,10 @@ namespace music { namespace braille {
 
 compiler::result_type
 compiler::operator()(ambiguous::measure& measure)
+{ return disambiguate(measure) && fill_octaves(measure); }
+
+compiler::result_type
+compiler::disambiguate(ambiguous::measure& measure)
 {
   measure_interpretations interpretations(measure, global_time_signature);
 
@@ -55,6 +59,106 @@ compiler::operator()(ambiguous::measure& measure)
   return true;
 }
 
+struct is_pitched : boost::static_visitor<bool>
+{
+  result_type operator()(ambiguous::note const&) const { return true; }
+  result_type operator()(ambiguous::chord const&) const { return true; }
+  template<typename Sign>
+  result_type operator()(Sign const&) const { return false; }
+};
+
+struct has_octave : boost::static_visitor<bool>
+{
+  result_type operator()(ambiguous::note const& note) const
+  { return note.octave; }
+  result_type operator()(ambiguous::chord const& chord) const
+  { return (*this)(chord.base); }
+  template<typename Sign>
+  result_type operator()(Sign const&) const { return false; }
+};
+
+struct get_octave : boost::static_visitor<int>
+{
+  result_type operator()(ambiguous::note const& note) const
+  { return *note.octave; }
+  result_type operator()(ambiguous::chord const& chord) const
+  { return (*this)(chord.base); }
+  template<typename Sign>
+  result_type operator()(Sign const&) const { return -1; }
+};
+
+class set_octave : public boost::static_visitor<void>
+{
+  unsigned octave;
+public:
+  set_octave(unsigned octave) : octave(octave) {}
+  result_type operator()(ambiguous::note& note) const
+  { note.real_octave = octave; }
+  result_type operator()(ambiguous::chord& chord) const
+  { (*this)(chord.base); }
+  template<typename Sign>
+  result_type operator()(Sign const&) const {}
+};
+
+struct get_step : boost::static_visitor<int>
+{
+  result_type operator()(ambiguous::note const& note) const
+  { return note.step; }
+  result_type operator()(ambiguous::chord const& chord) const
+  { return (*this)(chord.base); }
+  template<typename Sign>
+  result_type operator()(Sign const&) const { return -1; }
+};
+
+compiler::result_type
+compiler::fill_octaves(ambiguous::measure& measure)
+{
+  bool octave_required = measure.voices.size() > 1;
+  BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
+    BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
+      octave_required = octave_required || part.size() > 1;
+      BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
+        bool first = true;
+        BOOST_FOREACH(ambiguous::sign& sign, partial_voice) {
+          if (boost::apply_visitor(is_pitched(), sign) && first) {
+            if (not boost::apply_visitor(has_octave(), sign) && last_octave == -1) {
+              report_error(measure.id, L"Missing octave mark?");
+              return false;
+            }
+            first = false;
+          }
+          if (boost::apply_visitor(is_pitched(), sign)) {
+            if (boost::apply_visitor(has_octave(), sign)) {
+              last_octave = boost::apply_visitor(get_octave(), sign);
+              boost::apply_visitor(set_octave(last_octave), sign);
+              last_step = boost::apply_visitor(get_step(), sign);
+            } else {
+              int const step(boost::apply_visitor(get_step(), sign));
+              if ((step == 0 && (last_step == 6 || last_step == 5)) ||
+                  (step == 1 && last_step == 6)) {
+                int octave = last_octave + 1;
+                boost::apply_visitor(set_octave(octave), sign);
+                last_octave = octave;
+              } else if ((step == 6 && (last_step == 0 || last_step == 1)) ||
+                         (step == 5 && last_step == 0)) {
+                int octave = last_octave - 1;
+                boost::apply_visitor(set_octave(octave), sign);
+                last_octave = octave;
+              } else {
+                int octave = last_octave;
+                boost::apply_visitor(set_octave(octave), sign);
+                last_octave = octave;
+              }
+              last_step = step;
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
 compiler::result_type
 compiler::operator()(ambiguous::score& score)
 {
@@ -71,6 +175,7 @@ compiler::operator()(ambiguous::score& score)
       while (success && iterator != staff.end()) 
         success = boost::apply_visitor(*this, *iterator++);
       if (not anacrusis.empty()) return false;
+      last_octave = -1, last_step = -1;
     }
   return success;
 }

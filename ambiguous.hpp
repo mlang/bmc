@@ -66,10 +66,13 @@ struct note : rhythmic_base, rhythmic
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave;
+  unsigned real_octave;
   diatonic_step step;
   std::vector<slur> slurs;
   std::list<fingering> fingers;
   bool tied;
+
+  note() : real_octave(0) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };

@@ -20,12 +20,16 @@ class compiler
 {
   boost::function<void(int tag, std::wstring const& what)> report_error;
   measure_interpretations anacrusis;
+  int last_octave;
+  int last_step;
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
   template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
-  : global_time_signature(4, 4), anacrusis()
+  : global_time_signature(4, 4)
+  , anacrusis()
+  , last_octave(-1), last_step(-1)
   {
     using boost::phoenix::arg_names::_1;
     using boost::phoenix::arg_names::_2;
@@ -36,6 +40,9 @@ public:
 
   result_type operator()(ambiguous::measure& measure);
   result_type operator()(ambiguous::score& score);
+private:
+  result_type disambiguate(ambiguous::measure& measure);
+  result_type fill_octaves(ambiguous::measure& measure);
 };
 
 }}
