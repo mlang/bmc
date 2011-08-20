@@ -57,11 +57,11 @@ public:
       note.real_octave = *note.octave;
     } else {
       if (prev) {
-        if ((note.step == 0 and (prev->step == 6 or prev->step == 5)) or
-            (note.step == 1 and prev->step == 6)) {
+        if ((note.step == C and (prev->step == B or prev->step == A)) or
+            (note.step == D and prev->step == B)) {
           note.real_octave = prev->real_octave + 1;
-        } else if ((note.step == 6 and (prev->step == 0 or prev->step == 1)) or
-                   (note.step == 5 and prev->step == 0)) {
+        } else if ((note.step == B and (prev->step == C or prev->step == D)) or
+                   (note.step == A and prev->step == C)) {
           note.real_octave = prev->real_octave - 1;
         } else {
           note.real_octave = prev->real_octave;
