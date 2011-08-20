@@ -16,26 +16,23 @@ namespace music { namespace braille {
 compiler::result_type
 compiler::operator()(ambiguous::score& score)
 {
-  bool ok = true;
-
   if (score.time_sig) {
     global_time_signature = *(score.time_sig);
   }
 
-  BOOST_FOREACH(ambiguous::part& part, score.parts)
-    BOOST_FOREACH(ambiguous::staff& staff, part)
-    {
+  BOOST_FOREACH(ambiguous::part& part, score.parts) {
+    BOOST_FOREACH(ambiguous::staff& staff, part) {
+      bool ok = true;
       ambiguous::staff::iterator iterator(staff.begin());
       while (ok && iterator != staff.end())
         ok = boost::apply_visitor(*this, *iterator++);
-
-      if (not anacrusis.empty()) return ok = false;
-
       if (not ok) return false;
 
+      if (not anacrusis.empty()) return false;
       calculate_octaves.clear();
     }
-  return ok;
+  }
+  return true;
 }
 
 compiler::result_type
