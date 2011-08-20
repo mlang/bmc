@@ -20,7 +20,6 @@ class octave_calculator : public boost::static_visitor<bool>
 {
   boost::function<void(int tag, std::wstring const& what)> const& report_error;
   ambiguous::note const* prev;
-  int measure_id;
 
 public:
   octave_calculator(boost::function< void(int tag
@@ -36,7 +35,6 @@ public:
 
   result_type operator()(ambiguous::measure& measure)
   {
-    measure_id = measure.id;
     BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
       BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
         BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
@@ -67,7 +65,7 @@ public:
           note.real_octave = prev->real_octave;
         }
       } else {
-        report_error(measure_id, L"Missing octave mark");
+        report_error(note.id, L"Missing octave mark");
         return false;
       }
     }
