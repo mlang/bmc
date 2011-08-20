@@ -19,7 +19,7 @@ namespace music { namespace braille {
 class octave_calculator : public boost::static_visitor<bool>
 {
   boost::function<void(int tag, std::wstring const& what)> const& report_error;
-  int last_octave, last_step;
+  ambiguous::note const* prev;
   int measure_id;
 
 public:
@@ -28,10 +28,11 @@ public:
                                    > const& report_error
                    )
   : report_error(report_error)
-  { clear(); }
+  , prev(0)
+  {}
 
   void clear()
-  { last_step = -1, last_octave = -1; }
+  { prev = 0; }
 
   result_type operator()(ambiguous::measure& measure)
   {
@@ -39,11 +40,11 @@ public:
     BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
       BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
         BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
-	  ambiguous::partial_voice::iterator iter = partial_voice.begin();
+          ambiguous::partial_voice::iterator iter = partial_voice.begin();
           bool ok = true;
           while (ok && iter != partial_voice.end())
             ok = boost::apply_visitor(*this, *iter++);
-	  if (not ok) return false;
+          if (not ok) return false;
         }
       }
     }
@@ -52,25 +53,25 @@ public:
 
   result_type operator()(ambiguous::note& note)
   {
-    if (not note.octave and last_octave == -1) {
-      report_error(measure_id, L"Missing octave mark");
-      return false;
-    }
-
     if (note.octave) {
-      last_octave = note.real_octave = *note.octave;
+      note.real_octave = *note.octave;
     } else {
-      if ((note.step == 0 and (last_step == 6 or last_step == 5)) or
-          (note.step == 1 and last_step == 6)) {
-        last_octave = note.real_octave = last_octave + 1;
-      } else if ((note.step == 6 and (last_step == 0 or last_step == 1)) or
-                 (note.step == 5 and last_step == 0)) {
-        last_octave = note.real_octave = last_octave - 1;
+      if (prev) {
+        if ((note.step == 0 and (prev->step == 6 or prev->step == 5)) or
+            (note.step == 1 and prev->step == 6)) {
+          note.real_octave = prev->real_octave + 1;
+        } else if ((note.step == 6 and (prev->step == 0 or prev->step == 1)) or
+                   (note.step == 5 and prev->step == 0)) {
+          note.real_octave = prev->real_octave - 1;
+        } else {
+          note.real_octave = prev->real_octave;
+        }
       } else {
-        note.real_octave = last_octave;
+        report_error(measure_id, L"Missing octave mark");
+        return false;
       }
     }
-    last_step = note.step;
+    prev = &note;
     return true;
   }
 
