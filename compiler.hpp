@@ -88,8 +88,6 @@ class compiler
   boost::function<void(int tag, std::wstring const& what)> report_error;
   measure_interpretations anacrusis;
   octave_calculator calculate_octaves;
-  int last_octave;
-  int last_step;
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
@@ -97,7 +95,6 @@ public:
   compiler(ErrorHandler& error_handler)
   : global_time_signature(4, 4)
   , anacrusis()
-  , last_octave(-1), last_step(-1)
   , calculate_octaves(report_error)
   {
     using boost::phoenix::arg_names::_1;
