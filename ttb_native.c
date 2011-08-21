@@ -24,24 +24,6 @@
 #include "ttb_compile.h"
 
 static int
-getByteOperand (DataFile *file, unsigned char *byte) {
-  DataString string;
-  const char *description = "local character";
-
-  if (getDataString(file, &string, 1, description)) {
-    if ((string.length == 1) && iswLatin1(string.characters[0])) {
-      *byte = string.characters[0];
-      return 1;
-    } else {
-      reportDataError(file, "invalid %s: %.*" PRIws,
-                      description, string.length, string.characters);
-    }
-  }
-
-  return 0;
-}
-
-static int
 getCharacterOperand (DataFile *file, wchar_t *character) {
   DataString string;
   const char *description = "unicode character";
@@ -127,22 +109,6 @@ getDotsOperand (DataFile *file, unsigned char *dots) {
 }
 
 static int
-processByteOperands (DataFile *file, void *data) {
-  TextTableData *ttd = data;
-  unsigned char byte;
-
-  if (getByteOperand(file, &byte)) {
-    unsigned char dots;
-
-    if (getDotsOperand(file, &dots)) {
-      if (!setTextTableByte(ttd, byte, dots)) return 0;
-    }
-  }
-
-  return 1;
-}
-
-static int
 processCharOperands (DataFile *file, void *data) {
   TextTableData *ttd = data;
   wchar_t character;
@@ -179,7 +145,6 @@ processTextTableLine (DataFile *file, void *data) {
   static const DataProperty properties[] = {
     {.name=WS_C("char"), .processor=processCharOperands},
     {.name=WS_C("glyph"), .processor=processGlyphOperands},
-    {.name=WS_C("byte"), .processor=processByteOperands},
     {.name=WS_C("include"), .processor=processIncludeOperands},
     {.name=NULL, .processor=NULL}
   };

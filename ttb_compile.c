@@ -193,17 +193,6 @@ unsetTextTableCharacter (TextTableData *ttd, wchar_t character) {
   }
 }
 
-int
-setTextTableByte (TextTableData *ttd, unsigned char byte, unsigned char dots) {
-  wint_t character = convertCharToWchar(byte);
-
-  if (character != WEOF)
-    if (!setTextTableCharacter(ttd, character, dots))
-      return 0;
-
-  return 1;
-}
-
 static TextTableData *
 newTextTableData (void) {
   TextTableData *ttd;
