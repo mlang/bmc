@@ -551,20 +551,23 @@ duration(proxied_measure const& voices)
 
 inline
 rational
+reciprocal(rational const& r)
+{ return rational(r.denominator(), r.numerator()); }
+
+inline
+rational
 harmonic_mean(proxied_measure const& measure)
 {
-  unsigned count = 0;
-  rational score(0);
+  unsigned n(0);
+  rational sum(0);
   BOOST_FOREACH(proxied_measure::const_reference voice, measure)
     BOOST_FOREACH(proxied_voice::const_reference part, voice)
       BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part)
         BOOST_FOREACH(proxied_partial_voice::const_reference value,
                       partial_voice) {
-          score += rational(rational(value).denominator(),
-                            rational(value).numerator());
-          ++count;
+          sum += reciprocal(value), ++n;
         }
-  return count / score;
+  return n / sum;
 }
 
 class measure_interpretations : public std::list<proxied_measure>
