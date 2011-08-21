@@ -6,7 +6,7 @@ CXXFLAGS=@CXXFLAGS@ -I$(BOOST_DIRECTORY)
 
 TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
 	charset.@OBJEXT@ dataarea.@OBJEXT@ datafile.@OBJEXT@ file.@OBJEXT@ \
-	log.@OBJEXT@ misc.@OBJEXT@ unicode.@OBJEXT@
+	log.@OBJEXT@ unicode.@OBJEXT@
 TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
 	tbl2hex.@OBJEXT@
 TEST_OBJECTS=test.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ \
