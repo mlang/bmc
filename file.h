@@ -39,7 +39,6 @@ extern int testPath (const char *path);
 extern int ensureDirectory (const char *path);
 
 extern char *getWorkingDirectory (void);
-extern int setWorkingDirectory (const char *directory);
 
 extern char *getHomeDirectory (void);
 extern char *getOverrideDirectory (void);

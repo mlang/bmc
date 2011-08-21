@@ -214,15 +214,6 @@ getWorkingDirectory (void) {
   return NULL;
 }
 
-int
-setWorkingDirectory (const char *directory) {
-  if (chdir(directory) != -1) return 1;                /* * change to directory containing data files  */
-  logMessage(LOG_WARNING, "%s: %s: %s",
-             gettext("cannot set working directory"),
-           directory, strerror(errno));
-  return 0;
-}
-
 char *
 getHomeDirectory (void) {
   char *path = getenv("HOME");
