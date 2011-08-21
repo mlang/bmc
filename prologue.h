@@ -69,57 +69,7 @@ extern "C" {
 #include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#ifdef __MINGW32__
-#if (__MINGW32_MAJOR_VERSION < 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 10))
-extern int gettimeofday (struct timeval *tvp, void *tzp);
-#endif /* gettimeofday */
-
-#if (__MINGW32_MAJOR_VERSION < 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 15))
-extern void usleep (int usec);
-#endif /* usleep */
-#endif /* __MINGW32__ */
-
-#ifdef __MSDOS__
-#include <stdarg.h>
-
-extern int snprintf (char *str, size_t size, const char *format, ...);
-extern int vsnprintf (char *str, size_t size, const char *format, va_list ap);
-
-#define lstat(file_name, buf) stat(file_name, buf)
-
-typedef unsigned char		uint8_t;
-typedef unsigned short		uint16_t;
-typedef unsigned long		uint32_t;
-typedef unsigned long long	uint64_t;
-typedef signed char		int8_t;
-typedef signed short		int16_t;
-typedef signed long		int32_t;
-typedef signed long long	int64_t;
-
-#define INT8_C(c)	c
-#define INT16_C(c)	c
-#define INT32_C(c)	c ## L
-#define INT64_C(c)	c ## LL
-
-#define UINT8_C(c)	c ## U
-#define UINT16_C(c)	c ## U
-#define UINT32_C(c)	c ## UL
-#define UINT64_C(c)	c ## ULL
-
-#define INTMAX_C(c)	c ## LL
-#define UINTMAX_C(c)	c ## ULL
-
-#define PRIu32 "lu"
-#define PRIX32 "lX"
-#define PRIu16 "u"
-#define PRIX16 "X"
-#define PRIu8 "u"
-#define PRIX8 "X"
-
-#else /* __MSDOS__ */
 #include <inttypes.h>
-#endif /* __MSDOS__ */
 
 #ifdef __MINGW32__
 typedef HANDLE FileDescriptor;
