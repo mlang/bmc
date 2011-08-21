@@ -28,7 +28,10 @@ compiler::operator()(ambiguous::score& score)
         ok = boost::apply_visitor(*this, *iterator++);
       if (not ok) return false;
 
-      if (not anacrusis.empty()) return false;
+      if (not anacrusis.empty()) {
+        std::wcout << L"Unfinished anacrusis" << std::endl;
+        return false;
+      }
       calculate_octaves.clear();
     }
   }
@@ -47,6 +50,7 @@ compiler::disambiguate(ambiguous::measure& measure)
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (anacrusis.empty()) {
+      report_error(measure.id, L"Saving anacrusis");
       anacrusis = interpretations;
       return true;
     } else {
@@ -75,7 +79,8 @@ compiler::disambiguate(ambiguous::measure& measure)
     std::wstringstream s;
     s << interpretations.size() << L" possible interpretations:";
     BOOST_FOREACH(proxied_measure const& measure, interpretations) {
-      s << std::endl << measure;
+      rational const score(harmonic_mean(measure));
+      s << std::endl << boost::rational_cast<float>(score) << L": " << measure;
     }
     report_error(measure.id, s.str());
   }

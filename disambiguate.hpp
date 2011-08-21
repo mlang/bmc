@@ -549,6 +549,24 @@ duration(proxied_measure const& voices)
   return value;
 }
 
+inline
+rational
+harmonic_mean(proxied_measure const& measure)
+{
+  unsigned count = 0;
+  rational score(0);
+  BOOST_FOREACH(proxied_measure::const_reference voice, measure)
+    BOOST_FOREACH(proxied_voice::const_reference part, voice)
+      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part)
+        BOOST_FOREACH(proxied_partial_voice::const_reference value,
+                      partial_voice) {
+          score += rational(rational(value).denominator(),
+                            rational(value).numerator());
+          ++count;
+        }
+  return count / score;
+}
+
 class measure_interpretations : public std::list<proxied_measure>
 {
   music::time_signature time_signature;
@@ -594,17 +612,38 @@ public:
     recurse(measure.voices.begin(), measure.voices.end(), value_type(),
             time_signature);
 
-    if (contains_complete_measure())
+    if (contains_complete_measure()) {
       for (iterator measure = begin(); measure != end();
            measure = duration(*measure) != time_signature?
                      erase(measure): ++measure);
+
+      if (size() > 1) {
+        rational best_score;
+        bool single_best_score = false;
+        BOOST_FOREACH(const_reference possibility, *this) {
+          rational score(harmonic_mean(possibility));
+          if (score > best_score) {
+            best_score = score; single_best_score = true;
+          } else if (score == best_score) {
+            single_best_score = false;
+          }
+        }
+        if (single_best_score) {
+          for (iterator measure = begin(); measure != end();
+               measure = harmonic_mean(*measure) < best_score * rational(3, 4)?
+                         erase(measure): ++measure);
+        }
+      }
+    }
   }
+
   bool contains_complete_measure() const {
     for (const_iterator measure = begin(); measure != end(); ++measure) {
       if (time_signature == duration(*measure)) return true;
     }
     return false;
   }
+
   bool completes_uniquely(measure_interpretations const& other) {
     int matches = 0;
     BOOST_FOREACH(const_reference lhs, *this) {
