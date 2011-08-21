@@ -25,7 +25,6 @@ extern "C" {
 
 extern void *mallocWrapper (size_t size);
 extern void *reallocWrapper (void *address, size_t size);
-extern char *strdupWrapper (const char *string);
 
 #ifdef __cplusplus
 }

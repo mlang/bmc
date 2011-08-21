@@ -212,7 +212,7 @@ getWcharCharset (void) {
 #endif /* WORDS_BIGENDIAN */
             );
 
-    wcharCharset = strdupWrapper(charset);
+    wcharCharset = strdup(charset);
   }
 
   return wcharCharset;

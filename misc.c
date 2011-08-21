@@ -42,10 +42,3 @@ reallocWrapper (void *address, size_t size) {
   if (!(address = realloc(address, size)) && size) noMemory();
   return address;
 }
-
-char *
-strdupWrapper (const char *string) {
-  char *address = strdup(string);
-  if (!address) noMemory();
-  return address;
-}
