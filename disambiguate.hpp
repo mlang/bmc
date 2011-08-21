@@ -632,8 +632,9 @@ public:
           }
         }
         if (single_best_score) {
+          rational const margin(2, 3);
           for (iterator measure = begin(); measure != end();
-               measure = harmonic_mean(*measure) < best_score * rational(2, 3)?
+               measure = harmonic_mean(*measure) < best_score * margin?
                          erase(measure): ++measure);
         }
       }
