@@ -32,7 +32,6 @@
 
 #include "file.h"
 #include "log.h"
-#include "misc.h"
 
 static char *
 joinStrings (const char *const *strings, int count) {
@@ -102,7 +101,7 @@ getPathDirectory (const char *path) {
 
   if (!length) length = strlen(path = ".");
   {
-    char *directory = mallocWrapper(length + 1);
+    char *directory = malloc(length + 1);
     if (directory) {
       memcpy(directory, path, length);
       directory[length] = 0;
@@ -310,7 +309,7 @@ readLine (FILE *file, char **buffer, size_t *size) {
 
   if (ferror(file)) return 0;
   if (feof(file)) return 0;
-  if (!*size) *buffer = mallocWrapper(*size = 0X80);
+  if (!*size) *buffer = malloc(*size = 0X80);
 
   if ((line = fgets(*buffer, *size, file))) {
     size_t length = strlen(line); /* Line length including new-line. */
@@ -319,7 +318,7 @@ readLine (FILE *file, char **buffer, size_t *size) {
     while (line[length-1] != '\n') {
       /* If necessary, extend the buffer. */
       if ((*size - (length + 1)) == 0)
-        *buffer = reallocWrapper(*buffer, (*size <<= 1));
+        *buffer = realloc(*buffer, (*size <<= 1));
 
       /* Read the rest of the line into the end of the buffer. */
       if (!(line = fgets(&(*buffer)[length], *size-length, file))) {
