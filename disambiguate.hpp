@@ -624,16 +624,16 @@ public:
         rational best_score;
         bool single_best_score = false;
         BOOST_FOREACH(const_reference possibility, *this) {
-          rational score(harmonic_mean(possibility));
+          rational const score(harmonic_mean(possibility));
           if (score > best_score) {
-            best_score = score; single_best_score = true;
+            best_score = score, single_best_score = true;
           } else if (score == best_score) {
             single_best_score = false;
           }
         }
         if (single_best_score) {
           for (iterator measure = begin(); measure != end();
-               measure = harmonic_mean(*measure) < best_score * rational(3, 4)?
+               measure = harmonic_mean(*measure) < best_score * rational(2, 3)?
                          erase(measure): ++measure);
         }
       }
