@@ -642,8 +642,8 @@ public:
   }
 
   bool contains_complete_measure() const {
-    for (const_iterator measure = begin(); measure != end(); ++measure) {
-      if (time_signature == duration(*measure)) return true;
+    BOOST_FOREACH(const_reference measure, *this) {
+      if (time_signature == duration(measure)) return true;
     }
     return false;
   }
