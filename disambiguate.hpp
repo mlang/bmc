@@ -22,8 +22,8 @@ enum value_category
 
 class value_proxy
 {
-  ambiguous::value value_type;
-  value_category category;
+  ambiguous::value value_type:4;
+  value_category category:4;
 
   rational undotted_duration() const
   {
