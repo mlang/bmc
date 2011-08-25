@@ -13,7 +13,7 @@ namespace music {
 fluidsynth::fluidsynth(std::string const& soundfont)
 : settings(new_fluid_settings())
 , synth(new_fluid_synth(settings))
-, bpm(80)
+, bpm(70)
 {
   fluid_settings_setstr(settings, "audio.driver", "alsa");
   fluid_settings_setint(settings, "audio.jack.autoconnect", 1);
@@ -92,7 +92,7 @@ public:
   result_type operator()(braille::ambiguous::note const& note) const
   {
     int const chromatic[7] = { 0, 2, 4, 6, 7, 9, 11 };
-    int octave = note.real_octave + 1;
+    int octave = note.octave + 1;
     int alter = 0;
     if (note.acc) {
       if (*note.acc == sharp) alter = 1;

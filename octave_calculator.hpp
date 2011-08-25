@@ -49,18 +49,18 @@ public:
 
   result_type operator()(ambiguous::note& note)
   {
-    if (note.octave) {
-      note.real_octave = *note.octave;
+    if (note.octave_spec) {
+      note.octave = *note.octave_spec;
     } else {
       if (prev) {
         if ((note.step == C and (prev->step == B or prev->step == A)) or
             (note.step == D and prev->step == B)) {
-          note.real_octave = prev->real_octave + 1;
+          note.octave = prev->octave + 1;
         } else if ((note.step == B and (prev->step == C or prev->step == D)) or
                    (note.step == A and prev->step == C)) {
-          note.real_octave = prev->real_octave - 1;
+          note.octave = prev->octave - 1;
         } else {
-          note.real_octave = prev->real_octave;
+          note.octave = prev->octave;
         }
       } else {
         report_error(note.id, L"Missing octave mark");

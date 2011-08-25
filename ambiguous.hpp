@@ -53,14 +53,14 @@ struct note : rhythmic_base, rhythmic
 {
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
-  boost::optional<unsigned> octave;
-  unsigned real_octave;
+  boost::optional<unsigned> octave_spec;
+  unsigned octave;
   diatonic_step step;
   std::vector<slur> slurs;
   std::list<fingering> fingers;
   bool tied;
 
-  note() : real_octave(0) {}
+  note() : octave(0) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
@@ -75,7 +75,7 @@ struct rest : rhythmic_base, rhythmic
 
 struct interval {
   boost::optional<accidental> acc;
-  boost::optional<unsigned> octave;
+  boost::optional<unsigned> octave_spec;
   music::interval steps;
   std::list<fingering> fingers;
 };
@@ -92,7 +92,7 @@ enum value_distinction { distinct, large_follows, small_follows };
 enum hand_sign { right_hand, left_hand };
 
 struct simile {
-  boost::optional<unsigned> octave;
+  boost::optional<unsigned> octave_spec;
 };
 
 enum barline { begin_repeat, end_repeat };
@@ -134,7 +134,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::note,
   (std::vector<music::articulation>, articulations)
   (boost::optional<music::accidental>, acc)
-  (boost::optional<unsigned>, octave)
+  (boost::optional<unsigned>, octave_spec)
   (music::diatonic_step, step)
   (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
@@ -145,7 +145,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::interval,
   (boost::optional<music::accidental>, acc)
-  (boost::optional<unsigned>, octave)
+  (boost::optional<unsigned>, octave_spec)
   (music::interval, steps)
   (std::list<music::braille::ambiguous::fingering>, fingers)
 )
@@ -157,7 +157,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::simile,
-  (boost::optional<unsigned>, octave)
+  (boost::optional<unsigned>, octave_spec)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
