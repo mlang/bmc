@@ -53,15 +53,15 @@ accidental_symbols accidental_sign;
 
 octave_symbols::octave_symbols()
 {
-  add(L"⠈⠈", 0)
-     (L"⠈", 1)
-     (L"⠘", 2)
-     (L"⠸", 3)
-     (L"⠐", 4)
-     (L"⠨", 5)
-     (L"⠰", 6)
-     (L"⠠", 7)
-     (L"⠠⠠", 8)
+  add(L"⠈⠈", 1)
+     (L"⠈", 2)
+     (L"⠘", 3)
+     (L"⠸", 4)
+     (L"⠐", 5)
+     (L"⠨", 6)
+     (L"⠰", 7)
+     (L"⠠", 8)
+     (L"⠠⠠", 9)
      ;
 }
 
