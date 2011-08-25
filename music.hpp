@@ -63,7 +63,17 @@ enum accidental {
 
 typedef signed short key_signature;
 
-enum ornament { appoggiatura };
+enum articulation {
+  appoggiatura, short_appoggiatura,
+  short_trill, extended_short_trill,
+  turn_between_notes, turn_above_or_below_note,
+  inverted_turn_between_notes, inverted_turn_above_or_below_note,
+  staccato, staccatissimo, mezzo_staccato,
+  agogic_accent, accent,
+  mordent, extended_mordent,
+  arpeggio_up, arpeggio_up_multi_staff,
+  arpeggio_down, arpeggio_down_multi_staff
+};
 
 enum interval { unison = 0, second = 1, third = 2, fourth = 3, fifth = 4, sixth = 5, seventh = 6, octave = 7 };
 

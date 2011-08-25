@@ -242,14 +242,12 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(ambiguous::simile&) {}
     bool is_grace(ambiguous::note const& note) const
     {
-      return std::find(note.articulations.begin(),
-                       note.articulations.end(),
-                       ambiguous::appoggiatura)
+      return std::find(note.articulations.begin(), note.articulations.end(),
+                       appoggiatura)
              != note.articulations.end()
              ||
-             std::find(note.articulations.begin(),
-                       note.articulations.end(),
-                      ambiguous::short_appoggiatura)
+             std::find(note.articulations.begin(), note.articulations.end(),
+                      short_appoggiatura)
              != note.articulations.end();
     }
     bool is_grace(ambiguous::rest const& rest) const

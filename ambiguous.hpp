@@ -44,18 +44,6 @@ struct rhythmic
   virtual rational as_rational() const = 0;
 };
 
-enum articulation {
-  appoggiatura, short_appoggiatura,
-  short_trill, extended_short_trill,
-  turn_between_notes, turn_above_or_below_note,
-  inverted_turn_between_notes, inverted_turn_above_or_below_note,
-  staccato, staccatissimo, mezzo_staccato,
-  agogic_accent, accent,
-  mordent, extended_mordent,
-  arpeggio_up, arpeggio_up_multi_staff,
-  arpeggio_down, arpeggio_down_multi_staff
-};
-
 typedef std::pair<unsigned, unsigned> finger_change;
 typedef boost::variant<unsigned, finger_change> fingering;
 
@@ -144,7 +132,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::note,
-  (std::vector<music::braille::ambiguous::articulation>, articulations)
+  (std::vector<music::articulation>, articulations)
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave)
   (music::diatonic_step, step)
