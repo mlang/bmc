@@ -75,7 +75,16 @@ enum articulation {
   arpeggio_down, arpeggio_down_multi_staff
 };
 
-enum interval { unison = 0, second = 1, third = 2, fourth = 3, fifth = 4, sixth = 5, seventh = 6, octave = 7 };
+enum interval {
+  unison = 0,
+  second = 1,
+  third = 2,
+  fourth = 3,
+  fifth = 4,
+  sixth = 5,
+  seventh = 6,
+  octave = 7
+};
 
 }
 
