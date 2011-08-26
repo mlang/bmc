@@ -21,9 +21,9 @@ enum value
   whole_or_16th, half_or_32th, quarter_or_64th, eighth_or_128th, unknown
 };
 
-struct pitch_and_value {
-  pitch_and_value() {}
-  pitch_and_value(diatonic_step step, value val) : step(step), value_(val) {}
+struct step_and_value {
+  step_and_value() {}
+  step_and_value(diatonic_step step, value val) : step(step), value_(val) {}
   diatonic_step step;
   value value_;
 };
@@ -121,7 +121,7 @@ struct score {
 }}}
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::pitch_and_value,
+  music::braille::ambiguous::step_and_value,
   (music::diatonic_step, step)
   (music::braille::ambiguous::value, value_)
 )

@@ -54,11 +54,11 @@ struct octave_symbols : brl_symbols<unsigned>
 };
 extern octave_symbols octave_sign;
 
-struct pitch_and_value_symbols : brl_symbols<ambiguous::pitch_and_value>
+struct step_and_value_symbols : brl_symbols<ambiguous::step_and_value>
 {
-  pitch_and_value_symbols();
+  step_and_value_symbols();
 };
-extern pitch_and_value_symbols pitch_and_value_sign;
+extern step_and_value_symbols step_and_value_sign;
 
 struct rest_symbols : brl_symbols<ambiguous::value>
 {
