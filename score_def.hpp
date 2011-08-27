@@ -45,10 +45,10 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_val_type _val;
   solo_part = eps[resize(_val, 1)] >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))] > eom > -eol;
   keyboard_paragraph = eps[resize(_val, 2)]
-  >> right_hand_sign
+  >> space >> space >> right_hand_sign
   >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
   >> eol
-  >> left_hand_sign
+  >> space >> space >> left_hand_sign
   > staff[insert(back(_val), end(back(_val)), begin(_1), end(_1))]
   > eol
   ;
@@ -57,15 +57,15 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
                                 begin(front(_1)), end(front(_1))),
                          insert(back(_val), end(back(_val)),
                                 begin(back(_1)), end(back(_1)))]
-  >> right_hand_sign
+  >> space >> space >> right_hand_sign
   >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
   > eom > eol
-  > left_hand_sign
+  > space > space > left_hand_sign
   > staff[insert(back(_val), end(back(_val)), begin(_1), end(_1))]
   > eom > -eol
   ;
   music::braille::brl_type brl;
-  staff = (!(right_hand_sign | left_hand_sign) >> measure) % (space | brl(0) | eol);
+  staff = measure % (space | brl(0) | eol);
 
   right_hand_sign = brl(46) >> brl(345) > optional_dot;
   left_hand_sign = brl(456) >> brl(345) > optional_dot;

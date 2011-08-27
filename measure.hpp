@@ -34,7 +34,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
   boost::spirit::qi::rule<Iterator, ambiguous::slur()> slur_sign;
   boost::spirit::qi::rule<Iterator>
-  fmia_separator, pmia_sign, pmia_voice_sign, optional_dot, whitespace;
+  fmia_separator, pmia_sign, pmia_voice_sign, optional_dot, whitespace, newline;
   lower_number_grammar<Iterator> lower_number;
   boost::spirit::qi::rule<Iterator, unsigned()> ending;
 };

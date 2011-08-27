@@ -32,7 +32,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   start = -ending >> (fmia % fmia_separator);
   fmia = pmia % pmia_sign;
   pmia = pmia_voice % pmia_voice_sign;
-  pmia_voice = +( chord | note | rest
+  pmia_voice = +( newline
+                | chord | note | rest
 		| value_distinction_sign
 		| hand_sign
 		| simile
@@ -75,14 +76,15 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   whitespace = space | brl(0);
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 
-  fmia_separator = brl(126) >> brl(345) >> -(+eol >> *whitespace);
-  pmia_sign = brl(46) >> brl(13) >> -(+eol >> *whitespace);
-  pmia_voice_sign = brl(5) >> brl(2) >> -(+eol >> *whitespace);
+  fmia_separator = brl(126) >> brl(345) >> -+eol;
+  pmia_sign = brl(46) >> brl(13) >> -+eol;
+  pmia_voice_sign = brl(5) >> brl(2) >> -+eol;
   optional_dot = !dots_123 | &(brl(3) >> dots_123) > brl(3);
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(ambiguous::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(ambiguous::left_hand));
   ending = brl(3456) >> lower_digit_sign > optional_dot;
 
+  newline = brl(5) >> eol;
   boost::spirit::qi::on_success(start,
   				annotation_function(error_handler.iters)(_val, _1));
   boost::spirit::qi::on_success(note,
