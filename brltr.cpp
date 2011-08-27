@@ -69,7 +69,8 @@ findTableByLocale() {
 
 using namespace std;
 
-void translate(wistream &in, wostream &out, bool six_dots = false) {
+static void
+translate(wistream &in, wostream &out, bool six_dots = false) {
   istreambuf_iterator<wchar_t> end;
   for (istreambuf_iterator<wchar_t> iter = in.rdbuf(); iter != end; ++iter) {
     wchar_t character(*iter);
