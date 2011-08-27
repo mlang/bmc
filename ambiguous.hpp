@@ -21,19 +21,13 @@ enum value
   whole_or_16th, half_or_32th, quarter_or_64th, eighth_or_128th, unknown
 };
 
-struct step_and_value {
-  step_and_value() {}
-  step_and_value(diatonic_step step, value val) : step(step), value_(val) {}
-  diatonic_step step;
-  value value_;
-};
-
 struct locatable
 {
   std::size_t id;
 };
 
-struct rhythmic_base : locatable {
+struct rhythmic_base : locatable
+{
   value ambiguous_value;
   unsigned dots;
   rational type;
@@ -120,11 +114,6 @@ struct score {
 
 }}}
 
-BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::step_and_value,
-  (music::diatonic_step, step)
-  (music::braille::ambiguous::value, value_)
-)
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::rest,
   (music::braille::ambiguous::value, ambiguous_value)

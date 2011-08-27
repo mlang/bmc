@@ -54,7 +54,8 @@ struct octave_symbols : brl_symbols<unsigned>
 };
 extern octave_symbols octave_sign;
 
-struct step_and_value_symbols : brl_symbols<ambiguous::step_and_value>
+struct step_and_value_symbols
+: brl_symbols< std::pair<diatonic_step, ambiguous::value> >
 {
   step_and_value_symbols();
 };
