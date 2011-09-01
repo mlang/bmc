@@ -4,7 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include <boost/spirit/home/support/info.hpp>
+#include <boost/spirit/include/support_info.hpp>
 #include <boost/locale/encoding_utf.hpp>
 
 // See https://svn.boost.org/trac/boost/ticket/5716
