@@ -35,6 +35,32 @@ lower_number_grammar<Iterator>::lower_number_grammar()
 }
 
 template <typename Iterator>
+key_signature_grammar<Iterator>::key_signature_grammar()
+: key_signature_grammar::base_type(start)
+{
+  boost::spirit::qi::_pass_type _pass;
+  boost::spirit::qi::_val_type _val;
+  boost::spirit::qi::_1_type _1;
+  boost::spirit::qi::eps_type eps;
+  boost::spirit::qi::attr_type attr;
+  boost::spirit::qi::repeat_type repeat;
+  using boost::phoenix::size;
+  brl_type brl;
+
+  start = repeat(1, 3)[sharp_sign] [_val = size(_1)]
+        | brl(3456) >> upper_number[_pass = _1 > unsigned(2),
+                                    _val = _1] >> sharp_sign
+        | repeat(1, 3)[flat_sign]  [_val = -size(_1)]
+        | brl(3456) >> upper_number[_pass = _1 > unsigned(2),
+                                    _val = -_1] >> flat_sign
+        | eps                        [_val = 0]
+        ;
+
+  flat_sign = brl(126) >> attr(-1);
+  sharp_sign = brl(146) >> attr(1);
+}
+
+template <typename Iterator>
 time_signature_grammar<Iterator>::time_signature_grammar()
 : time_signature_grammar::base_type(start)
 {
