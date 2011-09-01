@@ -13,6 +13,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
+#include "spirit_info_wchar_t_io.hpp"
 
 namespace music { namespace braille {
 
@@ -43,7 +44,9 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
-  solo_part = eps[resize(_val, 1)] >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))] > eom > -eol;
+  solo_part = eps[resize(_val, 1)]
+           >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
+           > eom > -eol;
   keyboard_paragraph = eps[resize(_val, 2)]
   >> space >> space >> right_hand_sign
   >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
@@ -75,7 +78,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 
   boost::spirit::qi::on_error<boost::spirit::qi::fail>(start,
     error_handler_function(error_handler)
-    (L"error: expecting ", L"<something>"/*_4*/, _3));
+    (L"error: expecting ", _4, _3));
 }
 
 }}
