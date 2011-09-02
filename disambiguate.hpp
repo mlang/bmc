@@ -350,7 +350,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
         if (possibilities.empty()) {
           recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
-          BOOST_FOREACH(large_and_small::const_reference value, possibilities) {
+          for(large_and_small::const_reference value: possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
               recurse(tail, end, stack_begin, stack_end + 1,
@@ -382,7 +382,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
         if (possibilities.empty()) {
           recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
-          BOOST_FOREACH(large_and_small::const_reference value, possibilities) {
+          for(large_and_small::const_reference value: possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
               recurse(tail, end, stack_begin, stack_end + 1,
@@ -423,23 +423,29 @@ class partial_measure_interpretations
 {
   void recurse( ambiguous::partial_measure::iterator const& begin
               , ambiguous::partial_measure::iterator const& end
-              , const_reference stack
+              , proxied_partial_voice const *stack_begin[]
+              , proxied_partial_voice const **stack_end
               , rational const& length
               , rational const& position
               , music::time_signature const& time_sig
               )
   {
     if (begin == end) {
-      if (not stack.empty()) emplace_back(stack);
+      if (stack_begin != stack_end) {
+        emplace_back();
+        value_type& partial_measure = back();
+        for (proxied_partial_voice const **iter = stack_begin;
+             iter != stack_end; ++iter) {
+          partial_measure.emplace_back(**iter);
+        }
+      }
     } else {
       ambiguous::partial_measure::iterator const tail = begin + 1;
-      BOOST_FOREACH(partial_voice_interpretations::const_reference possibility,
-                    partial_voice_interpretations(*begin,
-                                                  length, position, time_sig)) {
-        if (stack.empty() or duration(possibility) == length) {
-          value_type new_stack(stack);
-          new_stack.emplace_back(possibility);
-          recurse(tail, end, new_stack,
+      for(partial_voice_interpretations::const_reference possibility:
+          partial_voice_interpretations(*begin, length, position, time_sig)) {
+        if (stack_begin == stack_end or duration(possibility) == length) {
+          *stack_end = &possibility;
+          recurse(tail, end, stack_begin, stack_end + 1,
                   duration(possibility), position, time_sig);
         }
       }
@@ -452,8 +458,9 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
+    proxied_partial_voice const *stack[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
-            value_type(), max_length, position, time_sig);
+            &stack[0], &stack[0], max_length, position, time_sig);
   }
 };
 
@@ -484,26 +491,45 @@ rational
 duration(proxied_voice const& parts)
 { return boost::accumulate(parts, zero); }
 
+inline
+rational
+operator+(rational const& r, proxied_partial_measure const *part)
+{ return r + duration(*part); }
+
+inline
+rational
+duration( proxied_partial_measure const **begin
+        , proxied_partial_measure const **end
+        )
+{ return std::accumulate(begin, end, zero); }
+
 class voice_interpretations : public std::vector<proxied_voice>
 {
   void recurse( ambiguous::voice::iterator const& begin
               , ambiguous::voice::iterator const& end
-              , const_reference stack
+              , proxied_partial_measure const *stack_begin[]
+              , proxied_partial_measure const **stack_end
               , rational const& max_length
               , music::time_signature const& time_sig
               )
   {
     if (begin == end) {
-      if (not stack.empty()) emplace_back(stack);
+      if (stack_begin != stack_end) {
+        emplace_back();
+        value_type& partial_voice = back();
+        for (proxied_partial_measure const **part = stack_begin;
+             part != stack_end; ++part) {
+          partial_voice.emplace_back(**part);
+        }
+      }
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
-      BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
-                    partial_measure_interpretations(*begin, max_length,
-                                                    duration(stack),
-                                                    time_sig)) {
-        value_type new_stack(stack);
-        new_stack.emplace_back(possibility);
-        recurse(tail, end, new_stack,
+      for(partial_measure_interpretations::const_reference possibility:
+          partial_measure_interpretations(*begin, max_length,
+                                          duration(stack_begin, stack_end),
+                                          time_sig)) {
+        *stack_end = &possibility;
+        recurse(tail, end, stack_begin, stack_end + 1,
                 max_length - duration(possibility), time_sig);
       }
     }
@@ -514,7 +540,12 @@ public:
                        , rational const& max_length
                        , music::time_signature const& time_sig
                        )
-  { recurse(voice.begin(), voice.end(), value_type(), max_length, time_sig); }
+  {
+    proxied_partial_measure const *stack[voice.size()];
+    recurse(voice.begin(), voice.end(),
+            &stack[0], &stack[0],
+            max_length, time_sig);
+  }
 };
 
 typedef std::vector<proxied_voice> proxied_measure;
@@ -561,20 +592,27 @@ class measure_interpretations : public std::list<proxied_measure>
 
   void recurse( std::vector<ambiguous::voice>::iterator const& begin
               , std::vector<ambiguous::voice>::iterator const& end
-              , const_reference stack
+              , proxied_voice const *stack_begin[]
+              , proxied_voice const **stack_end
               , rational const& length
               )
   {
     if (begin == end) {
-      if (not stack.empty()) emplace_back(stack);
+      if (stack_begin != stack_end) {
+        emplace_back();
+        value_type& measure = back();
+        for (proxied_voice const **voice = stack_begin; voice != stack_end;
+             ++voice) {
+          measure.emplace_back(**voice);
+        }
+      }
     } else {
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
-      BOOST_FOREACH(voice_interpretations::const_reference possibility,
-                    voice_interpretations(*begin, length, time_signature)) {
-        if (stack.empty() or duration(possibility) == length) {
-          value_type new_stack(stack);
-          new_stack.emplace_back(possibility);
-          recurse(tail, end, new_stack, duration(possibility));
+      for(voice_interpretations::const_reference possibility:
+          voice_interpretations(*begin, length, time_signature)) {
+        if (stack_begin == stack_end or duration(possibility) == length) {
+          *stack_end = &possibility;
+          recurse(tail, end, stack_begin, stack_end + 1, duration(possibility));
         }
       }
     }
@@ -597,7 +635,9 @@ public:
   : time_signature(time_signature)
   {
     BOOST_ASSERT(time_signature >= 0);
-    recurse(measure.voices.begin(), measure.voices.end(), value_type(),
+    proxied_voice const *stack[measure.voices.size()];
+    recurse(measure.voices.begin(), measure.voices.end(),
+            &stack[0], &stack[0],
             time_signature);
 
     if (contains_complete_measure()) {
