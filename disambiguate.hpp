@@ -12,6 +12,7 @@
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
+#include <memory>
 
 namespace music { namespace braille {
 
@@ -128,7 +129,8 @@ inline rational
 duration(proxied_partial_voice const& values)
 { return boost::accumulate(values, zero); }
 
-class partial_voice_interpretations : public std::vector<proxied_partial_voice>
+class partial_voice_interpretations
+: public std::vector< std::shared_ptr<proxied_partial_voice> >
 {
   class is_value_distinction : public boost::static_visitor<bool>
   {
@@ -328,7 +330,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
               )
   {
     if (begin == end) {
-      emplace_back(stack_begin, stack_end);
+      emplace_back(new proxied_partial_voice(stack_begin, stack_end));
     } else {
       ambiguous::partial_voice::iterator tail;
       if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
@@ -338,8 +340,8 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
           if (group_duration <= max_duration and
               on_beat(position + group_duration)) {
             recurse(tail, end,
-                    stack_begin,
-                    std::copy(group.begin(), group.end(), stack_end),
+                    stack_begin, std::copy(group.begin(), group.end(),
+                                           stack_end),
                     max_duration - group_duration,
                     position + group_duration);
           }
@@ -350,7 +352,7 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
         if (possibilities.empty()) {
           recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
-          for(large_and_small::const_reference value: possibilities) {
+          for(large_and_small::const_reference value : possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
               recurse(tail, end, stack_begin, stack_end + 1,
@@ -416,37 +418,30 @@ public:
   }
 };
 
-typedef std::vector<proxied_partial_voice> proxied_partial_measure;
+typedef std::vector< std::shared_ptr<proxied_partial_voice const> > proxied_partial_measure;
 
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure>
 {
   void recurse( ambiguous::partial_measure::iterator const& begin
               , ambiguous::partial_measure::iterator const& end
-              , proxied_partial_voice const *stack_begin[]
-              , proxied_partial_voice const **stack_end
+              , std::shared_ptr<proxied_partial_voice const> stack_begin[]
+              , std::shared_ptr<proxied_partial_voice const> *stack_end
               , rational const& length
               , rational const& position
               , music::time_signature const& time_sig
               )
   {
     if (begin == end) {
-      if (stack_begin != stack_end) {
-        emplace_back();
-        value_type& partial_measure = back();
-        for (proxied_partial_voice const **iter = stack_begin;
-             iter != stack_end; ++iter) {
-          partial_measure.emplace_back(**iter);
-        }
-      }
+      if (stack_begin != stack_end) emplace_back(stack_begin, stack_end);
     } else {
       ambiguous::partial_measure::iterator const tail = begin + 1;
       for(partial_voice_interpretations::const_reference possibility:
           partial_voice_interpretations(*begin, length, position, time_sig)) {
-        if (stack_begin == stack_end or duration(possibility) == length) {
-          *stack_end = &possibility;
+        if (stack_begin == stack_end or duration(*possibility) == length) {
+          *stack_end = possibility;
           recurse(tail, end, stack_begin, stack_end + 1,
-                  duration(possibility), position, time_sig);
+                  duration(*possibility), position, time_sig);
         }
       }
     }
@@ -458,9 +453,10 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    proxied_partial_voice const *stack[partial_measure.size()];
+    std::shared_ptr<proxied_partial_voice const> stack[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
-            &stack[0], &stack[0], max_length, position, time_sig);
+            &stack[0], &stack[0],
+            max_length, position, time_sig);
   }
 };
 
@@ -470,10 +466,10 @@ duration(proxied_partial_measure const& voices)
 {
   rational value(0);
   if (not voices.empty()) {
-    value = duration(voices.front());
+    value = duration(*voices.front());
     for (proxied_partial_measure::const_iterator
          voice = voices.begin() + 1; voice != voices.end(); ++voice) {
-      BOOST_ASSERT(value == duration(*voice));
+      BOOST_ASSERT(value == duration(**voice));
     }
   }
   return value;
@@ -574,13 +570,12 @@ inline
 rational
 harmonic_mean(proxied_measure const& measure)
 {
-  unsigned n(0);
+  rational::int_type n(0);
   rational sum(0);
-  BOOST_FOREACH(proxied_measure::const_reference voice, measure)
-    BOOST_FOREACH(proxied_voice::const_reference part, voice)
-      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part)
-        BOOST_FOREACH(proxied_partial_voice::const_reference value,
-                      partial_voice) {
+  for(proxied_measure::const_reference voice: measure)
+    for(proxied_voice::const_reference part: voice)
+      for(proxied_partial_measure::const_reference partial_voice: part)
+        for(proxied_partial_voice::const_reference value: *partial_voice) {
           sum += reciprocal(value), ++n;
         }
   return n / sum;
@@ -686,12 +681,12 @@ public:
 
 inline
 void
-accept(proxied_measure& measure)
+accept(proxied_measure const& measure)
 {
-  BOOST_FOREACH(proxied_measure::reference voice, measure)
-    BOOST_FOREACH(proxied_voice::reference part, voice)
-      BOOST_FOREACH(proxied_partial_measure::reference partial_voice, part)
-        BOOST_FOREACH(proxied_partial_voice::reference value, partial_voice)
+  BOOST_FOREACH(proxied_measure::const_reference voice, measure)
+    BOOST_FOREACH(proxied_voice::const_reference part, voice)
+      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part)
+        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice)
           value.accept();
 }
 
@@ -705,7 +700,7 @@ operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
       os << '{';
       BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, part) {
         os << '(';
-        BOOST_FOREACH(proxied_partial_voice::const_reference value, partial_voice) {
+        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice) {
           os << '<' << rational(value).numerator() << '/' << rational(value).denominator() << '>';
         }
         os << ')';
