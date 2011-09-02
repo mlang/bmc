@@ -55,6 +55,7 @@ class value_proxy
   bool* whole_measure_rest;
 
 public:
+  value_proxy() {}
   value_proxy(ambiguous::note& note, value_category const& category)
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , duration(calculate_duration())
@@ -232,8 +233,8 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(Value& value)
     {
       if (not is_grace(value)) {
-        push_back(value_type(value, large));
-        push_back(value_type(value, small));
+        emplace_back(value, large);
+        emplace_back(value, small);
       }
     }
     result_type operator()(ambiguous::value_distinction&) {}
@@ -272,17 +273,17 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     result_type operator()(ambiguous::note& note)
     {
       if (type == ambiguous::unknown) type = note.ambiguous_value;
-      push_back(value_proxy(note, category, type));
+      emplace_back(note, category, type);
     }
     result_type operator()(ambiguous::rest& rest)
     {
       if (type == ambiguous::unknown) type = rest.ambiguous_value;
-      push_back(value_proxy(rest, category, type));
+      emplace_back(rest, category, type);
     }
     result_type operator()(ambiguous::chord& chord)
     {
       if (type == ambiguous::unknown) type = chord.base.ambiguous_value;
-      push_back(value_proxy(chord, category, type));
+      emplace_back(chord, category, type);
     }
     result_type operator()(ambiguous::value_distinction&) {}
     result_type operator()(ambiguous::hand_sign&) {}
@@ -303,70 +304,57 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
 
     result_type operator()(ambiguous::note& note)
-    { push_back(value_proxy(note, category)); }
+    { emplace_back(note, category); }
     result_type operator()(ambiguous::rest& rest)
-    { push_back(value_proxy(rest, category)); }
+    { emplace_back(rest, category); }
     result_type operator()(ambiguous::chord& chord)
-    { push_back(value_proxy(chord, category)); }
+    { emplace_back(chord, category); }
 
     template<typename Sign> result_type operator()(Sign const&)
     { BOOST_ASSERT(false); }
   };
 
+  music::time_signature const& time_signature;
+  bool on_beat(rational const& position) const {
+    return position % rational(1, time_signature.denominator()) == zero;
+  }
+
   void recurse( ambiguous::partial_voice::iterator begin
               , ambiguous::partial_voice::iterator const& end
-              , const_reference stack
+              , value_proxy stack_begin[]
+              , value_proxy *stack_end
               , rational const& max_duration
               , rational const& position
-              , music::time_signature const& time_sig
               )
   {
     if (begin == end) {
-      push_back(stack);
+      emplace_back(stack_begin, stack_end);
     } else {
       ambiguous::partial_voice::iterator tail;
-      if (position % rational(1, time_sig.denominator()) == zero &&
-          (tail = notegroup_end(begin, end)) > begin) {
+      if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
         while (std::distance(begin, tail) >= 3) {
-          { // Large group
-            notegroup const group(begin, tail, large);
-            rational const group_duration(duration(group));
-            if (group_duration <= max_duration &&
-                (position + group_duration) % rational(1, time_sig.denominator()) == zero) {
-              value_type new_stack(stack);
-              boost::range::insert(new_stack, new_stack.end(), group);
-              recurse(tail, end, new_stack,
-                      max_duration - group_duration,
-                      position + group_duration,
-                      time_sig);
-            }
-          }
-          { // Small group
-            notegroup const group(begin, tail, small);
-            rational const group_duration(duration(group));
-            if (group_duration <= max_duration &&
-                (position + group_duration) % rational(1, time_sig.denominator()) == zero) {
-              value_type new_stack(stack);
-              boost::range::insert(new_stack, new_stack.end(), group);
-              recurse(tail, end, new_stack,
-                      max_duration - group_duration,
-                      position + group_duration,
-                      time_sig);
-            }
+          notegroup const group(begin, tail, small);
+          rational const group_duration(duration(group));
+          if (group_duration <= max_duration and
+              on_beat(position + group_duration)) {
+            recurse(tail, end,
+                    stack_begin,
+                    std::copy(group.begin(), group.end(), stack_end),
+                    max_duration - group_duration,
+                    position + group_duration);
           }
           --tail;
         }
         large_and_small const possibilities(*begin);
         tail = begin; ++tail;
         if (possibilities.empty()) {
-          recurse(tail, end, stack, max_duration, position, time_sig);
+          recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
           BOOST_FOREACH(large_and_small::const_reference value, possibilities) {
             if (value <= max_duration) {
-              value_type new_stack(stack);
-              new_stack.push_back(value);
-              recurse(tail, end, new_stack,
-                      max_duration - value, position + value, time_sig);
+              *stack_end = value;
+              recurse(tail, end, stack_begin, stack_end + 1,
+                      max_duration - value, position + value);
             }
           }
         }
@@ -374,44 +362,40 @@ class partial_voice_interpretations : public std::vector<proxied_partial_voice>
                                            ambiguous::large_follows)) > begin) {
         same_category const group(begin, tail, large);
         if (duration(group) <= max_duration) {
-          value_type new_stack(stack);
-          boost::range::insert(new_stack, new_stack.end(), group);
-          recurse(tail, end, new_stack,
+          recurse(tail, end,
+                  stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
-                  position + duration(group), time_sig);
+                  position + duration(group));
         }
       } else if ((tail = same_category_end(begin, end,
                                            ambiguous::small_follows)) > begin) {
         same_category const group(begin, tail, small);
         if (duration(group) <= max_duration) {
-          value_type new_stack(stack);
-          boost::range::insert(new_stack, new_stack.end(), group);
-          recurse(tail, end, new_stack,
+          recurse(tail, end,
+                  stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
-                  position + duration(group), time_sig);
+                  position + duration(group));
         }
       } else {
         large_and_small const possibilities(*begin);
         tail = begin; ++tail;
         if (possibilities.empty()) {
-          recurse(tail, end, stack, max_duration, position, time_sig);
+          recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
           BOOST_FOREACH(large_and_small::const_reference value, possibilities) {
             if (value <= max_duration) {
-              value_type new_stack(stack);
-              new_stack.push_back(value);
-              recurse(tail, end, new_stack,
-                      max_duration - value, position + value, time_sig);
+              *stack_end = value;
+              recurse(tail, end, stack_begin, stack_end + 1,
+                      max_duration - value, position + value);
             }
           }
         }
 
-        if (stack.empty() && position == 0 && time_sig != 1 &&
+        if (stack_begin == stack_end && position == 0 && time_signature != 1 &&
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
-          value_type new_stack;
-          new_stack.push_back(boost::apply_visitor(make_whole_measure_rest(time_sig), *begin));
-          recurse(tail, end, new_stack,
-                  zero, position + max_duration, time_sig);
+          *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
+          recurse(tail, end, stack_begin, stack_end + 1,
+                  zero, position + max_duration);
         }
       }
     }
@@ -423,9 +407,12 @@ public:
                                , rational const& position
                                , music::time_signature const& time_sig
                                )
+  : time_signature(time_sig)
   {
-    recurse(voice.begin(), voice.end(), value_type(),
-            max_duration, position, time_sig);
+    value_proxy stack[voice.size()];
+    recurse(voice.begin(), voice.end(),
+            &stack[0], &stack[0],
+            max_duration, position);
   }
 };
 
@@ -443,7 +430,7 @@ class partial_measure_interpretations
               )
   {
     if (begin == end) {
-      if (not stack.empty()) push_back(stack);
+      if (not stack.empty()) emplace_back(stack);
     } else {
       ambiguous::partial_measure::iterator const tail = begin + 1;
       BOOST_FOREACH(partial_voice_interpretations::const_reference possibility,
@@ -451,7 +438,7 @@ class partial_measure_interpretations
                                                   length, position, time_sig)) {
         if (stack.empty() or duration(possibility) == length) {
           value_type new_stack(stack);
-          new_stack.push_back(possibility);
+          new_stack.emplace_back(possibility);
           recurse(tail, end, new_stack,
                   duration(possibility), position, time_sig);
         }
@@ -507,7 +494,7 @@ class voice_interpretations : public std::vector<proxied_voice>
               )
   {
     if (begin == end) {
-      if (not stack.empty()) push_back(stack);
+      if (not stack.empty()) emplace_back(stack);
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
       BOOST_FOREACH(partial_measure_interpretations::const_reference possibility,
@@ -515,7 +502,7 @@ class voice_interpretations : public std::vector<proxied_voice>
                                                     duration(stack),
                                                     time_sig)) {
         value_type new_stack(stack);
-        new_stack.push_back(possibility);
+        new_stack.emplace_back(possibility);
         recurse(tail, end, new_stack,
                 max_length - duration(possibility), time_sig);
       }
@@ -579,14 +566,14 @@ class measure_interpretations : public std::list<proxied_measure>
               )
   {
     if (begin == end) {
-      if (not stack.empty()) push_back(stack);
+      if (not stack.empty()) emplace_back(stack);
     } else {
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
       BOOST_FOREACH(voice_interpretations::const_reference possibility,
                     voice_interpretations(*begin, length, time_signature)) {
         if (stack.empty() or duration(possibility) == length) {
           value_type new_stack(stack);
-          new_stack.push_back(possibility);
+          new_stack.emplace_back(possibility);
           recurse(tail, end, new_stack, duration(possibility));
         }
       }
