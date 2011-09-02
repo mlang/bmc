@@ -129,8 +129,10 @@ inline rational
 duration(proxied_partial_voice const& values)
 { return boost::accumulate(values, zero); }
 
+typedef std::shared_ptr<proxied_partial_voice const> const_proxied_partial_voice_ptr;
+
 class partial_voice_interpretations
-: public std::vector< std::shared_ptr<proxied_partial_voice> >
+: public std::vector<const_proxied_partial_voice_ptr>
 {
   class is_value_distinction : public boost::static_visitor<bool>
   {
@@ -418,15 +420,15 @@ public:
   }
 };
 
-typedef std::vector< std::shared_ptr<proxied_partial_voice const> > proxied_partial_measure;
+typedef std::vector<const_proxied_partial_voice_ptr> proxied_partial_measure;
 
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure>
 {
   void recurse( ambiguous::partial_measure::iterator const& begin
               , ambiguous::partial_measure::iterator const& end
-              , std::shared_ptr<proxied_partial_voice const> stack_begin[]
-              , std::shared_ptr<proxied_partial_voice const> *stack_end
+              , const_proxied_partial_voice_ptr stack_begin[]
+              , const_proxied_partial_voice_ptr *stack_end
               , rational const& length
               , rational const& position
               , music::time_signature const& time_sig
@@ -453,7 +455,7 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    std::shared_ptr<proxied_partial_voice const> stack[partial_measure.size()];
+    const_proxied_partial_voice_ptr stack[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
             &stack[0], &stack[0],
             max_length, position, time_sig);
@@ -462,14 +464,19 @@ public:
 
 inline
 rational
+duration(const_proxied_partial_voice_ptr const& voice)
+{ return duration(*voice); }
+
+inline
+rational
 duration(proxied_partial_measure const& voices)
 {
   rational value(0);
   if (not voices.empty()) {
-    value = duration(*voices.front());
+    value = duration(voices.front());
     for (proxied_partial_measure::const_iterator
          voice = voices.begin() + 1; voice != voices.end(); ++voice) {
-      BOOST_ASSERT(value == duration(**voice));
+      BOOST_ASSERT(value == duration(*voice));
     }
   }
   return value;
