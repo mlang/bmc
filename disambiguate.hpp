@@ -11,7 +11,6 @@
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
-#include <boost/range/algorithm_ext/insert.hpp>
 #include <memory>
 
 namespace music { namespace braille {
@@ -399,7 +398,7 @@ class partial_voice_interpretations
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
           *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
           recurse(tail, end, stack_begin, stack_end + 1,
-                  zero, position + max_duration);
+                  zero, position + time_signature);
         }
       }
     }
@@ -420,8 +419,7 @@ public:
   }
 };
 
-inline
-rational
+inline rational
 duration(proxied_partial_voice_ptr const& partial_voice)
 { return duration(*partial_voice); }
 
@@ -471,8 +469,7 @@ public:
   }
 };
 
-inline
-rational
+inline rational
 duration(proxied_partial_measure const& voices)
 {
   rational value(0);
@@ -492,18 +489,15 @@ duration(proxied_partial_measure_ptr const& voices)
 
 typedef std::vector<proxied_partial_measure_ptr> proxied_voice;
 
-inline
-rational
+inline rational
 duration(proxied_voice const& parts)
 { return boost::accumulate(parts, zero); }
 
-inline
-rational
+inline rational
 operator+(rational const& r, proxied_partial_measure_ptr const& part)
 { return r + duration(part); }
 
-inline
-rational
+inline rational
 duration( proxied_partial_measure_ptr *const begin
         , proxied_partial_measure_ptr *const end
         )
@@ -556,8 +550,7 @@ duration(proxied_voice_ptr const& parts)
 
 typedef std::vector<proxied_voice_ptr> proxied_measure;
 
-inline
-rational
+inline rational
 duration(proxied_measure const& voices)
 {
   rational value;
@@ -571,13 +564,11 @@ duration(proxied_measure const& voices)
   return value;
 }
 
-inline
-rational
+inline rational
 reciprocal(rational const& r)
 { return rational(r.denominator(), r.numerator()); }
 
-inline
-rational
+inline rational
 harmonic_mean(proxied_measure const& measure)
 {
   rational::int_type n(0);
@@ -594,6 +585,7 @@ harmonic_mean(proxied_measure const& measure)
 class measure_interpretations : public std::list<proxied_measure>
 {
   music::time_signature time_signature;
+  bool complete;
 
   void recurse( std::vector<ambiguous::voice>::iterator const& begin
               , std::vector<ambiguous::voice>::iterator const& end
@@ -603,7 +595,11 @@ class measure_interpretations : public std::list<proxied_measure>
               )
   {
     if (begin == end) {
-      if (stack_begin != stack_end) emplace_back(stack_begin, stack_end);
+      if (stack_begin != stack_end) {
+        if (length == time_signature or not complete)
+          emplace_back(stack_begin, stack_end);
+        if (length == time_signature) complete = true;
+      }
     } else {
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
       for(voice_interpretations::const_reference possibility:
@@ -621,17 +617,20 @@ public:
   measure_interpretations()
   : std::list<proxied_measure>()
   , time_signature(0, 1)
+  , complete(false)
   {}
 
   measure_interpretations(measure_interpretations const& other)
   : std::list<proxied_measure>(other.begin(), other.end())
   , time_signature(other.time_signature)
+  , complete(other.complete)
   {}
 
   measure_interpretations( ambiguous::measure& measure
                          , music::time_signature const& time_signature
                          )
   : time_signature(time_signature)
+  , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
     proxied_voice_ptr stack[measure.voices.size()];
@@ -639,7 +638,7 @@ public:
             &stack[0], &stack[0],
             time_signature);
 
-    if (contains_complete_measure()) {
+    if (complete) {
       for (iterator measure = begin(); measure != end();
            measure = duration(*measure) != time_signature?
                      erase(measure): ++measure);
@@ -665,14 +664,12 @@ public:
     }
   }
 
-  bool contains_complete_measure() const {
-    BOOST_FOREACH(const_reference measure, *this) {
-      if (time_signature == duration(measure)) return true;
-    }
-    return false;
-  }
+  bool contains_complete_measure() const
+  { return complete; }
 
   bool completes_uniquely(measure_interpretations const& other) {
+    BOOST_ASSERT(not this->complete);
+    BOOST_ASSERT(not other.complete);
     int matches = 0;
     BOOST_FOREACH(const_reference lhs, *this) {
       BOOST_FOREACH(const_reference rhs, other) {
@@ -683,8 +680,7 @@ public:
   }
 };
 
-inline
-void
+inline void
 accept(proxied_measure const& measure)
 {
   BOOST_FOREACH(proxied_measure::const_reference voice, measure)
