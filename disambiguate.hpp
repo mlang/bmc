@@ -513,11 +513,14 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
               , proxied_partial_measure_ptr *stack_end
               , rational const& max_length
               , music::time_signature const& time_sig
+              , bool complete
               )
   {
     if (begin == end) {
-      if (stack_begin != stack_end)
-        emplace_back(new proxied_voice(stack_begin, stack_end));
+      if (stack_begin != stack_end) {
+        if (not complete or duration(stack_begin, stack_end) == time_sig)
+          emplace_back(new proxied_voice(stack_begin, stack_end));
+      }
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
       for(partial_measure_interpretations::const_reference possibility:
@@ -526,7 +529,7 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
                                           time_sig)) {
         *stack_end = possibility;
         recurse(tail, end, stack_begin, stack_end + 1,
-                max_length - duration(possibility), time_sig);
+                max_length - duration(possibility), time_sig, complete);
       }
     }
   }
@@ -535,12 +538,13 @@ public:
   voice_interpretations( ambiguous::voice& voice
                        , rational const& max_length
                        , music::time_signature const& time_sig
+                       , bool complete
                        )
   {
     proxied_partial_measure_ptr stack[voice.size()];
     recurse(voice.begin(), voice.end(),
             &stack[0], &stack[0],
-            max_length, time_sig);
+            max_length, time_sig, complete);
   }
 };
 
@@ -596,14 +600,15 @@ class measure_interpretations : public std::list<proxied_measure>
   {
     if (begin == end) {
       if (stack_begin != stack_end) {
-        if (length == time_signature or not complete)
+        if (length == time_signature or not complete) {
           emplace_back(stack_begin, stack_end);
-        if (length == time_signature) complete = true;
+          complete = (length == time_signature);
+        }
       }
     } else {
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
       for(voice_interpretations::const_reference possibility:
-          voice_interpretations(*begin, length, time_signature)) {
+          voice_interpretations(*begin, length, time_signature, complete)) {
         rational const voice_duration(duration(possibility));
         if (stack_begin == stack_end or voice_duration == length) {
           *stack_end = possibility;
@@ -611,6 +616,14 @@ class measure_interpretations : public std::list<proxied_measure>
         }
       }
     }
+  }
+
+  void
+  erase_incomplete_interpretations()
+  {
+    for (iterator interpretation = begin(); interpretation != end();
+         interpretation = duration(*interpretation) != time_signature?
+                   erase(interpretation): ++interpretation);
   }
 
 public:
@@ -639,10 +652,7 @@ public:
             time_signature);
 
     if (complete) {
-      for (iterator measure = begin(); measure != end();
-           measure = duration(*measure) != time_signature?
-                     erase(measure): ++measure);
-
+      erase_incomplete_interpretations();
       if (size() > 1) {
         rational best_score;
         bool single_best_score = false;
@@ -655,9 +665,9 @@ public:
           }
         }
         if (single_best_score) {
-          rational const margin(2, 3);
+          rational const margin(best_score * rational(2, 3));
           for (iterator measure = begin(); measure != end();
-               measure = harmonic_mean(*measure) < best_score * margin?
+               measure = harmonic_mean(*measure) < margin?
                          erase(measure): ++measure);
         }
       }
