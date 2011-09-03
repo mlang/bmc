@@ -129,10 +129,10 @@ inline rational
 duration(proxied_partial_voice const& values)
 { return boost::accumulate(values, zero); }
 
-typedef std::shared_ptr<proxied_partial_voice const> const_proxied_partial_voice_ptr;
+typedef std::shared_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
 
 class partial_voice_interpretations
-: public std::vector<const_proxied_partial_voice_ptr>
+: public std::vector<proxied_partial_voice_ptr>
 {
   class is_value_distinction : public boost::static_visitor<bool>
   {
@@ -420,15 +420,15 @@ public:
   }
 };
 
-typedef std::vector<const_proxied_partial_voice_ptr> proxied_partial_measure;
+typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure>
 {
   void recurse( ambiguous::partial_measure::iterator const& begin
               , ambiguous::partial_measure::iterator const& end
-              , const_proxied_partial_voice_ptr stack_begin[]
-              , const_proxied_partial_voice_ptr *stack_end
+              , proxied_partial_voice_ptr stack_begin[]
+              , proxied_partial_voice_ptr *stack_end
               , rational const& length
               , rational const& position
               , music::time_signature const& time_sig
@@ -455,7 +455,7 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    const_proxied_partial_voice_ptr stack[partial_measure.size()];
+    proxied_partial_voice_ptr stack[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
             &stack[0], &stack[0],
             max_length, position, time_sig);
@@ -464,7 +464,7 @@ public:
 
 inline
 rational
-duration(const_proxied_partial_voice_ptr const& voice)
+duration(proxied_partial_voice_ptr const& voice)
 { return duration(*voice); }
 
 inline
@@ -650,7 +650,7 @@ public:
       if (size() > 1) {
         rational best_score;
         bool single_best_score = false;
-        BOOST_FOREACH(const_reference possibility, *this) {
+        for(const_reference possibility: *this) {
           rational const score(harmonic_mean(possibility));
           if (score > best_score) {
             best_score = score, single_best_score = true;
