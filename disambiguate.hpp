@@ -420,6 +420,11 @@ public:
   }
 };
 
+inline
+rational
+duration(proxied_partial_voice_ptr const& partial_voice)
+{ return duration(*partial_voice); }
+
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
 typedef std::shared_ptr<proxied_partial_measure> proxied_partial_measure_ptr;
@@ -443,7 +448,7 @@ class partial_measure_interpretations
       ambiguous::partial_measure::iterator const tail = begin + 1;
       for(partial_voice_interpretations::const_reference possibility:
           partial_voice_interpretations(*begin, length, position, time_sig)) {
-        rational const partial_voice_duration(duration(*possibility));
+        rational const partial_voice_duration(duration(possibility));
         if (stack_begin == stack_end or partial_voice_duration == length) {
           *stack_end = possibility;
           recurse(tail, end, stack_begin, stack_end + 1,
@@ -468,11 +473,6 @@ public:
 
 inline
 rational
-duration(proxied_partial_voice_ptr const& voice)
-{ return duration(*voice); }
-
-inline
-rational
 duration(proxied_partial_measure const& voices)
 {
   rational value(0);
@@ -486,6 +486,10 @@ duration(proxied_partial_measure const& voices)
   return value;
 }
 
+inline rational
+duration(proxied_partial_measure_ptr const& voices)
+{ return duration(*voices); }
+
 typedef std::vector<proxied_partial_measure_ptr> proxied_voice;
 
 inline
@@ -495,13 +499,13 @@ duration(proxied_voice const& parts)
 
 inline
 rational
-operator+(rational const& r, proxied_partial_measure_ptr part)
-{ return r + duration(*part); }
+operator+(rational const& r, proxied_partial_measure_ptr const& part)
+{ return r + duration(part); }
 
 inline
 rational
-duration( proxied_partial_measure_ptr *begin
-        , proxied_partial_measure_ptr *end
+duration( proxied_partial_measure_ptr *const begin
+        , proxied_partial_measure_ptr *const end
         )
 { return std::accumulate(begin, end, zero); }
 
@@ -518,9 +522,8 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
               )
   {
     if (begin == end) {
-      if (stack_begin != stack_end) {
+      if (stack_begin != stack_end)
         emplace_back(new proxied_voice(stack_begin, stack_end));
-      }
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
       for(partial_measure_interpretations::const_reference possibility:
@@ -529,7 +532,7 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
                                           time_sig)) {
         *stack_end = possibility;
         recurse(tail, end, stack_begin, stack_end + 1,
-                max_length - duration(*possibility), time_sig);
+                max_length - duration(possibility), time_sig);
       }
     }
   }
@@ -547,6 +550,10 @@ public:
   }
 };
 
+inline rational
+duration(proxied_voice_ptr const& parts)
+{ return duration(*parts); }
+
 typedef std::vector<proxied_voice_ptr> proxied_measure;
 
 inline
@@ -555,10 +562,10 @@ duration(proxied_measure const& voices)
 {
   rational value;
   if (not voices.empty()) {
-    value = duration(*voices.front());
+    value = duration(voices.front());
     for (proxied_measure::const_iterator
          voice = voices.begin() + 1; voice != voices.end(); ++voice) {
-      BOOST_ASSERT(value == duration(**voice));
+      BOOST_ASSERT(value == duration(*voice));
     }
   }
   return value;
@@ -601,7 +608,7 @@ class measure_interpretations : public std::list<proxied_measure>
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
       for(voice_interpretations::const_reference possibility:
           voice_interpretations(*begin, length, time_signature)) {
-        rational const voice_duration(duration(*possibility));
+        rational const voice_duration(duration(possibility));
         if (stack_begin == stack_end or voice_duration == length) {
           *stack_end = possibility;
           recurse(tail, end, stack_begin, stack_end + 1, voice_duration);
