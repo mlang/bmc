@@ -48,7 +48,7 @@ class value_proxy
   rational calculate_duration()
   {
     rational const base(undotted_duration());
-    duration = base * 2 - base / pow(2, dots);
+    return base * 2 - base / pow(2, dots);
   }
 
   rational* final_type;
