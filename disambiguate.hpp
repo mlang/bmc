@@ -122,13 +122,23 @@ public:
   }
 };
 
-typedef std::vector<value_proxy> proxied_partial_voice;
+class proxied_partial_voice : public std::vector<value_proxy>
+{
+  rational const duration_;
+public:
+  proxied_partial_voice(value_proxy const *begin, value_proxy const *end)
+  : std::vector<value_proxy>(begin, end)
+  , duration_(std::accumulate(begin, end, zero))
+  {}
+  rational const& duration() const
+  { return duration_; }
+};
 
 inline rational
-duration(proxied_partial_voice const& values)
+duration(std::vector<value_proxy> const& values)
 { return boost::accumulate(values, zero); }
 
-typedef std::shared_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
+typedef std::shared_ptr<proxied_partial_voice const> proxied_partial_voice_ptr;
 
 class partial_voice_interpretations
 : public std::vector<proxied_partial_voice_ptr>
@@ -260,7 +270,7 @@ class partial_voice_interpretations
     { return is_grace(chord.base); }
   };
   class notegroup
-  : public proxied_partial_voice
+  : public std::vector<value_proxy>
   , public boost::static_visitor<void>
   {
     value_category const category;
@@ -294,7 +304,7 @@ class partial_voice_interpretations
     result_type operator()(ambiguous::simile&) {}
   };
   class same_category
-  : public proxied_partial_voice
+  : public std::vector<value_proxy>
   , public boost::static_visitor<void>
   {
     value_category const category;
@@ -303,7 +313,7 @@ class partial_voice_interpretations
                  , ambiguous::partial_voice::iterator const& end
                  , value_category const& category
                  )
-    : proxied_partial_voice(), category(category)
+    : category(category)
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
 
     result_type operator()(ambiguous::note& note)
@@ -421,7 +431,7 @@ public:
 
 inline rational
 duration(proxied_partial_voice_ptr const& partial_voice)
-{ return duration(*partial_voice); }
+{ return (*partial_voice).duration(); }
 
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
