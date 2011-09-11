@@ -9,12 +9,6 @@
 
 #include <boost/rational.hpp>
 
-namespace music {
-
-typedef boost::rational<int> rational;
-
-}
-
 namespace boost { // Modular arithmetic
 
 template<typename IntType>
@@ -23,7 +17,7 @@ floor(rational<IntType> const& r)
 { return rational_cast<IntType>(r); }
 
 template<typename IntType>
-rational<IntType>
+inline rational<IntType>
 operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
 { return lhs - rhs * floor(lhs / rhs); }
 
@@ -31,9 +25,12 @@ operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
 
 namespace music {
 
+typedef boost::rational<int> rational;
+
 rational const zero = rational(0);
 
-inline rational gcd(rational const& a, rational const& b)
+inline rational
+gcd(rational const& a, rational const& b)
 { return b == zero? a: gcd(b, a % b); }
 
 typedef rational time_modification;
