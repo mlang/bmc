@@ -20,26 +20,17 @@ enum value_category
   large, small
 };
 
+rational const rat_list[8] = { {1, 1}, {1, 2}, {1, 4}, {1, 8}, {1, 16}, {1, 32}, {1, 64}, {1, 128} };
 class value_proxy
 {
   ambiguous::value value_type:4;
   value_category category:4;
 
-  rational undotted_duration() const
+  rational const& undotted_duration() const
   {
     BOOST_ASSERT(category==large || category==small);
-    switch (value_type) {
-    case ambiguous::whole_or_16th:
-      return rational(1, category==large? 1: 16);
-    case ambiguous::half_or_32th:
-      return rational(1, category==large? 2: 32);
-    case ambiguous::quarter_or_64th:
-      return rational(1, category==large? 4: 64);
-    case ambiguous::eighth_or_128th:
-      return rational(1, category==large? 8: 128);
-    default:
-      BOOST_ASSERT(false);
-    }
+    BOOST_ASSERT(value_type >= 0 and value_type < 4);
+    return rat_list[category * 4 + value_type];
   }
 
   unsigned dots;
@@ -48,7 +39,7 @@ class value_proxy
   rational calculate_duration()
   {
     rational const base(undotted_duration());
-    return base * 2 - base / pow(2, dots);
+    return dots? base * 2 - base / pow(2, dots): base;
   }
 
   rational* final_type;
@@ -328,8 +319,9 @@ class partial_voice_interpretations
   };
 
   music::time_signature const& time_signature;
+  rational const beat;
   bool on_beat(rational const& position) const {
-    return position % rational(1, time_signature.denominator()) == zero;
+    return position % beat == zero;
   }
 
   void recurse( ambiguous::partial_voice::iterator begin
@@ -421,6 +413,7 @@ public:
                                , music::time_signature const& time_sig
                                )
   : time_signature(time_sig)
+  , beat(1, time_signature.denominator())
   {
     value_proxy stack[voice.size()];
     recurse(voice.begin(), voice.end(),
@@ -429,7 +422,7 @@ public:
   }
 };
 
-inline rational
+inline rational const&
 duration(proxied_partial_voice_ptr const& partial_voice)
 { return (*partial_voice).duration(); }
 
@@ -497,11 +490,23 @@ inline rational
 duration(proxied_partial_measure_ptr const& voices)
 { return duration(*voices); }
 
-typedef std::vector<proxied_partial_measure_ptr> proxied_voice;
+class proxied_voice : public std::vector<proxied_partial_measure_ptr>
+{
+  rational const duration_;
+public:
+  proxied_voice( proxied_partial_measure_ptr const *begin
+               , proxied_partial_measure_ptr const *end
+               )
+  : std::vector<proxied_partial_measure_ptr>(begin, end)
+  , duration_(std::accumulate(begin, end, zero))
+  {}
+  rational const& duration() const
+  { return duration_; }
+};
 
-inline rational
+inline rational const&
 duration(proxied_voice const& parts)
-{ return boost::accumulate(parts, zero); }
+{ return parts.duration(); }
 
 inline rational
 operator+(rational const& r, proxied_partial_measure_ptr const& part)
@@ -513,7 +518,7 @@ duration( proxied_partial_measure_ptr *const begin
         )
 { return std::accumulate(begin, end, zero); }
 
-typedef std::shared_ptr<proxied_voice> proxied_voice_ptr;
+typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
 
 class voice_interpretations : public std::vector<proxied_voice_ptr>
 {
@@ -596,6 +601,27 @@ harmonic_mean(proxied_measure const& measure)
   return n / sum;
 }
 
+template<typename Char>
+std::basic_ostream<Char>&
+operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
+{
+  BOOST_FOREACH(proxied_measure::const_reference voice, measure) {
+    os << '[';
+    BOOST_FOREACH(proxied_voice::const_reference part, *voice) {
+      os << '{';
+      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, *part) {
+        os << '(';
+        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice) {
+          os << '<' << rational(value).numerator() << '/' << rational(value).denominator() << '>';
+        }
+        os << ')';
+      }
+      os << '}';
+    }
+    os << ']';
+  }
+  return os;
+}
 class measure_interpretations : public std::list<proxied_measure>
 {
   music::time_signature time_signature;
@@ -708,28 +734,6 @@ accept(proxied_measure const& measure)
       BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, *part)
         BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice)
           value.accept();
-}
-
-template<typename Char>
-std::basic_ostream<Char>&
-operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
-{
-  BOOST_FOREACH(proxied_measure::const_reference voice, measure) {
-    os << '[';
-    BOOST_FOREACH(proxied_voice::const_reference part, *voice) {
-      os << '{';
-      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, *part) {
-        os << '(';
-        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice) {
-          os << '<' << rational(value).numerator() << '/' << rational(value).denominator() << '>';
-        }
-        os << ')';
-      }
-      os << '}';
-    }
-    os << ']';
-  }
-  return os;
 }
 
 }}
