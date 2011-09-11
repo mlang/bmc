@@ -74,7 +74,7 @@ translate(wistream &in, wostream &out, bool six_dots = false) {
   istreambuf_iterator<wchar_t> end;
   for (istreambuf_iterator<wchar_t> iter = in.rdbuf(); iter != end; ++iter) {
     wchar_t character(*iter);
-    if (character >= 0X20) {
+    if (character > 0X20) {
       unsigned char dots = convertCharacterToDots(textTable, character);
       if (six_dots) dots &= ~(BRL_DOT7 | BRL_DOT8);
       character = UNICODE_BRAILLE_ROW | dots;
