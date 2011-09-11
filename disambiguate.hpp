@@ -601,8 +601,11 @@ class measure_interpretations : public std::list<proxied_measure>
     if (begin == end) {
       if (stack_begin != stack_end) {
         if (length == time_signature or not complete) {
+          if (not complete and length == time_signature) {
+            erase_incomplete_interpretations();
+            complete = true;
+          }
           emplace_back(stack_begin, stack_end);
-          complete = (length == time_signature);
         }
       }
     } else {
@@ -623,7 +626,7 @@ class measure_interpretations : public std::list<proxied_measure>
   {
     for (iterator interpretation = begin(); interpretation != end();
          interpretation = duration(*interpretation) != time_signature?
-                   erase(interpretation): ++interpretation);
+                          erase(interpretation): ++interpretation);
   }
 
 public:
@@ -651,25 +654,22 @@ public:
             &stack[0], &stack[0],
             time_signature);
 
-    if (complete) {
-      erase_incomplete_interpretations();
-      if (size() > 1) {
-        rational best_score;
-        bool single_best_score = false;
-        for(const_reference possibility: *this) {
-          rational const score(harmonic_mean(possibility));
-          if (score > best_score) {
-            best_score = score, single_best_score = true;
-          } else if (score == best_score) {
-            single_best_score = false;
-          }
+    if (complete and size() > 1) {
+      rational best_score;
+      bool single_best_score = false;
+      for(const_reference possibility: *this) {
+        rational const score(harmonic_mean(possibility));
+        if (score > best_score) {
+          best_score = score, single_best_score = true;
+        } else if (score == best_score) {
+          single_best_score = false;
         }
-        if (single_best_score) {
-          rational const margin(best_score * rational(2, 3));
-          for (iterator measure = begin(); measure != end();
-               measure = harmonic_mean(*measure) < margin?
-                         erase(measure): ++measure);
-        }
+      }
+      if (single_best_score) {
+        rational const margin(best_score * rational(2, 3));
+        for (iterator measure = begin(); measure != end();
+             measure = harmonic_mean(*measure) < margin?
+                       erase(measure): ++measure);
       }
     }
   }
