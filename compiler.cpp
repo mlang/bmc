@@ -50,7 +50,6 @@ compiler::disambiguate(ambiguous::measure& measure)
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (anacrusis.empty()) {
-      report_error(measure.id, L"Saving anacrusis");
       anacrusis = interpretations;
       return true;
     } else {
