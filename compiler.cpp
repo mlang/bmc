@@ -77,8 +77,8 @@ compiler::disambiguate(ambiguous::measure& measure)
   } else {
     std::wstringstream s;
     s << interpretations.size() << L" possible interpretations:";
-    BOOST_FOREACH(proxied_measure const& measure, interpretations) {
-      rational const score(harmonic_mean(measure));
+    BOOST_FOREACH(proxied_measure& measure, interpretations) {
+      rational const score(measure.harmonic_mean());
       s << std::endl << boost::rational_cast<float>(score) << L": " << measure;
     }
     report_error(measure.id, s.str());

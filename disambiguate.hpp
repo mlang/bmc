@@ -568,7 +568,36 @@ inline rational
 duration(proxied_voice_ptr const& parts)
 { return duration(*parts); }
 
-typedef std::vector<proxied_voice_ptr> proxied_measure;
+inline rational
+reciprocal(rational const& r)
+{ return rational(r.denominator(), r.numerator()); }
+
+class proxied_measure : public std::vector<proxied_voice_ptr>
+{
+  rational mean;
+public:
+  proxied_measure( proxied_voice_ptr const* begin
+                 , proxied_voice_ptr const *end
+                 )
+  : std::vector<proxied_voice_ptr>(begin, end)
+  , mean(0)
+  {
+  }
+  rational const& harmonic_mean()
+  {
+    if (mean == zero) {
+      rational sum(0);
+      for(const_reference voice: *this)
+        for(proxied_voice::const_reference part: *voice)
+          for(proxied_partial_measure::const_reference partial_voice: *part)
+            for(proxied_partial_voice::const_reference value: *partial_voice) {
+              sum += reciprocal(value), ++mean;
+            }
+      mean /= sum;
+    }
+    return mean;
+  }
+};
 
 inline rational
 duration(proxied_measure const& voices)
@@ -582,24 +611,6 @@ duration(proxied_measure const& voices)
     }
   }
   return value;
-}
-
-inline rational
-reciprocal(rational const& r)
-{ return rational(r.denominator(), r.numerator()); }
-
-inline rational
-harmonic_mean(proxied_measure const& measure)
-{
-  rational::int_type n(0);
-  rational sum(0);
-  for(proxied_measure::const_reference voice: measure)
-    for(proxied_voice::const_reference part: *voice)
-      for(proxied_partial_measure::const_reference partial_voice: *part)
-        for(proxied_partial_voice::const_reference value: *partial_voice) {
-          sum += reciprocal(value), ++n;
-        }
-  return n / sum;
 }
 
 template<typename Char>
@@ -668,9 +679,7 @@ class measure_interpretations : public std::list<proxied_measure>
 
 public:
   measure_interpretations()
-  : std::list<proxied_measure>()
-  , time_signature(0, 1)
-  , complete(false)
+  : complete(false)
   {}
 
   measure_interpretations(measure_interpretations const& other)
@@ -694,8 +703,8 @@ public:
     if (complete and size() > 1) {
       rational best_score;
       bool single_best_score = false;
-      for(const_reference possibility: *this) {
-        rational const score(harmonic_mean(possibility));
+      for(reference possibility: *this) {
+        rational const score(possibility.harmonic_mean());
         if (score > best_score) {
           best_score = score, single_best_score = true;
         } else if (score == best_score) {
@@ -705,7 +714,7 @@ public:
       if (single_best_score) {
         rational const margin(best_score * rational(2, 3));
         for (iterator measure = begin(); measure != end();
-             measure = harmonic_mean(*measure) < margin?
+             measure = measure->harmonic_mean() < margin?
                        erase(measure): ++measure);
       }
     }
