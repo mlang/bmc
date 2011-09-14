@@ -20,7 +20,8 @@ enum value_category
   large, small
 };
 
-rational const rat_list[8] = { {1, 1}, {1, 2}, {1, 4}, {1, 8}, {1, 16}, {1, 32}, {1, 64}, {1, 128} };
+rational const undotted[8] = { {1, 1}, {1, 2}, {1, 4}, {1, 8},
+                               {1, 16}, {1, 32}, {1, 64}, {1, 128} };
 class value_proxy
 {
   ambiguous::value value_type:4;
@@ -30,7 +31,7 @@ class value_proxy
   {
     BOOST_ASSERT(category==large || category==small);
     BOOST_ASSERT(value_type >= 0 and value_type < 4);
-    return rat_list[category * 4 + value_type];
+    return undotted[category * 4 + value_type];
   }
 
   unsigned dots;
@@ -333,7 +334,7 @@ class partial_voice_interpretations
               )
   {
     if (begin == end) {
-      emplace_back(new proxied_partial_voice(stack_begin, stack_end));
+      emplace_back(std::make_shared<proxied_partial_voice>(stack_begin, stack_end));
     } else {
       ambiguous::partial_voice::iterator tail;
       if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
@@ -444,7 +445,7 @@ class partial_measure_interpretations
   {
     if (begin == end) {
       if (stack_begin != stack_end)
-        emplace_back(new proxied_partial_measure(stack_begin, stack_end));
+        emplace_back(std::make_shared<proxied_partial_measure>(stack_begin, stack_end));
     } else {
       ambiguous::partial_measure::iterator const tail = begin + 1;
       for(partial_voice_interpretations::const_reference possibility:
@@ -534,7 +535,7 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
     if (begin == end) {
       if (stack_begin != stack_end) {
         if (not complete or duration(stack_begin, stack_end) == time_sig)
-          emplace_back(new proxied_voice(stack_begin, stack_end));
+          emplace_back(std::make_shared<proxied_voice>(stack_begin, stack_end));
       }
     } else {
       ambiguous::voice::iterator const tail = begin + 1;
