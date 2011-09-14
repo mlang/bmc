@@ -661,7 +661,7 @@ class measure_interpretations : public std::list<proxied_measure>
       for(voice_interpretations::const_reference possibility:
           voice_interpretations(*begin, length, time_signature, complete)) {
         rational const voice_duration(duration(possibility));
-        if (stack_begin == stack_end or voice_duration == length) {
+        if ((stack_begin == stack_end and not complete) or voice_duration == length) {
           *stack_end = possibility;
           recurse(tail, end, stack_begin, stack_end + 1, voice_duration);
         }
