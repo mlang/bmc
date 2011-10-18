@@ -4,6 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include "config.h"
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"
@@ -30,13 +31,12 @@ main()
   parser_type parser(error_handler);
   boost::spirit::traits::attribute_of<parser_type>::type score;
 
-  bool const success = boost::spirit::qi::parse(iter, end, parser, score);
+  bool const success = parse(iter, end, parser, score);
 
   if (success && iter == end) {
     music::braille::compiler compile(error_handler);
     if (compile(score)) {
-      std::thread player(music::fluidsynth("/usr/share/sounds/sf2/FluidR3_GM.sf2"),
-                         score);
+      std::thread player(music::fluidsynth(SOUNDFONT_PATH), score);
 
       std::wcout << source;
 

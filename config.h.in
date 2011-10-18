@@ -103,6 +103,8 @@ extern "C" {
 
 #define TEXT_TABLE_EXTENSION ".ttb"
 
+#define SOUNDFONT_PATH "/usr/share/sounds/sf2/FluidR3_GM.sf2"
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
