@@ -4,8 +4,8 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef BRLSYM_HPP
-#define BRLSYM_HPP
+#ifndef BMC_BRLSYM_HPP
+#define BMC_BRLSYM_HPP
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_symbols.hpp>
