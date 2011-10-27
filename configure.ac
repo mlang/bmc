@@ -363,6 +363,9 @@ BRLTTY_DEFINE_DIRECTORY([TABLES_DIRECTORY], [${tables_directory}],
 BRLTTY_DEFINE_DIRECTORY([CONFIGURATION_DIRECTORY], [${sysconfdir}],
                         [Define this to be a string containing the path to the configuration directory.])
 
+CXXFLAGS="${CXXFLAGS} -std=c++0x"
+AC_SUBST([CXXFLAGS])
+
 BMC_SUMMARY_END
 
 AC_OUTPUT([Makefile])
