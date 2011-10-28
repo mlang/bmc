@@ -7,7 +7,7 @@
 #ifndef MEASURE_DEF_HPP
 #define MEASURE_DEF_HPP
 #include "measure.hpp"
-#include "brl.hpp"
+#include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include "error_handler.hpp"
 #include "annotation.hpp"
@@ -91,6 +91,10 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   				annotation_function(error_handler.iters)(_val, _1));
   boost::spirit::qi::on_success(rest,
   				annotation_function(error_handler.iters)(_val, _1));
+
+  note.name("note");
+  interval.name("interval");
+  fingering.name("fingering");
 }
 
 }}

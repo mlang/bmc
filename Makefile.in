@@ -2,7 +2,7 @@ BOOST_DIRECTORY=/tmp/boost
 
 CPPFLAGS=@DEFS@
 CFLAGS=@CFLAGS@ -Wextra @SYSCFLAGS@
-CXXFLAGS=@CXXFLAGS@ -I$(BOOST_DIRECTORY)
+CXXFLAGS=@CXXFLAGS@ -I$(BOOST_DIRECTORY) -I.
 
 TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
 	charset.@OBJEXT@ dataarea.@OBJEXT@ datafile.@OBJEXT@ file.@OBJEXT@ \
@@ -40,9 +40,6 @@ full_clean: clean
 ttb.a: $(TTB_OBJECTS)
 	$(AR) -sr $@ $(TTB_OBJECTS)
 
-brltr.@OBJEXT@: brltr.cpp config.h
-	$(CXX) $(CPPFLAGS) -c $<
-
 tbl2hex: $(TBL2HEX_OBJECTS)
 	$(CC) -o $@ $(TBL2HEX_OBJECTS) @icu_libraries@
 
@@ -55,4 +52,4 @@ score.@OBJEXT@: score.hpp score_def.hpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
 brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
 compiler.@OBJEXT@: compiler.hpp disambiguate.hpp
-test.@OBJEXT@: brl.hpp
+test.@OBJEXT@: spirit/qi/primitive/brl.hpp

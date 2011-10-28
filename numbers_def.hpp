@@ -8,7 +8,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include "brlsym.hpp"
-#include "brl.hpp"
+#include "spirit/qi/primitive/brl.hpp"
 
 namespace music { namespace braille {
 

@@ -7,13 +7,13 @@
 #ifndef BMC_SCORE_DEF_HPP
 #define BMC_SCORE_DEF_HPP
 #include "score.hpp"
-#include "brl.hpp"
+#include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include "annotation.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
-#include "detail/spirit/info_wchar_t_io.hpp"
+#include "spirit/detail/info_wchar_t_io.hpp"
 
 namespace music { namespace braille {
 

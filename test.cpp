@@ -4,6 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include "config.hpp"
 #include "numbers.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include "ttb.h"
@@ -28,7 +29,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test) {
   destroyTextTable(textTable);
 }
 
-#include "brl.hpp"
+#include "spirit/qi/primitive/brl.hpp"
 
 BOOST_AUTO_TEST_CASE(brl_parser_test) {
   textTable = compileTextTable("Tables/de.ttb");
