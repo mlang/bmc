@@ -10,8 +10,8 @@
 #include "config.hpp"
 #include <boost/spirit/include/qi_symbols.hpp>
 #include "ambiguous.hpp"
-#include "ttb.h"
-#include "unicode.h"
+#include "ttb/ttb.h"
+#include "ttb/unicode.h"
 
 namespace music { namespace braille {
 

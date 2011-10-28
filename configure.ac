@@ -8,7 +8,7 @@ AC_DEFINE_UNQUOTED([PACKAGE_TITLE], ["${PACKAGE_TITLE}"],
 
 AC_SUBST([package_date], ["`date "+%Y/%m/%d"`"])
 
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([ttb/config.h])
 AC_CONFIG_AUX_DIR([acdir])
 AC_CANONICAL_SYSTEM
 
@@ -368,4 +368,4 @@ AC_SUBST([CXXFLAGS])
 
 BMC_SUMMARY_END
 
-AC_OUTPUT([Makefile])
+AC_OUTPUT([Makefile ttb/Makefile])

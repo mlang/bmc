@@ -5,7 +5,6 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "brlsym.hpp"
-#include "unicode.h"
 
 namespace music { namespace braille {
 

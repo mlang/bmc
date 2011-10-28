@@ -4,11 +4,6 @@ CPPFLAGS=@DEFS@
 CFLAGS=@CFLAGS@ -Wextra @SYSCFLAGS@
 CXXFLAGS=@CXXFLAGS@ -I$(BOOST_DIRECTORY) -I.
 
-TTB_OBJECTS=ttb_compile.@OBJEXT@ ttb_native.@OBJEXT@ ttb_translate.@OBJEXT@ \
-	charset.@OBJEXT@ dataarea.@OBJEXT@ datafile.@OBJEXT@ file.@OBJEXT@ \
-	log.@OBJEXT@ unicode.@OBJEXT@
-TBL2HEX_OBJECTS=$(filter-out ttb_translate.@OBJEXT@, $(TTB_OBJECTS)) \
-	tbl2hex.@OBJEXT@
 TEST_OBJECTS=test.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ \
 	numbers.@OBJEXT@ brlsym.@OBJEXT@ music.@OBJEXT@
 prefix=@prefix@
@@ -20,33 +15,27 @@ all: bmc
 install: brltr
 	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
 
-bmc: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a fluidsynth.@OBJEXT@
-	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb.a fluidsynth.@OBJEXT@ -lpthread -licuuc -lfluidsynth
+bmc: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb/ttb.a fluidsynth.@OBJEXT@
+	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb/ttb.a fluidsynth.@OBJEXT@ -lpthread -licuuc -lfluidsynth
 
-test: $(TEST_OBJECTS) ttb.a
-	$(CXX) -o $@ $(TEST_OBJECTS) ttb.a @icu_libraries@
+test: $(TEST_OBJECTS) ttb/ttb.a
+	$(CXX) -o $@ $(TEST_OBJECTS) ttb/ttb.a @icu_libraries@
 	@./$@
 
-brltr: brltr.@OBJEXT@ ttb.a
-	g++ -o $@ brltr.o ttb.a @LIBS@ @icu_libraries@
+brltr: brltr.@OBJEXT@ ttb/ttb.a
+	g++ -o $@ brltr.o ttb/ttb.a @LIBS@ @icu_libraries@
 
 clean:
+	$(MAKE) -C ttb clean
 	rm -f *.@OBJEXT@ *.a text.auto.h brltr bmc tbl2hex test
 
 full_clean: clean
 	rm -rf autom4te.cache/ config.cache config.log config.status \
-	configure Makefile config.h
+	configure Makefile ttb/Makefile ttb/config.h
 
-ttb.a: $(TTB_OBJECTS)
-	$(AR) -sr $@ $(TTB_OBJECTS)
+ttb/ttb.a:
+	$(MAKE) -C ttb ttb.a
 
-tbl2hex: $(TBL2HEX_OBJECTS)
-	$(CC) -o $@ $(TBL2HEX_OBJECTS) @icu_libraries@
-
-text.auto.h: tbl2hex
-	./$< Tables/@text_table@.ttb > $@
-
-ttb_translate.c: text.auto.h
 measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
 score.@OBJEXT@: score.hpp score_def.hpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp

@@ -4,14 +4,14 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "config.h"
+#include "ttb/config.h"
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"
 #include "fluidsynth.hpp"
 #include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
-#include "ttb.h"
+#include "ttb/ttb.h"
 #include <thread>
 
 int

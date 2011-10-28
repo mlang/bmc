@@ -8,8 +8,8 @@
 #define BRL_HPP
 
 #include <boost/spirit/include/qi_parse.hpp>
-#include "ttb.h"
-#include "brldots.h"
+#include "ttb/ttb.h"
+#include "ttb/brldots.h"
 
 // definition the place holder
 namespace music { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl); }}
