@@ -13,7 +13,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
-#include "spirit_info_wchar_t_io.hpp"
+#include "detail/spirit/info_wchar_t_io.hpp"
 
 namespace music { namespace braille {
 
