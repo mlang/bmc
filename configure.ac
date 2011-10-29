@@ -14,7 +14,7 @@ AC_CANONICAL_SYSTEM
 
 BMC_SUMMARY_ITEM([sysconfdir], [sysconfdir])
 
-BRLTTY_ARG_REQUIRED(
+BMC_ARG_REQUIRED(
    [tables-directory], [DIRECTORY],
    [path to directory containing data files],
    [tables_directory], ["${sysconfdir}/brltty"]
@@ -366,7 +366,7 @@ BRLTTY_DEFINE_DIRECTORY([CONFIGURATION_DIRECTORY], [${sysconfdir}],
 CXXFLAGS="${CXXFLAGS} -std=c++0x"
 AC_SUBST([CXXFLAGS])
 
-BRLTTY_ARG_REQUIRED(
+BMC_ARG_REQUIRED(
    [boost-root-directory], [DIRECTORY],
    [path to directory containing the Boost distribution],
    [boost_root_directory], ["/usr/include"]

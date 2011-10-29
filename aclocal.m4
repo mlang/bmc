@@ -29,7 +29,7 @@ BRLTTY_DEFINE_EXPANDED([$1], [${brltty_path}], [$3])])
 AC_DEFUN([BRLTTY_ARG_WITH], [dnl
 AC_ARG_WITH([$1], BRLTTY_HELP_STRING([--with-$1=$2], [$3]), [$4="${withval}"], [$4=$5])])
 
-AC_DEFUN([BRLTTY_ARG_REQUIRED], [dnl
+AC_DEFUN([BMC_ARG_REQUIRED], [dnl
 BRLTTY_ARG_WITH([$1], [$2], [$3], [$4], ["yes"])
 if test "${$4}" = "no"
 then
