@@ -15,94 +15,44 @@
 
 namespace music { namespace braille {
 
+// A special version of qi::symbols<> which transparently translates its input
+// to Unicode braille.
+
 struct tst_braillify {
-  template <typename Char> Char operator()(Char ch) const {
+  template <typename Char>
+  Char operator()(Char ch) const {
     return ch < 0X20? ch: UNICODE_BRAILLE_ROW | (convertCharacterToDots(textTable, ch)&0X3F);
   }
 };
 
 template <typename T = boost::spirit::unused_type>
-struct brl_symbols : boost::spirit::qi::symbols<wchar_t, T, boost::spirit::qi::tst<wchar_t, T>, tst_braillify> {};
+struct brl_symbols : boost::spirit::qi::symbols<wchar_t, T, boost::spirit::qi::tst<wchar_t, T>, tst_braillify>
+{};
 
-struct upper_digit_symbols : brl_symbols<unsigned>
-{
-  upper_digit_symbols();
-};
-extern upper_digit_symbols upper_digit_sign;
+// A number of generally useful symbol tables for parsing braille music code
 
-struct lower_digit_symbols : brl_symbols<unsigned>
-{
-  lower_digit_symbols();
-};
-extern lower_digit_symbols lower_digit_sign;
+#define BMC_DEFINE_SYMBOL_TABLE(Return, Type, Name) \
+  struct Type : brl_symbols<Return> { Type(); }; \
+  extern Type Name;
 
-struct dots_123_symbols : brl_symbols<>
-{
-  dots_123_symbols();
-};
-extern dots_123_symbols dots_123;
+BMC_DEFINE_SYMBOL_TABLE(unsigned, upper_digit_symbols, upper_digit_sign)
+BMC_DEFINE_SYMBOL_TABLE(unsigned, lower_digit_symbols, lower_digit_sign)
+BMC_DEFINE_SYMBOL_TABLE(boost::spirit::unused_type, dots_123_symbols, dots_123)
+BMC_DEFINE_SYMBOL_TABLE(accidental, accidental_symbols, accidental_sign)
+BMC_DEFINE_SYMBOL_TABLE(unsigned, octave_symbols, octave_sign)
+typedef std::pair<diatonic_step, ambiguous::value> step_and_value;
+BMC_DEFINE_SYMBOL_TABLE(step_and_value,
+                        step_and_value_symbols, step_and_value_sign)
+BMC_DEFINE_SYMBOL_TABLE(ambiguous::value, rest_symbols, rest_sign)
+BMC_DEFINE_SYMBOL_TABLE(interval, interval_symbols, interval_sign)
+BMC_DEFINE_SYMBOL_TABLE(unsigned, finger_symbols, finger_sign)
+BMC_DEFINE_SYMBOL_TABLE(ambiguous::value_distinction,
+                        value_distinction_symbols, value_distinction_sign)
+BMC_DEFINE_SYMBOL_TABLE(music::articulation, articulation_symbols, articulation_sign)
+BMC_DEFINE_SYMBOL_TABLE(boost::spirit::unused_type, tie_symbol, tie_sign)
+BMC_DEFINE_SYMBOL_TABLE(ambiguous::barline, barline_symbols, barline_sign)
 
-struct accidental_symbols : brl_symbols<accidental>
-{
-  accidental_symbols();
-};
-extern accidental_symbols accidental_sign;
-
-struct octave_symbols : brl_symbols<unsigned>
-{
-  octave_symbols();
-};
-extern octave_symbols octave_sign;
-
-struct step_and_value_symbols
-: brl_symbols< std::pair<diatonic_step, ambiguous::value> >
-{
-  step_and_value_symbols();
-};
-extern step_and_value_symbols step_and_value_sign;
-
-struct rest_symbols : brl_symbols<ambiguous::value>
-{
-  rest_symbols();
-};
-extern rest_symbols rest_sign;
-
-struct interval_symbols : brl_symbols<interval>
-{
-  interval_symbols();
-};
-extern interval_symbols interval_sign;
-
-struct finger_symbols : brl_symbols<unsigned>
-{
-  finger_symbols();
-};
-extern finger_symbols finger_sign;
-
-struct value_distinction_symbols : brl_symbols<ambiguous::value_distinction>
-{
-  value_distinction_symbols();
-};
-extern value_distinction_symbols value_distinction_sign;
-
-struct articulation_symbols : brl_symbols<music::articulation>
-{
-  articulation_symbols();
-};
-extern articulation_symbols articulation_sign;
-
-struct tie_symbol : brl_symbols<>
-{
-  tie_symbol();
-};
-extern tie_symbol tie_sign;
-
-struct barline_symbols : brl_symbols<ambiguous::barline>
-{
-  barline_symbols();
-};
-extern barline_symbols barline_sign;
-
+#undef BMC_DEFINE_SYMBOL_TABLE
 }}
 
 #endif
