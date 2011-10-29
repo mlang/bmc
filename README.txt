@@ -72,7 +72,7 @@ required to fully represent the actually intended musical content.
 
 How all of this should be done is still rather open, because the necessary
 algorithms have partly not been explored yet.  We do the disambiguation of
-note values in place already, which allows for a rather approximated playback
+note values already, which allows for a rather approximated playback
 codepath which is very useful for debugging and first steps of
 experimentation with the codebase.  We also calculate actual octaves
 already, which makes the playback alot more useable.  But, for instance,
@@ -97,14 +97,14 @@ processed braille music.  In particular,
    regenerated in the case of printing to braille, or used to provide
    beaming for MusicXML documents for instance.
 
- * Braille repetititon: In addition to the usual way of indicating repeats
-   with special barlines in visual music notation, braille music code
-   provides several means to indicate repetition of note material either across
-   several measures in a section, or particular voices of a measure or
-   even parts of a voice of a measure.  These methods are used to minimize the
-   amount of characters required to fully represent a complete piece of music,
-   and also to make certain structure in music clear immediately, which helps
-   a lot during the process of memorisation of music.
+ * Braille repetititon: In addition to the usual way of indicating repeats with
+   special barlines in visual music notation, braille music code provides
+   several means to indicate repetition of note material either across several
+   measures in a section, or particular voices of a measure or even parts of a
+   voice of a measure.  These methods are used to minimize the amount of
+   characters required to fully represent a complete piece of music, and also to
+   make certain structure in music clear immediately, which helps a lot during
+   the process of memorisation of music.
    However, for the purpose of our project this means that the parsed
    input string does not necessarily have an unique character for every note
    in the presented score.  Certain characters and/or syntactic constructs
@@ -151,48 +151,45 @@ in mind.
 User Interface(s)
 -----------------
 
-By the nature of BMC (and actually also its name), the basic
-interface should be a command-line tool, behaving roughly like
-a normal compiler (for instance, error reporting format) to support
-easy integration into existing editing environments (like GNU Emacs).
+By the nature of BMC (and actually also its name), the basic interface should be
+a command-line tool, behaving roughly like a normal compiler (for instance,
+error reporting format) to support easy integration into existing editing
+environments (like GNU Emacs).
 
-However, to support the greatest possible user base (which is mostly
-blind people and people working with them) BMC should also have
-a graphical user interface basically resembling a simple editor.
-In that graphical user interface, the user will open files containing
-braille music code or create new documents entering music manually.
-Upon a sepcial keypress or invokation of a menu item the program will
-try to parse the current document and either report errors sensibly or
-provide some sort of confirmation.  Once the document is successfully parsed,
-several more options will be available, like starting playback or jumping to
-a particular position in the document (like a particular measure of the music).
-The document could now also be converted to a visual notation via some
-external program like Lilypond, and eventually displayed alongside the
-braille music code.
+However, to support the greatest possible user base (which is mostly blind
+people and people working with them) BMC should also have a graphical user
+interface (GUI) basically resembling a simple editor.  In that GUI, the user
+will open files containing braille music code or create new documents entering
+music manually.  Upon a sepcial keypress or invokation of a menu item the
+program will try to parse the current document and either report errors sensibly
+or provide some sort of confirmation.  Once the document is successfully parsed,
+several more options will be available, like starting playback or jumping to a
+particular position in the document (like a particular measure of the music).
+The document could now also be converted to a visual notation via some external
+program like Lilypond, and eventually displayed alongside the braille music code.
 
-Since the user base is definitely relying on accessibility being available
-on their respective operating systems, some extra care has to
-be taken when implementing the graphical user interface.  Some seemingly
-obvious choices are not possible.  For instance, the program is currently
-being developed under GNU/Linux.  A natural choice on Linux
-for an accessible GUI is GTK, which features well tested accessibility
-since a few years now.  GTK is actually also ported to Microsoft Windows,
-but it is not accessible on that platform.  We are aiming to support
-as many users as possible, so we do have to plan/provide a port to MS Windows.
-Some way come up with wxWindows as a possible candidate since it features
-a GUI toolkit for Linux and Windows with the same API on the different systems.
-Unfortuantely, the accessibility of wxWindows is not equally
+Since the user base is definitely relying on accessibility being available on
+their respective operating systems, some extra care has to be taken when
+implementing the graphical user interface.  Some seemingly obvious choices are
+not possible.  For instance, the program is currently being developed under
+GNU/Linux.  A natural choice on Linux for an accessible GUI is GTK, which
+features well tested accessibility since a few years now.  GTK is actually also
+ported to Microsoft Windows, but it is not accessible on that platform.  We are
+aiming to support as many users as possible, so we do have to plan/provide a
+port to MS Windows.  Some way come up with wxWindows as a possible candidate
+since it features a GUI toolkit for Linux and Windows with the same API on the
+different systems.  Unfortuantely, the accessibility of wxWindows is not equally
 accessible on both platform (tested around 2009).
 
-It looks like we will have to solve this "the hard way": Implement
-natively accessible interfaces for both platforms separately: On for GTK on
-Linux and one for MFC (or whatever is best for C++) on Windows.
+It looks like we will have to solve this "the hard way": Implement natively
+accessible interfaces for both platforms separately: On for GTK on Linux and one
+for MFC (or whatever is best for C++) on Windows.
 
-To avoid substantial different behaviour on the two platforms, it might
-be desireable to develop some kind of common GUI layer which
-provides most of our application logic, and only a rather thin layer for the
-particular toolkits on the particular platforms below.  We want to
-minimize the bugs introduced by duplicated code.
+To avoid substantial different behaviour on the two platforms, it might be
+desireable to develop some kind of common GUI layer which provides most of our
+application logic, and only a rather thin layer for the particular toolkits on
+the particular platforms below.  We want to minimize the bugs introduced by
+duplicated code.
 
 
 Coding Standard
@@ -224,11 +221,32 @@ If in doubt, check with the STL and Boost conding standards.
   They are syntactic sugar, in a sense.  Portability takes preference.
 
 * const qualifier: C++ is ambiguous regarding the placement of const qualifiers.
-  const can either be place before or after the variable or argument type.
+  const can either be placed before or after the variable or argument type.
   I prefer const being placed after the variable or arguments type, i.e.
 
    GOOD:   std::vector<int> const v;
    BAD:    const std::vector<int> v;
+
+
+Getting the source
+------------------
+
+Note that the following description includes a simple way of getting a current
+(and tested) version of Boost trunk, for your convenience.  If you already have
+a recent enough (1.47.0) copy of Boost on your system you can of course skip the
+"svn export".
+
+ $ git clone http://github.com/mlang/bmc
+ $ cd bmc
+ $ svn export http://svn.boost.org/svn/boost/trunk/boost@75166 boost
+
+
+Building
+--------
+
+ $ autoconf
+ $ ./configure -q --with-boost-root-directory=.
+ $ make
 
 
 TODO
