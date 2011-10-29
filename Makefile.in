@@ -1,4 +1,4 @@
-BOOST_DIRECTORY=/tmp/boost
+BOOST_DIRECTORY=@boost_root_directory@
 
 CPPFLAGS=@DEFS@
 CFLAGS=@CFLAGS@ -Wextra @SYSCFLAGS@
@@ -33,8 +33,8 @@ full_clean: clean
 	rm -rf autom4te.cache/ config.cache config.log config.status \
 	configure Makefile ttb/Makefile ttb/config.h
 
-ttb/ttb.a:
-	$(MAKE) -C ttb ttb.a
+ttb/%:
+	$(MAKE) -C $(@D) $(@F)
 
 measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
 score.@OBJEXT@: score.hpp score_def.hpp
