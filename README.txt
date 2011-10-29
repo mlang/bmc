@@ -20,6 +20,21 @@ braille music code.  A full system for working with braille music code should
 eventually cover both directions.
 
 
+Dependencies
+------------
+
+Being a C++ program, BMC naturally uses the Standard Template Library (STL).
+
+In addition to that some Boost[2] C++ Libraries are employed.
+Currently however, to make the Boost dependencies as
+easy to handle as possible, we are only using Boost header-only libraries[3].
+This means that the boost include directory is enough to build BMC.
+There is no need to link any Boost Library files to the final executable.
+
+ [2] http://www.boost.org/
+ [3] http://www.boost.org/doc/libs/1_47_0/?view=filtered_header-only
+
+
 Parsing
 -------
 
