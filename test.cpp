@@ -12,7 +12,7 @@
 #define BOOST_TEST_MODULE bmc_test
 #include <boost/test/included/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE(time_signature_grammar_test) {
+BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   textTable = compileTextTable("ttb/Tables/de.ttb");
   std::wstring const input(L"#ab(");
   typedef std::wstring::const_iterator iterator_type;
@@ -26,6 +26,51 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test) {
   BOOST_CHECK_EQUAL(attribute, music::time_signature(12, 8));
   BOOST_CHECK_EQUAL(attribute, music::rational(3, 2));
   BOOST_CHECK_EQUAL(attribute.numerator(), 12);
+  destroyTextTable(textTable);
+}
+
+BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
+  textTable = compileTextTable("ttb/Tables/de.ttb");
+  std::wstring const input(L"");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::key_signature_grammar<iterator_type> parser_type;
+  parser_type parser;
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute, 0);
+  destroyTextTable(textTable);
+}
+
+BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
+  textTable = compileTextTable("ttb/Tables/de.ttb");
+  std::wstring const input(L"#f3");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::key_signature_grammar<iterator_type> parser_type;
+  parser_type parser;
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute, 6);
+  destroyTextTable(textTable);
+}
+
+BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
+  textTable = compileTextTable("ttb/Tables/de.ttb");
+  std::wstring const input(L"22");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::key_signature_grammar<iterator_type> parser_type;
+  parser_type parser;
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute, -2);
   destroyTextTable(textTable);
 }
 
