@@ -61,6 +61,25 @@ during later processing).  This exact contextual information is going to
 be important later on for other planned features of the project.
 
 
+heterogeneous containers
+------------------------
+
+A common problem arising in the sort of data structures required to represent
+parsed braille music is the heterogenuity of the underlying sequences
+of objects.  Traditionally, virtual member functions and a common base class are
+used in C++ to implement a sequence of objects of varying purpose.  However,
+this approach is rather error-prone and requires the differing object types to
+at least have something in common to allow for a meaningful interface.
+Fortunately, Boost offers a very elegant solution to this type of problem, the
+Boost.Variant discriminated union container class template.  Boost.Variant is
+already implicitly used by Spirit to store alternative choices in the grammar.
+So it just falls naturally to use Boost.Variant for problems falling in the
+category of heterogeneous containers.  Using Boost.Variant implies the visitor
+pattern is used to access the data structures.  This is desireable because it
+results in type-safe code which eliminates a certain class of runtime bugs.  It
+makes code a little bit more verbose to write, but for the better, actually.
+
+
 The Intermediate Representation
 -------------------------------
 
@@ -242,6 +261,61 @@ Library and Boost conding standards.
    GOOD:   std::vector<int> const v;
    BAD:    const std::vector<int> v;
 
+* Use tabs, no spaces: To minimize indentation issues in a multi-developer
+  project, we'd like to avoid the use of tabs.  Use spaces to indent.
+
+* Write maintainable code: Given the low amount of manpower we can expect,
+  the source code of BMC should be as readable and maintainable as possible.
+  This implies a lot, for instance:
+  * Avoid code duplication at all cost: Whenever there is duplicated code
+    and/or functionality, someone editing the code will have to know about all
+    the other places which also need updating.  In the case of cross-platform
+    support code, they might not even have access to the particular platform
+    at the moment to research and/or test the change.  Keep laptform specific
+    code separate from the core program logic as much as possible.
+  * Keep in mind the code will evolve: In reality, certain changes to a program
+    require quite substantial modifications to the source.  These changes get
+    easier to do if code is decoupled as much as possible.  Forcing yourself to
+    do test-driven development can help in the decoupling.  Someone doing a
+    bigger change in the future will still have to read and understand your code
+    and possibly change/transform it to something else to fit the newly
+    discovered requirement.  Keep this in mind and try to avoid excessive
+    coupling of unrelated things into single functions/classes for instance.
+    Use meaningful member names.  If in doubt, make the name verbose, instead of
+    choosing a cryptic name that might be unclear to someone else.
+  * Write test cases: The nature of the problem we are trying to solve with BMC
+    absolutely requires to follow a test-driven development pattern.  Braille
+    music code has so many special cases that we need to secure milestones
+    in development with good test cases to avoid breaking acomplishments
+    we've already achieved by later changes in the development process.
+    This is, however, a good thing, because test-driven development has many
+    positive side-effects on code quality.
+    If realisticly possible, write test cases for new code you develop.  A
+    framework for test cases is present and being used in the build process to
+    indicate regressions as early as possible.  Make use of this safe-guard
+    to avoid your code being accidentally broken in the future.
+    Some special cases, like GUI behaviour for instance, are of course rather
+    hard to test.  Apply common sense when deciding how much time to invest in
+    developing a useful test case.
+  * Use the features of C++ to avoid dangerous code:  For instance, use enums
+    instead of integer constants.  Help the compiler avoid programming errors.
+    Or, use a safe discriminated union and the visitor pattern instead of
+    dangerous runtime type checking (as we do with Boost.Variant already).
+  * Use the STL and Boost: Do not reinvent the wheel.  STL + Boost is an
+    extremely powerful set of libraries which can solve a host of problems in a
+    very well thought-out kind of way.  It is worth it to explore their details
+    and make use of their powerful features.
+  * If it makes sense, use C++11: Two examples of this guideline are the use
+    of std::thread to launch playback tasks and std::chrono to handle sleeping in
+    the inner playback loop.  These two new library components from C++11 just
+    perfectly fit the job.  std::thread offers a nice C++ wrapper around the
+    usual OS-level threading primitives, and std::chrono allows for safely typed
+    real-time duration management, something basically every real-time playback
+    code needs.  We could also have invented our own wrappers and helper classes
+    to achieve the same thing, but why bother if a full comittee of people has
+    invested years of discussion and review to come up with a very good API for
+    us?
+
 
 Getting the source
 ------------------
@@ -264,6 +338,63 @@ Building
  $ make
 
 
+Description of source code components
+-------------------------------------
+
+To ease review, here is a rough overview of the various source code files which
+make up this prototype:
+
+ * Text to braille:
+   The subdirectory ttb/ contains source code for the mapping of character values
+   to braille dots.  The code has been borrowed from the BRLTTY project,
+   and stripped down a little to avoid excessive code bloat.  It is therefore
+   compatible to the format of braille tables employed by BRLTTY (on purpose).
+   This part of the code is pretty well-tested and should not need to be changed.
+ * Parsing:
+   The files numbers.hpp, measure.hpp and score.hpp contain the toplevel
+   grammar declarations.  The actual grammars are defined in the accompanying
+   files numbers_def.hpp, measure_def.hpp and score_def.hpp.
+   The resulting class templates are instantiated into separate translation
+   units using the files numbers.cpp, measure.cpp and score.cpp.
+   The files error_handler.hpp and annotation.hpp provide input location
+   tracking for individual parsed entities.
+   brlsym.hpp and brlsym.cpp define a few symbol tables for the purpose of
+   parsing braille music code (used in the *_def.hpp files).
+   ambiguous.hpp collects all the data types necessary to represent the result
+   of parsing the given input (in other words, the abstract syntax tree).
+   And finally, music.hpp contains basic utility types which seem common to
+   musical notation in general, not being tied to a particular type of notation.
+   For instance, a rational data type is created using Boost.Rational.
+   Several enums, such as accidentals or diatonic steps are also defined here.
+ * Compilation:
+   In the context of BMC, compilation refers to the process of post-processing
+   the bare result gained from parsing braille music code.
+   The file compiler.hpp defines the function object class
+   music::braille::compiler which is used as an entry point for all associated
+   algorithms.
+   disambiguate.hpp and octave_calculator.hpp do implement code required
+   for disambiguating note values and calcualting exact octaves of notes and
+   chords respectively.
+   compiler.cpp implements a few lengthy member function of
+   music::braille::compiler and comprises the top-level of the
+   compiler translation unit.
+ * Playback:
+   As a proof of concept, some code exists to play the compiled musical score
+   on Linux using the FluidSynth package (a SoundFont-based software synthesizer).
+   The file midi.hpp implements a simple layer for storing MIDI data in memory.
+   It offers classes for representing most basic MIDI events and a priority_queue
+   based class for implicitly ordering MIDI events by their begin time.
+   fluidsynth.hpp and fluidsynth.cpp implement a simple wrapper around the
+   FluidSynth C API to allow playing of compiled musical scores.
+ * Testing and utilities:
+   The file test.cpp contains all the test cases implemented so far.
+   For the convenience of developers, brltr.cpp contains a small command-line
+   tool which can be used to translate text characters to Unicode braille
+   given a particular braille table (see Text to braille).
+ * The program:
+   main.cpp contains the main routine necessary to link a final executable.
+
+         
 TODO
 ----
 
