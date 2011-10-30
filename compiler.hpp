@@ -25,17 +25,20 @@ class compiler
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
+
   template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
-  : global_time_signature(4, 4)
+  : report_error( boost::phoenix::function<ErrorHandler>(error_handler)
+                  ( L"Error"
+                  , boost::phoenix::arg_names::_2
+                  , boost::phoenix::cref(error_handler.iters)
+                    [boost::phoenix::arg_names::_1]
+                  )
+                )
+  , global_time_signature(4, 4)
   , anacrusis()
   , calculate_octaves(report_error)
   {
-    using boost::phoenix::arg_names::_1;
-    using boost::phoenix::arg_names::_2;
-    report_error =
-      boost::phoenix::function<ErrorHandler>(error_handler)
-      (L"Error", _2, boost::phoenix::cref(error_handler.iters)[_1]);
   }
 
   result_type operator()(ambiguous::score& score);
