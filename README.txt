@@ -26,10 +26,10 @@ Dependencies
 Being a C++ program, BMC naturally uses the Standard Template Library (STL).
 
 In addition to that some Boost[2] C++ Libraries are employed.
-Currently however, to make the Boost dependencies as
-easy to handle as possible, we are only using Boost header-only libraries[3].
-This means that the boost include directory is enough to build BMC.
-There is no need to link any Boost Library files to the final executable.
+Currently however, to make the Boost dependencies as easy to handle as possible,
+we are only using Boost header-only libraries[3].  This means that the boost
+include directory is enough to build BMC.  There is no need to link any Boost
+Library files to the final executable.
 
  [2] http://www.boost.org/
  [3] http://www.boost.org/doc/libs/1_47_0/?view=filtered_header-only
@@ -43,14 +43,18 @@ task of parsing braille music code.  Braille music code was invented originally
 around 1880, and was later refined by several comittees.  Its aim was naturally
 to be unambiguous and allow verbatim transcriptions from visual music notation,
 but it was never particularily designed to be read by a computer.  This aspect
-of the history shows up in the more complex tricks that we will want to handle
-to provide a parser that is as intelligent as possible.
+of the history shows up in the more complex tricks that we will need to provide
+a parser that is as intelligent as possible.
 
 Instead of the more conservative yacc/lex approach, we are using a much more
 modern parsing framework, namely Boost.Spirit[4].  Spirit is a C++ framework
 for creating parsers based on templates and meta-programming.
 A DSEL for EBNF-alike grammars is provided, and transformed at compile time
 into the necessary code to implement the actual parser.
+Using Boost.Fusion, Spirit can support a wide variety of desireable C++
+data structures as synthesized attributes of its grammars.  We can make use
+of STL containers and even more specific types like Boost.Variant or
+Boost.Optional to construct our abstract syntax tree.
 
  [4] http://www.boost.org/doc/libs/1_47_0/libs/spirit/doc/html/index.html
 
