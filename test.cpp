@@ -134,6 +134,16 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), 2);
+  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][0][0][0]));
+  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][1][1][0]));
   destroyTextTable(textTable);
 }
 
