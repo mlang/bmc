@@ -84,62 +84,6 @@ results in type-safe code which eliminates a certain class of runtime bugs.  It
 makes code a little bit more verbose to write, but for the better, actually.
 
 
-The Intermediate Representation
--------------------------------
-
-Some particular rules of braille music code deserve special attention
-when designing a data structure to correctly represent fully parsed and
-processed braille music.  In particular,
-
- * Note groupings are commonly used in well-written braille music code to
-   increase readablility.  While they might be computable in some cases,
-   the actual exact placement of note groupings can be important.  Additionally,
-   note groupings could be seen as a kind of beaming, which is otherwise absent
-   in braille music altogether.  Therefore the exact use of note groupings,
-   when detected by the disambiguation routines, should be recorded and
-   preserved in the intermediate representation. so that it can be
-   regenerated in the case of printing to braille, or used to provide
-   beaming for MusicXML documents for instance.
-
- * Braille repetititon: In addition to the usual way of indicating repeats with
-   special barlines in visual music notation, braille music code provides
-   several means to indicate repetition of note material either across several
-   measures in a section, or particular voices of a measure or even parts of a
-   voice of a measure.  These methods are used to minimize the amount of
-   characters required to fully represent a complete piece of music, and also to
-   make certain structure in music clear immediately, which helps a lot during
-   the process of memorisation.
-   However, for the purpose of our project this means that the parsed
-   input string does not necessarily have an unique character for every note
-   in the presented score.  Certain characters and/or syntactic constructs
-   will effectively constitute placeholders for note material presented already
-   eralier in the braille music document.
-   Our intermediate representation will therefore have to deal with
-   this situation, how exactly is not clear.  For instance, the processing
-   step after parsing the braille music code first will have to do
-   unrolling of the actually parsed material in any case.  For conversion
-   to performance data like MIDI, unrolling will be necessary as well.
-   So one might think that the intermediate representation should be a totally
-   unrolled view of all the note material, removing all the special cases
-   introduced by braille music code.  However, it would be desireable to
-   preserve the compressions employed in the original input.
-
-
-The identity transformation
----------------------------
-
-One interesting special case of conversion is the transformation from braille
-music code to braille music code.  While this might seem academic at first
-sight, it is not.  Braille music code employs very complicated hyphenation
-rules, the rules governing the splitting of very long measures across two (or
-several) lines of braille.  So to be able to reformat braille music for a
-different page width requires it to be parsed completely first, and then printed
-again just with a different line width.  This feature would be very desireable
-for braille display users, since a lot of readily-available braille music code
-documents currently are formatted for 32 (or less) characters per line, while a
-typical braille display has 40 or even 60 or 80 characters.
-
-
 User Interface(s)
 -----------------
 
@@ -184,8 +128,8 @@ the particular platforms below.  We want to minimize the bugs introduced by
 duplicated code.
 
 
-Coding Standard
----------------
+Coding Guidelines
+-----------------
 
 The primary programming language for BMC is C++.
 Templates and meta programming are allowed and encouraged.
@@ -327,7 +271,8 @@ Getting the source
 Note that the following description includes a simple way of getting a current
 (and tested) version of Boost trunk, for your convenience.  If you already have
 a recent enough (1.47.0) copy of Boost on your system you can of course skip the
-"svn export".
+"svn export".  This example also assumes you are using a POSIX compliant
+platform supported by autoconf.
 
  $ git clone http://github.com/mlang/bmc
  $ cd bmc
