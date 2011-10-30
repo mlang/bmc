@@ -14,6 +14,17 @@
 #include "music.hpp"
 #include <cmath>
 
+// Data types required to store the parse results.
+
+// Some of the missing values are filled in by the compiler translation unit
+// right now.  However, it is likely that we will need two different ways of
+// storing our data, one form immediately after parsing, and another as a result
+// of the necessary transformations on top of that.
+
+// The namespace is called 'ambiguous' because it resembles the pure,
+// unprocessed parse results which are by the nature of braille music code
+// ambiguous (exact note and rest values need to be calculated).
+
 namespace music { namespace braille { namespace ambiguous {
 
 enum value
@@ -30,7 +41,7 @@ struct rhythmic_base : locatable
 {
   value ambiguous_value;
   unsigned dots;
-  rational type;
+  rational type; // filled in by disambiguate.hpp
 };
 
 struct rhythmic
@@ -48,7 +59,7 @@ struct note : rhythmic_base, rhythmic
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
-  unsigned octave;
+  unsigned octave; // filled in by octave_calculator.hpp
   diatonic_step step;
   std::vector<slur> slurs;
   std::list<fingering> fingers;
@@ -62,7 +73,7 @@ struct note : rhythmic_base, rhythmic
 struct rest : rhythmic_base, rhythmic
 {
   rest() : whole_measure(false) {}
-  bool whole_measure;
+  bool whole_measure; // filled in by disambiguate.hpp
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
