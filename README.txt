@@ -197,28 +197,72 @@ Coding Standard
 
 The primary programming language for BMC is C++.
 Templates and meta programming are allowed and encouraged.
-In addition to the Standard Template Library, Boost is used to make a few
-hard jobs a lot easier, and encourage good coding style.
-If in doubt, check with the STL and Boost conding standards.
+In addition to the Standard Library, Boost is used to make a few hard jobs a lot
+easier, and encourage good coding style.  If in doubt, check with the Standard
+Library and Boost conding standards.
 
-* C++0x
-  The upcoming C++0x standard is a nice enhancement of the existing language.
+* C++11
+  The upcoming C++11[4] standard is a nice enhancement of the existing language.
   Given the fact that GCC supports alot of the new standard already, and
   Microsofts Visual Studio is apparently also following at least somewhat, it
-  was decided to allow some C++0x constructs into the codebase already.
+  was decided to allow some C++11 constructs into the codebase already.
   The BMC codebase is totally fresh anyways, and the actual task at hand
   seems so involved that we do not think it likely that we're going to be
   "finished" in the foreseeable future.  It is therefore very much likely that
-  C++0x (while not finalized as of October 2011 yet) will be finished and most
-  noteworthy compilers will have cought up implementing it, by the time BMC is
+  C++11 will be well adopted by most noteworthy compilers, by the time BMC is
   reaching any sort of production quality maturity.  Therefore we think we
-  should be fine with C++0x already, and we can have a lot of fun learning its
+  should be fine with C++11 already, and we can have a lot of fun learning its
   features along the way, not needing to limit us to the more verbose older ways
   of C++.
-  That said, if C++0x presents a problem to a porter, Plain C++ is definitely
+  That said, if C++11 presents a problem to a porter, C++03 is definitely
   preferable and should just be patched.  rvalue references, range based for
-  loops and all the other nice features of C++0x are just that, nice.
+  loops and all the other nice features of C++11 are just that, nice.
   They are syntactic sugar, in a sense.  Portability takes preference.
+
+  That said, here is a (possibly incomplete) list of C++11 features used by BMC:
+  * Rvalue references and move constructors[5]: This is probably the greatest
+    improvement to C++ performance-wise.  Nevertheless it is currently only used
+    to implement move-semantics for the FluidSynth wrapper class (to fullfil a
+    requrement of the threading API).
+    Additionally, disambiguate.hpp makes some use of the STL member function
+    emplace_back() to increase performance.
+
+   [5] http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors
+
+  * Range-based for-loop[6]: This is really just syntactic sugar to make code
+    more concise and readable (very desireable).  It is only sporadically
+    used throughout the code.  The macro BOOST_FOREACH[7] is a good drop-in
+    replacement for a native range-based for-loop if it presents any problems.
+    However, tests have shown that BOOST_FOREACH is slower compared to
+    native range-based for-loops.
+
+   [6] http://en.wikipedia.org/wiki/C++11#Range-based_for-loop
+   {7] http://www.boost.org/doc/libs/1_47_0/doc/html/foreach.html
+
+  * Right angle bracket[8]: Template code tends to look ugly if the programmer
+    needs to put spaces between two consecutive angle brackets.  Fortunately,
+    C++11 solves this ugly gotcha of C++.  Some places of the code might
+    make use of this.  If its a problem, simply insert the dreaded space.
+
+   [8] http://en.wikipedia.org/wiki/C++11#Right_angle_bracket
+
+  * Explicitly defaulted and deleted special member functions[9]: A useful
+    feature to make it more clear which member functions are actually created
+    by the compiler implicitly.  This is used in the FluidSynth class, since that
+    class is already explicitly designed to be move-aware, which is already
+    a C++11 only functionality.
+
+   [9] http://en.wikipedia.org/wiki/C++11#Explicitly_defaulted_and_deleted_special_member_functions
+
+  * Threading facilities[10]: The playback code makes use of std::thread and
+    std::chrono.  If the Standard Library of a certain platform lacks these
+    C++11 improvements, you might be able to use boost::thread[11] and
+    boost::chrono[12] as a (temporary) replacement.
+
+   [10] http://en.wikipedia.org/wiki/C++11#Threading_facilities
+   [11] http://www.boost.org/doc/libs/1_47_0/doc/html/thread.html
+   [12] http://www.boost.org/doc/libs/1_47_0/doc/html/chrono.html
+
 
 * const qualifier: C++ is ambiguous regarding the placement of const qualifiers.
   const can either be placed before or after the variable or argument type.
