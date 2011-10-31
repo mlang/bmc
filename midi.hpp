@@ -54,13 +54,29 @@ class event : public event_base
     result_type operator()(note_on const& note) const { return note.duration; }
     result_type operator()(channel_event const&) const { return zero; }
   };
+  template<typename EventType>
+  struct is_event : public boost::static_visitor<bool>
+  {
+    result_type operator()(EventType const&) const { return true; }
+    result_type operator()(channel_event const&) const { return false; }
+  };
 public:
   template<typename T> event(T const& t) : event_base(t) {}
   begin_::result_type begin() const
   { return boost::apply_visitor(begin_(), *this); }
   duration_::result_type duration() const
   { return boost::apply_visitor(duration_(), *this); }
-  bool operator>(event const& rhs) const { return begin() > rhs.begin(); }
+  bool operator>(event const& rhs) const
+  {
+    if (begin() == rhs.begin()) {
+      // assure that note_off events are placed before all others to avoid
+      // accidentally killing of a note that just started at the same time.
+      is_event<note_off> is_note_off;     
+      if (boost::apply_visitor(is_note_off, *this)) return false;
+      if (boost::apply_visitor(is_note_off, rhs)) return true;
+    }
+    return begin() > rhs.begin();
+  }
 };
 
 class event_queue
