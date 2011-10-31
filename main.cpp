@@ -19,7 +19,7 @@ main()
 {
   std::locale::global(std::locale(""));
 
-  textTable = compileTextTable("Tables/de.ttb");
+  textTable = compileTextTable("ttb/Tables/de.ttb");
 
   std::istreambuf_iterator<wchar_t> wcin_begin(std::wcin.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
