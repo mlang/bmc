@@ -112,13 +112,13 @@ GNU/Linux.  A natural choice on Linux for an accessible GUI is GTK, which
 features well tested accessibility since a few years now.  GTK is actually also
 ported to Microsoft Windows, but it is not accessible on that platform.  We are
 aiming to support as many users as possible, so we do have to plan/provide a
-port to MS Windows.  Some way come up with wxWindows as a possible candidate
+port to MS Windows.  Some may come up with wxWindows as a possible candidate
 since it features a GUI toolkit for Linux and Windows with the same API on the
 different systems.  Unfortuantely, the accessibility of wxWindows is not equally
 accessible on both platform (tested around 2009).
 
 It looks like we will have to solve this "the hard way": Implement natively
-accessible interfaces for both platforms separately: On for GTK on Linux and one
+accessible interfaces for both platforms separately: One for GTK on Linux and one
 for MFC (or whatever is best for C++) on Windows.
 
 To avoid substantial different behaviour on the two platforms, it might be
@@ -159,11 +159,12 @@ Library and Boost conding standards.
 
   Here is a (possibly incomplete) list of C++11 features used by BMC:
   * Rvalue references and move constructors[6]: This is probably the greatest
-    improvement to C++ performance-wise.  Nevertheless it is currently only used
-    to implement move-semantics for the FluidSynth wrapper class (to fullfil a
-    requrement of the threading API).
+    improvement to C++ performance-wise.  Move-semantics are currently used
+    in the FluidSynth wrapper class (to fullfil a requrement of the threading
+    API).
     Additionally, disambiguate.hpp makes some use of the STL member function
-    emplace_back() to increase performance.
+    emplace_back() to increase performance.  If need be, the use of emplace_back
+    can simply be replaced by its (slower) equivalent push_back.
 
    [6] http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors
 
@@ -209,7 +210,7 @@ Library and Boost conding standards.
    GOOD:   std::vector<int> const v;
    BAD:    const std::vector<int> v;
 
-* Use tabs, no spaces: To minimize indentation issues in a multi-developer
+* Use spaces, no tabulator: To minimize indentation issues in a multi-developer
   project, we'd like to avoid the use of tabs.  Use spaces to indent.
 
 * Write maintainable code: Given the low amount of manpower we can expect,
@@ -270,8 +271,8 @@ Getting the source
 
 Note that the following description includes a simple way of getting a current
 (and tested) version of Boost trunk, for your convenience.  If you already have
-a recent enough (1.47.0) copy of Boost on your system you can of course skip the
-"svn export".  This example also assumes you are using a POSIX compliant
+a recent enough (1.48.0) copy of Boost on your system you might be able to skip
+the "svn export".  This example also assumes you are using a POSIX compliant
 platform supported by autoconf.
 
  $ git clone http://github.com/mlang/bmc
@@ -281,6 +282,8 @@ platform supported by autoconf.
 
 Building
 --------
+
+Compilation has only been tested with GCC 4.6 recently.
 
  $ autoconf
  $ ./configure -q --with-boost-root-directory=.
@@ -348,7 +351,10 @@ TODO
 ----
 
 * Port current codebase to Windows:
-  * Port the build system, or replace with a portable one (CMake?)
+  * Port the build system, or replace with a portable one: Automake has some
+    support for Microsoft Windows.  Investigate if that suffices do a real port
+    to Windows.  Maybe consider switching to CMake which supposedly supports
+    VisualStudio project file generation.
   * Figure out how to mimmick the FluidSynth functionality currently used under
     Linux under Windows.  Ideally, create a common class for realtime MIDI
     playback which is platform independent, and implement FluidSynth (Linux) and
@@ -360,5 +366,28 @@ TODO
     On Windows, it is 16bit wide and implicitly UTF16 coded (that is my current
     understanding).  Figure out what encodings we are to expect on
     Windows and deal with them in the most flexible way.  Unicode
-    is to be prefered internally, always.
+    is to be prefered internally, always.  Is Unicode Braille supported
+    on Windows in the command prompt?
+* Implement Standard MIDI File (SMF) writing: In addition to real-time playback,
+  musical scores should also be exportable to MIDI files on disk such that
+  they can be played or imported with other programs.  Note that the current
+  playback code is only a proof of concept, and needs more work.  Its probably
+  best to write something that converts a music::midi::evenet_queue to
+  a suitable on-disk representation so that common code between real-time
+  playback and file export can be kept separate.
+* Devise a method to specify subsets of the parsed note material for playback
+  or export.  For instance, the user might want to play starting from a certain
+  measure, or only listen to a certain staff (hand) in multistaff music.
+* Design the necessary components to handle unrolling: Braille music code
+  allows for specification of repeated note material, in a much more
+  fine-grained way as visual music notation allows for.  Simile signs can be
+  used to repeat complete measures, particular voices, or even parts of
+  a voice.  Braille repeats can be used to indicate repetition of an
+  arbitrary range of measures of the current staff.
+  This implies that we will have to deal with data in both representations
+  somehow: There is a stage of processing where all these repetition instructions
+  are present, and we will want to unroll the given material such that we get
+  a view of all the notes actually implied by these contractions.
+* Investigate feasability of ports to other platforms like OSX or iOS.
+
 
