@@ -27,6 +27,10 @@ namespace music {
 
 typedef boost::rational<int> rational;
 
+inline rational
+reciprocal(rational const& r)
+{ return rational(r.denominator(), r.numerator()); }
+
 rational const zero = rational(0);
 
 inline rational

@@ -20,8 +20,10 @@ enum value_category
   large, small
 };
 
-rational const undotted[8] = { {1, 1}, {1, 2}, {1, 4}, {1, 8},
-                               {1, 16}, {1, 32}, {1, 64}, {1, 128} };
+rational const undotted[8] = {
+  {1, 1}, {1, 2}, {1, 4}, {1, 8}, {1, 16}, {1, 32}, {1, 64}, {1, 128}
+};
+
 class value_proxy
 {
   ambiguous::value value_type:4;
@@ -568,10 +570,6 @@ inline rational
 duration(proxied_voice_ptr const& parts)
 { return duration(*parts); }
 
-inline rational
-reciprocal(rational const& r)
-{ return rational(r.denominator(), r.numerator()); }
-
 class proxied_measure : public std::vector<proxied_voice_ptr>
 {
   rational mean;
@@ -634,6 +632,7 @@ operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
   }
   return os;
 }
+
 class measure_interpretations : public std::list<proxied_measure>
 {
   music::time_signature time_signature;
