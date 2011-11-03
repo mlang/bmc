@@ -10,8 +10,10 @@
 #include "ambiguous.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
+#include <boost/function.hpp>
 #include <boost/range/numeric.hpp>
 #include <memory>
+#include <sstream>
 
 namespace music { namespace braille {
 
@@ -744,6 +746,66 @@ accept(proxied_measure const& measure)
         BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice)
           value.accept();
 }
+
+class value_disambiguator : public boost::static_visitor<bool>
+{
+  boost::function<void(int tag, std::wstring const& what)> const& report_error;
+  measure_interpretations anacrusis;
+
+public:
+  value_disambiguator(boost::function< void( int tag
+                                           , std::wstring const& what
+                                           )
+                                     > const& report_error
+                     )
+  : report_error(report_error)
+  {}
+
+  result_type operator()( ambiguous::measure& measure
+                        , time_signature const& time_sig
+                        )
+  {
+    measure_interpretations interpretations(measure, time_sig);
+
+    if (not interpretations.contains_complete_measure() and
+        not interpretations.empty()) {
+      if (anacrusis.empty()) {
+        anacrusis = interpretations;
+        return true;
+      } else {
+        if (anacrusis.completes_uniquely(interpretations)) {
+          BOOST_FOREACH(proxied_measure& lhs, anacrusis) {
+            BOOST_FOREACH(proxied_measure& rhs, interpretations) {
+              if (duration(lhs) + duration(rhs) == time_sig) {
+                accept(lhs), accept(rhs);
+                anacrusis.clear();
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (interpretations.size() == 1) {
+      accept(interpretations.front());
+      return true;
+    }
+
+    if (interpretations.empty()) {
+      report_error(measure.id, L"No possible interpretations");
+    } else {
+      std::wstringstream s;
+      s << interpretations.size() << L" possible interpretations:";
+      BOOST_FOREACH(proxied_measure& measure, interpretations) {
+        rational const score(measure.harmonic_mean());
+        s << std::endl << boost::rational_cast<float>(score) << L": " << measure;
+      }
+      report_error(measure.id, s.str());
+    }
+    return false;
+  }
+};
 
 }}
 

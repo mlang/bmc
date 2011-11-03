@@ -20,8 +20,9 @@ namespace music { namespace braille {
 class compiler
 {
   boost::function<void(int tag, std::wstring const& what)> report_error;
-  measure_interpretations anacrusis;
   octave_calculator calculate_octaves;
+  value_disambiguator disambiguate_values;
+
 public:
   music::time_signature global_time_signature;
   typedef bool result_type;
@@ -36,16 +37,13 @@ public:
                   )
                 )
   , global_time_signature(4, 4)
-  , anacrusis()
+  , disambiguate_values(report_error)
   , calculate_octaves(report_error)
   {
   }
 
   result_type operator()(ambiguous::score& score);
   result_type operator()(ambiguous::measure& measure);
-
-private:
-  result_type disambiguate(ambiguous::measure& measure);
 };
 
 }}
