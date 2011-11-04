@@ -164,7 +164,7 @@ Library and Boost conding standards.
     API).
     Additionally, disambiguate.hpp makes some use of the STL member function
     emplace_back() to increase performance.  If need be, the use of emplace_back
-    can simply be replaced by its (slower) equivalent push_back.
+    can simply be replaced by its (slower) equivalent push_back().
 
    [6] http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors
 
@@ -246,7 +246,12 @@ Library and Boost conding standards.
     Some special cases, like GUI behaviour for instance, are of course rather
     hard to test.  Apply common sense when deciding how much time to invest in
     developing a useful test case.
-  * Use the features of C++ to avoid dangerous code:  For instance, use enums
+  * The 'detail' namespace: One pattern commonly used in Boost is to separate
+    the public interface of a feature from its implementation details.
+    We think this a good practice and would like to make use of it in BMC.
+    If you find or write code that clearly looks like an implementation detail,
+    consider putting it into a separate namespace 'detail'.
+  * Use the features of C++ to avoid dangerous code: For instance, use enums
     instead of integer constants.  Help the compiler avoid programming errors.
     Or, use a safe discriminated union and the visitor pattern instead of
     dangerous runtime type checking (as we do with Boost.Variant already).
