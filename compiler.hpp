@@ -15,9 +15,12 @@
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
+// The `compiler' processes the raw parsed syntax tree to fill in musical
+// information implied by the given input.
+
 namespace music { namespace braille {
 
-class compiler
+class compiler : public boost::static_visitor<bool>
 {
   boost::function<void(int tag, std::wstring const& what)> report_error;
   octave_calculator calculate_octaves;
@@ -25,7 +28,6 @@ class compiler
 
 public:
   music::time_signature global_time_signature;
-  typedef bool result_type;
 
   template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
