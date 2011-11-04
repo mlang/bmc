@@ -357,8 +357,8 @@ TODO
 
 * Port current codebase to Windows:
   * Port the build system, or replace with a portable one: Automake has some
-    support for Microsoft Windows.  Investigate if that suffices do a real port
-    to Windows.  Maybe consider switching to CMake which supposedly supports
+    support for Microsoft Windows.  Investigate if that suffices to do a real
+    port to Windows.  Maybe consider switching to CMake which supposedly supports
     VisualStudio project file generation.
   * Figure out how to mimmick the FluidSynth functionality currently used under
     Linux under Windows.  Ideally, create a common class for realtime MIDI
@@ -372,27 +372,45 @@ TODO
     understanding).  Figure out what encodings we are to expect on
     Windows and deal with them in the most flexible way.  Unicode
     is to be prefered internally, always.  Is Unicode Braille supported
-    on Windows in the command prompt?
+    on Windows in the command prompt?  Currently unit test input data is
+    all encoded with UTF-(.  Figure out if this is a problem on Windows.
 * Implement Standard MIDI File (SMF) writing: In addition to real-time playback,
   musical scores should also be exportable to MIDI files on disk such that
   they can be played or imported with other programs.  Note that the current
   playback code is only a proof of concept, and needs more work.  Its probably
   best to write something that converts a music::midi::evenet_queue to
   a suitable on-disk representation so that common code between real-time
-  playback and file export can be kept separate.
+  playback and file export can be shared.
+* Handle tied-note playback correctly: As usual with prototypes, the playback
+  code does take shortcuts currently.  One typical problem when converting
+  note material to performance data is the interpretation of (usually visual)
+  cues on how to play the music.  Articulations are one (more advanced) instance
+  of this.  A more fundamental one is the interpretation of ties.
+  If a note is tied to another one, it is supposed to be played with both
+  note durations added.  Currently, the playback code ignores this and
+  plays tied notes as if they are two separate notes.  This needs to be fixed.
 * Devise a method to specify subsets of the parsed note material for playback
   or export.  For instance, the user might want to play starting from a certain
   measure, or only listen to a certain staff (hand) in multistaff music.
 * Design the necessary components to handle unrolling: Braille music code
-  allows for specification of repeated note material, in a much more
+  allows for specification of repeated note material in a much more
   fine-grained way as visual music notation allows for.  Simile signs can be
   used to repeat complete measures, particular voices, or even parts of
   a voice.  Braille repeats can be used to indicate repetition of an
   arbitrary range of measures of the current staff.
   This implies that we will have to deal with data in both representations
   somehow: There is a stage of processing where all these repetition instructions
-  are present, and we will want to unroll the given material such that we get
-  a view of all the notes actually implied by these contractions.
+  are present (once the parse stage succeds), and we will want to unroll the
+  given abstract syntax tree such that we get a view of all the notes actually
+  implied by these contractions.  We obviously need an unrolled "view" for
+  export to anything other then braille music code, since most other formats
+  seem to lack these compression fascilities.  For instance, when generating
+  MIDI messages, we need to have all contractions expanded such that we know the
+  notes we need to generate.  However, LilyPond input data allows for a special
+  kind of repeat which basically serves a similar purpose as in braille music,
+  namely to reduce duplicated note material.  If we ever get to the stage of
+  LilyPond export, we might want to use some of the braille repeats  as cues to
+  generate more human readable LilyPond files.
 * Investigate feasability of ports to other platforms like OSX or iOS.
 
 
