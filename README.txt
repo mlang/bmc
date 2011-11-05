@@ -137,7 +137,7 @@ In addition to the Standard Library, Boost is used to make a few hard jobs a lot
 easier, and encourage good coding style.  If in doubt, check with the Standard
 Library and Boost conding standards.
 
-* C++11
+* C++11 (ISO/IEC 14882:2011)
   The upcoming C++11[5] standard is a nice enhancement of the existing language.
   Given the fact that GCC supports alot of the new standard already, and
   Microsofts Visual Studio is apparently also following at least somewhat, it
@@ -389,28 +389,29 @@ TODO
   If a note is tied to another one, it is supposed to be played with both
   note durations added.  Currently, the playback code ignores this and
   plays tied notes as if they are two separate notes.  This needs to be fixed.
+  Note that ties can cross measure boundaries: A note at the end of one measure
+  can be tied to one of the first notes of the next measure.
 * Devise a method to specify subsets of the parsed note material for playback
   or export.  For instance, the user might want to play starting from a certain
   measure, or only listen to a certain staff (hand) in multistaff music.
 * Design the necessary components to handle unrolling: Braille music code
-  allows for specification of repeated note material in a much more
-  fine-grained way as visual music notation allows for.  Simile signs can be
-  used to repeat complete measures, particular voices, or even parts of
-  a voice.  Braille repeats can be used to indicate repetition of an
-  arbitrary range of measures of the current staff.
-  This implies that we will have to deal with data in both representations
-  somehow: There is a stage of processing where all these repetition instructions
-  are present (once the parse stage succeds), and we will want to unroll the
-  given abstract syntax tree such that we get a view of all the notes actually
-  implied by these contractions.  We obviously need an unrolled "view" for
-  export to anything other then braille music code, since most other formats
-  seem to lack these compression fascilities.  For instance, when generating
-  MIDI messages, we need to have all contractions expanded such that we know the
-  notes we need to generate.  However, LilyPond input data allows for a special
-  kind of repeat which basically serves a similar purpose as in braille music,
-  namely to reduce duplicated note material.  If we ever get to the stage of
-  LilyPond export, we might want to use some of the braille repeats  as cues to
-  generate more human readable LilyPond files.
+  allows for specification of repeated note material in a much more fine-grained
+  way as visual music notation allows for.  Simile signs can be used to repeat
+  complete measures, particular voices, or even parts of a voice.  Braille
+  repeats can be used to indicate repetition of an arbitrary range of measures
+  of the current staff.  This implies that we will have to deal with data in
+  both representations somehow: There is a stage of processing where all these
+  repetition instructions are present (once the parse stage succeds), and we
+  will want to unroll the given abstract syntax tree such that we get a view of
+  all the notes actually implied by these contractions.  We obviously need an
+  unrolled "view" for export to anything other then braille music code, since
+  most other formats seem to lack these compression fascilities.  For instance,
+  when generating MIDI messages, we need to have all contractions expanded such
+  that we know the notes we need to generate.  However, LilyPond input data
+  allows for a special kind of repeat which basically serves a similar purpose
+  as in braille music, namely to reduce duplicated note material.  If we ever
+  get to the stage of LilyPond export, we might want to use some of the braille
+  repeats as cues to generate more human readable LilyPond files.
 * Investigate feasability of ports to other platforms like OSX or iOS.
 
 
