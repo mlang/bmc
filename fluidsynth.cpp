@@ -112,57 +112,11 @@ public:
   template<typename T> result_type operator()(T const&) const {}
 };
 
-struct duration_visitor : boost::static_visitor<rational>
-{
-  result_type operator()(braille::ambiguous::note const& r) const
-  { return r.as_rational(); }
-  result_type operator()(braille::ambiguous::rest const& r) const
-  { return r.as_rational(); }
-  result_type operator()(braille::ambiguous::chord const& r) const
-  { return r.as_rational(); }
-  template<typename T> result_type operator()(T const&) const
-  { return zero; }
-};
-
 }
 
-namespace boost {
-  template<typename IntType>
-  inline rational<IntType>
-  operator+( rational<IntType> const& r
-           , music::braille::ambiguous::sign const& sign)
-  { return r + apply_visitor(music::duration_visitor(), sign); }
-}
+#include "duration.hpp"
 
 namespace music {
-
-inline rational
-duration(braille::ambiguous::partial_voice const& partial_voice)
-{ return boost::accumulate(partial_voice, zero); }
-
-rational
-duration(braille::ambiguous::partial_measure const& partial_measure)
-{ return duration(partial_measure.front()); }
-
-}
-
-namespace boost {
-  template<typename IntType>
-  inline rational<IntType>
-  operator+( rational<IntType> const& r
-           , music::braille::ambiguous::voice::const_reference p)
-  { return r + music::duration(p); }
-}
-
-namespace music {
-
-rational
-duration(braille::ambiguous::voice const& voice)
-{ return boost::accumulate(voice, zero); }
-
-rational
-duration(braille::ambiguous::measure const& measure)
-{ return duration(measure.voices.front()); }
 
 void
 fluidsynth::operator()(braille::ambiguous::measure const& measure)
