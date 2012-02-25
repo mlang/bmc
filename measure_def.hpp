@@ -54,7 +54,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
       >> fingering              [at_c<7>(_val) = _1]
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
-      >> (-tie_sign)            [at_c<8>(_val) = true]
+      >> (-tie_sign             [at_c<8>(_val) = true])
        ;
 
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));

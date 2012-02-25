@@ -65,7 +65,7 @@ struct note : rhythmic_base, rhythmic
   std::list<fingering> fingers;
   bool tied;
 
-  note() : octave(0) {}
+  note(): octave(0), tied(false) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
