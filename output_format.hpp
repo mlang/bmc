@@ -9,15 +9,15 @@
 
 namespace music {
 
-enum output_format
+enum class output_format: long
 {
-  verbatim_source = 0,
+  identity = 0,
   lilypond = 1
 };
 
-enum ios_base_iword_mask
+enum class ios_base_iword_mask: long
 {
-  output_format_mask = 1
+  output_format = 1
 };
 
 namespace detail {
@@ -47,37 +47,37 @@ namespace detail {
 
 } // namespace detail
 
-/// returns flags controlling output.
+/// Get flags controlling output.
 inline long get_flags(std::ios_base& ios, ios_base_iword_mask mask)
-{ return ios.iword(detail::xalloc_key_holder<true>::value) & mask; }
+{ return ios.iword(detail::xalloc_key_holder<true>::value) & long(mask); }
 
-/// Set new flags controlling output format.
+/// Set new flags controlling output.
 inline void set_flags(std::ios_base& ios, long new_flags, ios_base_iword_mask mask)
 {
-  assert((~mask & new_flags) == 0);
+  assert((~long(mask) & new_flags) == 0);
   long& flags = ios.iword(detail::xalloc_key_holder<true>::value);
-  flags = (flags & ~mask) | new_flags;
+  flags = (flags & ~long(mask)) | new_flags;
 }
 
 /// Returns output format.
 inline output_format get_output_format(std::ios_base& ios)
-{ return static_cast<output_format>(get_flags(ios, output_format_mask)); }
+{ return output_format(get_flags(ios, ios_base_iword_mask::output_format)); }
 
-/// Set new flags controlling output format.
-inline void set_output_format(std::ios_base& ios, output_format new_format)
-{ set_flags(ios, new_format, output_format_mask); }
+/// Set new output format.
+inline void set_output_format(std::ios_base& ios, output_format format)
+{ set_flags(ios, long(format), ios_base_iword_mask::output_format); }
 
-/// Set new flags for verbatim source output format.
-inline std::ios_base& verbatim_source_output_format(std::ios_base& ios)
+/// Set verbatim source output format.
+inline std::ios_base& identity_output_format(std::ios_base& ios)
 {
-  set_output_format(ios, verbatim_source);
+  set_output_format(ios, output_format::identity);
   return ios;
 }
 
-/// Set new flag for lilypond output format.
+/// Set lilypond output format.
 inline std::ios_base& lilypond_output_format(std::ios_base& ios)
 {
-  set_output_format(ios, lilypond);
+  set_output_format(ios, output_format::lilypond);
   return ios;
 }
 
