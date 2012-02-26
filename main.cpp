@@ -14,8 +14,10 @@
 #include "ttb/ttb.h"
 #include <thread>
 
+#include "lilypond.hpp"
+
 int
-main()
+main(int argc, char const *argv[])
 {
   std::locale::global(std::locale(""));
 
@@ -36,17 +38,21 @@ main()
   if (success && iter == end) {
     music::braille::compiler compile(error_handler);
     if (compile(score)) {
-      std::thread player(music::fluidsynth(SOUNDFONT_PATH), score);
+      std::thread player;
 
-      std::wcout << source;
+      if (argc == 2 and strcmp(argv[1], "-p") == 0)
+        player = std::thread(music::fluidsynth(SOUNDFONT_PATH), score);
 
-      player.join();
+      music::lilypond_output_format(std::cout);
+      std::cout << score;
 
-      return 0;
+      if (player.joinable()) player.join();
+
+      return EXIT_SUCCESS;
     }
   }
 
-  return 1;
+  return EXIT_FAILURE;
 }
 
 
