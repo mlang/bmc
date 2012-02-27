@@ -27,6 +27,7 @@ struct score_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::score()>
   boost::spirit::qi::rule<Iterator, ambiguous::staff()> staff;
   measure_grammar<Iterator> measure;
   time_signature_grammar<Iterator> time_signature;
+  key_signature_grammar<Iterator> key_signature;
   boost::spirit::qi::rule<Iterator> right_hand_sign, left_hand_sign;
   boost::spirit::qi::rule<Iterator> eom;
   boost::spirit::qi::rule<Iterator> optional_dot;

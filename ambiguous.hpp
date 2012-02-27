@@ -119,6 +119,7 @@ typedef std::vector< boost::variant<measure> > staff;
 typedef std::vector<staff> part;
 
 struct score {
+  key_signature key_sig;
   boost::optional<time_signature> time_sig;
   std::vector<part> parts;
 };
@@ -168,6 +169,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::score,
+  (music::key_signature, key_sig)
   (boost::optional<music::time_signature>, time_sig)
   (std::vector<music::braille::ambiguous::part>, parts)
 )

@@ -36,7 +36,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
     boost::spirit::qi::omit_type omit;
   boost::spirit::standard_wide::space_type space;
 
-  start = -(time_signature > +eol)
+  start = key_signature >> -time_signature >> -+eol
        >> +(keyboard_part | solo_part);
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;

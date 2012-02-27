@@ -333,6 +333,8 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
+  BOOST_CHECK(attribute.time_sig);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
@@ -359,6 +361,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 34);
@@ -385,6 +388,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 16);
@@ -411,6 +415,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
@@ -437,6 +442,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 18);
@@ -466,6 +472,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
@@ -499,6 +506,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
@@ -532,6 +540,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 18);

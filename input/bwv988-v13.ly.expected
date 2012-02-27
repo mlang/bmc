@@ -5,6 +5,7 @@
     \new PianoStaff <<
       \new Staff {
         \clef "treble"
+        \key g \major
         \time 3/4
         b'32-2 c''32 b'32 a'32 b'8~-4 b'32 f'32 g'32-1 a'32 b'16 c''16 \appoggiatura d'' c''16 b'16 a'16 g'16 | % 1
         d''32-4 e''32 d''32 cis''32 d''8~ d''32 c''32 d''32-1 e''32 f''16 g''16 \appoggiatura a'' g''16 f''16 e''16 d''16 | % 2
@@ -41,6 +42,7 @@
       }
       \new Staff {
         \clef "bass"
+        \key g \major
         \time 3/4
         << {g4.-4 g8-3 f8 e8}\\{r8 r16 b16 d'2~} >> | % 1
         << {f4. b8 a8 b8}\\{d'8. a16 d'2~} >> | % 2

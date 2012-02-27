@@ -108,6 +108,10 @@ public:
       }
       os << std::endl;
 
+      if (score.key_sig != 0) {
+        os << indent << "  "; ly_key(score.key_sig); os << std::endl;
+      }
+
       if (score.time_sig)
         os << indent << "  " << "\\time" << " " << *score.time_sig << std::endl;
 
@@ -281,6 +285,16 @@ private: // utilities
   {
     if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
     for (int dot = 0; dot < rhythm.dots; ++dot) os << ".";
+  }
+  void ly_key(key_signature const& key) const
+  {
+    char const *flats[] = { "f", "bes", "ees", "aes", "des", "ges", "ces" };
+    char const *sharps[] = { "g", "d", "a", "e", "b", "fis", "cis" };
+    os << "\\key" << " ";
+    if (key > 0) os << sharps[key - 1];
+    else if (key < 0) os << flats[-key - 1];
+    else os << "c";
+    os << " " << "\\major";
   }
   void ly_octave(int octave) const
   {
