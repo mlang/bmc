@@ -93,19 +93,23 @@ public:
 		  , braille::ambiguous::score const& score
                   ) const
   {
-    if (part.size() == 2) os << "    " << "\\new GrandStaff <<" << std::endl;
+    std::string indent("    ");
+    if (part.size() == 2) {
+      os << indent << "\\new PianoStaff <<" << std::endl;
+      indent += "  ";
+    }
     for (size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
-      os << "    " << "\\new Staff {" << std::endl;
+      os << indent << "\\new Staff {" << std::endl;
 
       switch (staff_index) {
-      case 0: os << "      "; ly_clef("treble"); break;
-      case 1: os << "      "; ly_clef("bass"); break;
+      case 0: os << indent << "  "; ly_clef("treble"); break;
+      case 1: os << indent << "  "; ly_clef("bass"); break;
       default: BOOST_ASSERT(false);
       }
       os << std::endl;
 
       if (score.time_sig)
-        os << "      " << "\\time" << " " << *score.time_sig << std::endl;
+        os << indent << "  " << "\\time" << " " << *score.time_sig << std::endl;
 
       unsigned int measure_number = 1;
       if (not part[staff_index].empty()) {
@@ -113,7 +117,7 @@ public:
                                                              part[staff_index].front()));
         if ((not score.time_sig and first_measure_duration != 1) or
             (score.time_sig and *score.time_sig != first_measure_duration)) {
-          ly_partial(first_measure_duration);
+          os << indent << "  "; ly_partial(first_measure_duration); os << std::endl;
           measure_number = 0; // count from zero if we are dealing with upbeat
         }
       }
@@ -123,7 +127,7 @@ public:
       {
         boost::variant<braille::ambiguous::measure> const& this_measure = part[staff_index][measure_index];
 
-        boost::apply_visitor(*this, this_measure);
+        os << indent << "  "; boost::apply_visitor(*this, this_measure);
 
         bool barcheck = true;
         repeat_info this_repeat(this_measure);
@@ -146,7 +150,7 @@ public:
         if (barcheck) os << " | ";
          os << "% " << measure_number++ << std::endl;
       }
-      os << "    " << "}" << std::endl;
+      os << indent << "}" << std::endl;
     }
     if (part.size() == 2) os << "    " << ">>" << std::endl;
   }
