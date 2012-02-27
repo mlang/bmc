@@ -2,7 +2,7 @@
 \version "2.14.2"
 \score {
   <<
-    \new GrandStaff <<
+    \new PianoStaff <<
       \new Staff {
         \clef "treble"
         \partial 8 

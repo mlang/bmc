@@ -234,9 +234,8 @@ public:
     if (note.tied) os << "~";
 
     if (not note.fingers.empty()) {
-      os << "-";
       for (auto const& finger: note.fingers)
-        os << boost::apply_visitor(ly_fingering(), finger);
+        os << "-" << boost::apply_visitor(ly_fingering(), finger);
     }
   }
   void operator() (braille::ambiguous::chord const& chord) const
@@ -280,8 +279,7 @@ private: // utilities
   { os << "\\clef \"" << clef << "\""; }
   void ly_rhythm(braille::ambiguous::rhythmic_base const& rhythm) const
   {
-    BOOST_ASSERT(rhythm.type.numerator() == 1);
-    os << rhythm.type.denominator();
+    if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
     for (int dot = 0; dot < rhythm.dots; ++dot) os << ".";
   }
   void ly_octave(int octave) const
