@@ -48,15 +48,15 @@ struct get_duration: public boost::static_visitor<rational>
   { return music::duration(measure); }
 };
 
-struct fingering: boost::static_visitor<std::string>
+struct ly_fingering: boost::static_visitor<std::string>
 {
-  std::string operator() (braille::ambiguous::finger_change const& change) const
+  result_type operator() (braille::ambiguous::finger_change const& change) const
   {
     std::stringstream stream;
     stream << "\"" << change.first << "-" << change.second << "\"";
     return stream.str();
   }
-  std::string operator() (unsigned finger) const
+  result_type operator() (unsigned finger) const
   { std::stringstream stream; stream << finger; return stream.str(); }
 };
 
@@ -112,7 +112,7 @@ public:
         rational first_measure_duration(boost::apply_visitor(get_duration(),
                                                              part[staff_index].front()));
         if ((not score.time_sig and first_measure_duration != 1) or
-            (*score.time_sig != first_measure_duration)) {
+            (score.time_sig and *score.time_sig != first_measure_duration)) {
           ly_partial(first_measure_duration);
           measure_number = 0; // count from zero if we are dealing with upbeat
         }
@@ -231,7 +231,8 @@ public:
 
     if (not note.fingers.empty()) {
       os << "-";
-      os << boost::apply_visitor(fingering(), note.fingers.front());
+      for (auto const& finger: note.fingers)
+        os << boost::apply_visitor(ly_fingering(), finger);
     }
   }
   void operator() (braille::ambiguous::chord const& chord) const

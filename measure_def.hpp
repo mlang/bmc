@@ -63,10 +63,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   slur_sign = brl(14);
 
-  fingering = *( (finger_sign >> brl(14) >> finger_sign)
-               | finger_sign
-               )
-            ;
+  finger_change = finger_sign >> brl(14) >> finger_sign;
+  fingering = *(finger_change | finger_sign);
 
   boost::spirit::standard_wide::space_type space;
   boost::spirit::eol_type eol;
