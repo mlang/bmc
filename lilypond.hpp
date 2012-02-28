@@ -90,7 +90,7 @@ public:
   }
 
   void operator() ( braille::ambiguous::part const& part
-		  , braille::ambiguous::score const& score
+                  , braille::ambiguous::score const& score
                   ) const
   {
     std::string indent("    ");
