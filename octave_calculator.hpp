@@ -8,22 +8,21 @@
 #define BMC_OCTAVE_CALCULATOR_HPP
 
 #include <boost/foreach.hpp>
-#include <boost/function.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include "ambiguous.hpp"
+#include "compiler_pass.hpp"
 
 namespace music { namespace braille {
 
-class octave_calculator : public boost::static_visitor<bool>
+class octave_calculator
+: public boost::static_visitor<bool>
+, public compiler_pass
 {
-  boost::function<void(int tag, std::wstring const& what)> const& report_error;
+  report_error_type const& report_error;
   ambiguous::note const* prev;
 
 public:
-  octave_calculator(boost::function< void(int tag
-                                   , std::wstring const& what)
-                                   > const& report_error
-                   )
+  octave_calculator(report_error_type const& report_error)
   : report_error(report_error)
   , prev(0)
   {}

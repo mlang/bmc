@@ -8,9 +8,9 @@
 #define BMC_DISAMBIGUATE_HPP
 
 #include "ambiguous.hpp"
+#include "compiler_pass.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
-#include <boost/function.hpp>
 #include <boost/range/numeric.hpp>
 #include <memory>
 #include <sstream>
@@ -747,18 +747,14 @@ accept(proxied_measure const& measure)
           value.accept();
 }
 
-class value_disambiguator
+class value_disambiguator: public compiler_pass
 {
-  boost::function<void(int tag, std::wstring const& what)> const& report_error;
+  report_error_type const& report_error;
   measure_interpretations anacrusis;
 
 public:
   typedef bool result_type;
-  value_disambiguator(boost::function< void( int tag
-                                           , std::wstring const& what
-                                           )
-                                     > const& report_error
-                     )
+  value_disambiguator(report_error_type const& report_error)
   : report_error(report_error)
   {}
 
