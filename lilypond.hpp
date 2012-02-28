@@ -48,11 +48,11 @@ struct get_duration: public boost::static_visitor<rational>
   { return music::duration(measure); }
 };
 
-class ly_fingering: public boost::static_visitor<std::ostream&>
+class print_fingering: public boost::static_visitor<std::ostream&>
 {
   std::ostream& os;
 public:
-  ly_fingering(std::ostream& os): os(os) {}
+  print_fingering(std::ostream& os): os(os) {}
   result_type operator() (braille::ambiguous::finger_change const& change) const
   { return os << "-\"" << change.first << "-" << change.second << "\""; }
   result_type operator() (unsigned finger) const
@@ -280,11 +280,9 @@ private: // utilities
   { os << "\\clef \"" << clef << "\""; }
   void ly_finger(std::list<braille::ambiguous::fingering> const& fingers) const
   {
-    if (not fingers.empty()) {
-      ly_fingering write_to_stream(os);
-      for (auto const& fingering: fingers)
-        boost::apply_visitor(write_to_stream, fingering);
-    }
+    print_fingering write_to_stream(os);
+    for (auto const& fingering: fingers)
+      boost::apply_visitor(write_to_stream, fingering);
   }
   void ly_rhythm(braille::ambiguous::rhythmic_base const& rhythm) const
   {
