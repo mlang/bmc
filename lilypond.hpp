@@ -48,16 +48,15 @@ struct get_duration: public boost::static_visitor<rational>
   { return music::duration(measure); }
 };
 
-struct ly_fingering: boost::static_visitor<std::string>
+class ly_fingering: public boost::static_visitor<std::ostream&>
 {
+  std::ostream& os;
+public:
+  ly_fingering(std::ostream& os): os(os) {}
   result_type operator() (braille::ambiguous::finger_change const& change) const
-  {
-    std::stringstream stream;
-    stream << "\"" << change.first << "-" << change.second << "\"";
-    return stream.str();
-  }
+  { return os << "-\"" << change.first << "-" << change.second << "\""; }
   result_type operator() (unsigned finger) const
-  { std::stringstream stream; stream << finger; return stream.str(); }
+  { return os << "-" << finger; }
 };
 
 class source: public boost::static_visitor<void>
@@ -236,11 +235,7 @@ public:
     ly_octave(note.octave);
     ly_rhythm(note);
     if (note.tied) os << "~";
-
-    if (not note.fingers.empty()) {
-      for (auto const& finger: note.fingers)
-        os << "-" << boost::apply_visitor(ly_fingering(), finger);
-    }
+    ly_finger(note.fingers);
   }
   void operator() (braille::ambiguous::chord const& chord) const
   {
@@ -250,6 +245,7 @@ public:
     ly_accidental(chord.base.acc);
     ly_octave(chord.base.octave);
     if (chord.base.tied) tied = true;
+    ly_finger(chord.base.fingers);
     for (braille::ambiguous::interval const& interval: chord.intervals) {
       os << " ";
       int oct = chord.base.octave;
@@ -260,6 +256,7 @@ public:
       ly_accidental(interval.acc);
       ly_octave(oct);
       // if (interval.tied) tied = true;
+      ly_finger(interval.fingers);
     }
     os << ">";
     ly_rhythm(chord.base);
@@ -281,6 +278,14 @@ private: // utilities
   }
   void ly_clef(std::string const& clef) const
   { os << "\\clef \"" << clef << "\""; }
+  void ly_finger(std::list<braille::ambiguous::fingering> const& fingers) const
+  {
+    if (not fingers.empty()) {
+      ly_fingering write_to_stream(os);
+      for (auto const& fingering: fingers)
+        boost::apply_visitor(write_to_stream, fingering);
+    }
+  }
   void ly_rhythm(braille::ambiguous::rhythmic_base const& rhythm) const
   {
     if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
