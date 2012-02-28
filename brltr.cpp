@@ -9,11 +9,11 @@
 #include <locale>
 #include <cstring>
 
-#include "prologue.h"
-#include "brldots.h"
-#include "file.h"
-#include "ttb.h"
-#include "unicode.h"
+#include "ttb/prologue.h"
+#include "ttb/brldots.h"
+#include "ttb/file.h"
+#include "ttb/ttb.h"
+#include "ttb/unicode.h"
 
 static char *
 resolveTablePath (const char *tableName) {
