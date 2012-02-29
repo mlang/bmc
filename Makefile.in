@@ -12,8 +12,9 @@ bindir=@bindir@
 
 all: bmc
 
-install: brltr
+install: bmc brltr
 	@INSTALL@ @INSTALL_OPTION_STRIP@ brltr $(bindir)
+	@INSTALL@ @INSTALL_OPTION_STRIP@ bmc $(bindir)
 
 bmc: test main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb/ttb.a fluidsynth.@OBJEXT@
 	$(CXX) -o $@ main.@OBJEXT@ brlsym.@OBJEXT@ compiler.@OBJEXT@ score.@OBJEXT@ measure.@OBJEXT@ numbers.@OBJEXT@ music.@OBJEXT@ ttb/ttb.a fluidsynth.@OBJEXT@ -lpthread -licuuc -lfluidsynth
@@ -37,8 +38,9 @@ ttb/%:
 	$(MAKE) -C $(@D) $(@F)
 
 measure.@OBJEXT@: measure.hpp measure_def.hpp measure.cpp
-score.@OBJEXT@: score.hpp score_def.hpp
+score.@OBJEXT@: score.hpp score_def.hpp score.cpp
 numbers.@OBJEXT@: numbers.hpp numbers_def.hpp numbers.cpp
 brlsym.@OBJEXT@: brlsym.hpp brlsym.cpp
-compiler.@OBJEXT@: compiler.hpp disambiguate.hpp
+compiler.@OBJEXT@: compiler.hpp compiler_pass.hpp disambiguate.hpp octave_calculator.hpp
 test.@OBJEXT@: spirit/qi/primitive/brl.hpp
+main.@OBJEXT@: lilypond.hpp

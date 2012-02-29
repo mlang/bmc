@@ -33,7 +33,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
   boost::spirit::qi::eol_type eol;
-    boost::spirit::qi::omit_type omit;
+  boost::spirit::qi::omit_type omit;
   boost::spirit::standard_wide::space_type space;
 
   start = key_signature >> -time_signature >> -+eol
