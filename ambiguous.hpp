@@ -12,6 +12,7 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include "music.hpp"
+#include "braille_music.hpp"
 #include <cmath>
 
 // Data types required to store the parse results.
@@ -39,7 +40,7 @@ struct locatable
 
 struct rhythmic_base : locatable
 {
-  value ambiguous_value;
+  ambiguous::value ambiguous_value;
   unsigned dots;
   rational type; // filled in by disambiguate.hpp
 };
@@ -48,9 +49,6 @@ struct rhythmic
 {
   virtual rational as_rational() const = 0;
 };
-
-typedef std::pair<unsigned, unsigned> finger_change;
-typedef boost::variant<unsigned, finger_change> fingering;
 
 struct slur {};
 
@@ -62,7 +60,7 @@ struct note : rhythmic_base, rhythmic
   unsigned octave; // filled in by octave_calculator.hpp
   diatonic_step step;
   std::vector<slur> slurs;
-  std::list<fingering> fingers;
+  fingering_list fingers;
   bool tied;
 
   note(): octave(0), tied(false) {}
@@ -82,7 +80,7 @@ struct interval {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
   music::interval steps;
-  std::list<fingering> fingers;
+  fingering_list fingers;
 };
 
 struct chord : locatable, rhythmic {
@@ -140,7 +138,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (music::braille::ambiguous::value, ambiguous_value)
   (unsigned, dots)
   (std::vector<music::braille::ambiguous::slur>, slurs)
-  (std::list<music::braille::ambiguous::fingering>, fingers)
+  (music::braille::fingering_list, fingers)
   (bool, tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
@@ -148,7 +146,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
   (music::interval, steps)
-  (std::list<music::braille::ambiguous::fingering>, fingers)
+  (music::braille::fingering_list, fingers)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,

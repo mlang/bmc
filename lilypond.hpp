@@ -53,7 +53,7 @@ class print_fingering: public boost::static_visitor<std::ostream&>
   std::ostream& os;
 public:
   print_fingering(std::ostream& os): os(os) {}
-  result_type operator() (braille::ambiguous::finger_change const& change) const
+  result_type operator() (braille::finger_change const& change) const
   { return os << "-\"" << change.first << "-" << change.second << "\""; }
   result_type operator() (unsigned finger) const
   { return os << "-" << finger; }
@@ -278,7 +278,7 @@ private: // utilities
   }
   void ly_clef(std::string const& clef) const
   { os << "\\clef \"" << clef << "\""; }
-  void ly_finger(std::list<braille::ambiguous::fingering> const& fingers) const
+  void ly_finger(braille::fingering_list const& fingers) const
   {
     print_fingering write_to_stream(os);
     for (auto const& fingering: fingers)
