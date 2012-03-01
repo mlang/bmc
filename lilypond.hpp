@@ -32,7 +32,7 @@ struct repeat_info: public boost::static_visitor<void>
   { }
   void operator() (braille::ambiguous::value_distinction const&) const
   { }
-  void operator() (braille::ambiguous::hand_sign const&) const
+  void operator() (braille::hand_sign const&) const
   { }
   void operator() (braille::ambiguous::rest const& rest) const
   { }
@@ -214,7 +214,7 @@ public:
   { BOOST_ASSERT(false); }
   void operator() (braille::ambiguous::value_distinction const&) const
   { }
-  void operator() (braille::ambiguous::hand_sign const&) const
+  void operator() (braille::hand_sign const&) const
   {
   }
   void operator() (braille::ambiguous::rest const& rest) const

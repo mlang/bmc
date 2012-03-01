@@ -247,7 +247,7 @@ class partial_voice_interpretations
       }
     }
     result_type operator()(ambiguous::value_distinction&) {}
-    result_type operator()(ambiguous::hand_sign&) {}
+    result_type operator()(braille::hand_sign&) {}
     result_type operator()(ambiguous::barline&) {}
     result_type operator()(ambiguous::simile&) {}
     bool is_grace(ambiguous::note const& note) const
@@ -295,7 +295,7 @@ class partial_voice_interpretations
       emplace_back(chord, category, type);
     }
     result_type operator()(ambiguous::value_distinction&) {}
-    result_type operator()(ambiguous::hand_sign&) {}
+    result_type operator()(braille::hand_sign&) {}
     result_type operator()(ambiguous::barline&) {}
     result_type operator()(ambiguous::simile&) {}
   };
