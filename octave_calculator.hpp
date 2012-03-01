@@ -71,7 +71,13 @@ public:
   }
 
   result_type operator()(ambiguous::chord& chord)
-  { return (*this)(chord.base); }
+  {
+    if ((*this)(chord.base)) {
+      // ...
+      return true;
+    }
+    return false;
+  }
 
   template<typename Sign>
   result_type operator()(Sign&) const
