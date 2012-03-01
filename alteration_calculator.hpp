@@ -21,10 +21,14 @@ class alteration_calculator
 {
   report_error_type const& report_error;
   music::accidental memory[10][B + 1];
+  music::key_signature key_sig;
 public:
   alteration_calculator(report_error_type const& report_error)
   : report_error(report_error)
   {}
+
+  void set(music::key_signature sig)
+  { key_sig = sig; }
 
   result_type operator()(ambiguous::measure& measure)
   {
@@ -42,9 +46,19 @@ public:
         voice_position += music::duration(part);
       }
     }
-    for (int octave = 0; octave < 10; ++octave)
-      for (int step = C; step <= B; ++step)
-        memory[octave][step] = natural;
+    for (int octave = 0; octave < 10; ++octave) {
+      for (int step = C; step <= B; ++step) memory[octave][step] = natural;
+      switch (key_sig) {
+      // ...
+      case 3: memory[octave][G] = sharp;
+      case 2: memory[octave][C] = sharp;
+      case 1: memory[octave][F] = sharp;
+      case 0: break;
+      // ...
+      case -2: memory[octave][E] = flat;
+      case -1: memory[octave][B] = flat;
+      }
+    }
     for (auto& value: map) boost::apply_visitor(*this, value.second);
   }
 

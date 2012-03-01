@@ -17,11 +17,12 @@ compiler::result_type
 compiler::operator()(ambiguous::score& score)
 {
   if (score.time_sig) {
-    global_time_signature = *(score.time_sig);
+    global_time_signature = *score.time_sig;
   }
 
   BOOST_FOREACH(ambiguous::part& part, score.parts) {
     BOOST_FOREACH(ambiguous::staff& staff, part) {
+      calculate_alterations.set(score.key_sig);
       bool ok = true;
       ambiguous::staff::iterator iterator(staff.begin());
       while (ok && iterator != staff.end())
