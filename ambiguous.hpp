@@ -92,8 +92,6 @@ struct chord : locatable, rhythmic {
 
 enum value_distinction { distinct, large_follows, small_follows };
 
-enum hand_sign { right_hand, left_hand };
-
 struct simile {
   boost::optional<unsigned> octave_spec;
 };
