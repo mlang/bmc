@@ -231,7 +231,7 @@ public:
       }
     }
     ly_pitch_step(note.step);
-    ly_accidental(note.acc);
+    ly_accidental(note.alter);
     ly_octave(note.octave);
     ly_rhythm(note);
     if (note.tied) os << "~";
@@ -242,7 +242,7 @@ public:
     bool tied = false;
     os << "<";
     ly_pitch_step(chord.base.step);
-    ly_accidental(chord.base.acc);
+    ly_accidental(chord.base.alter);
     ly_octave(chord.base.octave);
     if (chord.base.tied) tied = true;
     ly_finger(chord.base.fingers);
@@ -253,7 +253,7 @@ public:
       while (stp > 6) { ++oct; stp -= 7; }
       while (stp < 0) { --oct; stp += 7; }
       ly_pitch_step(diatonic_step(stp));
-      ly_accidental(interval.acc);
+      //ly_accidental(interval.acc);
       ly_octave(oct);
       // if (interval.tied) tied = true;
       ly_finger(interval.fingers);
@@ -265,16 +265,10 @@ public:
 //]
 
 private: // utilities
-  void ly_accidental(boost::optional<accidental> const& accidental) const
+  void ly_accidental(int alteration) const
   {
-    if (accidental)
-      switch (*accidental) {
-      case natural: break;
-      case flat: os << "es"; break;
-      case double_flat: os << "eses"; break;
-      case sharp: os << "is"; break;
-      case double_sharp: os << "isis"; break;
-      }
+    while (alteration < 0) { os << "es"; ++alteration; }
+    while (alteration > 0) { os << "is"; --alteration; }
   }
   void ly_clef(std::string const& clef) const
   { os << "\\clef \"" << clef << "\""; }

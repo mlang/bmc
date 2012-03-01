@@ -37,8 +37,11 @@ compiler::operator()(ambiguous::score& score)
 compiler::result_type
 compiler::operator()(ambiguous::measure& measure)
 {
-  return disambiguate_values(measure, global_time_signature) and
-         calculate_octaves(measure);
+  if (disambiguate_values(measure, global_time_signature))
+    if (calculate_octaves(measure)) {
+      calculate_alterations(measure);
+      return true;
+    }
 }
 
 }}

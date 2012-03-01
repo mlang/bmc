@@ -59,11 +59,12 @@ struct note : rhythmic_base, rhythmic
   boost::optional<unsigned> octave_spec;
   unsigned octave; // filled in by octave_calculator.hpp
   diatonic_step step;
+  int alter;       // filled in by alteration_calculator.hpp
   std::vector<slur> slurs;
   fingering_list fingers;
   bool tied;
 
-  note(): octave(0), tied(false) {}
+  note(): octave(0), alter(0), tied(false) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };

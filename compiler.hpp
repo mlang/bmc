@@ -10,6 +10,7 @@
 #include "ambiguous.hpp"
 #include "disambiguate.hpp"
 #include "octave_calculator.hpp"
+#include "alteration_calculator.hpp"
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -25,6 +26,7 @@ class compiler : public boost::static_visitor<bool>
   boost::function<void(int tag, std::wstring const& what)> report_error;
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
+  alteration_calculator calculate_alterations;
 
 public:
   music::time_signature global_time_signature;
@@ -41,6 +43,7 @@ public:
   , global_time_signature(4, 4)
   , disambiguate_values(report_error)
   , calculate_octaves(report_error)
+  , calculate_alterations(report_error)
   {
   }
 

@@ -15,6 +15,10 @@ struct duration_visitor : boost::static_visitor<rational>
   { return zero; }
 };
 
+inline rational
+duration(braille::ambiguous::sign const& sign)
+{ return apply_visitor(music::duration_visitor(), sign); }
+
 }
 
 namespace boost {
@@ -22,7 +26,7 @@ namespace boost {
   inline rational<IntType>
   operator+( rational<IntType> const& r
            , music::braille::ambiguous::sign const& sign)
-  { return r + apply_visitor(music::duration_visitor(), sign); }
+  { return r + music::duration(sign); }
 }
 
 namespace music {
