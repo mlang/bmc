@@ -421,7 +421,13 @@ public:
   : time_signature(time_sig)
   , beat(1, time_signature.denominator())
   {
-    value_proxy stack[512];
+    value_proxy stack[
+#if defined __GNUC__
+                      voice.size()
+#else
+                      512
+#endif
+                     ];
     recurse(voice.begin(), voice.end(),
             &stack[0], &stack[0],
             max_duration, position);
@@ -471,7 +477,13 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    proxied_partial_voice_ptr stack[64];
+    proxied_partial_voice_ptr stack[
+#if defined __GNUC__
+                                    partial_measure.size()
+#else
+                                    64
+#endif
+                                   ];
     recurse(partial_measure.begin(), partial_measure.end(),
             &stack[0], &stack[0],
             max_length, position, time_sig);
@@ -562,7 +574,13 @@ public:
                        , bool complete
                        )
   {
-    proxied_partial_measure_ptr stack[64];
+    proxied_partial_measure_ptr stack[
+#if defined __GNUC__
+                                      voice.size()
+#else
+                                      64
+#endif
+                                     ];
     recurse(voice.begin(), voice.end(),
             &stack[0], &stack[0],
             max_length, time_sig, complete);
@@ -588,10 +606,10 @@ public:
   {
     if (mean == zero) {
       rational sum(0);
-      for(const_reference voice: *this)
-        for(proxied_voice::const_reference part: *voice)
-          for(proxied_partial_measure::const_reference partial_voice: *part)
-            for(proxied_partial_voice::const_reference value: *partial_voice) {
+      for (const_reference voice: *this)
+        for (proxied_voice::const_reference part: *voice)
+          for (proxied_partial_measure::const_reference partial_voice: *part)
+            for (proxied_partial_voice::const_reference value: *partial_voice) {
               sum += reciprocal(value), ++mean;
             }
       mean /= sum;
@@ -660,7 +678,7 @@ class measure_interpretations : public std::list<proxied_measure>
       }
     } else {
       std::vector<ambiguous::voice>::iterator const tail = begin + 1;
-      for(voice_interpretations::const_reference possibility:
+      for (voice_interpretations::const_reference possibility:
           voice_interpretations(*begin, length, time_signature, complete)) {
         rational const voice_duration(duration(possibility));
         if ((stack_begin == stack_end and not complete) or voice_duration == length) {
@@ -697,7 +715,13 @@ public:
   , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
-    proxied_voice_ptr stack[64];
+    proxied_voice_ptr stack[
+#if defined __GNUC__
+                            measure.voices.size()
+#else
+                            64
+#endif
+                           ];
     recurse(measure.voices.begin(), measure.voices.end(),
             &stack[0], &stack[0],
             time_signature);
@@ -705,7 +729,7 @@ public:
     if (complete and size() > 1) {
       rational best_score;
       bool single_best_score = false;
-      for(reference possibility: *this) {
+      for (reference possibility: *this) {
         rational const score(possibility.harmonic_mean());
         if (score > best_score) {
           best_score = score, single_best_score = true;
