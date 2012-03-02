@@ -34,11 +34,11 @@ struct repeat_info: public boost::static_visitor<void>
   { }
   void operator() (braille::hand_sign const&) const
   { }
-  void operator() (braille::ambiguous::rest const& rest) const
+  void operator() (braille::ambiguous::rest const&) const
   { }
-  void operator() (braille::ambiguous::note const& note) const
+  void operator() (braille::ambiguous::note const&) const
   { }
-  void operator() (braille::ambiguous::chord const& chord) const
+  void operator() (braille::ambiguous::chord const&) const
   { }
 };
 
