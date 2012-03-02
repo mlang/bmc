@@ -7,7 +7,6 @@
 #ifndef BMC_OCTAVE_CALCULATOR_HPP
 #define BMC_OCTAVE_CALCULATOR_HPP
 
-#include <boost/foreach.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include "ambiguous.hpp"
 #include "compiler_pass.hpp"
@@ -32,9 +31,9 @@ public:
 
   result_type operator()(ambiguous::measure& measure)
   {
-    BOOST_FOREACH(ambiguous::voice& voice, measure.voices) {
-      BOOST_FOREACH(ambiguous::partial_measure& part, voice) {
-        BOOST_FOREACH(ambiguous::partial_voice& partial_voice, part) {
+    for (ambiguous::voice& voice: measure.voices) {
+      for (ambiguous::partial_measure& part: voice) {
+        for (ambiguous::partial_voice& partial_voice: part) {
           ambiguous::partial_voice::iterator iter = partial_voice.begin();
           bool ok = true;
           while (ok && iter != partial_voice.end())
