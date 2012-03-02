@@ -281,7 +281,7 @@ private: // utilities
   void ly_rhythm(braille::ambiguous::rhythmic_base const& rhythm) const
   {
     if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
-    for (int dot = 0; dot < rhythm.dots; ++dot) os << ".";
+    for (unsigned dot = 0; dot < rhythm.dots; ++dot) os << ".";
   }
   void ly_key(key_signature const& key) const
   {

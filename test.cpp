@@ -111,10 +111,10 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(2));
   BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][0]));
   BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][1]));
   destroyTextTable(textTable);
@@ -132,16 +132,16 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), std::size_t(2));
   BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][0][0][0]));
   BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][1][1][0]));
   destroyTextTable(textTable);
@@ -161,11 +161,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -185,11 +185,11 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
   music::braille::compiler compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
@@ -209,10 +209,10 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), 9);
+  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(9));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -248,7 +248,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(attribute.voices[0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0][0].size() == 9);
-  BOOST_CHECK_EQUAL(errors.iters.size(), 19);
+  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(19));
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
@@ -278,9 +278,9 @@ BOOST_AUTO_TEST_CASE(score_solo__test1) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 2);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(2));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -300,9 +300,9 @@ BOOST_AUTO_TEST_CASE(score_solo_test2) {
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 1);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(1));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -335,10 +335,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK(attribute.time_sig);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 32);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 //BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
@@ -362,10 +362,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 34);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 34);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(34));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(34));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 //BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
@@ -389,10 +389,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 16);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 16);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(16));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(16));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 //BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
@@ -416,10 +416,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 32);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 //BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
@@ -443,10 +443,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 18);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 18);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(18));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(18));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 //BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
@@ -473,10 +473,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 32);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -507,10 +507,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 32);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 32);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
@@ -541,10 +541,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), 1);
-  BOOST_CHECK_EQUAL(attribute.parts[0].size(), 2);
-  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), 18);
-  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), 18);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(18));
+  BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(18));
   music::braille::compiler compile(errors);
   BOOST_CHECK(compile(attribute));
 
