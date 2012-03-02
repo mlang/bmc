@@ -12,7 +12,7 @@
 #include "ttb/brldots.h"
 
 // definition the place holder
-namespace music { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl); }}
+namespace music { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl) }}
 
 // implementation the enabler
 namespace boost { namespace spirit
