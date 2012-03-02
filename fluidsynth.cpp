@@ -121,10 +121,10 @@ namespace music {
 void
 fluidsynth::operator()(braille::ambiguous::measure const& measure)
 {
-  for(braille::ambiguous::voice const& voice: measure.voices) {
+  for (braille::ambiguous::voice const& voice: measure.voices) {
     rational voice_position(current_position);
-    for(braille::ambiguous::partial_measure const& partial_measure: voice) {
-      for(braille::ambiguous::partial_voice const& partial_voice: partial_measure) {
+    for (braille::ambiguous::partial_measure const& partial_measure: voice) {
+      for (braille::ambiguous::partial_voice const& partial_voice: partial_measure) {
         rational position(voice_position);
         midi_performer perform(queue, position);
         std::for_each(partial_voice.begin(), partial_voice.end(),

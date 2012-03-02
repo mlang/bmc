@@ -32,40 +32,26 @@ public:
 
   result_type operator()(ambiguous::measure& measure)
   {
-    std::multimap<rational, ambiguous::sign&> map;
+    reset_memory(key_sig);
+
+    // Flatten and sort all elements along the time axis
+    typedef std::multimap<rational, ambiguous::sign&> eventmap;
+    eventmap map;
     for (ambiguous::voice& voice: measure.voices) {
       rational voice_position;
       for (ambiguous::partial_measure& part: voice) {
         for (ambiguous::partial_voice& partial_voice: part) {
           rational position(voice_position);
           for (ambiguous::sign& sign: partial_voice) {
-            map.insert(std::pair<rational, ambiguous::sign&>(position, sign));
+            map.insert(eventmap::value_type(position, sign));
             position += music::duration(sign);
           }
         }
         voice_position += music::duration(part);
       }
     }
-    for (int octave = 0; octave < 10; ++octave) {
-      for (int step = C; step <= B; ++step) memory[octave][step] = natural;
-      switch (key_sig) {
-      case  7: memory[octave][B] = sharp;
-      case  6: memory[octave][E] = sharp;
-      case  5: memory[octave][A] = sharp;
-      case  4: memory[octave][D] = sharp;
-      case  3: memory[octave][G] = sharp;
-      case  2: memory[octave][C] = sharp;
-      case  1: memory[octave][F] = sharp;
-      case  0: break;
-      case -7: memory[octave][F] = flat;
-      case -6: memory[octave][C] = flat;
-      case -5: memory[octave][G] = flat;
-      case -4: memory[octave][D] = flat;
-      case -3: memory[octave][A] = flat;
-      case -2: memory[octave][E] = flat;
-      case -1: memory[octave][B] = flat;
-      }
-    }
+
+    // Visit all elements of this measure in chronological order
     for (auto& value: map) boost::apply_visitor(*this, value.second);
   }
 
@@ -85,9 +71,7 @@ public:
     // ...
   }
 
-  template<typename Sign>
-  result_type operator()(Sign&) const
-  { }
+  template<typename Sign> result_type operator()(Sign&) const { }
 
 private:
   int to_alter(music::accidental accidental) const
@@ -101,6 +85,30 @@ private:
     case sharp:        return 1;
     case double_sharp: return 2;
     case triple_sharp: return 3;
+    }
+  }
+
+  void reset_memory(music::key_signature key_signature)
+  {
+    for (int octave = 0; octave < 10; ++octave) {
+      for (int step = C; step <= B; ++step) memory[octave][step] = natural;
+      switch (key_signature) {
+      case  7: memory[octave][B] = sharp;
+      case  6: memory[octave][E] = sharp;
+      case  5: memory[octave][A] = sharp;
+      case  4: memory[octave][D] = sharp;
+      case  3: memory[octave][G] = sharp;
+      case  2: memory[octave][C] = sharp;
+      case  1: memory[octave][F] = sharp;
+      case  0: break;
+      case -7: memory[octave][F] = flat;
+      case -6: memory[octave][C] = flat;
+      case -5: memory[octave][G] = flat;
+      case -4: memory[octave][D] = flat;
+      case -3: memory[octave][A] = flat;
+      case -2: memory[octave][E] = flat;
+      case -1: memory[octave][B] = flat;
+      }
     }
   }
 };
