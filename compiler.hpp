@@ -40,10 +40,10 @@ public:
                     [boost::phoenix::arg_names::_1]
                   )
                 )
-  , global_time_signature(4, 4)
-  , disambiguate_values(report_error)
   , calculate_octaves(report_error)
+  , disambiguate_values(report_error)
   , calculate_alterations(report_error)
+  , global_time_signature(4, 4)
   {
   }
 

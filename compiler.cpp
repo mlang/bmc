@@ -43,6 +43,7 @@ compiler::operator()(ambiguous::measure& measure)
       calculate_alterations(measure);
       return true;
     }
+  return false;
 }
 
 }}
