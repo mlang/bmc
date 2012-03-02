@@ -23,7 +23,8 @@ enum value_category
 };
 
 rational const undotted[8] = {
-  {1, 1}, {1, 2}, {1, 4}, {1, 8}, {1, 16}, {1, 32}, {1, 64}, {1, 128}
+  rational(1, 1), rational(1, 2), rational(1, 4), rational(1, 8),
+  rational(1, 16), rational(1, 32), rational(1, 64), rational(1, 128)
 };
 
 class value_proxy
@@ -260,7 +261,7 @@ class partial_voice_interpretations
                       short_appoggiatura)
              != note.articulations.end();
     }
-    bool is_grace(ambiguous::rest const& rest) const
+    bool is_grace(ambiguous::rest const&) const
     { return false; }
     bool is_grace(ambiguous::chord const& chord) const
     { return is_grace(chord.base); }
@@ -420,7 +421,7 @@ public:
   : time_signature(time_sig)
   , beat(1, time_signature.denominator())
   {
-    value_proxy stack[voice.size()];
+    value_proxy stack[512];
     recurse(voice.begin(), voice.end(),
             &stack[0], &stack[0],
             max_duration, position);
@@ -470,7 +471,7 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    proxied_partial_voice_ptr stack[partial_measure.size()];
+    proxied_partial_voice_ptr stack[64];
     recurse(partial_measure.begin(), partial_measure.end(),
             &stack[0], &stack[0],
             max_length, position, time_sig);
@@ -561,7 +562,7 @@ public:
                        , bool complete
                        )
   {
-    proxied_partial_measure_ptr stack[voice.size()];
+    proxied_partial_measure_ptr stack[64];
     recurse(voice.begin(), voice.end(),
             &stack[0], &stack[0],
             max_length, time_sig, complete);
@@ -696,7 +697,7 @@ public:
   , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
-    proxied_voice_ptr stack[measure.voices.size()];
+    proxied_voice_ptr stack[64];
     recurse(measure.voices.begin(), measure.voices.end(),
             &stack[0], &stack[0],
             time_signature);
