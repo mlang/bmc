@@ -49,14 +49,14 @@ public:
     for (int octave = 0; octave < 10; ++octave) {
       for (int step = C; step <= B; ++step) memory[octave][step] = natural;
       switch (key_sig) {
-      case 7:  memory[octave][B] = sharp;
-      case 6:  memory[octave][E] = sharp;
-      case 5:  memory[octave][A] = sharp;
-      case 4:  memory[octave][D] = sharp;
-      case 3:  memory[octave][G] = sharp;
-      case 2:  memory[octave][C] = sharp;
-      case 1:  memory[octave][F] = sharp;
-      case 0:  break;
+      case  7: memory[octave][B] = sharp;
+      case  6: memory[octave][E] = sharp;
+      case  5: memory[octave][A] = sharp;
+      case  4: memory[octave][D] = sharp;
+      case  3: memory[octave][G] = sharp;
+      case  2: memory[octave][C] = sharp;
+      case  1: memory[octave][F] = sharp;
+      case  0: break;
       case -7: memory[octave][F] = flat;
       case -6: memory[octave][C] = flat;
       case -5: memory[octave][G] = flat;
@@ -72,20 +72,10 @@ public:
   result_type operator()(ambiguous::note& note)
   {
     if (note.acc) {
-      switch (*note.acc) {
-      case flat: note.alter = -1; break;
-      case double_flat: note.alter = -2; break;
-      case sharp: note.alter = 1; break;
-      case double_sharp: note.alter = 2; break;
-      }
+      note.alter = to_alter(*note.acc);
       memory[note.octave][note.step] = *note.acc;
     } else {
-      switch (memory[note.octave][note.step]) {
-      case flat: note.alter = -1; break;
-      case double_flat: note.alter = -2; break;
-      case sharp: note.alter = 1; break;
-      case double_sharp: note.alter = 2; break;
-      }
+      note.alter = to_alter(memory[note.octave][note.step]);
     }
   }
 
@@ -98,6 +88,21 @@ public:
   template<typename Sign>
   result_type operator()(Sign&) const
   { }
+
+private:
+  int to_alter(music::accidental accidental) const
+  {
+    switch (accidental) {
+    case natural:
+    default:           return 0;
+    case flat:         return -1;
+    case double_flat:  return -2;
+    case triple_flat:  return -3;
+    case sharp:        return 1;
+    case double_sharp: return 2;
+    case triple_sharp: return 3;
+    }
+  }
 };
 
 }}
