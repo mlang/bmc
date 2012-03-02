@@ -49,12 +49,19 @@ public:
     for (int octave = 0; octave < 10; ++octave) {
       for (int step = C; step <= B; ++step) memory[octave][step] = natural;
       switch (key_sig) {
-      // ...
-      case 3: memory[octave][G] = sharp;
-      case 2: memory[octave][C] = sharp;
-      case 1: memory[octave][F] = sharp;
-      case 0: break;
-      // ...
+      case 7:  memory[octave][B] = sharp;
+      case 6:  memory[octave][E] = sharp;
+      case 5:  memory[octave][A] = sharp;
+      case 4:  memory[octave][D] = sharp;
+      case 3:  memory[octave][G] = sharp;
+      case 2:  memory[octave][C] = sharp;
+      case 1:  memory[octave][F] = sharp;
+      case 0:  break;
+      case -7: memory[octave][F] = flat;
+      case -6: memory[octave][C] = flat;
+      case -5: memory[octave][G] = flat;
+      case -4: memory[octave][D] = flat;
+      case -3: memory[octave][A] = flat;
       case -2: memory[octave][E] = flat;
       case -1: memory[octave][B] = flat;
       }
