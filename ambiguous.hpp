@@ -4,8 +4,8 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef AMBIGUOUS_HPP
-#define AMBIGUOUS_HPP
+#ifndef BMC_AMBIGUOUS_HPP
+#define BMC_AMBIGUOUS_HPP
 #include <list>
 #include <vector>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>

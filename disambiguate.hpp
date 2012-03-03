@@ -421,16 +421,12 @@ public:
   : time_signature(time_sig)
   , beat(1, time_signature.denominator())
   {
-    value_proxy stack[
-#if defined __GNUC__
-                      voice.size()
-#else
-                      512
-#endif
-                     ];
+    value_proxy *stack = new value_proxy[voice.size()];
+//[ #if defined __GNUC__ voice.size() #else 512 #endif ];
     recurse(voice.begin(), voice.end(),
-            &stack[0], &stack[0],
+            stack, stack,
             max_duration, position);
+    delete [] stack;
   }
 };
 
@@ -477,16 +473,11 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    proxied_partial_voice_ptr stack[
-#if defined __GNUC__
-                                    partial_measure.size()
-#else
-                                    64
-#endif
-                                   ];
+    proxied_partial_voice_ptr *stack = new proxied_partial_voice_ptr[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
-            &stack[0], &stack[0],
+            stack, stack,
             max_length, position, time_sig);
+    delete [] stack;
   }
 };
 
@@ -574,16 +565,11 @@ public:
                        , bool complete
                        )
   {
-    proxied_partial_measure_ptr stack[
-#if defined __GNUC__
-                                      voice.size()
-#else
-                                      64
-#endif
-                                     ];
+    proxied_partial_measure_ptr *stack = new proxied_partial_measure_ptr[voice.size()];
     recurse(voice.begin(), voice.end(),
-            &stack[0], &stack[0],
+            stack, stack,
             max_length, time_sig, complete);
+    delete [] stack;
   }
 };
 
@@ -715,16 +701,11 @@ public:
   , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
-    proxied_voice_ptr stack[
-#if defined __GNUC__
-                            measure.voices.size()
-#else
-                            64
-#endif
-                           ];
+    proxied_voice_ptr *stack = new proxied_voice_ptr[measure.voices.size()];
     recurse(measure.voices.begin(), measure.voices.end(),
-            &stack[0], &stack[0],
+            stack, stack,
             time_signature);
+    delete [] stack;
 
     if (complete and size() > 1) {
       rational best_score;
