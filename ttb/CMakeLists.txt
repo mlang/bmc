@@ -56,4 +56,4 @@ add_library(ttb SHARED
             unicode.c
            )
 target_link_libraries(ttb ${ICU_LIBRARIES})
-install(TARGETS ttb DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
+install(TARGETS ttb DESTINATION lib)
