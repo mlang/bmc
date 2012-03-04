@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 2.8)
+project(bmc)
+add_subdirectory(ttb)
+find_package(Boost 1.48.0 REQUIRED)
+include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+add_definitions("-std=c++0x")
+add_library(bmc_parse SHARED
+            brlsym.cpp music.cpp numbers.cpp measure.cpp score.cpp compiler.cpp
+           )
+add_executable(bmc main.cpp fluidsynth.cpp)
+target_link_libraries(bmc bmc_parse ttb fluidsynth)
+add_executable(bmc_test test.cpp)
+target_link_libraries(bmc_test bmc_parse ttb)
+enable_testing()
+add_test(test bmc_test)
+install(TARGETS bmc DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
+install(TARGETS bmc_parse DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
