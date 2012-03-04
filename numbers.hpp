@@ -40,13 +40,17 @@ struct key_signature_grammar : boost::spirit::qi::grammar<Iterator, key_signatur
 };
 
 template <typename Iterator>
-struct time_signature_grammar : boost::spirit::qi::grammar<Iterator, time_signature(), boost::spirit::qi::locals<unsigned, unsigned> >
+struct time_signature_grammar
+: boost::spirit::qi::grammar< Iterator
+                            , time_signature()
+                            , boost::spirit::qi::locals<unsigned>
+                            >
 {
   time_signature_grammar();
 
   boost::spirit::qi::rule< Iterator
                          , time_signature()
-                         , boost::spirit::qi::locals<unsigned, unsigned>
+                         , boost::spirit::qi::locals<unsigned>
                          > start;
   upper_number_grammar<Iterator> upper_number;
   lower_number_grammar<Iterator> lower_number;
