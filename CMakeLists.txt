@@ -8,10 +8,11 @@ add_definitions("-std=c++0x")
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp numbers.cpp measure.cpp score.cpp compiler.cpp
            )
+add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 add_executable(bmc main.cpp fluidsynth.cpp)
-target_link_libraries(bmc bmc_parse ttb fluidsynth)
+target_link_libraries(bmc bmc_parse bmc_ttb fluidsynth)
 add_executable(bmc_test test.cpp)
-target_link_libraries(bmc_test bmc_parse ttb)
+target_link_libraries(bmc_test bmc_parse bmc_ttb)
 enable_testing()
 add_test(test bmc_test)
 install(TARGETS bmc DESTINATION bin)

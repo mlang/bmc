@@ -1,7 +1,12 @@
-add_definitions("-DHAVE_ICONV_H=1")
-add_definitions("-DHAVE_WCHAR_H=1")
-add_definitions("-DPACKAGE_NAME=\"brltty\"")
-add_definitions("-DTEXT_TABLE_EXTENSION=\"ttb\"")
+set(BMC_TTB_COMMON_FILES
+    charset.c dataarea.c datafile.c file.c log.c
+    ttb_compile.c ttb_native.c
+    unicode.c
+   )
+add_definitions(-DHAVE_ICONV_H=1)
+add_definitions(-DHAVE_WCHAR_H=1)
+add_definitions(-DPACKAGE_NAME="brltty")
+add_definitions(-DTEXT_TABLE_EXTENSION=".ttb")
 
 find_program(ICU_CONFIG icu-config)
 
@@ -50,10 +55,11 @@ if(ICU_FOUND)
   add_definitions("-DHAVE_ICU=1")
 endif(ICU_FOUND)
 
-add_library(ttb SHARED
-            charset.c dataarea.c datafile.c file.c log.c
-            ttb_compile.c ttb_native.c ttb_translate.c
-            unicode.c
-           )
-target_link_libraries(ttb ${ICU_LIBRARIES})
-install(TARGETS ttb DESTINATION lib)
+add_executable(tbl2hex tbl2hex.c ${BMC_TTB_COMMON_FILES})
+target_link_libraries(tbl2hex ${ICU_LIBRARIES})
+add_custom_command(OUTPUT text.auto.h
+                   COMMAND tbl2hex Tables/de.ttb > text.auto.h
+                  )
+add_library(bmc_ttb SHARED ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
+target_link_libraries(bmc_ttb ${ICU_LIBRARIES})
+install(TARGETS bmc_ttb DESTINATION lib)
