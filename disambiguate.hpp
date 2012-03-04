@@ -422,7 +422,6 @@ public:
   , beat(1, time_signature.denominator())
   {
     value_proxy *stack = new value_proxy[voice.size()];
-//[ #if defined __GNUC__ voice.size() #else 512 #endif ];
     recurse(voice.begin(), voice.end(),
             stack, stack,
             max_duration, position);
