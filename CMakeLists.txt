@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(bmc)
+if (CMAKE_COMPILER_IS_GNUCC)
+  execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
+                  OUTPUT_VARIABLE GCC_VERSION)
+  if (GCC_VERSION VERSION_LESS 4.5)
+    message(FATAL_ERROR "GCC is too old (<= 4.5)")
+  endif()
+endif()
 add_subdirectory(ttb)
 find_package(Boost 1.48.0 REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
