@@ -58,8 +58,9 @@ endif(ICU_FOUND)
 add_executable(tbl2hex tbl2hex.c ${BMC_TTB_COMMON_FILES})
 target_link_libraries(tbl2hex ${ICU_LIBRARIES})
 add_custom_command(OUTPUT text.auto.h
-                   COMMAND tbl2hex Tables/de.ttb > text.auto.h
+                   COMMAND tbl2hex ${CMAKE_CURRENT_SOURCE_DIR}/Tables/de.ttb > text.auto.h
                   )
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_library(bmc_ttb SHARED ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
 target_link_libraries(bmc_ttb ${ICU_LIBRARIES})
 install(TARGETS bmc_ttb DESTINATION lib)
