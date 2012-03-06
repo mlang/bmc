@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -43,9 +43,103 @@ localtime_r (const time_t *timep, struct tm *result) {
 
 #include "log.h"
 
+const char *const logLevelNames[] = {
+  "emergency", "alert", "critical", "error",
+  "warning", "notice", "information", "debug"
+};
+const unsigned int logLevelCount = ARRAY_COUNT(logLevelNames);
+
+#if defined(HAVE_SYSLOG_H)
+static int syslogOpened = 0;
+
+#elif defined(WINDOWS)
+static HANDLE windowsEventLog = INVALID_HANDLE_VALUE;
+
+static WORD
+toEventType (int level) {
+  if (level <= LOG_ERR) return EVENTLOG_ERROR_TYPE;
+  if (level <= LOG_WARNING) return EVENTLOG_WARNING_TYPE;
+  return EVENTLOG_INFORMATION_TYPE;
+}
+
+#elif defined(__MSDOS__)
+
+#endif /* system log internal definitions */
+
 static int printLevel = LOG_NOTICE;
 static int logLevel = LOG_NOTICE;
 static const char *logPrefix = NULL;
+
+static FILE *logFile = NULL;
+
+void
+closeLogFile (void) {
+  if (logFile) {
+    fclose(logFile);
+    logFile = NULL;
+  }
+}
+
+void
+openLogFile (const char *path) {
+  closeLogFile();
+  logFile = fopen(path, "w");
+}
+
+static void
+writeLogRecord (const char *record) {
+  if (logFile) {
+    {
+      struct timeval now;
+      struct tm description;
+      char buffer[0X20];
+      int length;
+
+      gettimeofday(&now, NULL);
+      localtime_r(&now.tv_sec, &description);
+      length = strftime(buffer, sizeof(buffer), "%Y-%m-%d@%H:%M:%S", &description);
+      fprintf(logFile, "%.*s.%03ld ", length, buffer, now.tv_usec/1000);
+    }
+
+    fputs(record, logFile);
+    fputc('\n', logFile);
+    fflush(logFile);
+  }
+}
+
+void
+openSystemLog (void) {
+#if defined(HAVE_SYSLOG_H)
+  if (!syslogOpened) {
+    int flags = LOG_PID;
+    openlog(PACKAGE_NAME, flags, LOG_DAEMON);
+    syslogOpened = 1;
+  }
+#elif defined(WINDOWS)
+  if (windowsEventLog == INVALID_HANDLE_VALUE) {
+    windowsEventLog = RegisterEventSource(NULL, PACKAGE_NAME);
+  }
+#elif defined(__MSDOS__)
+  openLogFile(PACKAGE_NAME ".log");
+#endif /* open system log */
+}
+
+void
+closeSystemLog (void) {
+#if defined(HAVE_SYSLOG_H)
+  if (syslogOpened) {
+    closelog();
+    syslogOpened = 0;
+  }
+#elif defined(WINDOWS)
+  if (windowsEventLog != INVALID_HANDLE_VALUE) {
+    DeregisterEventSource(windowsEventLog);
+    windowsEventLog = INVALID_HANDLE_VALUE;
+  }
+#elif defined(__MSDOS__)
+  closeLogFile();
+#endif /* close system log */
+}
 
 int
 setLogLevel (int newLevel) {
@@ -75,22 +169,43 @@ setPrintOff (void) {
 
 void
 logData (int level, LogDataFormatter *formatLogData, const void *data) {
-  if (level <= printLevel) {
+  int write = level <= logLevel;
+  int print = level <= printLevel;
+
+  if (write || print) {
     int reason = errno;
     char buffer[0X1000];
     const char *record = formatLogData(buffer, sizeof(buffer), data);
 
     if (*record) {
-      FILE *stream = stderr;
+      if (write) {
+        writeLogRecord(record);
 
-      if (logPrefix) {
-        fputs(logPrefix, stream);
-        fputs(": ", stream);
+#if defined(HAVE_SYSLOG_H)
+        if (syslogOpened) syslog(level, "%s", record);
+#elif defined(WINDOWS)
+        if (windowsEventLog != INVALID_HANDLE_VALUE) {
+          const char *strings[] = {record};
+          ReportEvent(windowsEventLog, toEventType(level), 0, 0, NULL,
+                      ARRAY_COUNT(strings), 0, strings, NULL);
+        }
+#elif defined(__MSDOS__)
+
+#endif /* write system log */
       }
 
-      fputs(record, stream);
-      fputc('\n', stream);
-      fflush(stream);
+      if (print) {
+        FILE *stream = stderr;
+
+        if (logPrefix) {
+          fputs(logPrefix, stream);
+          fputs(": ", stream);
+        }
+
+        fputs(record, stream);
+        fputc('\n', stream);
+        fflush(stream);
+      }
     }
 
     errno = reason;
@@ -110,22 +225,71 @@ formatLogMessageData (char *buffer, size_t size, const void *data) {
 }
 
 void
-logMessage (int level, const char *format, ...) {
-  va_list arguments;
+vlogMessage (int level, const char *format, va_list *arguments) {
   const LogMessageData msg = {
     .format = format,
-    .arguments = &arguments
+    .arguments = arguments
   };
 
-  va_start(arguments, format);
   logData(level, formatLogMessageData, &msg);
-  va_end(arguments);
+}
+
+void
+logMessage (int level, const char *format, ...) {
+  va_list arguments;
+
+  va_start(arguments, format);
+  vlogMessage(level, format, &arguments);
+}
+
+typedef struct {
+  const char *description;
+  const void *data;
+  size_t length;
+} LogBytesData;
+
+static const char *
+formatLogBytesData (char *buffer, size_t size, const void *data) {
+  const LogBytesData *bytes = data;
+  size_t length = bytes->length;
+  const unsigned char *in = bytes->data;
+  char *out = buffer;
+
+  {
+    size_t count = snprintf(out, size, "%s:", bytes->description);
+    out += count;
+    size -= count;
+  }
+
+  while (length-- && (size > 3)) {
+    size_t count = snprintf(out, size, " %2.2X", *in++);
+    out += count;
+    size -= count;
+  }
+
+  return buffer;
+}
+
+void
+logBytes (int level, const char *description, const void *data, size_t length) {
+  const LogBytesData bytes = {
+    .description = description,
+    .data = data,
+    .length = length
+  };
+
+  logData(level, formatLogBytesData, &bytes);
 }
 
 void
 logSystemError (const char *action) {
   logMessage(LOG_ERR, "%s error %d: %s.", action, errno, strerror(errno));
 }
+void
+logMallocError (void) {
+  logSystemError("malloc");
+}
+
 #ifdef WINDOWS
 void
 logWindowsError (DWORD error, const char *action) {
@@ -149,4 +313,11 @@ logWindowsSystemError (const char *action) {
   logWindowsError(error, action);
 }
 
+#ifdef __MINGW32__
+void
+logWindowsSocketError (const char *action) {
+  DWORD error = WSAGetLastError();
+  logWindowsError(error, action);
+}
+#endif /* __MINGW32__ */
 #endif /* WINDOWS */

@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -19,9 +19,14 @@
 #ifndef BRLTTY_INCLUDED_DATAFILE
 #define BRLTTY_INCLUDED_DATAFILE
 
+#include "queue.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+extern int setGlobalDataVariable (const char *name, const char *value);
+extern int setGlobalTableVariables (const char *tableExtension, const char *subtableExtension);
 
 typedef struct DataFileStruct DataFile;
 
@@ -31,6 +36,7 @@ extern int processDataFile (const char *name, DataProcessor processor, void *dat
 extern void reportDataError (DataFile *file, char *format, ...) PRINTF(2, 3);
 
 extern int processDataStream (
+  Queue *variables,
   FILE *stream, const char *name,
   DataProcessor processor, void *data
 );
@@ -64,6 +70,8 @@ typedef struct {
   DataProcessor *processor;
 } DataProperty;
 extern int processPropertyOperand (DataFile *file, const DataProperty *properties, const char *description, void *data);
+
+extern int processAssignOperands (DataFile *file, void *data);
 
 extern int processIncludeOperands (DataFile *file, void *data);
 extern int includeDataFile (DataFile *file, const wchar_t *name, unsigned int length);

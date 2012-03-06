@@ -1,12 +1,19 @@
 set(BMC_TTB_COMMON_FILES
-    charset.c dataarea.c datafile.c file.c log.c
-    ttb_compile.c ttb_native.c
-    unicode.c
+    charset.c charset.h
+    dataarea.c dataarea.h
+    datafile.c datafile.h
+    file.c file.h
+    log.c log.h
+    queue.c queue.h
+    ttb_compile.c ttb_compile.h
+    ttb_native.c
+    unicode.c unicode.h
    )
 add_definitions(-DHAVE_ICONV_H=1)
 add_definitions(-DHAVE_WCHAR_H=1)
 add_definitions(-DPACKAGE_NAME="brltty")
 add_definitions(-DTEXT_TABLE_EXTENSION=".ttb")
+add_definitions(-DTEXT_SUBTABLE_EXTENSION=".tti")
 
 find_program(ICU_CONFIG icu-config)
 

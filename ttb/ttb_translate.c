@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -84,6 +84,24 @@ getUnicodeCellEntry (TextTable *table, wchar_t character) {
   return NULL;
 }
 
+typedef struct {
+  TextTable *const table;
+  unsigned char dots;
+} SetBrailleRepresentationData;
+
+static int
+setBrailleRepresentation (wchar_t character, void *data) {
+  SetBrailleRepresentationData *sbr = data;
+  const unsigned char *cell = getUnicodeCellEntry(sbr->table, character);
+
+  if (cell) {
+    sbr->dots = *cell;
+    return 1;
+  }
+
+  return 0;
+}
+
 unsigned char
 convertCharacterToDots (TextTable *table, wchar_t character) {
   switch (character & ~UNICODE_CELL_MASK) {
@@ -97,20 +115,25 @@ convertCharacterToDots (TextTable *table, wchar_t character) {
     }
 
     default: {
-      const unsigned char *cell;
-      if ((cell = getUnicodeCellEntry(table, character))) return *cell;
-
       {
-        wchar_t base = getBaseCharacter(character);
+        SetBrailleRepresentationData sbr = {
+          .table = table,
+          .dots = 0
+        };
 
-        if (base)
-          if ((cell = getUnicodeCellEntry(table, base)))
-            return *cell;
+        if (handleBestCharacter(character, setBrailleRepresentation, &sbr)) {
+          return sbr.dots;
+        }
       }
 
     unknownCharacter:
-      if ((cell = getUnicodeCellEntry(table, UNICODE_REPLACEMENT_CHARACTER))) return *cell;
-      if ((cell = getUnicodeCellEntry(table, WC_C('?')))) return *cell;
+      {
+        const unsigned char *cell;
+
+        if ((cell = getUnicodeCellEntry(table, UNICODE_REPLACEMENT_CHARACTER))) return *cell;
+        if ((cell = getUnicodeCellEntry(table, WC_C('?')))) return *cell;
+      }
+
       return BRL_DOT1 | BRL_DOT2 | BRL_DOT3 | BRL_DOT4 | BRL_DOT5 | BRL_DOT6 | BRL_DOT7 | BRL_DOT8;
     }
   }

@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -20,6 +20,8 @@
 #define BRLTTY_INCLUDED_LOG
 
 #include "prologue.h"
+
+#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +42,15 @@ typedef enum {
 } SyslogLevel;
 #endif /* system log external definitions */
 
+extern const char *const logLevelNames[];
+extern const unsigned int logLevelCount;
+
+extern void openLogFile (const char *path);
+extern void closeLogFile (void);
+
+extern void openSystemLog (void);
+extern void closeSystemLog (void);
+
 extern int setLogLevel (int newLevel);
 extern const char *setLogPrefix (const char *newPrefix);
 
@@ -50,12 +61,20 @@ typedef const char *LogDataFormatter (char *buffer, size_t size, const void *dat
 extern void logData (int level, LogDataFormatter *formatLogData, const void *data);
 
 extern void logMessage (int level, const char *format, ...) PRINTF(2, 3);
+extern void vlogMessage (int level, const char *format, va_list *arguments);
+
+extern void logBytes (int level, const char *description, const void *data, size_t length);
 
 extern void logSystemError (const char *action);
+extern void logMallocError (void);
 
 #ifdef WINDOWS
 extern void logWindowsError (DWORD code, const char *action);
 extern void logWindowsSystemError (const char *action);
+
+#ifdef __MINGW32__
+extern void logWindowsSocketError (const char *action);
+#endif /* __MINGW32__ */
 #endif /* WINDOWS */
 
 #ifdef __cplusplus

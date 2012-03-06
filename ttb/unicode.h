@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -59,7 +59,13 @@ extern "C" {
 #define UNICODE_GROUP_NUMBER(c) (((c) & UNICODE_GROUP_MASK) >> UNICODE_GROUP_SHIFT)
 #define UNICODE_CHARACTER(group,plane,row,cell) (((group) << UNICODE_GROUP_SHIFT) | ((plane) << UNICODE_PLANE_SHIFT) | ((row) << UNICODE_ROW_SHIFT) | ((cell) << UNICODE_CELL_SHIFT))
 
+extern int getCharacterWidth (wchar_t character);
+
 extern wchar_t getBaseCharacter (wchar_t character);
+extern wchar_t getTransliteratedCharacter (wchar_t character);
+
+typedef int CharacterHandler (wchar_t character, void *data);
+extern int handleBestCharacter (wchar_t character, CharacterHandler handleCharacter, void *data);
 
 #ifdef __cplusplus
 }

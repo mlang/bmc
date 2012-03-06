@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -193,7 +193,18 @@ unsetTextTableCharacter (TextTableData *ttd, wchar_t character) {
   }
 }
 
-static TextTableData *
+int
+setTextTableByte (TextTableData *ttd, unsigned char byte, unsigned char dots) {
+  wint_t character = convertCharToWchar(byte);
+
+  if (character != WEOF)
+    if (!setTextTableCharacter(ttd, character, dots))
+      return 0;
+
+  return 1;
+}
+
+TextTableData *
 newTextTableData (void) {
   TextTableData *ttd;
 
@@ -222,11 +233,13 @@ destroyTextTableData (TextTableData *ttd) {
 
 TextTableData *
 processTextTableLines (FILE *stream, const char *name, DataProcessor processor) {
-  TextTableData *ttd;
+  if (setGlobalTableVariables(TEXT_TABLE_EXTENSION, TEXT_SUBTABLE_EXTENSION)) {
+    TextTableData *ttd;
 
-  if ((ttd = newTextTableData())) {
-    if (processDataStream(stream, name, processor, ttd)) return ttd;
-    destroyTextTableData(ttd);
+    if ((ttd = newTextTableData())) {
+      if (processDataStream(NULL, stream, name, processor, ttd)) return ttd;
+      destroyTextTableData(ttd);
+    }
   }
 
   return NULL;

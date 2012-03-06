@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -23,19 +23,30 @@
 extern "C" {
 #endif /* __cplusplus */
 
+
+extern const char *setCharset (const char *name);
 extern const char *getCharset (void);
 
+extern const char *getLocaleCharset (void);
 extern const char *getWcharCharset (void);
 
 #define UTF8_SIZE(bits) (((bits) < 8)? 1: (((bits) + 3) / 5))
-#define UTF8_LEN_MAX UTF8_SIZE(sizeof(wchar_t) * 8)
+#define UTF8_LEN_MAX UTF8_SIZE(32)
 typedef char Utf8Buffer[UTF8_LEN_MAX + 1];
 
+extern size_t convertCharToUtf8 (char c, Utf8Buffer utf8);
+extern int convertUtf8ToChar (const char **utf8, size_t *utfs);
+
+extern size_t convertWcharToUtf8 (wchar_t wc, Utf8Buffer utf8);
 extern wint_t convertUtf8ToWchar (const char **utf8, size_t *utfs);
-extern void convertStringToWchars (const char **utf8, wchar_t **characters, size_t count);
+
+extern size_t getUtf8Length (const char *utf8);
+extern void convertUtf8ToWchars (const char **utf8, wchar_t **characters, size_t count);
 
 extern wint_t convertCharToWchar (char c);
 extern int convertWcharToChar (wchar_t wc);
+
+extern size_t getTextLength (const char *text);
 
 #ifdef __cplusplus
 }
