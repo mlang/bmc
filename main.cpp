@@ -4,13 +4,13 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "ttb/config.h"
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"
 #include "fluidsynth.hpp"
 #include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
+#include "ttb/file.h"
 #include "ttb/ttb.h"
 #include <thread>
 
@@ -21,7 +21,13 @@ main(int argc, char const *argv[])
 {
   std::locale::global(std::locale(""));
 
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  {
+    char *path = makePath(TABLES_DIRECTORY, "de.ttb");
+    if (path && testPath(path)) {
+      textTable = compileTextTable(path);
+      free(path);
+    }
+  }
 
   std::istreambuf_iterator<wchar_t> wcin_begin(std::wcin.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
