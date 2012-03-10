@@ -151,7 +151,7 @@ public:
           barcheck = false;
         }
         if (barcheck) os << " | ";
-         os << "% " << measure_number++ << std::endl;
+        os << "% " << measure_number++ << std::endl;
       }
       os << indent << "}" << std::endl;
     }
