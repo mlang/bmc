@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
 
 #include "score.hpp"
 
-BOOST_AUTO_TEST_CASE(score_solo__test1) {
+BOOST_AUTO_TEST_CASE(score_solo_test1) {
   textTable = compileTextTable("ttb/Tables/de.ttb");
   std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿2k");
   typedef std::wstring::const_iterator iterator_type;

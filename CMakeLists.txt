@@ -26,10 +26,43 @@ add_definitions(-DTABLES_DIRECTORY="${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJEC
 add_executable(brltr brltr.cpp)
 target_link_libraries(brltr bmc_ttb)
 install(TARGETS brltr DESTINATION bin)
+
 add_executable(bmc_test test.cpp)
 target_link_libraries(bmc_test bmc_parse)
 enable_testing()
-add_test(test bmc_test)
+set(BMC_TEST_NAMES
+    time_signature_grammar_test_1
+    key_signature_grammar_test_1 key_signature_grammar_test_2
+    key_signature_grammar_test_3
+    brl_parser_test
+    measure_test1 measure_test2
+    measure_interpretations_test1 measure_interpretations_test2
+    notegroup_test1
+    compiler_test1
+    score_solo_test1 score_solo_test2
+    rational_gcd
+    bwv988_v01
+    bwv988_v02
+    bwv988_v03
+    bwv988_v13
+    bwv988_v13_de
+    bwv988_v30
+    bwv988_v01_ly
+    bwv988_v13_ly
+    bwv988_v30_ly
+   )
+foreach(test_name ${BMC_TEST_NAMES})
+  add_test(NAME bmc_${test_name}
+           COMMAND bmc_test --run_test=${test_name})
+endforeach(test_name)
+# A kludge to workaround cmake's inability to add dependencies to the test target
+add_custom_target(check
+                  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+                  DEPENDS bmc_test
+                 )
+# build the main executable if all tests succeed
+add_dependencies(bmc check)
+
 install(TARGETS bmc DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
 
