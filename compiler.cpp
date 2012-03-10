@@ -7,7 +7,6 @@
 #include "compiler.hpp"
 #include <cmath>
 #include <sstream>
-#include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 
@@ -20,8 +19,8 @@ compiler::operator()(ambiguous::score& score)
     global_time_signature = *score.time_sig;
   }
 
-  BOOST_FOREACH(ambiguous::part& part, score.parts) {
-    BOOST_FOREACH(ambiguous::staff& staff, part) {
+  for (ambiguous::part& part: score.parts) {
+    for (ambiguous::staff& staff: part) {
       calculate_alterations.set(score.key_sig);
       bool ok = true;
       ambiguous::staff::iterator iterator(staff.begin());
