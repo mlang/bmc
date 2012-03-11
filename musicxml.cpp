@@ -25,6 +25,24 @@ public:
   operator XMLCh const *() const { return transcoded; }
 };
 
+class ostream_format_target: public XERCES_CPP_NAMESPACE::XMLFormatTarget
+{
+  std::ostream& stream;
+public:
+  ostream_format_target(std::ostream &stream): stream(stream) {}
+
+  virtual void
+  writeChars( const XMLByte* const buffer, const XMLSize_t size
+	    , xercesc::XMLFormatter* const
+            )
+  {
+    if (not stream.fail()) stream.write(reinterpret_cast<const char*>(buffer),
+					static_cast<std::streamsize>(size));
+  }
+
+  virtual void flush() { if (not stream.fail()) stream.flush(); }
+};
+
 class document
 {
   XERCES_CPP_NAMESPACE::DOMDocument *dom_document;
@@ -67,7 +85,7 @@ private:
   }
 
 public:
-  bool to_stdout() const
+  bool write_to_stream(std::ostream& stream) const
   {
     XERCES_CPP_NAMESPACE_USE
 
@@ -81,7 +99,7 @@ public:
 	configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
       DOMLSOutput *output = ls->createLSOutput();
-      StdOutFormatTarget format_target;
+      ostream_format_target format_target(stream);
       output->setByteStream(&format_target);
       serializer->write(dom_document, output);
 
@@ -112,7 +130,7 @@ int main()
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
   {
     music::musicxml::document musicxml;
-    musicxml.to_stdout();
+    musicxml.write_to_stream(std::cout);
   }
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
   return EXIT_SUCCESS;
