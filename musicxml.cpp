@@ -9,6 +9,7 @@
 #include <xercesc/framework/StdOutFormatTarget.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
 
+#include <ctime>
 #include <iostream>
 #include <memory>
 
@@ -52,8 +53,8 @@ struct dom_deleter
 
 class document
 {
-  std::unique_ptr<XERCES_CPP_NAMESPACE::DOMDocument, dom_deleter> dom_document;
-  XERCES_CPP_NAMESPACE::DOMElement *score_partwise, *part_list;
+  std::unique_ptr<xercesc::DOMDocument, dom_deleter> dom_document;
+  xercesc::DOMElement *score_partwise, *part_list;
 public:
   document() { create_empty_document(); }
 
@@ -66,20 +67,21 @@ private:
       DOMImplementationRegistry::getDOMImplementation(xml_string("Core"));
     if (dom) {
       xml_string type("score-partwise");
-      xml_string dtd_public("-//Recordare//DTD MusicXML 2.0 Partwise//EN");
+      xml_string dtd_public("-//Recordare//DTD MusicXML 3.0 Partwise//EN");
       xml_string dtd_url("http://www.musicxml.org/dtds/partwise.dtd");
 
       dom_document.reset
-	(dom->createDocument
-	 (nullptr, type, dom->createDocumentType(type, dtd_public, dtd_url)));
+      (dom->createDocument
+       (nullptr, type, dom->createDocumentType(type, dtd_public, dtd_url)));
 
       score_partwise = dom_document->getDocumentElement();
-      score_partwise->setAttribute(xml_string("version"), xml_string("2.0"));
-      DOMElement* identification = dom_document->createElement(xml_string("identification"));
+      score_partwise->setAttribute(xml_string("version"), xml_string("3.0"));
+      DOMElement* identification =
+	dom_document->createElement(xml_string("identification"));
       DOMElement* encoding = dom_document->createElement(xml_string("encoding"));
+      encoding->appendChild(encoding_date());
       DOMElement* software = dom_document->createElement(xml_string("software"));
-      DOMText*    text = dom_document->createTextNode(xml_string("Braille Music Compiler"));
-      software->appendChild(text);
+      software->appendChild(dom_document->createTextNode(xml_string("Braille Music Compiler")));
       encoding->appendChild(software);
       identification->appendChild(encoding);
       score_partwise->appendChild(identification);
@@ -90,6 +92,17 @@ private:
       return true;
     }
     return false;
+  }
+
+  xercesc::DOMElement *encoding_date() const
+  {
+    xercesc::DOMElement *element = dom_document->createElement(xml_string("encoding-date"));
+    char date_string[11];
+    time_t t1 = std::time(NULL);
+    struct tm *t2 = std::localtime(&t1);
+    std::strftime(date_string, sizeof(date_string), "%Y-%m-%d", t2);
+    element->appendChild(dom_document->createTextNode(xml_string(date_string)));
+    return element;
   }
 
 public:
@@ -110,11 +123,9 @@ public:
       std::unique_ptr<DOMLSOutput, dom_deleter> output(ls->createLSOutput());
       ostream_format_target format_target(stream);
       output->setByteStream(&format_target);
-      serializer->write(dom_document.get(), output.get());
 
-      return true;
-    }
-    catch (const OutOfMemoryException&) {
+      return serializer->write(dom_document.get(), output.get());
+    } catch (const OutOfMemoryException&) {
       std::cerr << "OutOfMemoryException" << std::endl;
     } catch (XMLException& e) {
       std::cerr << "An error occurred during creation of output transcoder. Msg is:"
