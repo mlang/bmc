@@ -10,6 +10,7 @@
 #include <xercesc/util/OutOfMemoryException.hpp>
 
 #include <iostream>
+#include <memory>
 
 namespace music { namespace musicxml {
 
@@ -31,21 +32,27 @@ class ostream_format_target: public XERCES_CPP_NAMESPACE::XMLFormatTarget
 public:
   ostream_format_target(std::ostream &stream): stream(stream) {}
 
-  virtual void
-  writeChars( const XMLByte* const buffer, const XMLSize_t size
-	    , xercesc::XMLFormatter* const
-            )
+  virtual void writeChars( const XMLByte* const buffer, const XMLSize_t size
+                         , xercesc::XMLFormatter* const
+                         )
   {
-    if (not stream.fail()) stream.write(reinterpret_cast<const char*>(buffer),
-					static_cast<std::streamsize>(size));
+    if (not stream.fail())
+      stream.write(reinterpret_cast<const char*>(buffer),
+                   static_cast<std::streamsize>(size));
   }
 
   virtual void flush() { if (not stream.fail()) stream.flush(); }
 };
 
+struct dom_deleter
+{
+  template <class T>
+  void operator()(T* ptr) { ptr->release(); }
+};
+
 class document
 {
-  XERCES_CPP_NAMESPACE::DOMDocument *dom_document;
+  std::unique_ptr<XERCES_CPP_NAMESPACE::DOMDocument, dom_deleter> dom_document;
   XERCES_CPP_NAMESPACE::DOMElement *score_partwise, *part_list;
 public:
   document() { create_empty_document(); }
@@ -62,8 +69,9 @@ private:
       xml_string dtd_public("-//Recordare//DTD MusicXML 2.0 Partwise//EN");
       xml_string dtd_url("http://www.musicxml.org/dtds/partwise.dtd");
 
-      dom_document = dom->createDocument
-	(nullptr, type, dom->createDocumentType(type, dtd_public, dtd_url));
+      dom_document.reset
+	(dom->createDocument
+	 (nullptr, type, dom->createDocumentType(type, dtd_public, dtd_url)));
 
       score_partwise = dom_document->getDocumentElement();
       score_partwise->setAttribute(xml_string("version"), xml_string("2.0"));
@@ -92,19 +100,17 @@ public:
     try {
       DOMImplementationLS *ls =
 	DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
-      DOMLSSerializer *serializer = ls->createLSSerializer();
+      std::unique_ptr<DOMLSSerializer, dom_deleter>
+      serializer(ls->createLSSerializer());
       DOMConfiguration *configuration = serializer->getDomConfig();
 
       if (configuration->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true))
 	configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-      DOMLSOutput *output = ls->createLSOutput();
+      std::unique_ptr<DOMLSOutput, dom_deleter> output(ls->createLSOutput());
       ostream_format_target format_target(stream);
       output->setByteStream(&format_target);
-      serializer->write(dom_document, output);
-
-      output->release();
-      serializer->release();
+      serializer->write(dom_document.get(), output.get());
 
       return true;
     }
@@ -117,8 +123,6 @@ public:
     }
     return false;
   }
-
-  ~document() { if (dom_document) dom_document->release(); }
 };
 
 }}
