@@ -32,7 +32,7 @@ include directory is enough to build BMC.  There is no need to link any Boost
 Library files to the final executable.
 
  [2] http://www.boost.org/
- [3] http://www.boost.org/doc/libs/1_47_0/?view=filtered_header-only
+ [3] http://www.boost.org/doc/libs/1_49_0/?view=filtered_header-only
 
 
 Parsing
@@ -46,7 +46,7 @@ but it was never particularily designed to be read by a computer.  This aspect
 of the history shows up in the more complex tricks that we will need to provide
 a parser that is as intelligent as possible.
 
-Instead of the more conservative yacc/lex approach, we are using a much more
+Instead of the more conservative yacc/lex approach, we are using a more
 modern parsing framework, namely Boost.Spirit[4].  Spirit is a C++ framework
 for creating parsers based on templates and meta-programming.
 A DSEL for EBNF-alike grammars is provided, and transformed at compile time
@@ -56,13 +56,12 @@ data structures as synthesized attributes of its grammars.  We can make use
 of STL containers and even more specific types like Boost.Variant or
 Boost.Optional to construct our abstract syntax tree.
 
- [4] http://www.boost.org/doc/libs/1_47_0/libs/spirit/doc/html/index.html
+ [4] http://www.boost.org/doc/libs/1_49_0/libs/spirit/doc/html/index.html
 
 We are using a helper-class called error_handler to save iterators into the
 original input data for parsed entities such that we can report the exact
 location (line and column) of error conditions during the parsing (and
-during later processing).  This exact contextual information is going to
-be important later on for other planned features of the project.
+during later processing).
 
 
 heterogeneous containers
@@ -101,7 +100,7 @@ program will try to parse the current document and either report errors sensibly
 or provide some sort of confirmation.  Once the document is successfully parsed,
 several more options will be available, like starting playback or jumping to a
 particular position in the document (like a particular measure of the music).
-The document could now also be converted to a visual notation via some external
+The document could now also be converted to visual notation via some external
 program like Lilypond, and eventually displayed alongside the braille music code.
 
 Since the user base is definitely relying on accessibility being available on
@@ -199,8 +198,8 @@ Library and Boost conding standards.
     boost::chrono[13] as a (temporary) replacement.
 
    [11] http://en.wikipedia.org/wiki/C++11#Threading_facilities
-   [12] http://www.boost.org/doc/libs/1_47_0/doc/html/thread.html
-   [13] http://www.boost.org/doc/libs/1_47_0/doc/html/chrono.html
+   [12] http://www.boost.org/doc/libs/1_49_0/doc/html/thread.html
+   [13] http://www.boost.org/doc/libs/1_49_0/doc/html/chrono.html
 
 
 * const qualifier: C++ is ambiguous regarding the placement of const qualifiers.
@@ -243,9 +242,6 @@ Library and Boost conding standards.
     framework for test cases is present and being used in the build process to
     indicate regressions as early as possible.  Make use of this safe-guard
     to avoid your code being accidentally broken in the future.
-    Some special cases, like GUI behaviour for instance, are of course rather
-    hard to test.  Apply common sense when deciding how much time to invest in
-    developing a useful test case.
   * The 'detail' namespace: One pattern commonly used in Boost is to separate
     the public interface of a feature from its implementation details.
     We think this a good practice and would like to make use of it in BMC.
@@ -303,10 +299,13 @@ make up this prototype:
 
  * Text to braille:
    The subdirectory ttb/ contains source code for the mapping of character values
-   to braille dots.  The code has been borrowed from the BRLTTY project,
+   to braille dots.  The code has been borrowed from the BRLTTY[14] project,
    and stripped down a little to avoid excessive code bloat.  It is therefore
    compatible to the format of braille tables employed by BRLTTY (on purpose).
    This part of the code is pretty well-tested and should not need to be changed.
+
+  [14] http://mielke.cc/brltty/
+
  * Parsing:
    The files numbers.hpp, measure.hpp and score.hpp contain the toplevel
    grammar declarations.  The actual grammars are defined in the accompanying
@@ -320,7 +319,7 @@ make up this prototype:
    ambiguous.hpp collects all the data types necessary to represent the result
    of parsing the given input (in other words, the abstract syntax tree).
    And finally, music.hpp contains basic utility types which seem common to
-   musical notation in general, not being tied to a particular type of notation.
+   musical notation in general, not tied to a particular type of notation.
    For instance, a rational data type is created using Boost.Rational.
    Several enums, such as accidentals or diatonic steps are also defined here.
  * Compilation:
@@ -329,12 +328,15 @@ make up this prototype:
    The file compiler.hpp defines the function object class
    music::braille::compiler which is used as an entry point for all associated
    algorithms.
-   disambiguate.hpp and octave_calculator.hpp do implement code required
-   for disambiguating note values and calcualting exact octaves of notes and
-   chords respectively.
+   disambiguate.hpp, octave_calculator.hpp and alteration_calculator.hpp
+   implement code required
+   for disambiguating note values, calcualting exact octaves of notes and
+   chords and calculating the alteration of pitches respectively.
    compiler.cpp implements a few lengthy member function of
    music::braille::compiler and comprises the top-level of the
    compiler translation unit.
+ * Conversion to musical notation formats:
+   lilypond.hpp implements code to convert a braille music score to LilyPond.
  * Playback:
    As a proof of concept, some code exists to play the compiled musical score
    on Linux using the FluidSynth package (a SoundFont-based software synthesizer).
@@ -342,7 +344,7 @@ make up this prototype:
    It offers classes for representing most basic MIDI events and a priority_queue
    based class for implicitly ordering MIDI events by their begin time.
    fluidsynth.hpp and fluidsynth.cpp implement a simple wrapper around the
-   FluidSynth C API to allow playing of compiled musical scores.
+   FluidSynth C API to allow playing of scores.
  * Testing and utilities:
    The file test.cpp contains all the test cases implemented so far.
    For the convenience of developers, brltr.cpp contains a small command-line
@@ -412,6 +414,11 @@ TODO
   as in braille music, namely to reduce duplicated note material.  If we ever
   get to the stage of LilyPond export, we might want to use some of the braille
   repeats as cues to generate more human readable LilyPond files.
-* Investigate feasability of ports to other platforms like OSX or iOS.
+* Port to Cococa and Cococa Touch:
+  iOS handles Unicode Braille just as expected.  It is displayed on screen
+  with an appropriate font and works together with external braille displays as
+  well.  Given that, ports to Cocoa and Cocoa Touch seem quite feasable.
+
+
 
 
