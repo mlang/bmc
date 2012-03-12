@@ -4,6 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include "ttb/config.h"
 #include "config.hpp"
 #include "ambiguous.hpp"
 #include "compiler.hpp"

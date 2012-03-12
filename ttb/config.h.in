@@ -102,6 +102,7 @@ extern "C" {
 #undef ENABLE_I18N_SUPPORT
 
 #define TEXT_TABLE_EXTENSION ".ttb"
+#define TEXT_SUBTABLE_EXTENSION ".tti"
 
 #define SOUNDFONT_PATH "/usr/share/sounds/sf2/FluidR3_GM.sf2"
 
