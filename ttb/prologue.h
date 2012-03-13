@@ -258,7 +258,9 @@ WIN_ERRNO_STORAGE_CLASS int win_toErrno (DWORD error);
 
 #define wchar_t unsigned char
 #define wint_t int
+#ifndef WEOF
 #define WEOF EOF
+#endif
 #define WCHAR_MAX UINT8_MAX
 
 #define wmemchr(source,character,count) memchr((const char *)(source), (char)(character), (count))
