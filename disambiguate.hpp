@@ -192,7 +192,8 @@ class partial_voice_interpretations
     result_type operator()(ambiguous::rest& rest) const
     { return result_type(rest, large, duration); }
     template<typename Sign>
-    result_type operator()(Sign const&) const { BOOST_ASSERT(false); }
+    result_type operator()(Sign const&) const
+    { BOOST_ASSERT(false); return value_proxy(); }
   };
   static
   ambiguous::partial_voice::iterator
