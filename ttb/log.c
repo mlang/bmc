@@ -22,7 +22,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <time.h>
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -84,27 +86,6 @@ void
 openLogFile (const char *path) {
   closeLogFile();
   logFile = fopen(path, "w");
-}
-
-static void
-writeLogRecord (const char *record) {
-  if (logFile) {
-    {
-      struct timeval now;
-      struct tm description;
-      char buffer[0X20];
-      int length;
-
-      gettimeofday(&now, NULL);
-      localtime_r(&now.tv_sec, &description);
-      length = strftime(buffer, sizeof(buffer), "%Y-%m-%d@%H:%M:%S", &description);
-      fprintf(logFile, "%.*s.%03ld ", length, buffer, now.tv_usec/1000);
-    }
-
-    fputs(record, logFile);
-    fputc('\n', logFile);
-    fflush(logFile);
-  }
 }
 
 void
@@ -179,18 +160,13 @@ logData (int level, LogDataFormatter *formatLogData, const void *data) {
 
     if (*record) {
       if (write) {
-        writeLogRecord(record);
 
-#if defined(HAVE_SYSLOG_H)
-        if (syslogOpened) syslog(level, "%s", record);
-#elif defined(WINDOWS)
+#if defined(WINDOWS)
         if (windowsEventLog != INVALID_HANDLE_VALUE) {
           const char *strings[] = {record};
           ReportEvent(windowsEventLog, toEventType(level), 0, 0, NULL,
                       ARRAY_COUNT(strings), 0, strings, NULL);
         }
-#elif defined(__MSDOS__)
-
 #endif /* write system log */
       }
 
