@@ -57,12 +57,9 @@ unloadTextTable (TableData *data) {
 }
 
 static const TableEntry tableEntries[] = {
-  { .extension = TEXT_TABLE_EXTENSION,
-    .load = loadTextTable,
-    .unload = unloadTextTable
-  }
+  { TEXT_TABLE_EXTENSION, loadTextTable, unloadTextTable }
   ,
-  { .extension = NULL }
+  { NULL, NULL, NULL }
 };
 
 static const TableEntry *
