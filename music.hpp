@@ -56,7 +56,7 @@ public:
   void anacrusis(rational const& anacrusis) { d_anacrusis = anacrusis; }
 };
 
-enum diatonic_step { C = 0, D, E, F, G, A, B };
+enum diatonic_step { C = 0, D, E, F, G, A, B, steps_per_octave };
 enum accidental {
   natural, flat, double_flat, triple_flat,
            sharp, double_sharp, triple_sharp

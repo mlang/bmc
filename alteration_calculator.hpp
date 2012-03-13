@@ -20,7 +20,7 @@ class alteration_calculator
 , public compiler_pass
 {
   report_error_type const& report_error;
-  music::accidental memory[10][B + 1];
+  music::accidental memory[10][steps_per_octave];
   music::key_signature key_sig;
 public:
   alteration_calculator(report_error_type const& report_error)
@@ -90,8 +90,9 @@ private:
 
   void reset_memory(music::key_signature key_signature)
   {
-    for (int octave = 0; octave < 10; ++octave) {
-      for (int step = C; step <= B; ++step) memory[octave][step] = natural;
+    for (std::size_t octave = 0; octave < 10; ++octave) {
+      for (std::size_t step = C; step < steps_per_octave; ++step)
+        memory[octave][step] = natural;
       switch (key_signature) {
       case  7: memory[octave][B] = sharp;
       case  6: memory[octave][E] = sharp;
