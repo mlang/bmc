@@ -33,14 +33,12 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
   boost::spirit::qi::eol_type eol;
-  boost::spirit::qi::omit_type omit;
   boost::spirit::standard_wide::space_type space;
 
   start = key_signature >> -time_signature >> -+eol
        >> +(keyboard_part | solo_part);
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;
-  boost::spirit::qi::_2_type _2;
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
