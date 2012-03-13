@@ -210,9 +210,9 @@ typedef struct {
 } CharacterSet;
 
 static const CharacterSet characterSets[] = {
-  {.name="iso-8859-1", .toUnicode=toUnicode_Latin1},
-  {.name="cp437", .toUnicode=toUnicode_CP437},
-  {.name="cp850", .toUnicode=toUnicode_CP850},
+  {"iso-8859-1", toUnicode_Latin1},
+  {"cp437", toUnicode_CP437},
+  {"cp850", toUnicode_CP850},
   {}
 };
 static const CharacterSet *characterSet;
