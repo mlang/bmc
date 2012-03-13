@@ -9,7 +9,10 @@ set(BMC_TTB_COMMON_FILES
     ttb_native.c
     unicode.c unicode.h
    )
-add_definitions(-DHAVE_ICONV_H=1)
+find_path(ICONV_INCLUDE_DIR iconv.h)
+if(ICONV_INCLUDE_DIR)
+  add_definitions(-DHAVE_ICONV_H=1)
+endif()
 add_definitions(-DHAVE_WCHAR_H=1)
 add_definitions(-DPACKAGE_NAME="brltty")
 add_definitions(-DTEXT_TABLE_EXTENSION=".ttb")
