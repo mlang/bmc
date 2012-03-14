@@ -212,7 +212,7 @@ static const CharacterSet characterSets[] = {
   {"iso-8859-1", toUnicode_Latin1},
   {"cp437", toUnicode_CP437},
   {"cp850", toUnicode_CP850},
-  {}
+  {NULL, NULL}
 };
 static const CharacterSet *characterSet;
 
