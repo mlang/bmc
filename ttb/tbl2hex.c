@@ -91,49 +91,18 @@ dumpBytes (FILE *stream, const unsigned char *bytes, size_t count) {
   }
 
   while (byte < end) {
-    while (!*byte && (byte < (end - 1))) byte += 1;
-
-    {
-      unsigned int counter = 0;
-      unsigned int maximum = 8;
-
-      if ((byte + maximum) != end) {
-        while (maximum > 1) {
-          if (byte[maximum-1]) break;
-          maximum -= 1;
-        }
-      }
-
-      while (byte < end) {
-        if (first) {
-          first = 0;
-        } else {
-          fprintf(stream, ",");
-          if (ferror(stream)) goto outputError;
-
-          if (!counter) {
-            fprintf(stream, "\n");
-            if (ferror(stream)) goto outputError;
-          }
-        }
-
-        if (!counter) {
-          fprintf(stream, "[0X%0*X] =", digits, (unsigned int)(byte-bytes));
-          if (ferror(stream)) goto outputError;
-        }
-
-        fprintf(stream, " 0X%02X", *byte++);
-        if (ferror(stdout)) goto outputError;
-
-        if (++counter == maximum) break;
+    size_t i;
+    for (i = 0; i < 8 && byte < end; ++i) {
+      fprintf(stream, " 0X%02X", *byte++);
+      if (ferror(stdout)) goto outputError;
+      if (byte != end) {
+        fprintf(stream, ",");
+        if (ferror(stream)) goto outputError;
       }
     }
-  }
-
-  if (!first) {
     fprintf(stream, "\n");
-    if (ferror(stream)) goto outputError;
-  }
+    if (ferror(stdout)) goto outputError;
+  } 
 
   return 1;
 
