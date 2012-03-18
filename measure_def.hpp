@@ -78,7 +78,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   full_measure_in_accord = brl(126) >> brl(345) >> -+eol;
   partial_measure_sign = brl(46) >> brl(13) >> -+eol;
   partial_measure_in_accord = brl(5) >> brl(2) >> -+eol;
-  optional_dot = !dots_123 | &(brl(3) >> dots_123) > brl(3);
+  optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(braille::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(braille::left_hand));
   ending = brl(3456) >> lower_digit_sign > optional_dot;

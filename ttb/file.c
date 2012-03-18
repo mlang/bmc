@@ -367,21 +367,18 @@ formatInputError (char *buffer, int size, const char *file, const int *line, con
   int length = 0;
 
   if (file) {
-    int count;
-    snprintf(&buffer[length], size-length, "%s%n", file, &count);
-    length += count;
+    snprintf(&buffer[length], size-length, "%s", file);
+    length += strlen(&buffer[length]);
   }
 
   if (line) {
-    int count;
-    snprintf(&buffer[length], size-length, "[%d]%n", *line, &count);
-    length += count;
+    snprintf(&buffer[length], size-length, "[%d]", *line);
+    length += strlen(&buffer[length]);
   }
 
   if (length) {
-    int count;
-    snprintf(&buffer[length], size-length, ": %n", &count);
-    length += count;
+    snprintf(&buffer[length], size-length, ": ");
+    length += strlen(&buffer[length]);
   }
 
   vsnprintf(&buffer[length], size-length, format, argp);

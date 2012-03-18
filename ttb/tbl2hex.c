@@ -84,7 +84,8 @@ dumpBytes (FILE *stream, const unsigned char *bytes, size_t count) {
 
   if (count) {
     char buffer[0X10];
-    snprintf(buffer, sizeof(buffer), "%X%n", (unsigned int)count-1, &digits);
+    snprintf(buffer, sizeof(buffer), "%X", (unsigned int)count-1);
+    digits = strlen(buffer);
   } else {
     digits = 1;
   }
