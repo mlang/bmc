@@ -72,6 +72,11 @@ add_custom_command(OUTPUT text.auto.h
                   )
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_library(bmc_ttb SHARED ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
+set_target_properties(bmc_ttb
+                      PROPERTIES
+                      VERSION 0.0.1
+                      SOVERSION 0.0
+                     )
 target_link_libraries(bmc_ttb ${ICU_LIBRARIES})
 install(TARGETS bmc_ttb DESTINATION lib)
 install(DIRECTORY Tables DESTINATION share/${CMAKE_PROJECT_NAME})

@@ -11,10 +11,15 @@ add_subdirectory(ttb)
 find_package(Boost 1.48.0 REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
-add_definitions("-std=c++0x")
+add_definitions(-std=c++0x)
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp numbers.cpp measure.cpp score.cpp compiler.cpp
            )
+set_target_properties(bmc_parse
+                      PROPERTIES
+                      VERSION 0.0.1
+                      SOVERSION 0.0
+                     )
 target_link_libraries(bmc_parse bmc_ttb)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 add_executable(bmc main.cpp fluidsynth.cpp)
