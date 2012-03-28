@@ -12,8 +12,14 @@
 #define BOOST_TEST_MODULE bmc_test
 #include <boost/test/included/unit_test.hpp>
 
+#ifdef CMAKE_SOURCE_DIR
+#define DIR CMAKE_SOURCE_DIR
+#else
+#define DIR ""
+#endif
+
 BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#ab(");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -30,7 +36,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -45,7 +51,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#f3");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -60,7 +66,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"22");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -77,7 +83,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
 #include "spirit/qi/primitive/brl.hpp"
 
 BOOST_AUTO_TEST_CASE(brl_parser_test) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#A");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -100,7 +106,7 @@ public:
 };
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"vu.");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -121,7 +127,7 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
 }
 
 BOOST_AUTO_TEST_CASE(measure_test2) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r.2`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -150,7 +156,7 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
 #include "compiler.hpp"
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r72`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -174,7 +180,7 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
 }
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r.2`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -198,7 +204,7 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
 }
 
 BOOST_AUTO_TEST_CASE(notegroup_test1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"!yefg{ijd_n");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -233,7 +239,7 @@ struct get_type : boost::static_visitor<music::rational>
 };
 
 BOOST_AUTO_TEST_CASE(compiler_test1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"!yefg{ijd_n");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -267,7 +273,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
 #include "score.hpp"
 
 BOOST_AUTO_TEST_CASE(score_solo_test1) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿2k");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -288,7 +294,7 @@ BOOST_AUTO_TEST_CASE(score_solo_test1) {
 }
 
 BOOST_AUTO_TEST_CASE(score_solo_test2) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wstring const input(L"#c/\n⠐⠞⠃⠝⠞⠎⠚⠂⠈⠉⠞⠟⠗⠁⠎⠾⠽⠐⠢⠕⠽⠚⠊⠓2k");
   typedef std::wstring::const_iterator iterator_type;
@@ -319,9 +325,9 @@ BOOST_AUTO_TEST_CASE(rational_gcd) {
 #include <fstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v01.bmc");
+  std::wifstream file(DIR "input/bwv988-v01.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -348,9 +354,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v02.bmc");
+  std::wifstream file(DIR "input/bwv988-v02.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -376,9 +382,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v03) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v03.bmc");
+  std::wifstream file(DIR "input/bwv988-v03.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -404,9 +410,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v13.bmc");
+  std::wifstream file(DIR "input/bwv988-v13.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -432,9 +438,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v13.de.bmc");
+  std::wifstream file(DIR "input/bwv988-v13.de.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -460,9 +466,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v30.bmc");
+  std::wifstream file(DIR "input/bwv988-v30.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -491,9 +497,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
 #include <sstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v01.bmc");
+  std::wifstream file(DIR "input/bwv988-v01.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -518,7 +524,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file("input/bwv988-v01.ly.expected");
+  std::ifstream ly_file(DIR "input/bwv988-v01.ly.expected");
   BOOST_CHECK(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -526,9 +532,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v13.bmc");
+  std::wifstream file(DIR "input/bwv988-v13.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -553,7 +559,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file("input/bwv988-v13.ly.expected");
+  std::ifstream ly_file(DIR "input/bwv988-v13.ly.expected");
   BOOST_CHECK(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -561,9 +567,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
-  textTable = compileTextTable("ttb/Tables/de.ttb");
+  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
-  std::wifstream file("input/bwv988-v30.bmc");
+  std::wifstream file(DIR "input/bwv988-v30.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -588,7 +594,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file("input/bwv988-v30.ly.expected");
+  std::ifstream ly_file(DIR "input/bwv988-v30.ly.expected");
   BOOST_CHECK(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);

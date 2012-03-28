@@ -32,6 +32,7 @@ add_executable(brltr brltr.cpp)
 target_link_libraries(brltr bmc_ttb)
 install(TARGETS brltr DESTINATION bin)
 
+add_definitions(-DCMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/")
 add_executable(bmc_test test.cpp)
 target_link_libraries(bmc_test bmc_parse)
 enable_testing()
