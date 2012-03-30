@@ -1,0 +1,12 @@
+/** \mainpage Overview
+
+\section intro Introduction
+
+\subsection whatis What is Braille Music?
+
+\defgroup music music
+\defgroup braille braille
+\ingroup music
+\defgroup compilation compilation
+\ingroup braille
+*/
