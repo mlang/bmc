@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(bmc)
+set(bmc_VERSION_MAJOR 0)
+set(bmc_VERSION_MINOR 0)
+set(bmc_VERSION_PATCH 1)
+set(bmc_VERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}.${bmc_VERSION_PATCH})
 if (CMAKE_COMPILER_IS_GNUCC)
   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                   OUTPUT_VARIABLE GCC_VERSION)
@@ -7,6 +11,7 @@ if (CMAKE_COMPILER_IS_GNUCC)
     message(FATAL_ERROR "GCC is too old (<= 4.5)")
   endif()
 endif()
+add_subdirectory(doxygen)
 add_subdirectory(ttb)
 find_package(Boost 1.48.0 REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
@@ -17,8 +22,8 @@ add_library(bmc_parse SHARED
            )
 set_target_properties(bmc_parse
                       PROPERTIES
-                      VERSION 0.0.1
-                      SOVERSION 0.0
+                      VERSION ${bmc_VERSION}
+                      SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
 target_link_libraries(bmc_parse bmc_ttb)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
@@ -32,8 +37,11 @@ add_executable(brltr brltr.cpp)
 target_link_libraries(brltr bmc_ttb)
 install(TARGETS brltr DESTINATION bin)
 
-add_definitions(-DCMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/")
 add_executable(bmc_test test.cpp)
+set_target_properties(bmc_test
+                      PROPERTIES
+                      COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/"
+                     )
 target_link_libraries(bmc_test bmc_parse)
 enable_testing()
 set(BMC_TEST_NAMES
@@ -68,6 +76,7 @@ add_custom_target(check
                  )
 # build the main executable if all tests succeed
 add_dependencies(bmc check)
+add_dependencies(bmc doc)
 
 install(TARGETS bmc DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
@@ -75,8 +84,10 @@ install(TARGETS bmc_parse DESTINATION lib)
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${bmc_SOURCE_DIR}/LICENSE.txt")
-set(CPACK_PACKAGE_VERSION_MAJOR 0)
-set(CPACK_PACKAGE_VERSION_MINOR 0)
+set(CPACK_PACKAGE_VERSION_MAJOR ${bmc_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${bmc_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${bmc_VERSION_PATCH})
 set(CPACK_PACKAGE_CONTACT       "Mario Lang <mlang@delysid.org>")
 set(CPACK_STRIP_FILES           TRUE)
+#set(CPACK_SOURCE_GENERATOR      "TGZ;TXZ;")
 include(CPack)
