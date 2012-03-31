@@ -45,10 +45,18 @@ public:
   virtual void flush() { if (not stream.fail()) stream.flush(); }
 };
 
+/**
+ * \brief A deleter that uses the <code>release</code> member function to destroy
+ * an object.
+ *
+ * Xerces DOM objects have a reference counting mechanism where calling
+ * <code>release</code> on them decrements the reference counter.
+ */
 struct dom_deleter
 {
   template <class T>
-  void operator()(T* ptr) { ptr->release(); }
+  void operator()(T* ptr)
+  { if (ptr) ptr->release(); }
 };
 
 class document
@@ -76,6 +84,7 @@ private:
 
       score_partwise = dom_document->getDocumentElement();
       score_partwise->setAttribute(xml_string("version"), xml_string("3.0"));
+
       DOMElement* identification =
 	dom_document->createElement(xml_string("identification"));
       DOMElement* encoding = dom_document->createElement(xml_string("encoding"));
@@ -98,9 +107,9 @@ private:
   {
     xercesc::DOMElement *element = dom_document->createElement(xml_string("encoding-date"));
     char date_string[11];
-    time_t t1 = std::time(NULL);
-    struct tm *t2 = std::localtime(&t1);
-    std::strftime(date_string, sizeof(date_string), "%Y-%m-%d", t2);
+    std::time_t current_time = std::time(nullptr);
+    std::strftime(date_string, sizeof(date_string), "%Y-%m-%d",
+                  std::localtime(&current_time));
     element->appendChild(dom_document->createTextNode(xml_string(date_string)));
     return element;
   }
