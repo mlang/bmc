@@ -93,12 +93,8 @@ public:
   {
     int const chromatic[7] = { 0, 2, 4, 6, 7, 9, 11 };
     int alter = 0;
-    if (note.acc) {
-      if (*note.acc == sharp) alter = 1;
-      else if (*note.acc == flat) alter = -1;
-    }
     queue.push(midi::note_on(position, 0,
-                             (note.octave*12) + chromatic[note.step] + alter,
+                             (note.octave*12) + chromatic[note.step] + note.alter,
                              90, note.as_rational()));
     position += note.as_rational();
   }
