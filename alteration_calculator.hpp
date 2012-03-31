@@ -15,6 +15,15 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief Calculates the alteration of note pitches.
+ *
+ * Given the current key signature this compiler pass calculates the
+ * alteration (an integer from -2 to 2) value for each note in a measure
+ * taking the accidentals into account.
+ *
+ * Accidental memory is reset at each measure beginning.
+ */
 class alteration_calculator
 : public boost::static_visitor<void>
 , public compiler_pass
@@ -27,6 +36,9 @@ public:
   : report_error(report_error)
   {}
 
+  /**
+   * \brief Set the current key signature.
+   */
   void set(music::key_signature sig)
   { key_sig = sig; }
 

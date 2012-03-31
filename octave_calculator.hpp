@@ -13,6 +13,15 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief Calcualte octaves for every note in a section of music.
+ *
+ * Braille music does only specify octave signs if they are necessary,
+ * pretty similar to relative music in LilyPond input files.
+ * This compiler pass processes braille music sequentially, filling in the
+ * actual octave of every note, no matter if it is proceeded by an octave sign
+ * or not.
+ */
 class octave_calculator
 : public boost::static_visitor<bool>
 , public compiler_pass
