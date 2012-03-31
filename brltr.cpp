@@ -42,14 +42,17 @@ findTableByLocale() {
   const char *locale = setlocale(LC_CTYPE, NULL);
 
   if (locale) {
-    char name[strlen(locale) + 1];
+    char *name = (char *)malloc(strlen(locale) + 1);
 
     {
       size_t const length = strcspn(locale, ".@");
       strncpy(name, locale, length)[length] = 0;
     }
 
-    if (strcmp(name, "C") == 0) return NULL;
+    if (strcmp(name, "C") == 0) {
+      free(name);
+      return NULL;
+    }
 
     char *tablePath = resolveTablePath(name);
     if (!tablePath) {
@@ -61,6 +64,8 @@ findTableByLocale() {
       }
     }
 
+    free(name);
+
     return tablePath;
   }
 
@@ -70,14 +75,24 @@ findTableByLocale() {
 using namespace std;
 
 static void
-translate(wistream &in, wostream &out, bool six_dots = false) {
+translate( wistream &in
+         , wostream &out
+         , bool six_dots = false
+         , bool reverse = false
+         ) {
   istreambuf_iterator<wchar_t> end;
   for (istreambuf_iterator<wchar_t> iter = in.rdbuf(); iter != end; ++iter) {
     wchar_t character(*iter);
-    if (character > 0X20) {
-      unsigned char dots = convertCharacterToDots(textTable, character);
-      if (six_dots) dots &= ~(BRL_DOT7 | BRL_DOT8);
-      character = UNICODE_BRAILLE_ROW | dots;
+    if (reverse) {
+      if ((character & UNICODE_BRAILLE_ROW) == UNICODE_BRAILLE_ROW) {
+        character = convertDotsToCharacter(textTable, character&0XFF);
+      }
+    } else {
+      if (character > 0X20) {
+        unsigned char dots = convertCharacterToDots(textTable, character);
+        if (six_dots) dots &= ~(BRL_DOT7 | BRL_DOT8);
+        character = UNICODE_BRAILLE_ROW | dots;
+      }
     }
     out << character;
   }
