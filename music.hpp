@@ -44,7 +44,6 @@ class time_signature: public rational {
   // boost::rational simplifies during construction, so we need to
   // preserve the original numerator and denominator
   int_type d_num, d_den;
-  rational d_anacrusis;
 public:
   time_signature(int_type n = 4, int_type d = 4)
   : rational(n, d), d_num(n), d_den(d) {}
@@ -52,8 +51,6 @@ public:
   int_type numerator() const { return d_num; }
   int_type denominator() const { return d_den; }
   // anacrusis
-  rational const& anacrusis() const { return d_anacrusis; }
-  void anacrusis(rational const& anacrusis) { d_anacrusis = anacrusis; }
 };
 
 enum diatonic_step { C = 0, D, E, F, G, A, B, steps_per_octave };
