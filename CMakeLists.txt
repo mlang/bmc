@@ -74,7 +74,6 @@ add_custom_target(check
                   COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
                   DEPENDS bmc_test
                  )
-# build the main executable if all tests succeed
 
 install(TARGETS bmc DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
