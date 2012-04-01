@@ -92,7 +92,6 @@ public:
   result_type operator()(braille::ambiguous::note const& note) const
   {
     int const chromatic[7] = { 0, 2, 4, 6, 7, 9, 11 };
-    int alter = 0;
     queue.push(midi::note_on(position, 0,
                              (note.octave*12) + chromatic[note.step] + note.alter,
                              90, note.as_rational()));
