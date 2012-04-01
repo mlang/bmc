@@ -47,7 +47,9 @@ struct rhythmic_base : locatable
 
 struct rhythmic
 {
+  virtual ~rhythmic() {}
   virtual rational as_rational() const = 0;
+
 };
 
 struct slur {};
@@ -77,7 +79,7 @@ struct rest : rhythmic_base, rhythmic
   { return type * 2 - type / pow(2, dots); }
 };
 
-struct interval {
+struct interval : locatable {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
   music::interval steps;

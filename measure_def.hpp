@@ -91,6 +91,10 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   				annotation_function(error_handler.iters)(_val, _1));
   boost::spirit::qi::on_success(rest,
   				annotation_function(error_handler.iters)(_val, _1));
+  boost::spirit::qi::on_success(interval,
+                                annotation_function(error_handler.iters)(_val, _1));
+  boost::spirit::qi::on_success(chord,
+                                annotation_function(error_handler.iters)(_val, _1));
 
   note.name("note");
   interval.name("interval");
