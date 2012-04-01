@@ -290,7 +290,7 @@ private: // utilities
     for (auto const& fingering: fingers)
       boost::apply_visitor(write_to_stream, fingering);
   }
-  void ly_rhythm(braille::ambiguous::rhythmic_base const& rhythm) const
+  void ly_rhythm(braille::ambiguous::rhythmic_data const& rhythm) const
   {
     if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
     for (unsigned dot = 0; dot < rhythm.dots; ++dot) os << ".";

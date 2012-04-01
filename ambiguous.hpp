@@ -38,7 +38,7 @@ struct locatable
   std::size_t id;
 };
 
-struct rhythmic_base : locatable
+struct rhythmic_data : locatable
 {
   ambiguous::value ambiguous_value;
   unsigned dots;
@@ -49,12 +49,11 @@ struct rhythmic
 {
   virtual ~rhythmic() {}
   virtual rational as_rational() const = 0;
-
 };
 
 struct slur {};
 
-struct note : rhythmic_base, rhythmic
+struct note : rhythmic_data, rhythmic
 {
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
@@ -71,7 +70,7 @@ struct note : rhythmic_base, rhythmic
   { return type * 2 - type / pow(2, dots); }
 };
 
-struct rest : rhythmic_base, rhythmic
+struct rest : rhythmic_data, rhythmic
 {
   rest() : whole_measure(false) {}
   bool whole_measure; // filled in by disambiguate.hpp
