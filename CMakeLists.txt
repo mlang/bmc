@@ -75,8 +75,6 @@ add_custom_target(check
                   DEPENDS bmc_test
                  )
 # build the main executable if all tests succeed
-add_dependencies(bmc check)
-add_dependencies(bmc doc)
 
 install(TARGETS bmc DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)

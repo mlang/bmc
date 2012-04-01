@@ -1,7 +1,7 @@
 find_package(Doxygen REQUIRED)
 include(FindLATEX)
 configure_file(Doxyfile.in Doxyfile)
-add_custom_target(doc)
+add_custom_target(doc ALL)
 if(DOXYGEN_FOUND)
 add_custom_command(TARGET doc
                    COMMAND ${DOXYGEN_EXECUTABLE}
