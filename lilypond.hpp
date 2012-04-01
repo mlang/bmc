@@ -227,7 +227,10 @@ public:
   {
     for (articulation const& articulation: note.articulations) {
       switch (articulation) {
-      case appoggiatura: os << "\\appoggiatura "; break;
+      case appoggiatura:             os << "\\appoggiatura "; break;
+      case short_appoggiatura:       os << "\\acciaccatura "; break;
+      case mordent:                  os << "\\mordent ";      break;
+      case turn_above_or_below_note: os << "\\turn ";         break;
       }
     }
     ly_pitch_step(note.step);
@@ -235,6 +238,15 @@ public:
     ly_octave(note.octave);
     ly_rhythm(note);
     if (note.tied) os << "~";
+    for (articulation const& articulation: note.articulations) {
+      switch (articulation) {
+      default:                         break;
+      case accent:         os << "->"; break;
+      case staccato:       os << "-."; break;
+      case staccatissimo:  os << "-|"; break;
+      case mezzo_staccato: os << "-_"; break;
+      }
+    }
     ly_finger(note.fingers);
   }
   void operator() (braille::ambiguous::chord const& chord) const
