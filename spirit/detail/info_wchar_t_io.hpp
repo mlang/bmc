@@ -7,10 +7,13 @@
 #include <boost/spirit/include/support_info.hpp>
 #include <boost/locale/encoding_utf.hpp>
 
-// See https://svn.boost.org/trac/boost/ticket/5716
-
 namespace boost { namespace spirit {
 
+/**
+ * \brief Template specialisation to enable printing of Spirit info to
+ *        std::wostream.
+ * \see https://svn.boost.org/trac/boost/ticket/5716
+ */
 template<>
 struct simple_printer<std::wostream>
 {

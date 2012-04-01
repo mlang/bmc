@@ -79,6 +79,12 @@ public:
   }
 };
 
+/**
+ * \breif A queue of MIDI events.
+ *
+ * This class handles ordering of MIDI events according to their begin time.
+ * Call the <code>push</code> member function to add events.
+ */
 class event_queue
 : public std::priority_queue<event, std::vector<event>, std::greater<event> >
 {
@@ -97,6 +103,10 @@ public:
     pulse = gcd(pulse, gcd(event.begin(), event.duration()));
     base_type::push(event);
   }
+  /**
+   * \brief Returns the number of pulses per quarter note implied by the current
+   *        content of this queue.
+   */
   rational::int_type ppq() const
   {
     rational const p(rational(1, 4) / pulse);
