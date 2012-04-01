@@ -273,21 +273,19 @@ Getting the source
 Note that the following description includes a simple way of getting a current
 (and tested) version of Boost trunk, for your convenience.  If you already have
 a recent enough (1.48.0) copy of Boost on your system you might be able to skip
-the "svn export".  This example also assumes you are using a POSIX compliant
-platform supported by autoconf.
+the "svn export".
 
  $ git clone http://github.com/mlang/bmc
- $ cd bmc
  $ svn export http://svn.boost.org/svn/boost/trunk/boost@75166 boost
 
 
-Building
---------
+Building (on UNIX)
+------------------
 
 Compilation has only been tested with GCC 4.6 recently.
 
- $ autoconf
- $ ./configure -q --with-boost-root-directory=.
+ $ cd bmc
+ $ BOOST_INCLUDEDIR=.. cmake .
  $ make
 
 
@@ -326,14 +324,14 @@ make up this prototype:
    In the context of BMC, compilation refers to the process of post-processing
    the bare result gained from parsing braille music code.
    The file compiler.hpp defines the function object class
-   music::braille::compiler which is used as an entry point for all associated
+   bmc::braille::compiler which is used as an entry point for all associated
    algorithms.
    disambiguate.hpp, octave_calculator.hpp and alteration_calculator.hpp
    implement code required
    for disambiguating note values, calcualting exact octaves of notes and
    chords and calculating the alteration of pitches respectively.
    compiler.cpp implements a few lengthy member function of
-   music::braille::compiler and comprises the top-level of the
+   bmc::braille::compiler and comprises the top-level of the
    compiler translation unit.
  * Conversion to musical notation formats:
    lilypond.hpp implements code to convert a braille music score to LilyPond.
@@ -360,8 +358,7 @@ TODO
 * Port current codebase to Windows:
   * Port the build system, or replace with a portable one: Automake has some
     support for Microsoft Windows.  Investigate if that suffices to do a real
-    port to Windows.  Maybe consider switching to CMake which supposedly supports
-    VisualStudio project file generation.
+    port to Windows.
   * Figure out how to mimmick the FluidSynth functionality currently used under
     Linux under Windows.  Ideally, create a common class for realtime MIDI
     playback which is platform independent, and implement FluidSynth (Linux) and
@@ -380,7 +377,7 @@ TODO
   musical scores should also be exportable to MIDI files on disk such that
   they can be played or imported with other programs.  Note that the current
   playback code is only a proof of concept, and needs more work.  Its probably
-  best to write something that converts a music::midi::evenet_queue to
+  best to write something that converts a bmc::midi::evenet_queue to
   a suitable on-disk representation so that common code between real-time
   playback and file export can be shared.
 * Handle tied-note playback correctly: As usual with prototypes, the playback
