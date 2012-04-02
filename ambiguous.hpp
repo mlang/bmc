@@ -15,18 +15,21 @@
 #include "braille_music.hpp"
 #include <cmath>
 
-// Data types required to store the parse results.
+namespace music { namespace braille {
 
-// Some of the missing values are filled in by the compiler translation unit
-// right now.  However, it is likely that we will need two different ways of
-// storing our data, one form immediately after parsing, and another as a result
-// of the necessary transformations on top of that.
-
-// The namespace is called 'ambiguous' because it resembles the pure,
-// unprocessed parse results which are by the nature of braille music code
-// ambiguous (exact note and rest values need to be calculated).
-
-namespace music { namespace braille { namespace ambiguous {
+/**
+ * \brief Data types required to store the parse results.
+ *
+ * Some of the missing values are filled in by the compiler translation unit
+ * right now.  However, it is likely that we will need two different ways of
+ * storing our data, one form immediately after parsing, and another as a result
+ * of the necessary transformations on top of that.
+ *
+ * The namespace is called 'ambiguous' because it resembles the pure,
+ * unprocessed parse results which are by the nature of braille music code
+ * ambiguous (exact note and rest values need to be calculated).
+ */
+namespace ambiguous {
 
 enum value
 {

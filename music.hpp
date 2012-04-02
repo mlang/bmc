@@ -41,8 +41,10 @@ typedef rational time_modification;
 
 // arithmetic with time_signatures is useful, so derive from rational
 class time_signature: public rational {
-  // boost::rational simplifies during construction, so we need to
-  // preserve the original numerator and denominator
+  /**
+   * \brief boost::rational simplifies during construction, so we need to
+   *        preserve the original numerator and denominator
+   */
   int_type d_num, d_den;
 public:
   time_signature(int_type n = 4, int_type d = 4)
@@ -50,7 +52,6 @@ public:
   using rational::operator==; bool operator==(time_signature const&) const;
   int_type numerator() const { return d_num; }
   int_type denominator() const { return d_den; }
-  // anacrusis
 };
 
 enum diatonic_step { C = 0, D, E, F, G, A, B, steps_per_octave };

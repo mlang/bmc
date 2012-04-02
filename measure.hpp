@@ -15,6 +15,11 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief A grammar for parsing a single braille music measure.
+ *
+ * \ingroup grammar
+ */
 template <typename Iterator>
 struct measure_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::measure()>
 {

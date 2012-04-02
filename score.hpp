@@ -16,6 +16,11 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief Top-level grammar for parsing braille music scores.
+ *
+ * \ingroup grammar
+ */
 template<typename Iterator>
 struct score_grammar : boost::spirit::qi::grammar<Iterator, ambiguous::score()>
 {

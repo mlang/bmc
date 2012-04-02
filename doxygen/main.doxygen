@@ -9,4 +9,6 @@
 \ingroup music
 \defgroup compilation compilation
 \ingroup braille
+\defgroup grammar grammar
+\ingroup braille
 */

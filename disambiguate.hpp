@@ -15,7 +15,14 @@
 #include <memory>
 #include <sstream>
 
-namespace music { namespace braille { namespace value_disambiguation {
+namespace music { namespace braille {
+
+/**
+ * \brief Utilities for disambiguating note and rest values.
+ *
+ * \see value_disambiguator
+ */
+namespace value_disambiguation {
 
 enum value_category
 {
