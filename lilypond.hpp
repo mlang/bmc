@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <iterator>
+
 #include "ambiguous.hpp"
 #include "duration.hpp"
 #include "output_format.hpp"
@@ -287,13 +290,13 @@ private: // utilities
   void ly_finger(braille::fingering_list const& fingers) const
   {
     print_fingering write_to_stream(os);
-    for (auto const& fingering: fingers)
-      boost::apply_visitor(write_to_stream, fingering);
+    std::for_each(fingers.begin(), fingers.end(),
+                  boost::apply_visitor(write_to_stream));
   }
   void ly_rhythm(braille::ambiguous::rhythmic_data const& rhythm) const
   {
     if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
-    for (unsigned dot = 0; dot < rhythm.dots; ++dot) os << ".";
+    std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');
   }
   void ly_key(key_signature const& key) const
   {
