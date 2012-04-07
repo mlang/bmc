@@ -410,7 +410,7 @@ class partial_voice_interpretations
           }
         }
 
-        if (stack_begin == stack_end && position == 0 && time_signature != 1 &&
+        if (stack_begin == stack_end and position == 0 and time_signature != 1 &&
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
           *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
           recurse(tail, end, stack_begin, stack_end + 1,
@@ -491,13 +491,15 @@ public:
 inline rational
 duration(proxied_partial_measure const& voices)
 {
-  rational value(0);
+  rational value;
   if (not voices.empty()) {
     value = duration(voices.front());
+#if !defined(NDEBUG)
     for (proxied_partial_measure::const_iterator
          voice = voices.begin() + 1; voice != voices.end(); ++voice) {
       BOOST_ASSERT(value == duration(*voice));
     }
+#endif
   }
   return value;
 }
@@ -617,10 +619,12 @@ duration(proxied_measure const& voices)
   rational value;
   if (not voices.empty()) {
     value = duration(voices.front());
+#if !defined(NDEBUG)
     for (proxied_measure::const_iterator
          voice = voices.begin() + 1; voice != voices.end(); ++voice) {
       BOOST_ASSERT(value == duration(*voice));
     }
+#endif
   }
   return value;
 }
@@ -725,6 +729,7 @@ public:
           single_best_score = false;
         }
       }
+      // Do not consider possibilities below a certain margin as valid
       if (single_best_score) {
         rational const margin(best_score * rational(2, 3));
         for (iterator measure = begin(); measure != end();
@@ -740,9 +745,9 @@ public:
   bool completes_uniquely(measure_interpretations const& other) {
     BOOST_ASSERT(not this->complete);
     BOOST_ASSERT(not other.complete);
-    int matches = 0;
-    BOOST_FOREACH(const_reference lhs, *this) {
-      BOOST_FOREACH(const_reference rhs, other) {
+    std::size_t matches = 0;
+    for (const_reference lhs: *this) {
+      for (const_reference rhs: other) {
         if (duration(lhs) + duration(rhs) == time_signature) ++matches;
       }
     }
