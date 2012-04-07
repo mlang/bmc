@@ -16,11 +16,26 @@
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
-// The `compiler' processes the raw parsed syntax tree to fill in musical
-// information implied by the given input.
-
 namespace music { namespace braille {
 
+/**
+ * \brief The <code>compiler</code> processes the raw parsed syntax tree to fill
+ *        in musical information implied by the given input.
+ *
+ * As a first step, the actual values of notes and rests are found with a
+ * (quite computationally expensive) recursive algorithm.
+ *
+ * In another step, the octave values of those notes which do not have a octave
+ * sign in front of them is calculated, and all notes are assigned a definitive
+ * octave.
+ *
+ * Depending on value disambiguation having succeded, alteration of note pitches
+ * is calculated in yet another step.  This step needs to order the notes
+ * in a measure along the time axis to correctly interpret accidental markings,
+ * therefore it depends on value disambiguation already having taken place.
+ *
+ * \todo Expand simile signs (unrolling)
+ */
 class compiler : public boost::static_visitor<bool>
 {
   boost::function<void(int tag, std::wstring const& what)> report_error;
