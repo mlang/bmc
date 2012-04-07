@@ -356,9 +356,6 @@ TODO
 ----
 
 * Port current codebase to Windows:
-  * Port the build system, or replace with a portable one: Automake has some
-    support for Microsoft Windows.  Investigate if that suffices to do a real
-    port to Windows.
   * Figure out how to mimmick the FluidSynth functionality currently used under
     Linux under Windows.  Ideally, create a common class for realtime MIDI
     playback which is platform independent, and implement FluidSynth (Linux) and

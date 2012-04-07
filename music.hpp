@@ -39,11 +39,17 @@ gcd(rational const& a, rational const& b)
 
 typedef rational time_modification;
 
-// arithmetic with time_signatures is useful, so derive from rational
+/**
+ * \brief Represents a time signature with numerator and denominator.
+ *
+ * Arithmetic with time signatures is useful, so derive from rational.
+ * However, care has to be taken to avoid the implicit simplification of
+ * <code>boost::rational</code>.
+ */
 class time_signature: public rational {
   /**
-   * \brief boost::rational simplifies during construction, so we need to
-   *        preserve the original numerator and denominator
+   * \brief <code>boost::rational</code> simplifies during construction, so we
+   *        need to preserve the original numerator and denominator.
    */
   int_type d_num, d_den;
 public:
