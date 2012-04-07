@@ -46,6 +46,7 @@ struct rhythmic_data : locatable
   ambiguous::value ambiguous_value;
   unsigned dots;
   rational type; // filled in by disambiguate.hpp
+  rhythmic_data(): ambiguous_value(unknown), dots(0) {}
 };
 
 struct rhythmic
@@ -68,7 +69,7 @@ struct note : rhythmic_data, rhythmic
   fingering_list fingers;
   bool tied;
 
-  note(): octave(0), alter(0), tied(false) {}
+  note(): rhythmic_data(), octave(0), alter(0), tied(false) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
