@@ -38,7 +38,7 @@ public:
                          )
   {
     if (not stream.fail())
-      stream.write(reinterpret_cast<const char*>(buffer),
+      stream.write(reinterpret_cast<char const *>(buffer),
                    static_cast<std::streamsize>(size));
   }
 
@@ -59,53 +59,72 @@ struct dom_deleter
   { if (ptr) ptr->release(); }
 };
 
+typedef std::unique_ptr<xercesc::DOMDocument, dom_deleter>
+        unique_dom_document_ptr;
+typedef std::unique_ptr<xercesc::DOMLSSerializer, dom_deleter>
+        unique_dom_ls_serializer_ptr;
+typedef std::unique_ptr<xercesc::DOMLSOutput, dom_deleter>
+        unique_dom_ls_output_ptr;
+
 class document
 {
-  std::unique_ptr<xercesc::DOMDocument, dom_deleter> dom_document;
-  xercesc::DOMElement *score_partwise, *part_list;
+  unique_dom_document_ptr dom_document;
+  XERCES_CPP_NAMESPACE::DOMElement *score_partwise, *identification, *part_list;
 public:
-  document() { create_empty_document(); }
+  document()
+  : dom_document(create_dom_document())
+  , score_partwise(dom_document->getDocumentElement())
+  , identification(create_identification())
+  , part_list(dom_document->createElement(xml_string("part-list")))
+  { initialize_empty_document(); }
+
+  ~document() { score_partwise = identification = part_list = nullptr; }
 
 private:
-  bool create_empty_document()
+  static XERCES_CPP_NAMESPACE::DOMDocument *create_dom_document()
   {
-    XERCES_CPP_NAMESPACE_USE
-
-    DOMImplementation *dom =
-      DOMImplementationRegistry::getDOMImplementation(xml_string("Core"));
+    XERCES_CPP_NAMESPACE::DOMImplementation
+    *dom(XERCES_CPP_NAMESPACE::
+         DOMImplementationRegistry::getDOMImplementation(xml_string("Core")));
     if (dom) {
-      xml_string type("score-partwise");
-      xml_string dtd_public("-//Recordare//DTD MusicXML 3.0 Partwise//EN");
-      xml_string dtd_url("http://www.musicxml.org/dtds/partwise.dtd");
+      static xml_string
+      score_type("score-partwise"),
+      dtd_public("-//Recordare//DTD MusicXML 3.0 Partwise//EN"),
+      dtd_url("http://www.musicxml.org/dtds/partwise.dtd");
 
-      dom_document.reset
-      (dom->createDocument
-       (nullptr, type, dom->createDocumentType(type, dtd_public, dtd_url)));
-
-      score_partwise = dom_document->getDocumentElement();
-      score_partwise->setAttribute(xml_string("version"), xml_string("3.0"));
-
-      DOMElement* identification =
-	dom_document->createElement(xml_string("identification"));
-      DOMElement* encoding = dom_document->createElement(xml_string("encoding"));
-      encoding->appendChild(encoding_date());
-      DOMElement* software = dom_document->createElement(xml_string("software"));
-      software->appendChild(dom_document->createTextNode(xml_string("Braille Music Compiler")));
-      encoding->appendChild(software);
-      identification->appendChild(encoding);
-      score_partwise->appendChild(identification);
-
-      part_list = dom_document->createElement(xml_string("part-list"));
-      score_partwise->appendChild(part_list);
-
-      return true;
+      return dom->createDocument(nullptr, score_type,
+                                 dom->createDocumentType(score_type,
+                                                         dtd_public, dtd_url));
+    } else {
+      return nullptr;
     }
-    return false;
   }
 
-  xercesc::DOMElement *encoding_date() const
+  void initialize_empty_document()
   {
-    xercesc::DOMElement *element = dom_document->createElement(xml_string("encoding-date"));
+    score_partwise->setAttribute(xml_string("version"), xml_string("3.0"));
+    score_partwise->appendChild(identification);
+    score_partwise->appendChild(part_list);
+  }
+
+  XERCES_CPP_NAMESPACE::DOMElement *create_identification() const
+  {
+    XERCES_CPP_NAMESPACE::DOMElement
+    *element(dom_document->createElement(xml_string("identification"))),
+    *encoding(dom_document->createElement(xml_string("encoding"))),
+    *software(dom_document->createElement(xml_string("software")));
+
+    encoding->appendChild(create_encoding_date());
+    software->appendChild(dom_document->createTextNode(xml_string("Braille Music Compiler")));
+    encoding->appendChild(software);
+    element->appendChild(encoding);
+    return element;
+  }
+
+  XERCES_CPP_NAMESPACE::DOMElement *create_encoding_date() const
+  {
+    XERCES_CPP_NAMESPACE::DOMElement
+    *element = dom_document->createElement(xml_string("encoding-date"));
     char date_string[11];
     std::time_t current_time = std::time(nullptr);
     std::strftime(date_string, sizeof(date_string), "%Y-%m-%d",
@@ -121,15 +140,14 @@ public:
 
     try {
       DOMImplementationLS *ls =
-	DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
-      std::unique_ptr<DOMLSSerializer, dom_deleter>
-      serializer(ls->createLSSerializer());
+        DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
+      unique_dom_ls_serializer_ptr serializer(ls->createLSSerializer());
       DOMConfiguration *configuration = serializer->getDomConfig();
 
       if (configuration->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true))
-	configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+        configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-      std::unique_ptr<DOMLSOutput, dom_deleter> output(ls->createLSOutput());
+      unique_dom_ls_output_ptr output(ls->createLSOutput());
       ostream_format_target format_target(stream);
       output->setByteStream(&format_target);
 
