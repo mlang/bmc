@@ -204,6 +204,7 @@ class partial_voice_interpretations
     result_type operator()(Sign const&) const
     { BOOST_ASSERT(false); return value_proxy(); }
   };
+
   static
   ambiguous::partial_voice::iterator
   same_category_end( ambiguous::partial_voice::iterator& begin
@@ -233,8 +234,7 @@ class partial_voice_interpretations
     if (boost::apply_visitor(is_rhythmic(), *begin)) {
       if (boost::apply_visitor(get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
         ambiguous::partial_voice::iterator iter = begin + 1;
-        while (iter != end &&
-               boost::apply_visitor(is_rhythmic(), *iter) and
+        while (iter != end and
                boost::apply_visitor(get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
           ++iter;
         if (std::distance(begin, iter) > 2) return iter;
