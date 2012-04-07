@@ -12,7 +12,7 @@
 #include "ambiguous.hpp"
 #include "error_handler.hpp"
 #include "measure.hpp"
-#include "numbers.hpp"
+#include "key_signature.hpp"
 #include "time_signature.hpp"
 
 namespace music { namespace braille {

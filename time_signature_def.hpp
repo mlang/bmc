@@ -5,8 +5,10 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "time_signature.hpp"
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_core.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_object.hpp>
 #include "brlsym.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 

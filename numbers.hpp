@@ -29,16 +29,6 @@ struct lower_number_grammar : boost::spirit::qi::grammar<Iterator, unsigned()>
   boost::spirit::qi::rule<Iterator, unsigned()> start;
 };
 
-template<typename Iterator>
-struct key_signature_grammar : boost::spirit::qi::grammar<Iterator, key_signature()>
-{
-  key_signature_grammar();
-
-  boost::spirit::qi::rule<Iterator, key_signature()> start;
-  boost::spirit::qi::rule<Iterator, int()> flat_sign, sharp_sign;
-  upper_number_grammar<Iterator> upper_number;
-};
-
 }}
 
 #endif

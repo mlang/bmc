@@ -35,6 +35,8 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   destroyTextTable(textTable);
 }
 
+#include "key_signature.hpp"
+
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"");

@@ -17,14 +17,14 @@ namespace music { namespace braille {
 template <typename Iterator>
 struct time_signature_grammar
 : boost::spirit::qi::grammar< Iterator
-                            , time_signature()
+                            , music::time_signature()
                             , boost::spirit::qi::locals<unsigned>
                             >
 {
   time_signature_grammar();
 
   boost::spirit::qi::rule< Iterator
-                         , time_signature()
+                         , music::time_signature()
                          , boost::spirit::qi::locals<unsigned>
                          > start;
   upper_number_grammar<Iterator> upper_number;

@@ -19,7 +19,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++0x)
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
-            numbers.cpp time_signature.cpp measure.cpp score.cpp
+            numbers.cpp key_signature.cpp time_signature.cpp
+            measure.cpp score.cpp
             compiler.cpp
            )
 set_target_properties(bmc_parse
