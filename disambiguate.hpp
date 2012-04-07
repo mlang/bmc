@@ -12,6 +12,7 @@
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <memory>
 #include <sstream>
 
@@ -34,6 +35,9 @@ rational const undotted[8] = {
   rational(1, 16), rational(1, 32), rational(1, 64), rational(1, 128)
 };
 
+/**
+ * \brief A possible interpretation of a value (note, rest or chord).
+ */
 class value_proxy
 {
   ambiguous::value value_type:4;
@@ -59,7 +63,7 @@ class value_proxy
   bool* whole_measure_rest;
 
 public:
-  value_proxy() {}
+  value_proxy() : final_type(nullptr) {}
   value_proxy(ambiguous::note& note, value_category const& category)
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , duration(calculate_duration())
@@ -117,7 +121,7 @@ public:
 
   void accept() const
   {
-    if (whole_measure_rest != 0) {
+    if (whole_measure_rest) {
       *final_type = duration;
       *whole_measure_rest = true;
     } else {
@@ -161,15 +165,13 @@ class partial_voice_interpretations
     result_type operator()(Sign const&) const
     { return false; }
   };
-  struct has_value : boost::static_visitor<bool>
+  struct is_rhythmic : boost::static_visitor<bool>
   {
-    result_type operator()(ambiguous::note const&) const { return true; }
-    result_type operator()(ambiguous::rest const&) const { return true; }
-    result_type operator()(ambiguous::chord const&) const { return true; }
-    template<typename Sign>
-    result_type operator()(Sign const&) const { return false; }
+    template <typename Sign>
+    result_type operator()(Sign const&) const
+    { return boost::is_base_of<ambiguous::rhythmic, Sign>::value; }
   };
-  struct get_value : boost::static_visitor<ambiguous::value>
+  struct get_ambiguous_value : boost::static_visitor<ambiguous::value>
   {
     result_type operator()(ambiguous::note const& note) const
     { return note.ambiguous_value; }
@@ -185,7 +187,7 @@ class partial_voice_interpretations
   {
     result_type operator()(ambiguous::rest const& rest) const
     {
-      return rest.ambiguous_value == ambiguous::whole_or_16th &&
+      return rest.ambiguous_value == ambiguous::whole_or_16th and
              rest.dots == 0;
     }
     template<typename Sign>
@@ -212,10 +214,10 @@ class partial_voice_interpretations
     if (boost::apply_visitor(is_value_distinction(distinction), *begin)) {
       begin = begin + 1;
       ambiguous::partial_voice::iterator iter(begin);
-      if (iter != end &&
-          boost::apply_visitor(has_value(), *iter)) {
-        ambiguous::value initial(boost::apply_visitor(get_value(), *iter++));
-        while (iter != end && apply_visitor(get_value(), *iter) == initial)
+      if (iter != end and
+          boost::apply_visitor(is_rhythmic(), *iter)) {
+        ambiguous::value initial(boost::apply_visitor(get_ambiguous_value(), *iter++));
+        while (iter != end && apply_visitor(get_ambiguous_value(), *iter) == initial)
           ++iter;
         return iter;
       }
@@ -228,12 +230,12 @@ class partial_voice_interpretations
                , ambiguous::partial_voice::iterator const& end
                )
   {
-    if (boost::apply_visitor(has_value(), *begin)) {
-      if (boost::apply_visitor(get_value(), *begin) != ambiguous::eighth_or_128th) {
+    if (boost::apply_visitor(is_rhythmic(), *begin)) {
+      if (boost::apply_visitor(get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
         ambiguous::partial_voice::iterator iter = begin + 1;
         while (iter != end &&
-               boost::apply_visitor(has_value(), *iter) &&
-               boost::apply_visitor(get_value(), *iter) == ambiguous::eighth_or_128th)
+               boost::apply_visitor(is_rhythmic(), *iter) and
+               boost::apply_visitor(get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
           ++iter;
         if (std::distance(begin, iter) > 2) return iter;
       }
@@ -243,11 +245,10 @@ class partial_voice_interpretations
 
   struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
   {
-    template<typename Sign>
-    large_and_small(Sign& sign)
+    large_and_small(ambiguous::sign& sign)
     { boost::apply_visitor(*this, sign); }
 
-    template<class Value>
+    template <class Value>
     result_type operator()(Value& value)
     {
       if (not is_grace(value)) {
