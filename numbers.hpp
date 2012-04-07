@@ -17,6 +17,7 @@ namespace music { namespace braille {
  * \brief A grammar for parsing a sequence of braille digits written in the
  *        upper part (dots 1 2 4 5) of a 6-dot braille cell as a (unsigned) number.
  *
+ * \ingroup grammar
  * \see lower_number_grammar
  */
 template <typename Iterator>
@@ -31,6 +32,7 @@ struct upper_number_grammar : boost::spirit::qi::grammar<Iterator, unsigned()>
  * \brief A grammar for parsing a sequence of braille digits written in the
  *        lower part (dots 2 3 5 6) of a 6-dot braille cell as a (unsigned) number.
  *
+ * \ingroup grammar
  * \see upper_number_grammar
  */
 template <typename Iterator>

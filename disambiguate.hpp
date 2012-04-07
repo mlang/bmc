@@ -794,6 +794,8 @@ accept(proxied_measure const& measure)
  * measure with duration less then the current time signature is found the
  * two measures are combined, and if they add up to a duration which equals  to
  * the current time signature, both measures are disambiguated correctly.
+ *
+ * \ingroup compilation
  */
 class value_disambiguator: public compiler_pass
 {

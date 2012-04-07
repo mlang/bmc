@@ -23,6 +23,8 @@ namespace music { namespace braille {
  * taking the accidentals into account.
  *
  * Accidental memory is reset at each measure beginning.
+ *
+ * \ingroup compilation
  */
 class alteration_calculator
 : public boost::static_visitor<void>

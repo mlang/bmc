@@ -14,6 +14,11 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief A grammar for parsing a braille key signature.
+ *
+ * \ingroup grammar
+ */
 template<typename Iterator>
 struct key_signature_grammar : boost::spirit::qi::grammar<Iterator, music::key_signature()>
 {

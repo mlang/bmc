@@ -14,6 +14,11 @@
 
 namespace music { namespace braille {
 
+/**
+ * \brief A grammar for parsing a braille time signature.
+ *
+ * \ingroup grammar
+ */
 template <typename Iterator>
 struct time_signature_grammar
 : boost::spirit::qi::grammar< Iterator

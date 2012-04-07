@@ -21,6 +21,8 @@ namespace music { namespace braille {
  * This compiler pass processes braille music sequentially, filling in the
  * actual octave of every note, no matter if it is proceeded by an octave sign
  * or not.
+ *
+ * \ingroup compilation
  */
 class octave_calculator
 : public boost::static_visitor<bool>

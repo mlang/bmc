@@ -34,6 +34,7 @@ namespace music { namespace braille {
  * in a measure along the time axis to correctly interpret accidental markings,
  * therefore it depends on value disambiguation already having taken place.
  *
+ * \ingroup compilation
  * \todo Expand simile signs (unrolling)
  */
 class compiler : public boost::static_visitor<bool>
