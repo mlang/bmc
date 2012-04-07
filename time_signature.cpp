@@ -4,13 +4,11 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "numbers_def.hpp"
+#include "time_signature_def.hpp"
 
 namespace music { namespace braille {
 
 typedef std::wstring::const_iterator iterator_type;
-template struct upper_number_grammar<iterator_type>;
-template struct lower_number_grammar<iterator_type>;
-template struct key_signature_grammar<iterator_type>;
+template struct time_signature_grammar<iterator_type>;
 
 }}

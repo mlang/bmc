@@ -60,19 +60,4 @@ key_signature_grammar<Iterator>::key_signature_grammar()
   sharp_sign = brl(146) >> attr(1);
 }
 
-template <typename Iterator>
-time_signature_grammar<Iterator>::time_signature_grammar()
-: time_signature_grammar::base_type(start)
-{
-  boost::spirit::qi::_1_type _1;
-  boost::spirit::qi::_a_type _a;
-  boost::spirit::qi::_val_type _val;
-  music::braille::brl_type brl;
-  using boost::phoenix::construct;
-  start = brl(3456)
-       >> upper_number[_a = _1]
-       >> lower_number[_val = construct<music::time_signature>(_a, _1)]
-        ;
-}
-
 }}

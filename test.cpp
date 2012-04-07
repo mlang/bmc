@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "config.hpp"
-#include "numbers.hpp"
+#include "time_signature.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include "ttb/ttb.h"
 

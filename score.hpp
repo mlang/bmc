@@ -13,6 +13,7 @@
 #include "error_handler.hpp"
 #include "measure.hpp"
 #include "numbers.hpp"
+#include "time_signature.hpp"
 
 namespace music { namespace braille {
 
