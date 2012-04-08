@@ -8,7 +8,7 @@
 #define BMC_COMPILER_HPP
 
 #include "ambiguous.hpp"
-#include "disambiguate.hpp"
+#include "value_disambiguator.hpp"
 #include "octave_calculator.hpp"
 #include "alteration_calculator.hpp"
 #include <boost/function.hpp>
@@ -68,6 +68,5 @@ public:
 };
 
 }}
-
 
 #endif

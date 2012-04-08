@@ -4,11 +4,10 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef BMC_DISAMBIGUATE_HPP
-#define BMC_DISAMBIGUATE_HPP
+#ifndef BMC_VALUE_DISAMBIGUATION_HPP
+#define BMC_VALUE_DISAMBIGUATION_HPP
 
 #include "ambiguous.hpp"
-#include "compiler_pass.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
@@ -25,6 +24,11 @@ namespace music { namespace braille {
  */
 namespace value_disambiguation {
 
+/** \brief Braille music has two fundamental categories of note and rest values.
+ *
+ * <code>large</code> spans from whole to eighth note values.
+ * <code>small</code> from 16th to 128th note values.
+ */
 enum value_category
 {
   large, small
@@ -37,6 +41,9 @@ rational const undotted[8] = {
 
 /**
  * \brief A possible interpretation of a value (note, rest or chord).
+ *
+ * This class saves a pointer to the original sign it was used to create such
+ * that it can later fill in the actual value type it stands for.
  */
 class value_proxy
 {
@@ -151,38 +158,6 @@ typedef std::shared_ptr<proxied_partial_voice const> proxied_partial_voice_ptr;
 class partial_voice_interpretations
 : public std::vector<proxied_partial_voice_ptr>
 {
-  class is_value_distinction : public boost::static_visitor<bool>
-  {
-    ambiguous::value_distinction expected;
-  public:
-    is_value_distinction(ambiguous::value_distinction const& distinction)
-    : expected(distinction) {}
-
-    result_type operator()(ambiguous::value_distinction const& distinction) const
-    { return distinction == expected; }
-
-    template<class Sign>
-    result_type operator()(Sign const&) const
-    { return false; }
-  };
-  struct is_rhythmic : boost::static_visitor<bool>
-  {
-    template <typename Sign>
-    result_type operator()(Sign const&) const
-    { return boost::is_base_of<ambiguous::rhythmic, Sign>::value; }
-  };
-  struct get_ambiguous_value : boost::static_visitor<ambiguous::value>
-  {
-    result_type operator()(ambiguous::note const& note) const
-    { return note.ambiguous_value; }
-    result_type operator()(ambiguous::rest const& rest) const
-    { return rest.ambiguous_value; }
-    result_type operator()(ambiguous::chord const& chord) const
-    { return (*this)(chord.base); }
-    template<typename T>
-    result_type operator()(T const&) const
-    { return ambiguous::unknown; }
-  };
   struct maybe_whole_measure_rest : boost::static_visitor<bool>
   {
     result_type operator()(ambiguous::rest const& rest) const
@@ -205,6 +180,38 @@ class partial_voice_interpretations
     { BOOST_ASSERT(false); return value_proxy(); }
   };
 
+  class is_value_distinction : public boost::static_visitor<bool>
+  {
+    ambiguous::value_distinction expected;
+  public:
+    is_value_distinction(ambiguous::value_distinction const& distinction)
+    : expected(distinction) {}
+
+    result_type operator()(ambiguous::value_distinction const& distinction) const
+    { return distinction == expected; }
+
+    template <class Sign>
+    result_type operator()(Sign const&) const
+    { return false; }
+  };
+  struct is_rhythmic : boost::static_visitor<bool>
+  {
+    template <typename T>
+    result_type operator()(T const&) const
+    { return boost::is_base_of<ambiguous::rhythmic, T>::value; }
+  };
+  struct get_ambiguous_value : boost::static_visitor<ambiguous::value>
+  {
+    result_type operator()(ambiguous::note const& note) const
+    { return note.ambiguous_value; }
+    result_type operator()(ambiguous::rest const& rest) const
+    { return rest.ambiguous_value; }
+    result_type operator()(ambiguous::chord const& chord) const
+    { return (*this)(chord.base); }
+    template<typename T>
+    result_type operator()(T const&) const
+    { return ambiguous::unknown; }
+  };
   static
   ambiguous::partial_voice::iterator
   same_category_end( ambiguous::partial_voice::iterator& begin
@@ -213,18 +220,28 @@ class partial_voice_interpretations
                    )
   {
     if (boost::apply_visitor(is_value_distinction(distinction), *begin)) {
-      begin = begin + 1;
+      begin = begin + 1; // Advance the outer iterator to avoid a loop
       ambiguous::partial_voice::iterator iter(begin);
       if (iter != end and
           boost::apply_visitor(is_rhythmic(), *iter)) {
-        ambiguous::value initial(boost::apply_visitor(get_ambiguous_value(), *iter++));
-        while (iter != end && apply_visitor(get_ambiguous_value(), *iter) == initial)
-          ++iter;
+        for (ambiguous::value
+	     initial = boost::apply_visitor(get_ambiguous_value(), *iter++);
+	     iter != end and
+	     apply_visitor(get_ambiguous_value(), *iter) == initial;
+             ++iter);
         return iter;
       }
     }
     return begin;
   }
+  /**
+   * \brief Find end of note group.
+   *
+   * \param begin The beginning of the range of signs to examine
+   * \param end   The end of the range of signs to examine
+   * \return If note group was found the returned iterator points one element
+   *         beyond its last element.  Otherwise, begin is returned.
+   */
   static
   ambiguous::partial_voice::iterator
   notegroup_end( ambiguous::partial_voice::iterator const& begin
@@ -233,10 +250,11 @@ class partial_voice_interpretations
   {
     if (boost::apply_visitor(is_rhythmic(), *begin)) {
       if (boost::apply_visitor(get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
-        ambiguous::partial_voice::iterator iter = begin + 1;
+        auto iter = begin + 1;
         while (iter != end and
                boost::apply_visitor(get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
           ++iter;
+	// A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
       }
     }
@@ -411,7 +429,7 @@ class partial_voice_interpretations
           }
         }
 
-        if (stack_begin == stack_end and position == 0 and time_signature != 1 &&
+        if (stack_begin == stack_end and position == 0 and time_signature != 1 and
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
           *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
           recurse(tail, end, stack_begin, stack_end + 1,
@@ -591,17 +609,17 @@ class proxied_measure : public std::vector<proxied_voice_ptr>
 {
   rational mean;
 public:
-  proxied_measure( proxied_voice_ptr const* begin
+  proxied_measure( proxied_voice_ptr const *begin
                  , proxied_voice_ptr const *end
                  )
   : std::vector<proxied_voice_ptr>(begin, end)
-  , mean(0)
+  , mean()
   {
   }
   rational const& harmonic_mean()
   {
     if (mean == zero) {
-      rational sum(0);
+      rational sum;
       for (const_reference voice: *this)
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
@@ -630,7 +648,7 @@ duration(proxied_measure const& voices)
   return value;
 }
 
-template<typename Char>
+template <typename Char>
 std::basic_ostream<Char>&
 operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
 {
@@ -767,93 +785,6 @@ accept(proxied_measure const& measure)
 }
 
 }
-
-/**
- * \brief Calcualte the duration (value) of all notes and rests in a measure.
- *
- * When braille music was invented, 6 dot braille was dominant.  The number of
- * possible signs was therefore limited to 63 combinations (minus the empty
- * cell).  Since steps and values are encoded into a single cell, this led to
- * the necessity to overload braille patterns because it would have been
- * impossible to represent whole to 128th notes without exceeding the possible
- * combinations (7*8 + 8 is already 64).  A trick had to be invented to allow
- * the representation of all these values.  Therefore, every value in braille
- * music can have two possible meanings.  The sign for a whole note C either
- * represents a whole note C or a 16th note C.  The sign for a half note D
- * either represents a half note D or a 32th note D.  The reader of braille music
- * is assumed to disambiguate the meanings of each sign from the context.
- * Context is mostly the time signature and a bit of musical understanding.
- *
- * This compiler pass (the most complicated of all passes we have) tries to
- * find the one and only possiblle interpretation of all notes and rests in
- * a single measure given the current time signature.
- *
- * As a special case, it handles music with upbeat (anacrusis) as well.
- * If a measure appears short relative to the current time signature, its
- * interpretation is delayed until another short measure appears.  Once a second
- * measure with duration less then the current time signature is found the
- * two measures are combined, and if they add up to a duration which equals  to
- * the current time signature, both measures are disambiguated correctly.
- *
- * \ingroup compilation
- */
-class value_disambiguator: public compiler_pass
-{
-  report_error_type const& report_error;
-  value_disambiguation::measure_interpretations anacrusis;
-
-public:
-  typedef bool result_type;
-  value_disambiguator(report_error_type const& report_error)
-  : report_error(report_error)
-  {}
-
-  result_type operator()( ambiguous::measure& measure
-                        , time_signature const& time_sig
-                        )
-  {
-    value_disambiguation::measure_interpretations interpretations(measure, time_sig);
-
-    if (not interpretations.contains_complete_measure() and
-        not interpretations.empty()) {
-      if (anacrusis.empty()) {
-        anacrusis = interpretations;
-        return true;
-      } else {
-        if (anacrusis.completes_uniquely(interpretations)) {
-          for(auto& lhs: anacrusis) {
-            for(auto& rhs: interpretations) {
-              if (duration(lhs) + duration(rhs) == time_sig) {
-                accept(lhs), accept(rhs);
-                anacrusis.clear();
-                return true;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (interpretations.size() == 1) {
-      accept(interpretations.front());
-      return true;
-    }
-
-    if (interpretations.empty()) {
-      report_error(measure.id, L"No possible interpretations");
-    } else {
-      std::wstringstream s;
-      s << interpretations.size() << L" possible interpretations:";
-      for(auto& interpretation: interpretations) {
-        rational const score(interpretation.harmonic_mean());
-        s << std::endl
-          << boost::rational_cast<float>(score) << L": " << interpretation;
-      }
-      report_error(measure.id, s.str());
-    }
-    return false;
-  }
-};
 
 }}
 
