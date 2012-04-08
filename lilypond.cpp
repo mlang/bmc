@@ -149,7 +149,92 @@ void generator::operator() ( braille::ambiguous::part const& part
   if (part.size() == 2) os << "    " << ">>" << std::endl;
 }
 
-void generator::operator() (braille::ambiguous::note const& note) const
+generator::result_type
+generator::operator() (braille::ambiguous::measure const& measure) const
+{
+  if (measure.voices.size() == 1) {
+    (*this)(measure.voices.front());
+  } else {
+    os << "<< ";
+    for (size_t voice_index = 0; voice_index < measure.voices.size();
+         ++voice_index)
+    {
+      os << "{"; (*this)(measure.voices[voice_index]); os << "}";
+      if (voice_index != measure.voices.size() - 1) os << "\\\\";
+    }
+    os << " >>";
+  }
+}
+
+void generator::operator() (braille::ambiguous::voice const& voice) const
+{
+  for (size_t partial_measure_index = 0; partial_measure_index < voice.size();
+       ++partial_measure_index)
+  {
+    (*this)(voice[partial_measure_index]);
+    if (partial_measure_index != voice.size() - 1) os << " ";
+  }
+}
+
+void
+generator::operator() (braille::ambiguous::partial_measure const& partial_measure) const
+{
+  if (partial_measure.size() == 1) {
+    (*this)(partial_measure.front());
+  } else {
+    os << "<< ";
+    for (size_t voice_index = 0; voice_index < partial_measure.size();
+         ++voice_index)
+    {
+      os << "{"; (*this)(partial_measure[voice_index]); os << "}";
+      if (voice_index != partial_measure.size() - 1) os << "\\\\";
+    }
+    os << " >>";
+  }
+}
+
+void
+generator::operator() (braille::ambiguous::partial_voice const& partial_voice) const
+{
+  for (size_t element_index = 0; element_index < partial_voice.size();
+       ++element_index)
+  {
+    boost::apply_visitor(*this, partial_voice[element_index]);
+    if (element_index != partial_voice.size() - 1) os << " ";
+  }
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::barline const&) const
+{
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::simile const&) const
+{
+  BOOST_ASSERT(false);
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::value_distinction const&) const
+{
+}
+
+generator::result_type
+generator::operator() (braille::hand_sign const&) const
+{
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::rest const& rest) const
+{
+  os << "r";
+  if (rest.whole_measure) os << "1";
+  else ly_rhythm(rest);
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::note const& note) const
 {
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
