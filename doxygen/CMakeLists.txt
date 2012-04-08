@@ -1,12 +1,12 @@
 find_package(Doxygen REQUIRED)
 include(FindLATEX)
 configure_file(Doxyfile.in Doxyfile)
-add_custom_target(doc ALL)
+add_custom_target(doxygen ALL)
 if(DOXYGEN_FOUND)
-add_custom_command(TARGET doc
+add_custom_command(TARGET doxygen
                    COMMAND ${DOXYGEN_EXECUTABLE}
                   )
-add_custom_command(TARGET doc
+add_custom_command(TARGET doxygen
                    COMMAND ${PDFLATEX_COMPILER} refman.tex
                    WORKING_DIRECTORY latex
                   )
