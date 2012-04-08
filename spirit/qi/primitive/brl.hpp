@@ -63,13 +63,11 @@ namespace music { namespace braille {
   private:
     Int const dots;
 
-    static Int from_decimal(Int dots) {
-      Int bits = 0;
-      while (dots > 0) {
-        bits |= 1 << ((dots % 10) - 1);
-        dots /= 10;
-      }
-      return bits;
+    static Int from_decimal(Int dots, Int bits = 0)
+    {
+      return dots > 0?
+             from_decimal(dots / 10, bits | Int(1) << ((dots % 10) - 1)):
+             bits;
     }
   };
 }}
