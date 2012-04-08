@@ -21,7 +21,7 @@ add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             measure.cpp score.cpp
-            compiler.cpp
+            compiler.cpp lilypond.cpp
            )
 set_target_properties(bmc_parse
                       PROPERTIES
