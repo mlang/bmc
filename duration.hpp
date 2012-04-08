@@ -1,6 +1,8 @@
 #ifndef BMC_DURATION_HPP
 #define BMC_DURATION_HPP
 
+#include <boost/range/numeric.hpp>
+
 namespace music {
 
 struct duration_visitor : boost::static_visitor<rational>
