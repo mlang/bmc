@@ -19,7 +19,32 @@ floor(rational<IntType> const& r)
 template<typename IntType>
 inline rational<IntType>
 operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
-{ return lhs - rhs * floor(lhs / rhs); }
+{
+  // The simplest expression is: lhs - rhs * floor(lhs / rhs)
+  // However, since floor will normalize implicitly, we do the
+  // rational division by hand to avoid excessive calls to boost::math::gcd.
+  IntType num(0), den(1);
+
+  // Avoid repeated construction
+  IntType const zero(0);
+
+  // Trap division by zero
+  if (rhs.numerator() == zero) throw bad_rational();
+
+  if (lhs.numerator() != zero) {
+    num = lhs.numerator() * rhs.denominator();
+    den = lhs.denominator() * rhs.numerator();
+
+    if (den < zero) {
+      num = -num;
+      den = -den;
+    }
+  }
+
+  rational<IntType> nrv(lhs);
+  nrv -= rhs * (num / den);
+  return nrv;
+}
 
 }
 
@@ -31,7 +56,7 @@ inline rational
 reciprocal(rational const& r)
 { return rational(r.denominator(), r.numerator()); }
 
-rational const zero = rational(0);
+rational const zero = rational();
 
 inline rational
 gcd(rational const& a, rational const& b)
