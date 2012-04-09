@@ -7,10 +7,14 @@
 #ifndef BMC_VALUE_DISAMBIGUATOR_HPP
 #define BMC_VALUE_DISAMBIGUATOR_HPP
 
+#include "ambiguous.hpp"
 #include "compiler_pass.hpp"
-#include "value_disambiguation.hpp"
 
 namespace music { namespace braille {
+
+namespace value_disambiguation {
+  class measure_interpretations;
+}
 
 /**
  * \brief Calcualte the duration (value) of all notes and rests in a measure.
@@ -43,14 +47,12 @@ namespace music { namespace braille {
  */
 class value_disambiguator: public compiler_pass
 {
-  report_error_type const& report_error;
-  value_disambiguation::measure_interpretations anacrusis;
+  value_disambiguation::measure_interpretations *anacrusis;
 
 public:
   typedef bool result_type;
-  value_disambiguator(report_error_type const& report_error)
-  : report_error(report_error)
-  {}
+  value_disambiguator(report_error_type const& report_error);
+  ~value_disambiguator();
 
   result_type operator()( ambiguous::measure& measure
                         , time_signature const& time_sig

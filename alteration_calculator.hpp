@@ -30,12 +30,11 @@ class alteration_calculator
 : public boost::static_visitor<void>
 , public compiler_pass
 {
-  report_error_type const& report_error;
   music::accidental memory[10][steps_per_octave];
   music::key_signature key_sig;
 public:
   alteration_calculator(report_error_type const& report_error)
-  : report_error(report_error)
+  : compiler_pass(report_error)
   {}
 
   /**

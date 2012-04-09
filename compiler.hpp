@@ -37,9 +37,8 @@ namespace music { namespace braille {
  * \ingroup compilation
  * \todo Expand simile signs (unrolling)
  */
-class compiler : public boost::static_visitor<bool>
+class compiler : public compiler_pass, public boost::static_visitor<bool>
 {
-  boost::function<void(int tag, std::wstring const& what)> report_error;
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
@@ -49,13 +48,13 @@ public:
 
   template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
-  : report_error( boost::phoenix::function<ErrorHandler>(error_handler)
-                  ( L"Error"
-                  , boost::phoenix::arg_names::_2
-                  , boost::phoenix::cref(error_handler.iters)
-                    [boost::phoenix::arg_names::_1]
-                  )
-                )
+  : compiler_pass( boost::phoenix::function<ErrorHandler>(error_handler)
+                   ( L"Error"
+                   , boost::phoenix::arg_names::_2
+                   , boost::phoenix::cref(error_handler.iters)
+                     [boost::phoenix::arg_names::_1]
+                   )
+                 )
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
   , calculate_alterations(report_error)

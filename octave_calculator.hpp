@@ -28,12 +28,11 @@ class octave_calculator
 : public boost::static_visitor<bool>
 , public compiler_pass
 {
-  report_error_type const& report_error;
   ambiguous::note const* prev;
 
 public:
   octave_calculator(report_error_type const& report_error)
-  : report_error(report_error)
+  : compiler_pass(report_error)
   , prev(0)
   {}
 

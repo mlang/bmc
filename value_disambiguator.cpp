@@ -1,6 +1,17 @@
 #include "value_disambiguator.hpp"
+#include "value_disambiguation.hpp"
 
 namespace music { namespace braille {
+
+value_disambiguator::value_disambiguator(report_error_type const& report_error)
+: compiler_pass(report_error)
+, anacrusis(new value_disambiguation::measure_interpretations())
+{}
+
+value_disambiguator::~value_disambiguator()
+{
+  delete anacrusis;
+}
 
 value_disambiguator::result_type
 value_disambiguator::operator()( ambiguous::measure& measure
@@ -11,16 +22,16 @@ value_disambiguator::operator()( ambiguous::measure& measure
 
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
-    if (anacrusis.empty()) {
-      anacrusis = interpretations;
+    if (anacrusis->empty()) {
+      *anacrusis = interpretations;
       return true;
     } else {
-      if (anacrusis.completes_uniquely(interpretations)) {
-        for (auto& lhs: anacrusis) {
+      if (anacrusis->completes_uniquely(interpretations)) {
+        for (auto& lhs: *anacrusis) {
           for (auto& rhs: interpretations) {
             if (duration(lhs) + duration(rhs) == time_sig) {
               accept(lhs), accept(rhs);
-              anacrusis.clear();
+              anacrusis->clear();
               return true;
             }
           }

@@ -11,9 +11,15 @@
 
 namespace music { namespace braille {
 
-struct compiler_pass
+class compiler_pass
 {
+protected:
   typedef boost::function<void(int tag, std::wstring const& what)> report_error_type;
+  report_error_type const& report_error;
+
+  compiler_pass(report_error_type const& report_error)
+  : report_error(report_error)
+  {}
 };
 
 }}
