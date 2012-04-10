@@ -8,13 +8,11 @@
 #include "ambiguous.hpp"
 #include "compiler.hpp"
 #include "fluidsynth.hpp"
+#include "lilypond.hpp"
 #include "score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
-#include "ttb/file.h"
 #include "ttb/ttb.h"
 #include <thread>
-
-#include "lilypond.hpp"
 
 int
 main(int argc, char const *argv[])
@@ -22,10 +20,10 @@ main(int argc, char const *argv[])
   std::locale::global(std::locale(""));
 
   {
-    char *path = makePath(TABLES_DIRECTORY, "de.ttb");
-    if (path && testPath(path)) {
-      textTable = compileTextTable(path);
-      free(path);
+    char *localeTable = selectTextTable(TABLES_DIRECTORY);
+    if (localeTable) {
+      replaceTextTable(TABLES_DIRECTORY, localeTable);
+      free(localeTable);
     }
   }
 

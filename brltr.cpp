@@ -1,76 +1,17 @@
-// Copyright (C) 2011  Mario Lang <mlang@delysid.org>
+// Copyright (C) 2011 2012  Mario Lang <mlang@delysid.org>
 //
 // Distributed under the terms of the GNU General Public License version 3.
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <locale>
-#include <cstring>
 
 #include "ttb/prologue.h"
 #include "ttb/brldots.h"
-#include "ttb/file.h"
 #include "ttb/ttb.h"
 #include "ttb/unicode.h"
-
-static char *
-resolveTablePath (const char *tableName) {
-  char *relative = ensureTextTableExtension(tableName);
-
-  if (relative) {
-    char *absolute = makePath(TABLES_DIRECTORY, relative);
-    if (absolute) {
-      if (testPath(absolute)) {
-        free(relative);
-        return absolute;
-      }
-
-      free(absolute);
-    }
-    if (testPath(relative)) return relative;
-
-    free(relative);
-  }
-
-  return NULL;
-}
-
-static char *
-findTableByLocale() {
-  const char *locale = setlocale(LC_CTYPE, NULL);
-
-  if (locale) {
-    char *name = (char *)malloc(strlen(locale) + 1);
-
-    {
-      size_t const length = strcspn(locale, ".@");
-      strncpy(name, locale, length)[length] = 0;
-    }
-
-    if (strcmp(name, "C") == 0) {
-      free(name);
-      return NULL;
-    }
-
-    char *tablePath = resolveTablePath(name);
-    if (!tablePath) {
-      char *delimiter = strchr(name, '_');
-
-      if (delimiter) {
-        *delimiter = 0;
-        tablePath = resolveTablePath(name);
-      }
-    }
-
-    free(name);
-
-    return tablePath;
-  }
-
-  return NULL;
-}
 
 using namespace std;
 
@@ -138,15 +79,8 @@ process_args(int argc, const char **argv) {
           table = arg.substr(8, arg.length() - 8);
         }
         if (!table.empty()) {
-          char *path = resolveTablePath(table.c_str());
-          if (path) {
-            TextTable *newTable = compileTextTable(path);
-            if (newTable) {
-              destroyTextTable(textTable);
-              textTable = newTable;
-            }
-          } else {
-            wcerr << "Unable to find table \"" << table.c_str() << "\"" << endl;
+          if (!replaceTextTable(TABLES_DIRECTORY, table.c_str())) {
+            wcerr << "Unable to open table \"" << table.c_str() << "\"" << endl;
           }
         }
         continue;
@@ -177,9 +111,9 @@ int main(int argc, char const **argv) {
   locale::global(locale(""));
 
   {
-    char *localeTable = findTableByLocale();
+    char *localeTable = selectTextTable(TABLES_DIRECTORY);
     if (localeTable) {
-      textTable = compileTextTable(localeTable);
+      replaceTextTable(TABLES_DIRECTORY, localeTable);
       free(localeTable);
     }    
   }
