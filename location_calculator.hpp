@@ -1,0 +1,67 @@
+// Copyright (C) 2012  Mario Lang <mlang@delysid.org>
+//
+// Distributed under the terms of the GNU General Public License version 3.
+// (see accompanying file LICENSE.txt or copy at
+//  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
+
+#ifndef BMC_LOCATION_CALCULATOR_HPP
+#define BMC_LOCATION_CALCULATOR_HPP
+
+#include <map>
+#include <boost/variant/static_visitor.hpp>
+#include "ambiguous.hpp"
+#include "compiler_pass.hpp"
+#include "error_handler.hpp"
+
+namespace music { namespace braille {
+
+/**
+ * \brief Set line and column numbers for all locatable objects.
+ *
+ * \ingroup compilation
+ */
+template <typename Iterator>
+class location_calculator
+: public boost::static_visitor<void>
+, public compiler_pass
+{
+  error_handler<Iterator> const& handler;
+public:
+  location_calculator( report_error_type const& report_error
+                     , error_handler<Iterator> const& handler
+                     )
+  : compiler_pass(report_error)
+  , handler(handler)
+  {}
+
+  result_type operator()(ambiguous::measure& measure) const
+  {
+    for (ambiguous::voice& voice: measure.voices) {
+      for (ambiguous::partial_measure& part: voice) {
+        for (ambiguous::partial_voice& partial_voice: part) {
+          std::for_each(partial_voice.begin(), partial_voice.end(),
+                        boost::apply_visitor(*this));
+        }
+      }
+    }
+    (*this)(static_cast<ambiguous::locatable&>(measure));
+  }
+
+  result_type operator()(ambiguous::locatable& lexeme) const
+  {
+    int line;
+    typename error_handler<Iterator>::iterator_type line_start = handler.get_pos(handler.iters[lexeme.id], line);
+    int column = std::distance(line_start, handler.iters[lexeme.id]) + 1;
+    lexeme.line = line;
+    lexeme.column = column;
+  }
+
+  result_type operator()(ambiguous::barline&) const { }
+  result_type operator()(hand_sign&) const { }
+  result_type operator()(ambiguous::simile&) const { }
+  result_type operator()(ambiguous::value_distinction&) const { }
+};
+
+}}
+
+#endif

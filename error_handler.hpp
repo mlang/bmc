@@ -19,10 +19,12 @@ namespace music { namespace braille {
   template <typename Iterator>
   struct error_handler
   {
+    typedef Iterator iterator_type;
+
     template <typename>
     struct result { typedef void type; };
 
-    error_handler(Iterator first, Iterator last)
+    error_handler(iterator_type first, iterator_type last)
     : first(first), last(last)
     {
     }
@@ -30,11 +32,11 @@ namespace music { namespace braille {
     template <typename Message, typename What>
     void operator()( Message const& message
 		   , What const& what
-		   , Iterator err_pos
+		   , iterator_type err_pos
 		   ) const
     {
       int line;
-      Iterator line_start = get_pos(err_pos, line);
+      iterator_type line_start = get_pos(err_pos, line);
       if (err_pos != last) {
         std::wcerr << L"<INPUT>:"
                   << line << L':' << std::distance(line_start, err_pos) + 1
@@ -50,7 +52,7 @@ namespace music { namespace braille {
       }
     }
 
-    Iterator get_pos(Iterator err_pos, int& line) const
+    iterator_type get_pos(Iterator err_pos, int& line) const
     {
       line = 1;
       Iterator i = first;
@@ -70,17 +72,16 @@ namespace music { namespace braille {
       return line_start;
     }
 
-    std::wstring get_line(Iterator err_pos) const
+    std::wstring get_line(iterator_type err_pos) const
     {
-      Iterator i = err_pos;
+      iterator_type i = err_pos;
       // position i to the next EOL
       while (i != last && (*i != '\r' && *i != '\n')) ++i;
       return std::wstring(err_pos, i);
     }
 
-    Iterator first;
-    Iterator last;
-    std::vector<Iterator> iters;
+    iterator_type first, last;
+    std::vector<iterator_type> iters;
   };
 
 }}

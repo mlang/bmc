@@ -39,6 +39,7 @@ enum value
 struct locatable
 {
   std::size_t id;
+  int line, column;
 };
 
 struct rhythmic_data : locatable

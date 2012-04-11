@@ -8,9 +8,12 @@
 #define BMC_COMPILER_HPP
 
 #include "ambiguous.hpp"
+
+#include "location_calculator.hpp"
 #include "value_disambiguator.hpp"
 #include "octave_calculator.hpp"
 #include "alteration_calculator.hpp"
+
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -37,8 +40,10 @@ namespace music { namespace braille {
  * \ingroup compilation
  * \todo Expand simile signs (unrolling)
  */
+template<typename ErrorHandler>
 class compiler : public compiler_pass, public boost::static_visitor<bool>
 {
+  location_calculator<typename ErrorHandler::iterator_type> calculate_locations;
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
@@ -46,7 +51,6 @@ class compiler : public compiler_pass, public boost::static_visitor<bool>
 public:
   music::time_signature global_time_signature;
 
-  template<typename ErrorHandler>
   compiler(ErrorHandler& error_handler)
   : compiler_pass( boost::phoenix::function<ErrorHandler>(error_handler)
                    ( L"Error"
@@ -55,6 +59,7 @@ public:
                      [boost::phoenix::arg_names::_1]
                    )
                  )
+  , calculate_locations(report_error, error_handler)
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
   , calculate_alterations(report_error)
@@ -62,8 +67,36 @@ public:
   {
   }
 
-  result_type operator()(ambiguous::score& score);
-  result_type operator()(ambiguous::measure& measure);
+  result_type operator()(ambiguous::score& score)
+  {
+    if (score.time_sig) {
+      global_time_signature = *score.time_sig;
+    }
+
+    for (ambiguous::part& part: score.parts) {
+      for (ambiguous::staff& staff: part) {
+        calculate_alterations.set(score.key_sig);
+        bool ok = true;
+        ambiguous::staff::iterator iterator(staff.begin());
+        while (ok && iterator != staff.end())
+          ok = boost::apply_visitor(*this, *iterator++);
+        if (not ok) return false;
+
+        calculate_octaves.clear();
+      }
+    }
+    return true;
+  }
+  result_type operator()(ambiguous::measure& measure)
+  {
+    if (disambiguate_values(measure, global_time_signature))
+      if (calculate_octaves(measure)) {
+        calculate_alterations(measure);
+        calculate_locations(measure);
+        return true;
+      }
+    return false;
+  }
 };
 
 }}
