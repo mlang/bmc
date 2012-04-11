@@ -9,6 +9,13 @@
 
 #include <boost/rational.hpp>
 
+/**
+ * \brief Modular arithmetic for rational numbers
+ *
+ * This is in namespace boost since ADL does not apply to typedefs.
+ * If music::rational is changed to a template alias, it might work
+ * to move operator% into namespace music.
+ */
 namespace boost { // Modular arithmetic
 
 template<typename IntType>
