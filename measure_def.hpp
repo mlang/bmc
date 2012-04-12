@@ -85,17 +85,18 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   ending = brl(3456) >> lower_digit_sign > optional_dot;
 
   newline = brl(5) >> eol;
-  boost::spirit::qi::on_success(start,
-  				annotation_function(error_handler.iters)(_val, _1));
-  boost::spirit::qi::on_success(note,
-  				annotation_function(error_handler.iters)(_val, _1));
-  boost::spirit::qi::on_success(rest,
-  				annotation_function(error_handler.iters)(_val, _1));
-  boost::spirit::qi::on_success(interval,
-                                annotation_function(error_handler.iters)(_val, _1));
-  boost::spirit::qi::on_success(chord,
-                                annotation_function(error_handler.iters)(_val, _1));
-
+#define BMC_LOCATABLE_SET_ID(rule) \
+  boost::spirit::qi::on_success(rule,\
+                                annotation_function(error_handler.iters)\
+                                (_val, _1))
+  BMC_LOCATABLE_SET_ID(start);
+  BMC_LOCATABLE_SET_ID(note);
+  BMC_LOCATABLE_SET_ID(rest);
+  BMC_LOCATABLE_SET_ID(interval);
+  BMC_LOCATABLE_SET_ID(chord);
+  BMC_LOCATABLE_SET_ID(simile);
+#undef BMC_LOCATABLE_SET_ID
+  
   note.name("note");
   interval.name("interval");
   fingering.name("fingering");

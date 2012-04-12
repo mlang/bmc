@@ -42,7 +42,7 @@ struct locatable
   int line, column;
 };
 
-struct rhythmic_data : locatable
+struct rhythmic_data
 {
   ambiguous::value ambiguous_value;
   unsigned dots;
@@ -58,7 +58,7 @@ struct rhythmic
 
 struct slur {};
 
-struct note : rhythmic_data, rhythmic
+struct note : locatable, rhythmic_data, rhythmic
 {
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
@@ -70,12 +70,12 @@ struct note : rhythmic_data, rhythmic
   fingering_list fingers;
   bool tied;
 
-  note(): rhythmic_data(), octave(0), alter(0), tied(false) {}
+  note(): locatable(), rhythmic_data(), octave(0), alter(0), tied(false) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
 
-struct rest : rhythmic_data, rhythmic
+struct rest : locatable, rhythmic_data, rhythmic
 {
   rest() : whole_measure(false) {}
   bool whole_measure; // filled in by disambiguate.hpp
@@ -99,7 +99,7 @@ struct chord : locatable, rhythmic {
 
 enum value_distinction { distinct, large_follows, small_follows };
 
-struct simile {
+struct simile : locatable {
   boost::optional<unsigned> octave_spec;
 };
 
