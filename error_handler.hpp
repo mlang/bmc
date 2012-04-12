@@ -20,6 +20,7 @@ namespace music { namespace braille {
   struct error_handler
   {
     typedef Iterator iterator_type;
+    typedef std::basic_string<typename iterator_type::value_type> string_type;
 
     template <typename>
     struct result { typedef void type; };
@@ -52,32 +53,32 @@ namespace music { namespace braille {
       }
     }
 
-    iterator_type get_pos(Iterator err_pos, int& line) const
+    iterator_type get_pos(iterator_type err_pos, int& line) const
     {
       line = 1;
-      Iterator i = first;
-      Iterator line_start = first;
+      iterator_type i = first;
+      iterator_type line_start = first;
       while (i != err_pos) {
-	bool eol = false;
-	if (i != err_pos && *i == '\r') {
-	  eol = true;
-	  line_start = ++i;
-	}
-	if (i != err_pos && *i == '\n') {
-	  eol = true;
-	  line_start = ++i;
-	}
-	if (eol) ++line; else ++i;
+        bool eol = false;
+        if (i != err_pos and *i == '\r') {
+          eol = true;
+          line_start = ++i;
+        }
+        if (i != err_pos and *i == '\n') {
+          eol = true;
+          line_start = ++i;
+        }
+        if (eol) ++line; else ++i;
       }
       return line_start;
     }
 
-    std::wstring get_line(iterator_type err_pos) const
+    string_type get_line(iterator_type line_start) const
     {
-      iterator_type i = err_pos;
-      // position i to the next EOL
-      while (i != last && (*i != '\r' && *i != '\n')) ++i;
-      return std::wstring(err_pos, i);
+      iterator_type line_end = line_start;
+      for (; line_end != last and (*line_end != '\r' and *line_end != '\n');
+           ++line_end);
+      return string_type(line_start, line_end);
     }
 
     iterator_type first, last;
