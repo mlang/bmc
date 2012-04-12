@@ -20,15 +20,15 @@ namespace music { namespace braille {
  *
  * \ingroup compilation
  */
-template <typename Iterator>
+template <typename ErrorHandler>
 class location_calculator
 : public boost::static_visitor<void>
 , public compiler_pass
 {
-  error_handler<Iterator> const& handler;
+  ErrorHandler const& handler;
 public:
   location_calculator( report_error_type const& report_error
-                     , error_handler<Iterator> const& handler
+                     , ErrorHandler const& handler
                      )
   : compiler_pass(report_error)
   , handler(handler)
@@ -49,11 +49,10 @@ public:
 
   result_type operator()(ambiguous::locatable& lexeme) const
   {
-    int line;
-    typename error_handler<Iterator>::iterator_type line_start = handler.get_pos(handler.iters[lexeme.id], line);
-    int column = std::distance(line_start, handler.iters[lexeme.id]) + 1;
-    lexeme.line = line;
-    lexeme.column = column;
+    typedef typename ErrorHandler::iterator_type iterator_type;
+    iterator_type const error_position(handler.iters[lexeme.id]);
+    iterator_type const line_start(handler.get_pos(error_position, lexeme.line));
+    lexeme.column = std::distance(line_start, error_position) + 1;
   }
 
   result_type operator()(ambiguous::barline&) const { }

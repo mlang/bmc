@@ -40,10 +40,10 @@ namespace music { namespace braille {
  * \ingroup compilation
  * \todo Expand simile signs (unrolling)
  */
-template<typename ErrorHandler>
+template <typename ErrorHandler>
 class compiler : public compiler_pass, public boost::static_visitor<bool>
 {
-  location_calculator<typename ErrorHandler::iterator_type> calculate_locations;
+  location_calculator<ErrorHandler> calculate_locations;
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
