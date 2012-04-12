@@ -11,7 +11,6 @@
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <memory>
 #include <sstream>
 
@@ -194,24 +193,6 @@ class partial_voice_interpretations
     result_type operator()(Sign const&) const
     { return false; }
   };
-  struct is_rhythmic : boost::static_visitor<bool>
-  {
-    template <typename T>
-    result_type operator()(T const&) const
-    { return boost::is_base_of<ambiguous::rhythmic, T>::value; }
-  };
-  struct get_ambiguous_value : boost::static_visitor<ambiguous::value>
-  {
-    result_type operator()(ambiguous::note const& note) const
-    { return note.ambiguous_value; }
-    result_type operator()(ambiguous::rest const& rest) const
-    { return rest.ambiguous_value; }
-    result_type operator()(ambiguous::chord const& chord) const
-    { return (*this)(chord.base); }
-    template<typename T>
-    result_type operator()(T const&) const
-    { return ambiguous::unknown; }
-  };
   static
   ambiguous::partial_voice::iterator
   same_category_end( ambiguous::partial_voice::iterator& begin
@@ -223,11 +204,11 @@ class partial_voice_interpretations
       begin = begin + 1; // Advance the outer iterator to avoid a loop
       ambiguous::partial_voice::iterator iter(begin);
       if (iter != end and
-          boost::apply_visitor(is_rhythmic(), *iter)) {
+          boost::apply_visitor(ambiguous::is_rhythmic(), *iter)) {
         for (ambiguous::value
-	     initial = boost::apply_visitor(get_ambiguous_value(), *iter++);
-	     iter != end and
-	     apply_visitor(get_ambiguous_value(), *iter) == initial;
+             initial = boost::apply_visitor(ambiguous::get_ambiguous_value(), *iter++);
+             iter != end and
+             apply_visitor(ambiguous::get_ambiguous_value(), *iter) == initial;
              ++iter);
         return iter;
       }
@@ -248,11 +229,11 @@ class partial_voice_interpretations
                , ambiguous::partial_voice::iterator const& end
                )
   {
-    if (boost::apply_visitor(is_rhythmic(), *begin)) {
-      if (boost::apply_visitor(get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
+    if (boost::apply_visitor(ambiguous::is_rhythmic(), *begin)) {
+      if (boost::apply_visitor(ambiguous::get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
         auto iter = begin + 1;
         while (iter != end and
-               boost::apply_visitor(get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
+               boost::apply_visitor(ambiguous::get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
           ++iter;
 	// A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;

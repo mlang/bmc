@@ -6,14 +6,18 @@
 
 #ifndef BMC_AMBIGUOUS_HPP
 #define BMC_AMBIGUOUS_HPP
+
+#include <cmath>
 #include <list>
 #include <vector>
+
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/optional.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/variant.hpp>
+
 #include "music.hpp"
 #include "braille_music.hpp"
-#include <cmath>
 
 namespace music { namespace braille {
 
@@ -127,7 +131,47 @@ struct score {
   std::vector<part> parts;
 };
 
-}}}
+/// Visitors
+
+struct get_line : boost::static_visitor<int>
+{
+  result_type operator()(locatable const& lexeme) const { return lexeme.line; }
+  result_type operator()(barline const&) const { return 0; }
+  result_type operator()(hand_sign const&) const { return 0; }
+  result_type operator()(value_distinction const&) const { return 0; }
+};
+
+struct get_column : boost::static_visitor<int>
+{
+  result_type operator()(locatable const& lexeme) const { return lexeme.column; }
+  result_type operator()(barline const&) const { return 0; }
+  result_type operator()(hand_sign const&) const { return 0; }
+  result_type operator()(value_distinction const&) const { return 0; }
+};
+
+struct get_ambiguous_value : boost::static_visitor<value>
+{
+  result_type operator()(note const& note) const
+  { return note.ambiguous_value; }
+  result_type operator()(rest const& rest) const
+  { return rest.ambiguous_value; }
+  result_type operator()(chord const& chord) const
+  { return (*this)(chord.base); }
+  template<typename T>
+  result_type operator()(T const&) const
+  { return unknown; }
+};
+
+struct is_rhythmic : boost::static_visitor<bool>
+{
+  template <typename T>
+  result_type operator()(T const&) const
+  { return boost::is_base_of<rhythmic, T>::value; }
+};
+
+}
+
+}}
 
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::rest,

@@ -158,26 +158,6 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
 
 #include "compiler.hpp"
 
-struct get_line : boost::static_visitor<int>
-{
-  result_type operator()(music::braille::ambiguous::locatable const& lexeme) const
-  { return lexeme.line; }
-  result_type operator()(music::braille::ambiguous::barline const&) const { return 0; }
-  result_type operator()(music::braille::hand_sign const&) const { return 0; }
-  result_type operator()(music::braille::ambiguous::simile const&) const { return 0; }
-  result_type operator()(music::braille::ambiguous::value_distinction const&) const { return 0; }
-};
-
-struct get_column : boost::static_visitor<int>
-{
-  result_type operator()(music::braille::ambiguous::locatable const& lexeme) const
-  { return lexeme.column; }
-  result_type operator()(music::braille::ambiguous::barline const&) const { return 0; }
-  result_type operator()(music::braille::hand_sign const&) const { return 0; }
-  result_type operator()(music::braille::ambiguous::simile const&) const { return 0; }
-  result_type operator()(music::braille::ambiguous::value_distinction const&) const { return 0; }
-};
-
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r72`v$k_t!,v!5");
@@ -201,11 +181,13 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   music::braille::compiler<error_handler_type> compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_line(), attribute.voices[0][0][0][0]), 1);
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_column(), attribute.voices[0][0][0][0]), 1);
 
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_line(), attribute.voices[0][0][0][1]), 1);
-  BOOST_CHECK_EQUAL(boost::apply_visitor(get_column(), attribute.voices[0][0][0][1]), 3);
+#define BMC_CHECK_SIGN_LOCATION(sign, line, column) \
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), sign), line);\
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), sign), column)
+
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][1], 1, 3);
 
   destroyTextTable(textTable);
 }
