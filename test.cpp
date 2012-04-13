@@ -158,6 +158,10 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
 
 #include "compiler.hpp"
 
+#define BMC_CHECK_SIGN_LOCATION(locatable, line, column) \
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), locatable), line);\
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), locatable), column)
+
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r72`v$k_t!,v!5");
@@ -166,8 +170,8 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   iterator_type const end(input.end());
   typedef music::braille::measure_grammar<iterator_type> parser_type;
   typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
+  error_handler_type error_handler(begin, end);
+  parser_type parser(error_handler);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
@@ -178,14 +182,12 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
-  music::braille::compiler<error_handler_type> compile(errors);
+  music::braille::compiler<error_handler_type> compile(error_handler);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
 
-#define BMC_CHECK_SIGN_LOCATION(sign, line, column) \
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), sign), line);\
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), sign), column)
-
+  BOOST_CHECK_EQUAL(attribute.line, 1);
+  BOOST_CHECK_EQUAL(attribute.column, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][1], 1, 3);
 
@@ -207,12 +209,22 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
   music::braille::compiler<error_handler_type> compile(errors);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
+
+  BOOST_CHECK_EQUAL(attribute.line, 1);
+  BOOST_CHECK_EQUAL(attribute.column, 1);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[1][0][0][0], 1, 6);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][0][0], 1, 9);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][1][0], 1, 13);
+  BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][1][1], 1, 14);
 
   destroyTextTable(textTable);
 }
