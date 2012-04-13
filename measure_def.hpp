@@ -45,6 +45,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   boost::spirit::_val_type _val;
   boost::spirit::_1_type _1;
+  boost::spirit::_2_type _2;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
   note = (*articulation_sign)   [at_c<0>(_val) = _1]
@@ -88,8 +89,11 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
                                 annotation_function(error_handler.iters)\
-                                (_val, _1))
+                                (_val, _1, _2))
   BMC_LOCATABLE_SET_ID(start);
+  BMC_LOCATABLE_SET_ID(voice);
+  BMC_LOCATABLE_SET_ID(partial_measure);
+  BMC_LOCATABLE_SET_ID(partial_voice);
   BMC_LOCATABLE_SET_ID(note);
   BMC_LOCATABLE_SET_ID(rest);
   BMC_LOCATABLE_SET_ID(interval);

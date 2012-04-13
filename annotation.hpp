@@ -27,10 +27,12 @@ struct annotation
   {
   }
 
-  void operator()(ambiguous::locatable& ast, Iterator pos) const
+  void operator()( ambiguous::locatable& ast
+                 , Iterator begin, Iterator /*end*/
+                 ) const
   {
     std::size_t id = iters.size();
-    iters.push_back(pos);
+    iters.push_back(begin);
     ast.id = id;
   }
 };

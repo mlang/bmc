@@ -41,8 +41,11 @@ public:
         for (ambiguous::partial_voice& partial_voice: part) {
           std::for_each(partial_voice.begin(), partial_voice.end(),
                         boost::apply_visitor(*this));
+          (*this)(partial_voice);
         }
+        (*this)(part);
       }
+      (*this)(voice);
     }
     (*this)(static_cast<ambiguous::locatable&>(measure));
   }

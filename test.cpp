@@ -158,9 +158,12 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
 
 #include "compiler.hpp"
 
-#define BMC_CHECK_SIGN_LOCATION(locatable, line, column) \
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), locatable), line);\
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), locatable), column)
+#define BMC_CHECK_SIGN_LOCATION(sign, line, column) \
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), sign), line);\
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), sign), column)
+#define BMC_CHECK_LOCATABLE_LOCATION(locatable, LINE, COLUMN) \
+  BOOST_CHECK_EQUAL(locatable.line, LINE);\
+  BOOST_CHECK_EQUAL(locatable.column, COLUMN)
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -186,8 +189,10 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
 
-  BOOST_CHECK_EQUAL(attribute.line, 1);
-  BOOST_CHECK_EQUAL(attribute.column, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute, 1, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0], 1, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0], 1, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][1], 1, 3);
 
@@ -218,8 +223,9 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
 
-  BOOST_CHECK_EQUAL(attribute.line, 1);
-  BOOST_CHECK_EQUAL(attribute.column, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute, 1, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0][0], 1, 1);
+  BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[1][0][0], 1, 6);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[1][0][0][0], 1, 6);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][0][0], 1, 9);
@@ -282,7 +288,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(attribute.voices[0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0][0].size() == 9);
-  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(19));
+  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(22));
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));

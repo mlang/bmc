@@ -22,7 +22,7 @@
 namespace music { namespace braille {
 
 /**
- * \brief Data types required to store the parse results.
+ * \brief Data types required to store parse result.
  *
  * Some of the missing values are filled in by the compiler translation unit
  * right now.  However, it is likely that we will need two different ways of
@@ -30,7 +30,7 @@ namespace music { namespace braille {
  * of the necessary transformations on top of that.
  *
  * The namespace is called 'ambiguous' because it resembles the pure,
- * unprocessed parse results which are by the nature of braille music code
+ * unprocessed parse result which is by the nature of braille music code
  * ambiguous (exact note and rest values need to be calculated).
  */
 namespace ambiguous {
@@ -46,14 +46,22 @@ struct locatable
   int line, column;
 };
 
+/** \brief Storage for rhythmic values.
+ *
+ * A rhythmic value consists of an ambiguous value type and the number of
+ * augmentation dots.  The unambiguous value type is filled in after the parse
+ * step by the music::braille::compiler.
+ */
 struct rhythmic_data
 {
   ambiguous::value ambiguous_value;
   unsigned dots;
-  rational type; // filled in by disambiguate.hpp
+  rational type; // filled in by value_disambiguation.hpp
   rhythmic_data(): ambiguous_value(unknown), dots(0) {}
 };
 
+/** \brief Base class for everything that implies a rhythmic value.
+ */
 struct rhythmic
 {
   virtual ~rhythmic() {}
@@ -111,9 +119,10 @@ enum barline { begin_repeat, end_repeat };
 
 typedef boost::variant< note, rest, chord
                       , value_distinction, hand_sign, simile, barline> sign;
-typedef std::vector<sign> partial_voice;
-typedef std::vector<partial_voice> partial_measure;
-typedef std::vector<partial_measure> voice;
+
+struct partial_voice : locatable, std::vector<sign> {};
+struct partial_measure : locatable, std::vector<partial_voice> {};
+struct voice : locatable, std::vector<partial_measure> {};
 
 struct measure : locatable
 {
