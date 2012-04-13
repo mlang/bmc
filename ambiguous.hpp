@@ -14,6 +14,7 @@
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/optional.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/variant.hpp>
 
 #include "music.hpp"
@@ -169,6 +170,13 @@ struct get_ambiguous_value : boost::static_visitor<value>
   template<typename T>
   result_type operator()(T const&) const
   { return unknown; }
+};
+
+struct is_rest : boost::static_visitor<bool>
+{
+  template <typename T>
+  result_type operator()(T const&) const
+  { return boost::is_same<rest, T>::value; }
 };
 
 struct is_rhythmic : boost::static_visitor<bool>

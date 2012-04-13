@@ -98,15 +98,6 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
 
 #include "measure.hpp"
 
-class is_rest: public boost::static_visitor<bool> {
-public:
-  template<typename T>
-  result_type operator()(T const&) const
-  { return false; }
-  result_type operator()(music::braille::ambiguous::rest const&) const
-  { return true; }
-};
-
 BOOST_AUTO_TEST_CASE(measure_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"vu.");
@@ -124,8 +115,10 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][0]));
-  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[0][0][0][1]));
+  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+                            attribute.voices[0][0][0][0]));
+  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+                            attribute.voices[0][0][0][1]));
   destroyTextTable(textTable);
 }
 
@@ -151,8 +144,10 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][0][0][0]));
-  BOOST_CHECK(apply_visitor(is_rest(), attribute.voices[1][1][1][0]));
+  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+                            attribute.voices[1][0][0][0]));
+  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+                            attribute.voices[1][1][1][0]));
   destroyTextTable(textTable);
 }
 
