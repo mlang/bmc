@@ -30,7 +30,7 @@ value_disambiguator::operator()( ambiguous::measure& measure
         for (auto& lhs: *anacrusis) {
           for (auto& rhs: interpretations) {
             if (duration(lhs) + duration(rhs) == time_sig) {
-              accept(lhs), accept(rhs);
+              lhs.accept(), rhs.accept();
               anacrusis->clear();
               return true;
             }
@@ -41,7 +41,7 @@ value_disambiguator::operator()( ambiguous::measure& measure
   }
 
   if (interpretations.size() == 1) {
-    accept(interpretations.front());
+    interpretations.front().accept();
     return true;
   }
 

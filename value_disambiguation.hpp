@@ -65,59 +65,77 @@ class value_proxy
     return dots? base * 2 - base / pow(2, dots): base;
   }
 
-  rational* final_type;
-  bool* whole_measure_rest;
+  rational *final_type;
+  bool *whole_measure_rest;
 
 public:
-  value_proxy() : final_type(nullptr) {}
-  value_proxy(ambiguous::note& note, value_category const& category)
+  value_proxy() : final_type(nullptr), whole_measure_rest(nullptr) {}
+  value_proxy( ambiguous::note& note
+             , value_category const& category
+             )
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
   , duration(calculate_duration())
   , final_type(&note.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::note& note, value_category const& category, ambiguous::value value_type)
+  value_proxy( ambiguous::note& note
+             , value_category const& category
+             , ambiguous::value value_type
+             )
   : value_type(value_type), category(category), dots(note.dots)
   , duration(calculate_duration())
   , final_type(&note.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::rest& rest, value_category const& category)
+  value_proxy( ambiguous::rest& rest
+             , value_category const& category
+             )
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , duration(calculate_duration())
   , final_type(&rest.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::rest& rest, value_category const& category, ambiguous::value value_type)
+  value_proxy( ambiguous::rest& rest
+             , value_category const& category
+             , ambiguous::value value_type
+             )
   : value_type(value_type), category(category), dots(rest.dots)
   , duration(calculate_duration())
   , final_type(&rest.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::rest& rest, value_category const& category, rational const& duration)
+  value_proxy( ambiguous::rest& rest
+             , value_category const& category
+             , rational const& duration
+             )
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
   , duration(duration)
   , final_type(&rest.type)
   , whole_measure_rest(&rest.whole_measure)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::chord& chord, value_category const& category)
+  value_proxy( ambiguous::chord& chord
+             , value_category const& category
+             )
   : value_type(chord.base.ambiguous_value), category(category)
   , dots(chord.base.dots)
   , duration(calculate_duration())
   , final_type(&chord.base.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy(ambiguous::chord& chord, value_category const& category, ambiguous::value value_type)
+  value_proxy( ambiguous::chord& chord
+             , value_category const& category
+             , ambiguous::value value_type
+             )
   : value_type(value_type), category(category), dots(chord.base.dots)
   , duration(calculate_duration())
   , final_type(&chord.base.type)
-  , whole_measure_rest(0)
+  , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
   operator rational const&() const { return duration; }
@@ -603,6 +621,7 @@ public:
   , mean()
   {
   }
+
   rational const& harmonic_mean()
   {
     if (mean == zero) {
@@ -616,6 +635,16 @@ public:
       mean /= sum;
     }
     return mean;
+  }
+
+  void
+  accept()
+  {
+    for (const_reference voice: *this)
+      for (proxied_voice::const_reference partial_measure: *voice)
+        for (proxied_partial_measure::const_reference partial_voice: *partial_measure)
+          std::for_each(partial_voice->begin(), partial_voice->end(),
+                        std::mem_fun_ref(&value_proxy::accept));
   }
 };
 
@@ -760,16 +789,6 @@ public:
     return matches == 1;
   }
 };
-
-inline void
-accept(proxied_measure const& measure)
-{
-  BOOST_FOREACH(proxied_measure::const_reference voice, measure)
-    BOOST_FOREACH(proxied_voice::const_reference part, *voice)
-      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, *part)
-        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice)
-          value.accept();
-}
 
 }
 
