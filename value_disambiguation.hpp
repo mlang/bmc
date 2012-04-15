@@ -432,8 +432,8 @@ public:
                                , music::time_signature const& time_sig
                                )
   : time_signature(time_sig)
-  , beat(1, time_signature.denominator())
   , start_position(position)
+  , beat(1, time_signature.denominator())
   {
     value_proxy *stack = new value_proxy[voice.size()];
     recurse(voice.begin(), voice.end(),
