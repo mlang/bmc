@@ -9,7 +9,6 @@
 #include "score.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
-#include "annotation.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -30,8 +29,6 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   using boost::phoenix::resize;
   typedef boost::phoenix::function< braille::error_handler<Iterator> >
           error_handler_function;
-  typedef boost::phoenix::function< annotation<Iterator> >
-          annotation_function;
   boost::spirit::qi::eol_type eol;
   music::braille::brl_type brl;
   boost::spirit::standard_wide::space_type space;
