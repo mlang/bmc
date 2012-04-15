@@ -140,9 +140,11 @@ class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration_;
 public:
-  proxied_partial_voice(value_proxy const *begin, value_proxy const *end)
+  proxied_partial_voice( value_proxy const *begin, value_proxy const *end
+                       , rational const& duration
+                       )
   : std::vector<value_proxy>(begin, end)
-  , duration_(std::accumulate(begin, end, zero))
+  , duration_(duration)
   {}
   rational const& duration() const
   { return duration_; }
@@ -333,6 +335,7 @@ class partial_voice_interpretations
   };
 
   music::time_signature const& time_signature;
+  rational const start_position;
   rational const beat;
   bool on_beat(rational const& position) const {
     return position % beat == zero;
@@ -347,7 +350,9 @@ class partial_voice_interpretations
               )
   {
     if (begin == end) {
-      emplace_back(std::make_shared<proxied_partial_voice>(stack_begin, stack_end));
+      emplace_back(std::make_shared<proxied_partial_voice>
+                   (stack_begin, stack_end, position - start_position)
+                  );
     } else {
       ambiguous::partial_voice::iterator tail;
       if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
@@ -428,6 +433,7 @@ public:
                                )
   : time_signature(time_sig)
   , beat(1, time_signature.denominator())
+  , start_position(position)
   {
     value_proxy *stack = new value_proxy[voice.size()];
     recurse(voice.begin(), voice.end(),
