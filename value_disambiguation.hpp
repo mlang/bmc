@@ -643,8 +643,8 @@ public:
     for (const_reference voice: *this)
       for (proxied_voice::const_reference partial_measure: *voice)
         for (proxied_partial_measure::const_reference partial_voice: *partial_measure)
-          std::for_each(partial_voice->begin(), partial_voice->end(),
-                        std::mem_fun_ref(&value_proxy::accept));
+          for_each(partial_voice->begin(), partial_voice->end(),
+                   std::mem_fun_ref(&value_proxy::accept));
   }
 };
 
@@ -700,7 +700,7 @@ class measure_interpretations : public std::list<proxied_measure>
   {
     if (begin == end) {
       if (stack_begin != stack_end) {
-        if (length == time_signature or not complete) {
+        if (not complete or length == time_signature) {
           if (not complete and length == time_signature) {
             erase_incomplete_interpretations();
             complete = true;
@@ -753,6 +753,7 @@ public:
             time_signature);
     delete [] stack;
 
+    // Drop interpretations with a significant lower harmonic mean
     if (complete and size() > 1) {
       rational best_score;
       bool single_best_score = false;
