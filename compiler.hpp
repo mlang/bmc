@@ -76,16 +76,16 @@ public:
     for (ambiguous::part& part: score.parts) {
       for (ambiguous::staff& staff: part) {
         calculate_alterations.set(score.key_sig);
-        bool ok = true;
-        ambiguous::staff::iterator iterator(staff.begin());
-        while (ok && iterator != staff.end())
-          ok = boost::apply_visitor(*this, *iterator++);
-        if (not ok) return false;
-
+        bool const result = (*this)(staff);
+        if (not result) return false;
         calculate_octaves.clear();
       }
     }
     return true;
+  }
+  result_type operator()(ambiguous::staff& staff)
+  {
+    return std::all_of(staff.begin(), staff.end(), boost::apply_visitor(*this));
   }
   result_type operator()(ambiguous::measure& measure)
   {
