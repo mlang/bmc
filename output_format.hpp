@@ -15,9 +15,16 @@ enum class output_format: long
   lilypond = 1
 };
 
+enum class lilypond_flags: long
+{
+  no_locations = 0,
+  include_locations = 2
+};
+
 enum class ios_base_iword_mask: long
 {
-  output_format = 1
+  output_format = 1,
+  lilypond_flags = 2
 };
 
 namespace detail {
@@ -78,6 +85,24 @@ inline std::ios_base& identity_output_format(std::ios_base& ios)
 inline std::ios_base& lilypond_output_format(std::ios_base& ios)
 {
   set_output_format(ios, output_format::lilypond);
+  return ios;
+}
+
+inline lilypond_flags get_lilypond_flags(std::ios_base& ios)
+{ return lilypond_flags(get_flags(ios, ios_base_iword_mask::lilypond_flags)); }
+
+inline void set_lilypond_flags(std::ios_base& ios, lilypond_flags flags)
+{ set_flags(ios, long(flags), ios_base_iword_mask::lilypond_flags); }
+
+inline std::ios_base& no_locations_for_lilypond(std::ios_base& ios)
+{
+  set_lilypond_flags(ios, lilypond_flags::no_locations);
+  return ios;
+}
+
+inline std::ios_base& include_locations_for_lilypond(std::ios_base& ios)
+{
+  set_lilypond_flags(ios, lilypond_flags::include_locations);
   return ios;
 }
 

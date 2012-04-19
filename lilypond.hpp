@@ -80,7 +80,8 @@ operator <<
 ) {
   switch (music::get_output_format(stream)) {
   case music::output_format::lilypond: {
-    music::lilypond::generator generate(stream);
+    bool const locations = music::get_lilypond_flags(stream) == music::lilypond_flags::include_locations;
+    music::lilypond::generator generate(stream, true, true, locations);
     generate(score);
     break;
   }
