@@ -76,9 +76,8 @@ public:
     for (ambiguous::part& part: score.parts) {
       for (ambiguous::staff& staff: part) {
         calculate_alterations.set(score.key_sig);
-        bool const result = (*this)(staff);
-        if (not result) return false;
-        calculate_octaves.clear();
+        if (not (*this)(staff)) return false;
+        calculate_octaves.reset();
       }
     }
     return true;

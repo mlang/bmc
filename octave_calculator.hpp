@@ -33,22 +33,20 @@ class octave_calculator
 public:
   octave_calculator(report_error_type const& report_error)
   : compiler_pass(report_error)
-  , prev(0)
+  , prev(nullptr)
   {}
 
-  void clear()
-  { prev = 0; }
+  void reset()
+  { prev = nullptr; }
 
   result_type operator()(ambiguous::measure& measure)
   {
     for (ambiguous::voice& voice: measure.voices) {
       for (ambiguous::partial_measure& part: voice) {
         for (ambiguous::partial_voice& partial_voice: part) {
-          ambiguous::partial_voice::iterator iter = partial_voice.begin();
-          bool ok = true;
-          while (ok && iter != partial_voice.end())
-            ok = boost::apply_visitor(*this, *iter++);
-          if (not ok) return false;
+          if (not std::all_of(partial_voice.begin(), partial_voice.end(),
+                              boost::apply_visitor(*this)))
+            return false;
         }
       }
     }
@@ -82,7 +80,7 @@ public:
   result_type operator()(ambiguous::chord& chord)
   {
     if ((*this)(chord.base)) {
-      // ...
+      /// \todo Calcualte octaves of the chord intervals
       return true;
     }
     return false;
