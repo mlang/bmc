@@ -15,6 +15,7 @@
 #include <boost/spirit/include/qi_attr.hpp>
 #include <boost/spirit/include/qi_eol.hpp>
 #include <boost/spirit/include/qi_eps.hpp>
+#include <boost/spirit/include/qi_optional.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>

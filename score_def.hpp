@@ -13,7 +13,10 @@
 #include <boost/spirit/include/qi_eol.hpp>
 #include <boost/spirit/include/qi_eps.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
+#include <boost/spirit/include/phoenix_container.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include "spirit/detail/info_wchar_t_io.hpp"
 
