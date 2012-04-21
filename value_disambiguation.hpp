@@ -265,7 +265,7 @@ class partial_voice_interpretations
   struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
   {
     large_and_small(ambiguous::sign& sign)
-    { boost::apply_visitor(*this, sign); }
+    { reserve(2); boost::apply_visitor(*this, sign); }
 
     template <class Value>
     result_type operator()(Value& value)
@@ -392,7 +392,7 @@ class partial_voice_interpretations
         if (possibilities.empty()) {
           recurse(tail, end, stack_begin, stack_end, max_duration, position);
         } else {
-          for(large_and_small::const_reference value : possibilities) {
+          for (large_and_small::const_reference value: possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
               recurse(tail, end, stack_begin, stack_end + 1,
