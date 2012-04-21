@@ -483,9 +483,11 @@ class partial_measure_interpretations
   {
     if (begin == end) {
       if (stack_begin != stack_end)
-        emplace_back(std::make_shared<proxied_partial_measure>(stack_begin, stack_end));
+        emplace_back(std::make_shared<proxied_partial_measure>
+                     (stack_begin, stack_end)
+                    );
     } else {
-      ambiguous::partial_measure::iterator const tail = begin + 1;
+      auto const tail = begin + 1;
       for(partial_voice_interpretations::const_reference possibility:
           partial_voice_interpretations(*begin, length, position, time_sig)) {
         rational const partial_voice_duration(duration(possibility));
@@ -579,7 +581,7 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
           emplace_back(std::make_shared<proxied_voice>(stack_begin, stack_end));
       }
     } else {
-      ambiguous::voice::iterator const tail = begin + 1;
+      auto const tail = begin + 1;
       for(partial_measure_interpretations::const_reference possibility:
           partial_measure_interpretations(*begin, max_length,
                                           duration(stack_begin, stack_end),
@@ -637,12 +639,11 @@ public:
     return mean;
   }
 
-  void
-  accept()
+  void accept()
   {
     for (const_reference voice: *this)
-      for (proxied_voice::const_reference partial_measure: *voice)
-        for (proxied_partial_measure::const_reference partial_voice: *partial_measure)
+      for (auto const& partial_measure: *voice)
+        for (auto const& partial_voice: *partial_measure)
           for_each(partial_voice->begin(), partial_voice->end(),
                    std::mem_fun_ref(&value_proxy::accept));
   }
@@ -709,11 +710,12 @@ class measure_interpretations : public std::list<proxied_measure>
         }
       }
     } else {
-      std::vector<ambiguous::voice>::iterator const tail = begin + 1;
+      auto const tail = begin + 1;
       for (voice_interpretations::const_reference possibility:
-          voice_interpretations(*begin, length, time_signature, complete)) {
+           voice_interpretations(*begin, length, time_signature, complete)) {
         rational const voice_duration(duration(possibility));
-        if ((stack_begin == stack_end and not complete) or voice_duration == length) {
+        if ((stack_begin == stack_end and not complete) or
+            voice_duration == length) {
           *stack_end = possibility;
           recurse(tail, end, stack_begin, stack_end + 1, voice_duration);
         }

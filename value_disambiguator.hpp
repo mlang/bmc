@@ -56,7 +56,7 @@ public:
 
   result_type operator()( ambiguous::measure& measure
                         , time_signature const& time_sig
-			);
+                        );
 };
 
 }}

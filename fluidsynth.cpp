@@ -66,7 +66,7 @@ fluidsynth::play()
   typedef std::chrono::high_resolution_clock clock;
   clock::duration const ppm(clock::duration::period::den * 60 / ppq);
   clock::time_point event_time(clock::now());
-  rational position(0);
+  rational position;
   rational pulse(rational(1, 4) / ppq);
   while (!queue.empty()) {
     midi::event const event(queue.top());
