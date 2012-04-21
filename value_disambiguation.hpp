@@ -467,7 +467,7 @@ duration(proxied_partial_voice_ptr const& partial_voice)
 
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
-typedef std::shared_ptr<proxied_partial_measure> proxied_partial_measure_ptr;
+typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
 
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure_ptr>
