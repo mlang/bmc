@@ -9,9 +9,12 @@
 #include "score.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_core.hpp>
+#include <boost/spirit/include/qi_eol.hpp>
+#include <boost/spirit/include/qi_eps.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 #include "spirit/detail/info_wchar_t_io.hpp"
 
 namespace music { namespace braille {
