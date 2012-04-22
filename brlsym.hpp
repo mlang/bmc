@@ -49,7 +49,6 @@ BMC_DEFINE_SYMBOL_TABLE(unsigned, finger_symbols, finger_sign)
 BMC_DEFINE_SYMBOL_TABLE(ambiguous::value_distinction,
                         value_distinction_symbols, value_distinction_sign)
 BMC_DEFINE_SYMBOL_TABLE(music::articulation, articulation_symbols, articulation_sign)
-BMC_DEFINE_SYMBOL_TABLE(boost::spirit::unused_type, tie_symbol, tie_sign)
 BMC_DEFINE_SYMBOL_TABLE(ambiguous::barline, barline_symbols, barline_sign)
 
 #undef BMC_DEFINE_SYMBOL_TABLE

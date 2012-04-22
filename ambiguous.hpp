@@ -11,7 +11,6 @@
 #include <list>
 #include <vector>
 
-#include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/optional.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -71,6 +70,8 @@ struct rhythmic
 
 struct slur {};
 
+struct tie : locatable {};
+
 struct note : locatable, rhythmic_data, rhythmic
 {
   std::vector<articulation> articulations;
@@ -81,9 +82,9 @@ struct note : locatable, rhythmic_data, rhythmic
   int alter;       // filled in by alteration_calculator.hpp
   std::vector<slur> slurs;
   fingering_list fingers;
-  bool tied;
+  boost::optional<ambiguous::tie> tie;
 
-  note(): locatable(), rhythmic_data(), octave(0), alter(0), tied(false) {}
+  note(): locatable(), rhythmic_data(), octave(0), alter(0) {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
@@ -101,6 +102,7 @@ struct interval : locatable {
   boost::optional<unsigned> octave_spec;
   music::interval steps;
   fingering_list fingers;
+  boost::optional<ambiguous::tie> tie;
 };
 
 struct chord : locatable, rhythmic {
@@ -190,6 +192,8 @@ struct is_rhythmic : boost::static_visitor<bool>
 
 }}
 
+#include <boost/fusion/adapted/struct/adapt_struct.hpp>
+
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::rest,
   (music::braille::ambiguous::value, ambiguous_value)
@@ -205,7 +209,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (unsigned, dots)
   (std::vector<music::braille::ambiguous::slur>, slurs)
   (music::braille::fingering_list, fingers)
-  (bool, tied)
+  (boost::optional<music::braille::ambiguous::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::interval,
@@ -213,6 +217,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (boost::optional<unsigned>, octave_spec)
   (music::interval, steps)
   (music::braille::fingering_list, fingers)
+  (boost::optional<music::braille::ambiguous::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,

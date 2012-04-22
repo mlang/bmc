@@ -63,14 +63,15 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
       >> fingering              [at_c<7>(_val) = _1]
       >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
-      >> (-tie_sign             [at_c<8>(_val) = true])
+      >> (-tie_sign)            [at_c<8>(_val) = _1]
        ;
 
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
   chord = note >> +interval;
-  interval = -accidental_sign >> -octave_sign >> interval_sign >> fingering;
+  interval = -accidental_sign >> -octave_sign >> interval_sign >> fingering >> -tie_sign;
 
   slur_sign = brl(14);
+  tie_sign = brl(4) >> brl(14);
 
   finger_change = finger_sign >> brl(14) >> finger_sign;
   fingering = *(finger_change | finger_sign);
@@ -105,6 +106,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(interval);
   BMC_LOCATABLE_SET_ID(chord);
   BMC_LOCATABLE_SET_ID(simile);
+  BMC_LOCATABLE_SET_ID(tie_sign);
 #undef BMC_LOCATABLE_SET_ID
   
   note.name("note");

@@ -255,7 +255,7 @@ generator::operator() (braille::ambiguous::note const& note) const
   ly_accidental(note.alter);
   ly_octave(note.octave);
   ly_rhythm(note);
-  if (note.tied) os << "~";
+  if (note.tie) os << "~";
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
     default:                         break;
@@ -279,7 +279,7 @@ generator::operator() (braille::ambiguous::chord const& chord) const
   ly_pitch_step(chord.base.step);
   ly_accidental(chord.base.alter);
   ly_octave(chord.base.octave);
-  if (chord.base.tied) tied = true;
+  if (chord.base.tie) tied = true;
   ly_finger(chord.base.fingers);
   for (braille::ambiguous::interval const& interval: chord.intervals) {
     os << " ";

@@ -174,13 +174,6 @@ articulation_symbols::articulation_symbols()
 
 articulation_symbols articulation_sign;
 
-tie_symbol::tie_symbol()
-{
-  add(L"⠈⠉");
-}
-
-tie_symbol tie_sign;
-
 barline_symbols::barline_symbols()
 {
   add(L"⠣⠶", ambiguous::begin_repeat)
