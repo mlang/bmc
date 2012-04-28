@@ -274,12 +274,11 @@ generator::operator() (braille::ambiguous::note const& note) const
 generator::result_type
 generator::operator() (braille::ambiguous::chord const& chord) const
 {
-  bool tied = false;
   os << "<";
   ly_pitch_step(chord.base.step);
   ly_accidental(chord.base.alter);
   ly_octave(chord.base.octave);
-  if (chord.base.tie) tied = true;
+  if (chord.base.tie) os << "~";
   ly_finger(chord.base.fingers);
   for (braille::ambiguous::interval const& interval: chord.intervals) {
     os << " ";
@@ -290,12 +289,11 @@ generator::operator() (braille::ambiguous::chord const& chord) const
     ly_pitch_step(diatonic_step(stp));
     //ly_accidental(interval.acc);
     ly_octave(oct);
-    // if (interval.tied) tied = true;
+    if (interval.tie) os << "~";
     ly_finger(interval.fingers);
   }
   os << ">";
   ly_rhythm(chord.base);
-  if (tied) os << "~";
 }
 
 void generator::ly_accidental(int alteration) const
