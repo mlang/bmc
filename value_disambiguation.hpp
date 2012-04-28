@@ -154,23 +154,26 @@ public:
   }
 };
 
+inline rational
+duration(std::vector<value_proxy> const& values)
+{ return boost::accumulate(values, zero); }
+
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration_;
 public:
-  proxied_partial_voice( value_proxy const *begin, value_proxy const *end
+  typedef std::vector<value_proxy> base_type;
+  proxied_partial_voice( const_pointer begin
+                       , const_pointer end
                        , rational const& duration
                        )
-  : std::vector<value_proxy>(begin, end)
+  : base_type(begin, end)
   , duration_(duration)
-  {}
-  rational const& duration() const
-  { return duration_; }
-};
+  {
+  }
 
-inline rational
-duration(std::vector<value_proxy> const& values)
-{ return boost::accumulate(values, zero); }
+  rational const& duration() const { return duration_; }
+};
 
 typedef std::shared_ptr<proxied_partial_voice const> proxied_partial_voice_ptr;
 
@@ -467,7 +470,7 @@ public:
 
 inline rational const&
 duration(proxied_partial_voice_ptr const& partial_voice)
-{ return (*partial_voice).duration(); }
+{ return partial_voice->duration(); }
 
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
@@ -492,8 +495,8 @@ class partial_measure_interpretations
                     );
     } else {
       auto const tail = begin + 1;
-      for(partial_voice_interpretations::const_reference possibility:
-          partial_voice_interpretations(*begin, length, position, time_sig)) {
+      for (partial_voice_interpretations::const_reference possibility:
+           partial_voice_interpretations(*begin, length, position, time_sig)) {
         rational const partial_voice_duration(duration(possibility));
         if (stack_begin == stack_end or partial_voice_duration == length) {
           *stack_end = possibility;
@@ -586,10 +589,10 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
       }
     } else {
       auto const tail = begin + 1;
-      for(partial_measure_interpretations::const_reference possibility:
-          partial_measure_interpretations(*begin, max_length,
-                                          duration(stack_begin, stack_end),
-                                          time_sig)) {
+      for (partial_measure_interpretations::const_reference possibility:
+           partial_measure_interpretations(*begin, max_length,
+                                           duration(stack_begin, stack_end),
+                                           time_sig)) {
         *stack_end = possibility;
         recurse(tail, end, stack_begin, stack_end + 1,
                 max_length - duration(possibility), time_sig, complete);
@@ -696,6 +699,13 @@ class measure_interpretations : public std::list<proxied_measure>
   music::time_signature time_signature;
   bool complete;
 
+  void erase_incomplete_interpretations()
+  {
+    for (iterator interpretation = begin(); interpretation != end();
+         interpretation = duration(*interpretation) != time_signature?
+                          erase(interpretation): ++interpretation);
+  }
+
   void recurse( std::vector<ambiguous::voice>::iterator const& begin
               , std::vector<ambiguous::voice>::iterator const& end
               , proxied_voice_ptr stack_begin[]
@@ -727,12 +737,28 @@ class measure_interpretations : public std::list<proxied_measure>
     }
   }
 
-  void
-  erase_incomplete_interpretations()
+  void cleanup()
   {
-    for (iterator interpretation = begin(); interpretation != end();
-         interpretation = duration(*interpretation) != time_signature?
-                          erase(interpretation): ++interpretation);
+    // Drop interpretations with a significant lower harmonic mean
+    if (complete and size() > 1) {
+      rational best_score;
+      bool single_best_score = false;
+      for (reference possibility: *this) {
+        rational const score(possibility.harmonic_mean());
+        if (score > best_score) {
+          best_score = score, single_best_score = true;
+        } else if (score == best_score) {
+          single_best_score = false;
+        }
+      }
+      // Do not consider possibilities below a certain margin as valid
+      if (single_best_score) {
+        rational const margin(best_score * rational(2, 3));
+        for (iterator measure = begin(); measure != end();
+             measure = measure->harmonic_mean() < margin?
+                       erase(measure): ++measure);
+      }
+    }
   }
 
 public:
@@ -759,26 +785,7 @@ public:
             time_signature);
     delete [] stack;
 
-    // Drop interpretations with a significant lower harmonic mean
-    if (complete and size() > 1) {
-      rational best_score;
-      bool single_best_score = false;
-      for (reference possibility: *this) {
-        rational const score(possibility.harmonic_mean());
-        if (score > best_score) {
-          best_score = score, single_best_score = true;
-        } else if (score == best_score) {
-          single_best_score = false;
-        }
-      }
-      // Do not consider possibilities below a certain margin as valid
-      if (single_best_score) {
-        rational const margin(best_score * rational(2, 3));
-        for (iterator measure = begin(); measure != end();
-             measure = measure->harmonic_mean() < margin?
-                       erase(measure): ++measure);
-      }
-    }
+    cleanup();
   }
 
   bool contains_complete_measure() const
@@ -787,12 +794,11 @@ public:
   bool completes_uniquely(measure_interpretations const& other) {
     BOOST_ASSERT(not this->complete);
     BOOST_ASSERT(not other.complete);
+    BOOST_ASSERT(this->time_signature == other.time_signature);
     std::size_t matches = 0;
-    for (const_reference lhs: *this) {
-      for (const_reference rhs: other) {
+    for (const_reference lhs: *this)
+      for (const_reference rhs: other)
         if (duration(lhs) + duration(rhs) == time_signature) ++matches;
-      }
-    }
     return matches == 1;
   }
 };
