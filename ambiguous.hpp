@@ -174,6 +174,13 @@ struct get_ambiguous_value : boost::static_visitor<value>
   { return unknown; }
 };
 
+struct get_duration : boost::static_visitor<rational>
+{
+  result_type operator()(rhythmic const& note) const { return note.as_rational(); }
+  template <typename T>
+  result_type operator()(T const&) const { return zero; }
+};
+
 struct is_rest : boost::static_visitor<bool>
 {
   template <typename T>
@@ -192,7 +199,7 @@ struct is_rhythmic : boost::static_visitor<bool>
 
 }}
 
-#include <boost/fusion/adapted/struct/adapt_struct.hpp>
+#include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::rest,
