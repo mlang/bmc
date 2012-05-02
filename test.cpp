@@ -183,7 +183,7 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   music::braille::compiler<error_handler_type> compile(error_handler);
   compile.global_time_signature = music::time_signature(3, 4);
   BOOST_CHECK(compile(attribute));
-
+  BOOST_CHECK_EQUAL(duration(attribute), compile.global_time_signature);
   BMC_CHECK_LOCATABLE_LOCATION(attribute, 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0], 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0], 1, 1);

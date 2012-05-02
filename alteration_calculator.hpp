@@ -11,12 +11,11 @@
 #include <boost/variant/static_visitor.hpp>
 #include "ambiguous.hpp"
 #include "compiler_pass.hpp"
-#include "duration.hpp"
 
 namespace music { namespace braille {
 
 /**
- * \brief Calculates the alteration of note pitches.
+ * \brief Calculate the alteration of note pitches.
  *
  * Given the current key signature this compiler pass calculates the
  * alteration (an integer from -2 to 2) value for each note in a measure
@@ -52,15 +51,15 @@ public:
     eventmap map;
     for (ambiguous::voice& voice: measure.voices) {
       rational voice_position;
-      for (ambiguous::partial_measure& part: voice) {
-        for (ambiguous::partial_voice& partial_voice: part) {
+      for (ambiguous::partial_measure& partial_measure: voice) {
+        for (ambiguous::partial_voice& partial_voice: partial_measure) {
           rational position(voice_position);
           for (ambiguous::sign& sign: partial_voice) {
             map.insert(eventmap::value_type(position, sign));
-            position += music::duration(sign);
+            position += duration(sign);
           }
         }
-        voice_position += music::duration(part);
+        voice_position += duration(partial_measure);
       }
     }
 
@@ -81,10 +80,11 @@ public:
   result_type operator()(ambiguous::chord& chord)
   {
     (*this)(chord.base);
-    // ...
+    // \todo Calculate alterations of chord intervals
   }
 
-  template<typename Sign> result_type operator()(Sign&) const { }
+  template <typename Sign>
+  result_type operator()(Sign&) const { }
 
 private:
   int to_alter(music::accidental accidental) const

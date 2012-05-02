@@ -143,61 +143,142 @@ struct score {
   std::vector<part> parts;
 };
 
-/// Visitors
+}}}
 
-struct get_line : boost::static_visitor<int>
-{
-  result_type operator()(locatable const& lexeme) const { return lexeme.line; }
-  result_type operator()(barline const&) const { return 0; }
-  result_type operator()(hand_sign const&) const { return 0; }
-  result_type operator()(value_distinction const&) const { return 0; }
-};
+namespace music {
+  namespace braille {
+    namespace ambiguous {
 
-struct get_column : boost::static_visitor<int>
-{
-  result_type operator()(locatable const& lexeme) const { return lexeme.column; }
-  result_type operator()(barline const&) const { return 0; }
-  result_type operator()(hand_sign const&) const { return 0; }
-  result_type operator()(value_distinction const&) const { return 0; }
-};
+      /// Visitors
 
-struct get_ambiguous_value : boost::static_visitor<value>
-{
-  result_type operator()(note const& note) const
-  { return note.ambiguous_value; }
-  result_type operator()(rest const& rest) const
-  { return rest.ambiguous_value; }
-  result_type operator()(chord const& chord) const
-  { return (*this)(chord.base); }
-  template<typename T>
-  result_type operator()(T const&) const
-  { return unknown; }
-};
+      struct get_line : boost::static_visitor<int>
+      {
+        result_type operator()(locatable const& lexeme) const { return lexeme.line; }
+        result_type operator()(barline const&) const { return 0; }
+        result_type operator()(hand_sign const&) const { return 0; }
+        result_type operator()(value_distinction const&) const { return 0; }
+      };
 
-struct get_duration : boost::static_visitor<rational>
-{
-  result_type operator()(rhythmic const& note) const { return note.as_rational(); }
-  template <typename T>
-  result_type operator()(T const&) const { return zero; }
-};
+      struct get_column : boost::static_visitor<int>
+      {
+        result_type operator()(locatable const& lexeme) const { return lexeme.column; }
+        result_type operator()(barline const&) const { return 0; }
+        result_type operator()(hand_sign const&) const { return 0; }
+        result_type operator()(value_distinction const&) const { return 0; }
+      };
 
-struct is_rest : boost::static_visitor<bool>
-{
-  template <typename T>
-  result_type operator()(T const&) const
-  { return boost::is_same<rest, T>::value; }
-};
+      struct get_ambiguous_value : boost::static_visitor<value>
+      {
+        result_type operator()(note const& note) const
+        { return note.ambiguous_value; }
+        result_type operator()(rest const& rest) const
+        { return rest.ambiguous_value; }
+        result_type operator()(chord const& chord) const
+        { return (*this)(chord.base); }
+        template<typename T>
+        result_type operator()(T const&) const
+        { return unknown; }
+      };
 
-struct is_rhythmic : boost::static_visitor<bool>
-{
-  template <typename T>
-  result_type operator()(T const&) const
-  { return boost::is_base_of<rhythmic, T>::value; }
-};
+      struct get_duration : boost::static_visitor<rational>
+      {
+        result_type operator()(rhythmic const& note) const { return note.as_rational(); }
+        result_type operator()(measure const&) const; 
+        result_type operator()(barline const&) const { return zero; }
+        result_type operator()(hand_sign const&) const { return zero; }
+        result_type operator()(simile const&) const { return zero; }
+        result_type operator()(value_distinction const&) const { return zero; }
+      };
 
+      struct is_rest : boost::static_visitor<bool>
+      {
+        template <typename T>
+        result_type operator()(T const&) const
+        { return boost::is_same<rest, T>::value; }
+      };
+
+      struct is_rhythmic : boost::static_visitor<bool>
+      {
+        template <typename T>
+        result_type operator()(T const&) const
+        { return boost::is_base_of<rhythmic, T>::value; }
+      };
+    }
+  }
 }
 
-}}
+namespace music {
+  namespace braille {
+    namespace ambiguous {
+      inline rational
+      duration(sign const& sign) {
+        return apply_visitor(get_duration(), sign);
+      }
+    }
+  }
+}
+
+namespace boost {
+  template <typename IntType>
+  inline rational<IntType>
+  operator+( rational<IntType> const& r
+           , music::braille::ambiguous::partial_voice::const_reference sign
+           ) {
+    return r + duration(sign);
+  }
+}
+
+#include <boost/range/numeric.hpp>
+
+namespace music {
+  namespace braille {
+    namespace ambiguous {
+      inline rational
+      duration(partial_voice const& partial_voice) {
+        return boost::accumulate(partial_voice, zero);
+      }
+
+      inline rational
+      duration(partial_measure const& partial_measure) {
+        return duration(partial_measure.front());
+      }
+    }
+  }
+}
+
+namespace boost {
+  template <typename IntType>
+  inline rational<IntType>
+  operator+( rational<IntType> const& r
+           , music::braille::ambiguous::voice::const_reference partial_measure
+           ) {
+    return r + duration(partial_measure);
+  }
+}
+
+namespace music {
+  namespace braille {
+    namespace ambiguous {
+      inline
+      rational
+      duration(voice const& voice) {
+        return boost::accumulate(voice, zero);
+      }
+
+      inline
+      rational
+      duration(measure const& measure) {
+        return duration(measure.voices.front());
+      }
+
+      inline
+      get_duration::result_type
+      get_duration::operator()(measure const& measure) const {
+        return duration(measure);
+      }
+    }
+  }
+}
 
 #include <boost/fusion/include/adapt_struct.hpp>
 

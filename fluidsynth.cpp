@@ -109,7 +109,6 @@ public:
 
 }
 
-#include "duration.hpp"
 
 namespace music {
 

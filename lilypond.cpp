@@ -5,7 +5,6 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "lilypond.hpp"
-#include "duration.hpp"
 #include <algorithm>
 #include <iterator>
 
@@ -38,12 +37,6 @@ void generator::operator() (braille::ambiguous::score const& score) const
 
   os << "}" << std::endl;
 }
-
-struct get_duration: public boost::static_visitor<rational>
-{
-  rational operator() (braille::ambiguous::measure const& measure) const
-  { return music::duration(measure); }
-};
 
 struct repeat_info: public boost::static_visitor<void>
 {
@@ -111,7 +104,7 @@ void generator::operator() ( braille::ambiguous::part const& part
 
     unsigned int measure_number = 1;
     if (not part[staff_index].empty()) {
-      rational first_measure_duration(boost::apply_visitor(get_duration(),
+      rational first_measure_duration(boost::apply_visitor(braille::ambiguous::get_duration(),
                                                              part[staff_index].front()));
       if ((not score.time_sig and first_measure_duration != 1) or
           (score.time_sig and *score.time_sig != first_measure_duration)) {
