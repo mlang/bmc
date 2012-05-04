@@ -380,8 +380,8 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
+
   destroyTextTable(textTable);
 }
 
@@ -409,8 +409,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(34));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(2, 4));
   destroyTextTable(textTable);
 }
 
@@ -438,8 +437,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(16));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(12, 8));
   destroyTextTable(textTable);
 }
 
@@ -467,8 +465,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
   destroyTextTable(textTable);
 }
 
@@ -496,8 +493,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
   destroyTextTable(textTable);
 }
 
@@ -525,8 +521,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 8));
   destroyTextTable(textTable);
 }
 
@@ -554,8 +549,8 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(18));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-//BOOST_CHECK_EQUAL(music::braille::duration(attribute.parts[0][0][0]),
-//                  music::rational(3, 4));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(1, 8));
+  BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][1]), music::rational(4, 4));
   destroyTextTable(textTable);
 }
 

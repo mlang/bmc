@@ -220,10 +220,12 @@ namespace music {
 
 namespace boost {
   template <typename IntType>
-  inline rational<IntType>
-  operator+( rational<IntType> const& r
-           , music::braille::ambiguous::partial_voice::const_reference sign
-           ) {
+  inline
+  rational<IntType>
+  operator+ ( rational<IntType> const& r
+            , music::braille::ambiguous::partial_voice::const_reference sign
+            )
+  {
     return r + duration(sign);
   }
 }
@@ -234,12 +236,14 @@ namespace music {
   namespace braille {
     namespace ambiguous {
       inline rational
-      duration(partial_voice const& partial_voice) {
+      duration(partial_voice const& partial_voice)
+      {
         return boost::accumulate(partial_voice, zero);
       }
 
       inline rational
-      duration(partial_measure const& partial_measure) {
+      duration(partial_measure const& partial_measure)
+      {
         return duration(partial_measure.front());
       }
     }
@@ -251,7 +255,8 @@ namespace boost {
   inline rational<IntType>
   operator+( rational<IntType> const& r
            , music::braille::ambiguous::voice::const_reference partial_measure
-           ) {
+           )
+  {
     return r + duration(partial_measure);
   }
 }
@@ -261,20 +266,30 @@ namespace music {
     namespace ambiguous {
       inline
       rational
-      duration(voice const& voice) {
+      duration(voice const& voice)
+      {
         return boost::accumulate(voice, zero);
       }
 
       inline
       rational
-      duration(measure const& measure) {
+      duration(measure const& measure)
+      {
         return duration(measure.voices.front());
       }
 
       inline
       get_duration::result_type
-      get_duration::operator()(measure const& measure) const {
+      get_duration::operator()(measure const& measure) const
+      {
         return duration(measure);
+      }
+
+      inline
+      rational
+      duration(staff::const_reference staff_element)
+      {
+        return boost::apply_visitor(get_duration(), staff_element);
       }
     }
   }
