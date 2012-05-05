@@ -62,9 +62,12 @@ struct rhythmic_data
 
 /** \brief Base class for everything that implies a rhythmic value.
  */
-struct rhythmic
+class rhythmic
 {
+protected:
+  rhythmic() {}
   virtual ~rhythmic() {}
+public:
   virtual rational as_rational() const = 0;
 };
 
