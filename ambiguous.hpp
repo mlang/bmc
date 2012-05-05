@@ -100,7 +100,8 @@ struct rest : locatable, rhythmic_data, rhythmic
   { return type * 2 - type / pow(2, dots); }
 };
 
-struct interval : locatable {
+struct interval : locatable
+{
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
   music::interval steps;
@@ -293,6 +294,30 @@ namespace music {
       duration(staff::const_reference staff_element)
       {
         return boost::apply_visitor(get_duration(), staff_element);
+      }
+    }
+  }
+}
+
+namespace boost {
+  template <typename IntType>
+  inline rational<IntType>
+  operator+( rational<IntType> const& r
+           , music::braille::ambiguous::staff::const_reference staff_element
+           )
+  {
+    return r + duration(staff_element);
+  }
+}
+
+namespace music {
+  namespace braille {
+    namespace ambiguous {
+      inline
+      rational
+      duration(staff const& staff)
+      {
+        return boost::accumulate(staff, zero);
       }
     }
   }
