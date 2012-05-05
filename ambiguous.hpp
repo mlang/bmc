@@ -217,8 +217,10 @@ namespace music {
 namespace music {
   namespace braille {
     namespace ambiguous {
-      inline rational
-      duration(sign const& sign) {
+      inline
+      rational
+      duration(sign const& sign)
+      {
         return apply_visitor(get_duration(), sign);
       }
     }
@@ -251,6 +253,7 @@ namespace music {
       inline rational
       duration(partial_measure const& partial_measure)
       {
+        BOOST_ASSERT(not partial_measure.empty());
         return duration(partial_measure.front());
       }
     }
@@ -282,6 +285,7 @@ namespace music {
       rational
       duration(measure const& measure)
       {
+        BOOST_ASSERT(not measure.voices.empty());
         return duration(measure.voices.front());
       }
 
@@ -304,7 +308,8 @@ namespace music {
 
 namespace boost {
   template <typename IntType>
-  inline rational<IntType>
+  inline
+  rational<IntType>
   operator+( rational<IntType> const& r
            , music::braille::ambiguous::staff::const_reference staff_element
            )
