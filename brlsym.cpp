@@ -140,9 +140,9 @@ finger_symbols finger_sign;
 
 value_distinction_symbols::value_distinction_symbols()
 {
-  add(L"⠣⠂", ambiguous::distinct)
-     (L"⠠⠣⠂", ambiguous::small_follows)
-     (L"⠘⠣⠂", ambiguous::large_follows)
+  add(L"⠣⠂", ambiguous::value_distinction::distinct)
+     (L"⠠⠣⠂", ambiguous::value_distinction::small_follows)
+     (L"⠘⠣⠂", ambiguous::value_distinction::large_follows)
      ;
 }
 

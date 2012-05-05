@@ -109,14 +109,19 @@ struct interval : locatable
   boost::optional<ambiguous::tie> tie;
 };
 
-struct chord : locatable, rhythmic {
+struct chord : locatable, rhythmic
+{
   note base;
   std::vector<interval> intervals;
   virtual rational as_rational() const
   { return base.as_rational(); }
 };
 
-enum value_distinction { distinct, large_follows, small_follows };
+struct value_distinction : locatable
+{
+  enum type { distinct, large_follows, small_follows };
+  type value;
+};
 
 struct simile : locatable {
   boost::optional<unsigned> octave_spec;
@@ -160,7 +165,6 @@ namespace music {
         result_type operator()(locatable const& lexeme) const { return lexeme.line; }
         result_type operator()(barline const&) const { return 0; }
         result_type operator()(hand_sign const&) const { return 0; }
-        result_type operator()(value_distinction const&) const { return 0; }
       };
 
       struct get_column : boost::static_visitor<int>
@@ -168,7 +172,6 @@ namespace music {
         result_type operator()(locatable const& lexeme) const { return lexeme.column; }
         result_type operator()(barline const&) const { return 0; }
         result_type operator()(hand_sign const&) const { return 0; }
-        result_type operator()(value_distinction const&) const { return 0; }
       };
 
       struct get_ambiguous_value : boost::static_visitor<value>
@@ -354,6 +357,11 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::chord,
   (music::braille::ambiguous::note, base)
   (std::vector<music::braille::ambiguous::interval>, intervals)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::value_distinction,
+  (music::braille::ambiguous::value_distinction::type, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

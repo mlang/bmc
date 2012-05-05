@@ -42,7 +42,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   partial_measure = partial_voice % partial_measure_in_accord;
   partial_voice = +( newline
                    | chord | note | rest
-                   | value_distinction_sign
+                   | value_distinction
                    | hand_sign
                    | simile
                    | barline_sign
@@ -67,11 +67,18 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
        ;
 
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
+
   chord = note >> +interval;
-  interval = -accidental_sign >> -octave_sign >> interval_sign >> fingering >> -tie_sign;
+  interval = -accidental_sign
+          >> -octave_sign
+          >> interval_sign
+          >> fingering
+          >> -tie_sign;
 
   slur_sign = brl(14);
   tie_sign = brl(4) >> brl(14);
+
+  value_distinction = value_distinction_sign;
 
   finger_change = finger_sign >> brl(14) >> finger_sign;
   fingering = *(finger_change | finger_sign);
@@ -105,6 +112,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(rest);
   BMC_LOCATABLE_SET_ID(interval);
   BMC_LOCATABLE_SET_ID(chord);
+  BMC_LOCATABLE_SET_ID(value_distinction);
   BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie_sign);
 #undef BMC_LOCATABLE_SET_ID

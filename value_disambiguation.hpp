@@ -143,8 +143,13 @@ public:
   bool operator==(value_proxy const& rhs) const
   { return final_type == rhs.final_type && duration == rhs.duration; }
 
+  /** \brief Fill the infomation gathered about this partiuclar interpretation
+    *        into the AST
+   */
   void accept() const
   {
+    BOOST_ASSERT(final_type);
+    BOOST_ASSERT(*final_type == zero);
     if (whole_measure_rest) {
       *final_type = duration;
       *whole_measure_rest = true;
@@ -160,7 +165,7 @@ duration(std::vector<value_proxy> const& values)
 
 class proxied_partial_voice : public std::vector<value_proxy>
 {
-  rational const duration_;
+  rational const duration;
 public:
   typedef std::vector<value_proxy> base_type;
   proxied_partial_voice( const_pointer begin
@@ -168,11 +173,11 @@ public:
                        , rational const& duration
                        )
   : base_type(begin, end)
-  , duration_(duration)
+  , duration(duration)
   {
   }
 
-  rational const& duration() const { return duration_; }
+  operator rational const&() const { return duration; }
 };
 
 typedef std::shared_ptr<proxied_partial_voice const> proxied_partial_voice_ptr;
@@ -204,13 +209,13 @@ class partial_voice_interpretations
 
   class is_value_distinction : public boost::static_visitor<bool>
   {
-    ambiguous::value_distinction expected;
+    ambiguous::value_distinction::type expected;
   public:
-    is_value_distinction(ambiguous::value_distinction const& distinction)
+    is_value_distinction(ambiguous::value_distinction::type distinction)
     : expected(distinction) {}
 
     result_type operator()(ambiguous::value_distinction const& distinction) const
-    { return distinction == expected; }
+    { return distinction.value == expected; }
 
     template <class Sign>
     result_type operator()(Sign const&) const
@@ -220,7 +225,7 @@ class partial_voice_interpretations
   ambiguous::partial_voice::iterator
   same_category_end( ambiguous::partial_voice::iterator& begin
                    , ambiguous::partial_voice::iterator const& end
-                   , ambiguous::value_distinction const& distinction
+                   , ambiguous::value_distinction::type distinction
                    )
   {
     if (boost::apply_visitor(is_value_distinction(distinction), *begin)) {
@@ -408,7 +413,7 @@ class partial_voice_interpretations
           }
         }
       } else if ((tail = same_category_end(begin, end,
-                                           ambiguous::large_follows)) > begin) {
+                                           ambiguous::value_distinction::large_follows)) > begin) {
         same_category const group(begin, tail, large);
         if (duration(group) <= max_duration) {
           recurse(tail, end,
@@ -417,7 +422,7 @@ class partial_voice_interpretations
                   position + duration(group));
         }
       } else if ((tail = same_category_end(begin, end,
-                                           ambiguous::small_follows)) > begin) {
+                                           ambiguous::value_distinction::small_follows)) > begin) {
         same_category const group(begin, tail, small);
         if (duration(group) <= max_duration) {
           recurse(tail, end,
@@ -470,7 +475,7 @@ public:
 
 inline rational const&
 duration(proxied_partial_voice_ptr const& partial_voice)
-{ return partial_voice->duration(); }
+{ return *partial_voice; }
 
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
@@ -543,21 +548,15 @@ duration(proxied_partial_measure_ptr const& voices)
 
 class proxied_voice : public std::vector<proxied_partial_measure_ptr>
 {
-  rational const duration_;
+  rational const duration;
 public:
-  proxied_voice( proxied_partial_measure_ptr const *begin
-               , proxied_partial_measure_ptr const *end
-               )
-  : std::vector<proxied_partial_measure_ptr>(begin, end)
-  , duration_(std::accumulate(begin, end, zero))
+  typedef std::vector<proxied_partial_measure_ptr> base_type;
+  proxied_voice(const_pointer begin, const_pointer end)
+  : base_type(begin, end)
+  , duration(std::accumulate(begin, end, zero))
   {}
-  rational const& duration() const
-  { return duration_; }
+  operator rational const&() const { return duration; }
 };
-
-inline rational const&
-duration(proxied_voice const& parts)
-{ return parts.duration(); }
 
 inline rational
 operator+(rational const& r, proxied_partial_measure_ptr const& part)
@@ -615,9 +614,9 @@ public:
   }
 };
 
-inline rational
-duration(proxied_voice_ptr const& parts)
-{ return duration(*parts); }
+inline rational const&
+duration(proxied_voice_ptr const& voice)
+{ return *voice; }
 
 class proxied_measure : public std::vector<proxied_voice_ptr>
 {
@@ -646,7 +645,7 @@ public:
     return mean;
   }
 
-  void accept()
+  void accept() const
   {
     for (const_reference voice: *this)
       for (auto const& partial_measure: *voice)

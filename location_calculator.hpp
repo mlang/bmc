@@ -60,7 +60,6 @@ public:
 
   result_type operator()(ambiguous::barline&) const { }
   result_type operator()(hand_sign&) const { }
-  result_type operator()(ambiguous::value_distinction&) const { }
 };
 
 }}
