@@ -13,6 +13,7 @@
 #include "value_disambiguator.hpp"
 #include "octave_calculator.hpp"
 #include "alteration_calculator.hpp"
+#include "boost_range/algorithm/all_of.hpp"
 
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -82,10 +83,8 @@ public:
     }
     return true;
   }
-  result_type operator()(ambiguous::staff& staff)
-  {
-    return std::all_of(staff.begin(), staff.end(), boost::apply_visitor(*this));
-  }
+  result_type operator() (ambiguous::staff& staff)
+  { return all_of(staff, boost::apply_visitor(*this)); }
   result_type operator()(ambiguous::measure& measure)
   {
     if (disambiguate_values(measure, global_time_signature))

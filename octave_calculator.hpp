@@ -8,6 +8,7 @@
 #define BMC_OCTAVE_CALCULATOR_HPP
 
 #include <boost/variant/static_visitor.hpp>
+#include "boost_range/algorithm/all_of.hpp"
 #include "ambiguous.hpp"
 #include "compiler_pass.hpp"
 
@@ -44,8 +45,7 @@ public:
     for (ambiguous::voice& voice: measure.voices) {
       for (ambiguous::partial_measure& part: voice) {
         for (ambiguous::partial_voice& partial_voice: part) {
-          if (not std::all_of(partial_voice.begin(), partial_voice.end(),
-                              boost::apply_visitor(*this)))
+          if (not all_of(partial_voice, boost::apply_visitor(*this)))
             return false;
         }
       }
@@ -86,7 +86,7 @@ public:
     return false;
   }
 
-  template<typename Sign>
+  template <typename Sign>
   result_type operator()(Sign&) const
   { return true; }
 };

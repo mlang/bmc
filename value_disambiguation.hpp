@@ -207,20 +207,6 @@ class partial_voice_interpretations
     { BOOST_ASSERT(false); return value_proxy(); }
   };
 
-  class is_value_distinction : public boost::static_visitor<bool>
-  {
-    ambiguous::value_distinction::type expected;
-  public:
-    is_value_distinction(ambiguous::value_distinction::type distinction)
-    : expected(distinction) {}
-
-    result_type operator()(ambiguous::value_distinction const& distinction) const
-    { return distinction.value == expected; }
-
-    template <class Sign>
-    result_type operator()(Sign const&) const
-    { return false; }
-  };
   static
   ambiguous::partial_voice::iterator
   same_category_end( ambiguous::partial_voice::iterator& begin
@@ -228,7 +214,7 @@ class partial_voice_interpretations
                    , ambiguous::value_distinction::type distinction
                    )
   {
-    if (boost::apply_visitor(is_value_distinction(distinction), *begin)) {
+    if (boost::apply_visitor(ambiguous::is_value_distinction(distinction), *begin)) {
       begin = begin + 1; // Advance the outer iterator to avoid a loop
       ambiguous::partial_voice::iterator iter(begin);
       if (iter != end and
@@ -374,14 +360,14 @@ class partial_voice_interpretations
 
   void recurse( ambiguous::partial_voice::iterator begin
               , ambiguous::partial_voice::iterator const& end
-              , proxied_partial_voice::pointer stack_begin
-              , proxied_partial_voice::pointer stack_end
+              , value_type::element_type::pointer stack_begin
+              , value_type::element_type::pointer stack_end
               , rational const& max_duration
               , rational const& position
               )
   {
     if (begin == end) {
-      emplace_back(std::make_shared<proxied_partial_voice>
+      emplace_back(std::make_shared<value_type::element_type>
                    (stack_begin, stack_end, position - start_position)
                   );
     } else {
@@ -465,8 +451,8 @@ public:
   , start_position(position)
   , beat(1, time_signature.denominator())
   {
-    proxied_partial_voice::pointer
-    stack = new proxied_partial_voice::value_type[voice.size()];
+    value_type::element_type::pointer
+    stack = new value_type::element_type::value_type[voice.size()];
     recurse(voice.begin(), voice.end(),
             stack, stack,
             max_duration, position);
@@ -487,8 +473,8 @@ class partial_measure_interpretations
 {
   void recurse( ambiguous::partial_measure::iterator const& begin
               , ambiguous::partial_measure::iterator const& end
-              , proxied_partial_measure::pointer stack_begin
-              , proxied_partial_measure::pointer stack_end
+              , value_type::element_type::pointer stack_begin
+              , value_type::element_type::pointer stack_end
               , rational const& length
               , rational const& position
               , music::time_signature const& time_sig
@@ -496,7 +482,7 @@ class partial_measure_interpretations
   {
     if (begin == end) {
       if (stack_begin != stack_end)
-        emplace_back(std::make_shared<proxied_partial_measure>
+        emplace_back(std::make_shared<value_type::element_type>
                      (stack_begin, stack_end)
                     );
     } else {
@@ -519,8 +505,8 @@ public:
                                  , music::time_signature const& time_sig
                                  )
   {
-    proxied_partial_measure::pointer
-    stack = new proxied_partial_measure::value_type[partial_measure.size()];
+    value_type::element_type::pointer
+    stack = new value_type::element_type::value_type[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
             stack, stack,
             max_length, position, time_sig);
@@ -576,8 +562,8 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
 {
   void recurse( ambiguous::voice::iterator const& begin
               , ambiguous::voice::iterator const& end
-              , proxied_voice::pointer stack_begin
-              , proxied_voice::pointer stack_end
+              , value_type::element_type::pointer stack_begin
+              , value_type::element_type::pointer stack_end
               , rational const& max_length
               , music::time_signature const& time_sig
               , bool complete
@@ -586,7 +572,9 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
     if (begin == end) {
       if (stack_begin != stack_end) {
         if (not complete or duration(stack_begin, stack_end) == time_sig)
-          emplace_back(std::make_shared<proxied_voice>(stack_begin, stack_end));
+          emplace_back(std::make_shared<value_type::element_type>
+                       (stack_begin, stack_end)
+                      );
       }
     } else {
       auto const tail = begin + 1;
@@ -608,8 +596,8 @@ public:
                        , bool complete
                        )
   {
-    proxied_voice::pointer
-    stack = new proxied_voice::value_type[voice.size()];
+    value_type::element_type::pointer
+    stack = new value_type::element_type::value_type[voice.size()];
     recurse(voice.begin(), voice.end(),
             stack, stack,
             max_length, time_sig, complete);
@@ -710,8 +698,8 @@ class measure_interpretations : public std::list<proxied_measure>
 
   void recurse( std::vector<ambiguous::voice>::iterator const& begin
               , std::vector<ambiguous::voice>::iterator const& end
-              , proxied_measure::pointer stack_begin
-              , proxied_measure::pointer stack_end
+              , value_type::pointer stack_begin
+              , value_type::pointer stack_end
               , rational const& length
               )
   {
@@ -781,8 +769,8 @@ public:
   , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
-    proxied_measure::pointer
-    stack = new proxied_measure::value_type[measure.voices.size()];
+    value_type::pointer
+    stack = new value_type::value_type[measure.voices.size()];
     recurse(measure.voices.begin(), measure.voices.end(),
             stack, stack,
             time_signature);

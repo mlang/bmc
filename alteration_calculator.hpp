@@ -70,8 +70,9 @@ public:
   result_type operator()(ambiguous::note& note)
   {
     if (note.acc) {
-      note.alter = to_alter(*note.acc);
-      memory[note.octave][note.step] = *note.acc;
+      music::accidental const accidental = *note.acc;
+      note.alter = to_alter(accidental);
+      memory[note.octave][note.step] = accidental;
     } else {
       note.alter = to_alter(memory[note.octave][note.step]);
     }

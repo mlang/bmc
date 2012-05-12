@@ -9,7 +9,6 @@
 
 #include <map>
 #include <boost/variant/apply_visitor.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/mpl/bool.hpp>
 #include "ambiguous.hpp"
 

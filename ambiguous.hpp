@@ -9,11 +9,10 @@
 
 #include <cmath>
 #include <list>
+#include <type_traits>
 #include <vector>
 
 #include <boost/optional.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/variant.hpp>
 
 #include "music.hpp"
@@ -187,28 +186,38 @@ namespace music {
         { return unknown; }
       };
 
-      struct get_duration : boost::static_visitor<rational>
-      {
-        result_type operator()(rhythmic const& note) const { return note.as_rational(); }
-        result_type operator()(measure const&) const; 
-        result_type operator()(barline const&) const { return zero; }
-        result_type operator()(hand_sign const&) const { return zero; }
-        result_type operator()(simile const&) const { return zero; }
-        result_type operator()(value_distinction const&) const { return zero; }
-      };
-
       struct is_rest : boost::static_visitor<bool>
       {
         template <typename T>
         result_type operator()(T const&) const
-        { return boost::is_same<rest, T>::value; }
+        { return std::is_same<rest, T>::value; }
       };
 
       struct is_rhythmic : boost::static_visitor<bool>
       {
         template <typename T>
         result_type operator()(T const&) const
-        { return boost::is_base_of<rhythmic, T>::value; }
+        { return std::is_base_of<rhythmic, T>::value; }
+      };
+
+      class is_value_distinction : public boost::static_visitor<bool>
+      {
+        bool check;
+        value_distinction::type expected;
+      public:
+        is_value_distinction()
+        : check(false) {}
+
+        is_value_distinction(value_distinction::type distinction)
+        : check(true)
+        , expected(distinction) {}
+
+        result_type operator() (value_distinction const& distinction) const
+        { return not check? true: distinction.value == expected; }
+
+        template <class Sign>
+        result_type operator()(Sign const&) const
+        { return false; }
       };
     }
   }
@@ -217,9 +226,21 @@ namespace music {
 namespace music {
   namespace braille {
     namespace ambiguous {
+      struct get_duration: boost::static_visitor<rational>
+      {
+        result_type operator() (rhythmic const& note) const
+        { return note.as_rational(); }
+        result_type operator() (barline const&) const { return result_type(); }
+        result_type operator() (hand_sign const&) const { return result_type(); }
+        result_type operator() (simile const&) const { return result_type(); }
+        result_type operator() (value_distinction const&) const { return result_type(); }
+
+        result_type operator() (measure const&) const;
+      };
+
       inline
       rational
-      duration(sign const& sign)
+      duration(partial_voice::const_reference sign)
       {
         return apply_visitor(get_duration(), sign);
       }
@@ -244,13 +265,16 @@ namespace boost {
 namespace music {
   namespace braille {
     namespace ambiguous {
-      inline rational
+      inline
+      rational
       duration(partial_voice const& partial_voice)
       {
-        return boost::accumulate(partial_voice, zero);
+        // BOOST_ASSERT(not partial_voice.empty());
+        return boost::accumulate(partial_voice, rational());
       }
 
-      inline rational
+      inline
+      rational
       duration(partial_measure const& partial_measure)
       {
         BOOST_ASSERT(not partial_measure.empty());
@@ -262,10 +286,11 @@ namespace music {
 
 namespace boost {
   template <typename IntType>
-  inline rational<IntType>
-  operator+( rational<IntType> const& r
-           , music::braille::ambiguous::voice::const_reference partial_measure
-           )
+  inline
+  rational<IntType>
+  operator+ ( rational<IntType> const& r
+            , music::braille::ambiguous::voice::const_reference partial_measure
+            )
   {
     return r + duration(partial_measure);
   }
@@ -278,7 +303,7 @@ namespace music {
       rational
       duration(voice const& voice)
       {
-        return boost::accumulate(voice, zero);
+        return boost::accumulate(voice, rational());
       }
 
       inline
@@ -291,7 +316,7 @@ namespace music {
 
       inline
       get_duration::result_type
-      get_duration::operator()(measure const& measure) const
+      get_duration::operator() (measure const& measure) const
       {
         return duration(measure);
       }
@@ -310,9 +335,9 @@ namespace boost {
   template <typename IntType>
   inline
   rational<IntType>
-  operator+( rational<IntType> const& r
-           , music::braille::ambiguous::staff::const_reference staff_element
-           )
+  operator+ ( rational<IntType> const& r
+            , music::braille::ambiguous::staff::const_reference staff_element
+            )
   {
     return r + duration(staff_element);
   }
@@ -325,12 +350,13 @@ namespace music {
       rational
       duration(staff const& staff)
       {
-        return boost::accumulate(staff, zero);
+        return boost::accumulate(staff, rational());
       }
     }
   }
 }
 
+#include <boost/fusion/include/std_pair.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
