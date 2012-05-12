@@ -19,7 +19,7 @@ class xml_string
 {
   XMLCh *transcoded;
 public:
-  xml_string(char const *const string)
+  xml_string(char const * const string)
   : transcoded(XERCES_CPP_NAMESPACE::XMLString::transcode(string))
   {}
   ~xml_string() { XERCES_CPP_NAMESPACE::XMLString::release(&transcoded); }
@@ -33,7 +33,7 @@ class ostream_format_target: public XERCES_CPP_NAMESPACE::XMLFormatTarget
 public:
   ostream_format_target(std::ostream &stream): stream(stream) {}
 
-  virtual void writeChars( const XMLByte* const buffer, const XMLSize_t size
+  virtual void writeChars( XMLByte const * const buffer, XMLSize_t const size
                          , xercesc::XMLFormatter* const
                          )
   {
@@ -87,7 +87,7 @@ private:
     *dom(XERCES_CPP_NAMESPACE::
          DOMImplementationRegistry::getDOMImplementation(xml_string("Core")));
     if (dom) {
-      static xml_string
+      xml_string
       score_type("score-partwise"),
       dtd_public("-//Recordare//DTD MusicXML 3.0 Partwise//EN"),
       dtd_url("http://www.musicxml.org/dtds/partwise.dtd");
@@ -139,8 +139,8 @@ public:
     XERCES_CPP_NAMESPACE_USE
 
     try {
-      DOMImplementationLS *ls =
-        DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
+      DOMImplementationLS
+      *ls = DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
       unique_dom_ls_serializer_ptr serializer(ls->createLSSerializer());
       DOMConfiguration *configuration = serializer->getDomConfig();
 
@@ -161,6 +161,11 @@ public:
     }
     return false;
   }
+  friend std::ostream& operator<< (std::ostream& stream, document const& doc)
+  {
+    doc.write_to_stream(stream);
+    return stream;
+  }
 };
 
 }}
@@ -172,7 +177,7 @@ int main()
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
   {
     music::musicxml::document musicxml;
-    musicxml.write_to_stream(std::cout);
+    std::cout << musicxml;
   }
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
   return EXIT_SUCCESS;
