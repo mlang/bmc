@@ -32,35 +32,6 @@ class alteration_calculator
   music::accidental memory[10][steps_per_octave];
   music::key_signature key_sig;
 
-  struct signmap: std::multimap<rational const, ambiguous::sign&>
-  {
-    signmap(ambiguous::measure& measure, rational const& measure_position = rational())
-    {
-      for (ambiguous::voice& voice: measure.voices) {
-        rational voice_position(measure_position);
-        for (ambiguous::partial_measure& partial_measure: voice) {
-          for (ambiguous::partial_voice& partial_voice: partial_measure) {
-            rational position(voice_position);
-            for (ambiguous::sign& sign: partial_voice) {
-              insert(value_type(position, sign));
-              position += duration(sign);
-            }
-          }
-          voice_position += duration(partial_measure);
-        }
-      }
-    }
-  };
-  int to_alter( boost::optional<music::accidental> const& accidental
-              , unsigned octave
-              , music::diatonic_step step
-              )
-  {
-    if (accidental) memory[octave][step] = *accidental;
-
-    return to_alter(memory[octave][step]);
-  }
-
 public:
   alteration_calculator(report_error_type const& report_error)
   : compiler_pass(report_error)
@@ -69,15 +40,12 @@ public:
   /**
    * \brief Set the current key signature.
    */
-  void set(music::key_signature sig)
-  { key_sig = sig; }
+  void set(music::key_signature sig) { key_sig = sig; }
 
   result_type operator() (ambiguous::measure& measure)
   {
     reset_memory(key_sig);
-
-    // Visit all elements of this measure in chronological order
-    for (auto& value: signmap(measure)) boost::apply_visitor(*this, value.second);
+    visit_chronologically(measure);
   }
 
   result_type operator()(ambiguous::note& note)
@@ -86,29 +54,14 @@ public:
   result_type operator()(ambiguous::chord& chord)
   {
     (*this)(chord.base);
-    for (auto& interval: chord.intervals) {
+    for (auto& interval: chord.intervals)
       interval.alter = to_alter(interval.acc, interval.octave, interval.step);
-    }
   }
 
   template <typename Sign>
-  result_type operator()(Sign&) const { }
+  result_type operator() (Sign&) const { }
 
 private:
-  int to_alter(music::accidental accidental) const
-  {
-    switch (accidental) {
-    case natural:
-    default:           return 0;
-    case flat:         return -1;
-    case double_flat:  return -2;
-    case triple_flat:  return -3;
-    case sharp:        return 1;
-    case double_sharp: return 2;
-    case triple_sharp: return 3;
-    }
-  }
-
   void reset_memory(music::key_signature key_signature)
   {
     for (std::size_t octave = 0; octave < 10; ++octave) {
@@ -151,6 +104,48 @@ private:
       case  -1: memory[octave][B] = flat;        if (not --count) break;
       }
     }
+  }
+  int to_alter( boost::optional<music::accidental> const& accidental
+              , unsigned octave
+              , music::diatonic_step step
+              )
+  {
+    if (accidental) memory[octave][step] = *accidental;
+
+    switch (memory[octave][step]) {
+    case natural:
+    default:           return 0;
+    case flat:         return -1;
+    case double_flat:  return -2;
+    case triple_flat:  return -3;
+    case sharp:        return 1;
+    case double_sharp: return 2;
+    case triple_sharp: return 3;
+    }
+  }
+  struct signmap: std::multimap<rational const, ambiguous::sign&>
+  {
+    signmap(ambiguous::measure& measure, rational const& measure_position = rational())
+    {
+      for (ambiguous::voice& voice: measure.voices) {
+        rational voice_position(measure_position);
+        for (ambiguous::partial_measure& partial_measure: voice) {
+          for (ambiguous::partial_voice& partial_voice: partial_measure) {
+            rational position(voice_position);
+            for (ambiguous::sign& sign: partial_voice) {
+              insert(value_type(position, sign));
+              position += duration(sign);
+            }
+          }
+          voice_position += duration(partial_measure);
+        }
+      }
+    }
+  };
+  void visit_chronologically(ambiguous::measure& measure)
+  {
+    for (auto& value: signmap(measure))
+      boost::apply_visitor(*this, value.second);
   }
 };
 

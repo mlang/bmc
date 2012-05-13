@@ -74,19 +74,23 @@ struct slur {};
 
 struct tie : locatable {};
 
-struct note : locatable, rhythmic_data, rhythmic
+struct pitched
+{
+  unsigned octave;
+  diatonic_step step;
+  int alter;
+};
+
+struct note : locatable, rhythmic_data, rhythmic, pitched
 {
   std::vector<articulation> articulations;
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
-  unsigned octave; // filled in by octave_calculator.hpp
-  diatonic_step step;
-  int alter;       // filled in by alteration_calculator.hpp
   std::vector<slur> slurs;
   fingering_list fingers;
   boost::optional<ambiguous::tie> tie;
 
-  note(): locatable(), rhythmic_data(), octave(0), alter(0) {}
+  note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
 };
@@ -99,12 +103,10 @@ struct rest : locatable, rhythmic_data, rhythmic
   { return type * 2 - type / pow(2, dots); }
 };
 
-struct interval : locatable
+struct interval : locatable, pitched
 {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
-  unsigned octave; music::diatonic_step step;
-  int alter;
   music::interval steps;
   fingering_list fingers;
   boost::optional<ambiguous::tie> tie;
