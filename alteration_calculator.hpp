@@ -56,13 +56,9 @@ class alteration_calculator
               , music::diatonic_step step
               )
   {
-    if (accidental) {
-      int alter = to_alter(*accidental);
-      memory[octave][step] = *accidental;
-      return alter;
-    } else {
-      return to_alter(memory[octave][step]);
-    }
+    if (accidental) memory[octave][step] = *accidental;
+
+    return to_alter(memory[octave][step]);
   }
 
 public:
