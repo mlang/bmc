@@ -275,13 +275,9 @@ generator::operator() (braille::ambiguous::chord const& chord) const
   ly_finger(chord.base.fingers);
   for (braille::ambiguous::interval const& interval: chord.intervals) {
     os << " ";
-    int oct = chord.base.octave;
-    int stp = chord.base.step + interval.steps;
-    while (stp > 6) { ++oct; stp -= 7; }
-    while (stp < 0) { --oct; stp += 7; }
-    ly_pitch_step(diatonic_step(stp));
-    //ly_accidental(interval.acc);
-    ly_octave(oct);
+    ly_pitch_step(interval.step);
+    ly_accidental(interval.alter);
+    ly_octave(interval.octave);
     if (interval.tie) os << "~";
     ly_finger(interval.fingers);
   }

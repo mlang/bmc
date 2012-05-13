@@ -30,6 +30,7 @@ class octave_calculator
 , public compiler_pass
 {
   ambiguous::note const* prev;
+  music::braille::interval_direction interval_direction;
 
 public:
   octave_calculator(report_error_type const& report_error)
@@ -37,8 +38,11 @@ public:
   , prev(nullptr)
   {}
 
+  void set(music::braille::interval_direction interval_dir)
+  { interval_direction = interval_dir; }
+
   void reset()
-  { prev = nullptr; }
+  { prev = nullptr; interval_direction = braille::interval_direction::down; }
 
   result_type operator()(ambiguous::measure& measure)
   {
@@ -80,7 +84,21 @@ public:
   result_type operator()(ambiguous::chord& chord)
   {
     if ((*this)(chord.base)) {
-      /// \todo Calcualte octaves of the chord intervals
+      BOOST_ASSERT(not chord.intervals.empty());
+      int step = chord.base.step;
+      unsigned octave = chord.base.octave;
+      for (auto& interval: chord.intervals) {
+        if (interval_direction == braille::interval_direction::down) {
+          step -= interval.steps;
+        } else {
+          step += interval.steps;
+        }
+        while (step > B) { octave++; step -= steps_per_octave; }
+        while (step < 0) { octave--; step += steps_per_octave; }
+        if (interval.octave_spec) octave = *interval.octave_spec;
+        interval.octave = octave;
+        interval.step = static_cast<diatonic_step>(step);
+      }
       return true;
     }
     return false;

@@ -75,9 +75,16 @@ public:
     }
 
     for (ambiguous::part& part: score.parts) {
-      for (ambiguous::staff& staff: part) {
+      for (std::size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
+        music::braille::interval_direction interval_direction;
+        switch (staff_index) {
+        case 0: interval_direction = music::braille::interval_direction::down; break;
+        case 1: interval_direction = music::braille::interval_direction::up;   break;
+        default: BOOST_ASSERT(false);
+        }
+        calculate_octaves.set(interval_direction);
         calculate_alterations.set(score.key_sig);
-        if (not (*this)(staff)) return false;
+        if (not (*this)(part[staff_index])) return false;
         calculate_octaves.reset();
       }
     }

@@ -103,6 +103,8 @@ struct interval : locatable
 {
   boost::optional<accidental> acc;
   boost::optional<unsigned> octave_spec;
+  unsigned octave; music::diatonic_step step;
+  int alter;
   music::interval steps;
   fingering_list fingers;
   boost::optional<ambiguous::tie> tie;

@@ -51,6 +51,19 @@ class alteration_calculator
       }
     }
   };
+  int to_alter( boost::optional<music::accidental> const& accidental
+              , unsigned octave
+              , music::diatonic_step step
+              )
+  {
+    if (accidental) {
+      int alter = to_alter(*accidental);
+      memory[octave][step] = *accidental;
+      return alter;
+    } else {
+      return to_alter(memory[octave][step]);
+    }
+  }
 
 public:
   alteration_calculator(report_error_type const& report_error)
@@ -72,20 +85,14 @@ public:
   }
 
   result_type operator()(ambiguous::note& note)
-  {
-    if (note.acc) {
-      music::accidental const accidental = *note.acc;
-      note.alter = to_alter(accidental);
-      memory[note.octave][note.step] = accidental;
-    } else {
-      note.alter = to_alter(memory[note.octave][note.step]);
-    }
-  }
+  { note.alter = to_alter(note.acc, note.octave, note.step); }
 
   result_type operator()(ambiguous::chord& chord)
   {
     (*this)(chord.base);
-    // \todo Calculate alterations of chord intervals
+    for (auto& interval: chord.intervals) {
+      interval.alter = to_alter(interval.acc, interval.octave, interval.step);
+    }
   }
 
   template <typename Sign>
