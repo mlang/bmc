@@ -376,15 +376,16 @@ class partial_voice_interpretations
         while (std::distance(begin, tail) >= 3) {
           notegroup const group(begin, tail, small, stack_end);
           rational const group_duration(group.duration());
-          if (group_duration <= max_duration and
-              on_beat(position + group_duration)) {
-            recurse(tail, end,
-                    stack_begin, group.end(),
-                    max_duration - group_duration,
-                    position + group_duration);
+          if (group_duration <= max_duration) {
+            rational const next_position(position + group_duration);
+            if (on_beat(next_position)) {
+              recurse(tail, end, stack_begin, group.end(),
+                      max_duration - group_duration, next_position);
+            }
           }
           --tail;
         }
+
         large_and_small const possibilities(*begin);
         tail = begin; ++tail;
         if (possibilities.empty()) {
@@ -431,7 +432,8 @@ class partial_voice_interpretations
           }
         }
 
-        if (stack_begin == stack_end and position == 0 and time_signature != 1 and
+        if (stack_begin == stack_end and position == 0 and
+            time_signature != 1 and
             boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
           *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
           recurse(tail, end, stack_begin, stack_end + 1,
@@ -453,9 +455,7 @@ public:
   {
     value_type::element_type::pointer
     stack = new value_type::element_type::value_type[voice.size()];
-    recurse(voice.begin(), voice.end(),
-            stack, stack,
-            max_duration, position);
+    recurse(voice.begin(), voice.end(), stack, stack, max_duration, position);
     delete [] stack;
   }
 };
@@ -508,8 +508,7 @@ public:
     value_type::element_type::pointer
     stack = new value_type::element_type::value_type[partial_measure.size()];
     recurse(partial_measure.begin(), partial_measure.end(),
-            stack, stack,
-            max_length, position, time_sig);
+            stack, stack, max_length, position, time_sig);
     delete [] stack;
   }
 };
@@ -560,18 +559,19 @@ typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
 
 class voice_interpretations : public std::vector<proxied_voice_ptr>
 {
+  music::time_signature const time_signature;
+
   void recurse( ambiguous::voice::iterator const& begin
               , ambiguous::voice::iterator const& end
               , value_type::element_type::pointer stack_begin
               , value_type::element_type::pointer stack_end
               , rational const& max_length
-              , music::time_signature const& time_sig
               , bool complete
               )
   {
     if (begin == end) {
       if (stack_begin != stack_end) {
-        if (not complete or duration(stack_begin, stack_end) == time_sig)
+        if (not complete or duration(stack_begin, stack_end) == time_signature)
           emplace_back(std::make_shared<value_type::element_type>
                        (stack_begin, stack_end)
                       );
@@ -581,10 +581,10 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
       for (partial_measure_interpretations::const_reference possibility:
            partial_measure_interpretations(*begin, max_length,
                                            duration(stack_begin, stack_end),
-                                           time_sig)) {
+                                           time_signature)) {
         *stack_end = possibility;
         recurse(tail, end, stack_begin, stack_end + 1,
-                max_length - duration(possibility), time_sig, complete);
+                max_length - duration(possibility), complete);
       }
     }
   }
@@ -595,12 +595,11 @@ public:
                        , music::time_signature const& time_sig
                        , bool complete
                        )
+  : time_signature(time_sig)
   {
     value_type::element_type::pointer
     stack = new value_type::element_type::value_type[voice.size()];
-    recurse(voice.begin(), voice.end(),
-            stack, stack,
-            max_length, time_sig, complete);
+    recurse(voice.begin(), voice.end(), stack, stack, max_length, complete);
     delete [] stack;
   }
 };
@@ -684,7 +683,7 @@ operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
   return os;
 }
 
-class measure_interpretations : public std::list<proxied_measure>
+class measure_interpretations: std::list<proxied_measure>
 {
   music::time_signature time_signature;
   bool complete;
@@ -752,12 +751,14 @@ class measure_interpretations : public std::list<proxied_measure>
   }
 
 public:
+  typedef std::list<proxied_measure> base_type;
+
   measure_interpretations()
   : complete(false)
   {}
 
   measure_interpretations(measure_interpretations const& other)
-  : std::list<proxied_measure>(other.begin(), other.end())
+  : base_type(other.begin(), other.end())
   , time_signature(other.time_signature)
   , complete(other.complete)
   {}
@@ -792,6 +793,13 @@ public:
         if (duration(lhs) + duration(rhs) == time_signature) ++matches;
     return matches == 1;
   }
+
+  using base_type::begin;
+  using base_type::clear;
+  using base_type::end;
+  using base_type::empty;
+  using base_type::front;
+  using base_type::size;
 };
 
 }
