@@ -76,19 +76,19 @@ struct tie : locatable {};
 
 struct pitched
 {
+  boost::optional<accidental> acc;
+  boost::optional<unsigned> octave_spec;
   unsigned octave;
   diatonic_step step;
   int alter;
+  boost::optional<ambiguous::tie> tie;
 };
 
 struct note : locatable, rhythmic_data, rhythmic, pitched
 {
   std::vector<articulation> articulations;
-  boost::optional<accidental> acc;
-  boost::optional<unsigned> octave_spec;
   std::vector<slur> slurs;
   fingering_list fingers;
-  boost::optional<ambiguous::tie> tie;
 
   note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
@@ -105,11 +105,8 @@ struct rest : locatable, rhythmic_data, rhythmic
 
 struct interval : locatable, pitched
 {
-  boost::optional<accidental> acc;
-  boost::optional<unsigned> octave_spec;
   music::interval steps;
   fingering_list fingers;
-  boost::optional<ambiguous::tie> tie;
 };
 
 struct chord : locatable, rhythmic
