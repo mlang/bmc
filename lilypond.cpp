@@ -41,12 +41,12 @@ void generator::operator() (braille::ambiguous::score const& score) const
 struct repeat_info: public boost::static_visitor<void>
 {
   bool begin, end;
-  repeat_info(boost::variant<braille::ambiguous::measure> const& measure)
+  repeat_info(braille::ambiguous::staff_element const& staff_element)
   : begin(false)
   , end(false)
-  { boost::apply_visitor(*this, measure); }  
+  { boost::apply_visitor(*this, staff_element); }  
 
-  void operator() (braille::ambiguous::measure const& measure)
+  result_type operator() (braille::ambiguous::measure const& measure)
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
@@ -54,6 +54,7 @@ struct repeat_info: public boost::static_visitor<void>
           std::for_each(partial_voice.begin(), partial_voice.end(),
                         boost::apply_visitor(*this));
   }
+  result_type operator() (braille::ambiguous::key_and_time_signature const&) {}
 
   void operator() (braille::ambiguous::barline const& barline)
   {
@@ -116,14 +117,14 @@ void generator::operator() ( braille::ambiguous::part const& part
     for (size_t measure_index = 0; measure_index < part[staff_index].size();
          ++measure_index)
     {
-      boost::variant<braille::ambiguous::measure> const& this_measure = part[staff_index][measure_index];
+      braille::ambiguous::staff_element const& this_measure = part[staff_index][measure_index];
 
       os << indent << "  "; boost::apply_visitor(*this, this_measure);
 
       bool barcheck = true;
       repeat_info this_repeat(this_measure);
       if (measure_index < part[staff_index].size() - 1) {
-        boost::variant<braille::ambiguous::measure> const& next_measure =
+        braille::ambiguous::staff_element const& next_measure =
           part[staff_index][measure_index + 1];
         repeat_info next_repeat(next_measure);
         if (this_repeat.end and next_repeat.begin) {
@@ -144,6 +145,11 @@ void generator::operator() ( braille::ambiguous::part const& part
     os << indent << "}" << std::endl;
   }
   if (part.size() == 2) os << "    " << ">>" << std::endl;
+}
+
+generator::result_type
+generator::operator() (braille::ambiguous::key_and_time_signature const& key_and_time_sig) const
+{
 }
 
 generator::result_type

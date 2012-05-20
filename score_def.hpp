@@ -70,7 +70,8 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   > staff[insert(back(_val), end(back(_val)), begin(_1), end(_1))]
   > eom > -eol
   ;
-  staff = measure % (whitespace | eol);
+  staff = (key_and_time_signature | measure) % (whitespace | eol);
+  key_and_time_signature = key_signature >> time_signature;
 
   right_hand_sign = brl(46) >> brl(345) > optional_dot;
   left_hand_sign = brl(456) >> brl(345) > optional_dot;

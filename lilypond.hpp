@@ -44,6 +44,7 @@ private:
 
 public:
   result_type operator() (braille::ambiguous::measure const&) const;
+  result_type operator() (braille::ambiguous::key_and_time_signature const&) const;
 private:
   void operator() (braille::ambiguous::voice const&) const;
   void operator() (braille::ambiguous::partial_measure const&) const;

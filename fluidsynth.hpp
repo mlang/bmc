@@ -31,6 +31,7 @@ public:
 
   void operator()(braille::ambiguous::score const&);
   void operator()(braille::ambiguous::measure const&);
+  result_type operator()(braille::ambiguous::key_and_time_signature const&) {};
 private:
   void play();
 };

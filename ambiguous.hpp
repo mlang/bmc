@@ -130,7 +130,10 @@ struct simile : locatable {
 enum barline { begin_repeat, end_repeat };
 
 typedef boost::variant< note, rest, chord
-                      , value_distinction, hand_sign, simile, barline> sign;
+                      , value_distinction
+                      , hand_sign, simile, barline
+                      >
+        sign;
 
 struct partial_voice : locatable, std::vector<sign> {};
 struct partial_measure : locatable, std::vector<partial_voice> {};
@@ -142,7 +145,14 @@ struct measure : locatable
   std::vector<voice> voices;
 };
 
-typedef std::vector< boost::variant<measure> > staff;
+struct key_and_time_signature : locatable
+{
+  key_signature key;
+  time_signature time;
+};
+
+typedef boost::variant<measure, key_and_time_signature> staff_element;
+typedef std::vector<staff_element> staff;
 
 typedef std::vector<staff> part;
 
@@ -237,6 +247,7 @@ namespace music {
         result_type operator() (value_distinction const&) const { return result_type(); }
 
         result_type operator() (measure const&) const;
+        result_type operator() (key_and_time_signature const&) const { return result_type(); }
       };
 
       inline
@@ -405,6 +416,12 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ambiguous::measure,
   (boost::optional<unsigned>, ending)
   (std::vector<music::braille::ambiguous::voice>, voices)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ambiguous::key_and_time_signature,
+  (music::key_signature, key)
+  (music::time_signature, time)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

@@ -76,7 +76,7 @@ public:
 
     for (ambiguous::part& part: score.parts) {
       for (std::size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
-        music::braille::interval_direction interval_direction;
+        music::braille::interval_direction interval_direction = music::braille::interval_direction::down;
         switch (staff_index) {
         case 0: interval_direction = music::braille::interval_direction::down; break;
         case 1: interval_direction = music::braille::interval_direction::up;   break;
@@ -101,6 +101,11 @@ public:
         return true;
       }
     return false;
+  }
+  result_type operator()(ambiguous::key_and_time_signature& key_and_time_sig)
+  {
+    calculate_locations(key_and_time_sig);
+    return true;
   }
 };
 
