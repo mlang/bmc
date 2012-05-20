@@ -47,6 +47,7 @@ namespace value_disambiguation {
  */
 class value_disambiguator: public compiler_pass
 {
+  music::time_signature time_signature;
   value_disambiguation::measure_interpretations *anacrusis;
 
 public:
@@ -54,9 +55,10 @@ public:
   value_disambiguator(report_error_type const& report_error);
   ~value_disambiguator();
 
-  result_type operator()( ambiguous::measure& measure
-                        , time_signature const& time_sig
-                        );
+  void set(music::time_signature const& time_sig)
+  { time_signature = time_sig; }
+
+  result_type operator()(ambiguous::measure& measure);
 };
 
 }}

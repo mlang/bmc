@@ -5,6 +5,7 @@ namespace music { namespace braille {
 
 value_disambiguator::value_disambiguator(report_error_type const& report_error)
 : compiler_pass(report_error)
+, time_signature(4, 4)
 , anacrusis(new value_disambiguation::measure_interpretations())
 {}
 
@@ -14,11 +15,9 @@ value_disambiguator::~value_disambiguator()
 }
 
 value_disambiguator::result_type
-value_disambiguator::operator()( ambiguous::measure& measure
-                               , time_signature const& time_sig
-                               )
+value_disambiguator::operator()(ambiguous::measure& measure)
 {
-  value_disambiguation::measure_interpretations interpretations(measure, time_sig);
+  value_disambiguation::measure_interpretations interpretations(measure, time_signature);
 
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
@@ -29,7 +28,7 @@ value_disambiguator::operator()( ambiguous::measure& measure
       if (anacrusis->completes_uniquely(interpretations)) {
         for (auto& lhs: *anacrusis) {
           for (auto& rhs: interpretations) {
-            if (duration(lhs) + duration(rhs) == time_sig) {
+            if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();
               anacrusis->clear();
               return true;

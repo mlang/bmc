@@ -83,6 +83,7 @@ public:
         default: BOOST_ASSERT(false);
         }
         calculate_octaves.set(interval_direction);
+        disambiguate_values.set(global_time_signature);
         calculate_alterations.set(score.key_sig);
         if (not (*this)(part[staff_index])) return false;
         calculate_octaves.reset();
@@ -94,7 +95,7 @@ public:
   { return all_of(staff, boost::apply_visitor(*this)); }
   result_type operator()(ambiguous::measure& measure)
   {
-    if (disambiguate_values(measure, global_time_signature))
+    if (disambiguate_values(measure))
       if (calculate_octaves(measure)) {
         calculate_alterations(measure);
         calculate_locations(measure);
@@ -105,6 +106,7 @@ public:
   result_type operator()(ambiguous::key_and_time_signature& key_and_time_sig)
   {
     calculate_locations(key_and_time_sig);
+    disambiguate_values.set(key_and_time_sig.time);
     return true;
   }
 };
