@@ -25,7 +25,7 @@ floor(rational<IntType> const& r)
 
 template<typename IntType>
 inline rational<IntType>
-operator%(rational<IntType> const& lhs, rational<IntType> const& rhs)
+fmod(rational<IntType> const& lhs, rational<IntType> const& rhs)
 {
   // The simple expression is: lhs - rhs * floor(lhs / rhs)
   // However, since floor will normalize implicitly, we do the
