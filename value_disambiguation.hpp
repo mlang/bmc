@@ -354,12 +354,9 @@ class partial_voice_interpretations
   music::time_signature const& time_signature;
   rational const start_position;
   rational const beat;
-  bool on_beat(rational const& position) const {
-    rational::int_type
-    a = position.numerator() * beat.denominator(),
-    b = position.denominator() * beat.numerator();
-    return (a - b*(a/b)) == 0;
-  }
+
+  bool on_beat(rational const& position) const
+  { return no_remainder(position, beat); }
 
   void recurse( ambiguous::partial_voice::iterator begin
               , ambiguous::partial_voice::iterator const& end

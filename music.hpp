@@ -44,6 +44,17 @@ fmod(rational<IntType> const& lhs, rational<IntType> const& rhs)
                            lhs.denominator() * den);
 }
 
+/** \return true if lhs / rhs results in a remainder equal to zero
+ */
+template <typename IntType>
+inline
+bool no_remainder(rational<IntType> const& lhs, rational<IntType> const& rhs)
+{
+  IntType const a = lhs.numerator() * rhs.denominator(),
+                b = lhs.denominator() * rhs.numerator();
+  return (a - b*(a/b)) == 0;
+}
+
 }
 
 namespace music {
