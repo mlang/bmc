@@ -355,7 +355,10 @@ class partial_voice_interpretations
   rational const start_position;
   rational const beat;
   bool on_beat(rational const& position) const {
-    return fmod(position, beat) == zero;
+    rational::int_type
+    a = position.numerator() * beat.denominator(),
+    b = position.denominator() * beat.numerator();
+    return (a - b*(a/b)) == 0;
   }
 
   void recurse( ambiguous::partial_voice::iterator begin

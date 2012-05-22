@@ -19,27 +19,14 @@
 namespace boost { // Modular arithmetic
 
 template<typename IntType>
-inline IntType
-floor(rational<IntType> const& r)
-{ return rational_cast<IntType>(r); }
-
-template<typename IntType>
 inline rational<IntType>
 fmod(rational<IntType> const& lhs, rational<IntType> const& rhs)
 {
-  // The simple expression is: lhs - rhs * floor(lhs / rhs)
-  // However, since floor will normalize implicitly, we do the
-  // rational arithmetic by hand to avoid excessive calls to boost::math::gcd.
-
-  // Avoid repeated construction
   IntType const zero(0);
 
-  // Trap division by zero
   if (rhs.numerator() == zero) throw bad_rational();
 
   IntType num(0), den(1);
-
-  // tmp = lhs / rhs
   if (lhs.numerator() != zero) {
     num = lhs.numerator() * rhs.denominator();
     den = lhs.denominator() * rhs.numerator();
@@ -50,11 +37,9 @@ fmod(rational<IntType> const& lhs, rational<IntType> const& rhs)
     }
   }
 
-  // tmp = rhs * floor(tmp)
   num = rhs.numerator() * (num / den);
   den = rhs.denominator();
 
-  // return lhs - tmp
   return rational<IntType>(lhs.numerator()*den - num*lhs.denominator(),
                            lhs.denominator() * den);
 }
@@ -73,7 +58,7 @@ rational const zero = rational();
 
 inline rational
 gcd(rational const& a, rational const& b)
-{ return b == zero? a: gcd(b, a % b); }
+{ return b == zero? a: gcd(b, fmod(a, b)); }
 
 typedef rational time_modification;
 
