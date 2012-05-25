@@ -1,4 +1,4 @@
-// Copyright (C) 2011  Mario Lang <mlang@delysid.org>
+// Copyright (C) 2012  Mario Lang <mlang@delysid.org>
 //
 // Distributed under the terms of the GNU General Public License version 3.
 // (see accompanying file LICENSE.txt or copy at
@@ -8,7 +8,6 @@
 #define BMC_AMBIGUOUS_HPP
 
 #include <cmath>
-#include <list>
 #include <type_traits>
 #include <vector>
 
