@@ -351,8 +351,8 @@ BOOST_AUTO_TEST_CASE(rational_gcd) {
   BOOST_CHECK_EQUAL(gcd(a, b), b);
   BOOST_CHECK_EQUAL(gcd(music::rational(1, 8), music::rational(1, 12)),
                     music::rational(1, 24));
-  BOOST_CHECK_EQUAL(boost::math::gcd(music::rational(1, 8), music::rational(1, 12)),
-                    music::rational(1, 24));
+  BOOST_CHECK_EQUAL(lcm(music::rational(1, 8), music::rational(1, 12)),
+                    music::rational(1, 4));
 }
 
 #include <fstream>

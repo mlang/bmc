@@ -58,9 +58,8 @@ namespace boost {
 namespace boost {
   namespace math {
     namespace detail {
-      // Greatest common divisor for rational numbers
       template <typename IntType>
-      rational<IntType>
+      inline rational<IntType>
       gcd_rational(rational<IntType> a, rational<IntType> b)
       {
         while (true) {
@@ -69,6 +68,14 @@ namespace boost {
           if (!b) return a;
           a -= b * rational_cast<IntType>(a / b);
         }
+      }
+
+      template <typename IntType>
+      inline rational<IntType>
+      lcm_rational(rational<IntType> a, rational<IntType> b)
+      {
+        rational<IntType> const gcd(gcd_rational(a, b));
+        return !gcd? gcd: a/gcd*b;        
       }
     }
 
@@ -82,6 +89,19 @@ namespace boost {
                              ) const
       {
         return detail::gcd_rational(a, b);
+      }
+    };
+
+    template <typename IntType>
+    struct lcm_evaluator<rational<IntType>>
+    {
+      typedef rational<IntType> result_type,
+                                first_argument_type, second_argument_type;
+      result_type operator() (  first_argument_type const &a
+                             , second_argument_type const &b
+                             ) const
+      {
+        return detail::lcm_rational(a, b);
       }
     };
   }
