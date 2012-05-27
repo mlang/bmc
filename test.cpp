@@ -346,7 +346,7 @@ BOOST_AUTO_TEST_CASE(score_solo_test2) {
   destroyTextTable(textTable);
 }
 
-BOOST_AUTO_TEST_CASE(rational_gcd) {
+BOOST_AUTO_TEST_CASE(common_factor) {
   music::rational a(1, 4), b(1, 8);
   BOOST_CHECK_EQUAL(gcd(a, b), b);
   BOOST_CHECK_EQUAL(gcd(music::rational(1, 8), music::rational(1, 12)),

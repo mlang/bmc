@@ -58,7 +58,7 @@ set(BMC_TEST_NAMES
     notegroup_test1
     compiler_test1
     score_solo_test1 score_solo_test2
-    rational_gcd
+    common_factor
     bwv988_v01
     bwv988_v02
     bwv988_v03
