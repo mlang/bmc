@@ -18,46 +18,6 @@ namespace boost {
     return lhs - rhs * rational_cast<IntType>(lhs / rhs);
   }
 
-  template <typename IntType>
-  inline
-  rational<IntType>
-  fmod(rational<IntType> const& lhs, IntType rhs)
-  {
-    return lhs - rhs * rational_cast<IntType>(lhs / rhs);
-  }
-
-  template <typename IntType>
-  inline
-  rational<IntType>
-  fmod(IntType lhs, rational<IntType> const& rhs)
-  {
-    return lhs - rhs * rational_cast<IntType>(lhs / rhs);
-  }
-
-  template <typename IntType>
-  inline
-  rational<IntType>
-  gcd(rational<IntType> const& a, rational<IntType> const& b)
-  {
-    return !b? a: gcd(b, fmod(a, b));
-  }
-
-  template <typename IntType>
-  inline
-  rational<IntType>
-  gcd(IntType a, rational<IntType> const& b)
-  {
-    return !b? rational<IntType>(a): gcd(b, fmod(a, b));
-  }
-
-  template <typename IntType>
-  inline
-  rational<IntType>
-  gcd(rational<IntType> const& a, IntType b)
-  {
-    return !b? a: gcd(b, fmod(a, b));
-  }
-
   /** \return true if lhs / rhs results in a remainder equal to zero
    */
   template <typename IntType>
@@ -78,8 +38,6 @@ namespace boost {
     return rational<IntType>(r.denominator(), r.numerator());
   }
 
-  /** \return r to the i-th power
-   */
   template <typename IntType>
   inline
   rational<IntType>
@@ -94,6 +52,38 @@ namespace boost {
       if (i % 2) result *= x;
     }
     return positive? result: reciprocal(result);
+  }
+}
+
+namespace boost {
+  namespace math {
+    namespace detail {
+      // Greatest common divisor for rational numbers
+      template <typename IntType>
+      rational<IntType>
+      gcd_rational(rational<IntType> a, rational<IntType> b)
+      {
+        while (true) {
+          if (!a) return b;
+          b -= a * rational_cast<IntType>(b / a);
+          if (!b) return a;
+          a -= b * rational_cast<IntType>(a / b);
+        }
+      }
+    }
+
+    template <typename IntType>
+    struct gcd_evaluator<rational<IntType>>
+    {
+      typedef rational<IntType> result_type,
+                                first_argument_type, second_argument_type;
+      result_type operator() (  first_argument_type const &a
+                             , second_argument_type const &b
+                             ) const
+      {
+        return detail::gcd_rational(a, b);
+      }
+    };
   }
 }
 
