@@ -4,72 +4,16 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef MUSIC_HPP
-#define MUSIC_HPP
+#ifndef BMC_MUSIC_HPP
+#define BMC_MUSIC_HPP
 
-#include <boost/rational.hpp>
-
-/**
- * \brief Modular arithmetic for rational numbers
- *
- * This is in namespace boost since ADL does not apply to typedefs.
- * If music::rational is changed to a template alias, it might work
- * to move operator% into namespace music.
- */
-namespace boost { // Modular arithmetic
-
-template<typename IntType>
-inline rational<IntType>
-fmod(rational<IntType> const& lhs, rational<IntType> const& rhs)
-{
-  IntType const zero(0);
-
-  if (rhs.numerator() == zero) throw bad_rational();
-
-  IntType num(0), den(1);
-  if (lhs.numerator() != zero) {
-    num = lhs.numerator() * rhs.denominator();
-    den = lhs.denominator() * rhs.numerator();
-
-    if (den < zero) {
-      num = -num;
-      den = -den;
-    }
-  }
-
-  num = rhs.numerator() * (num / den);
-  den = rhs.denominator();
-
-  return rational<IntType>(lhs.numerator()*den - num*lhs.denominator(),
-                           lhs.denominator() * den);
-}
-
-/** \return true if lhs / rhs results in a remainder equal to zero
- */
-template <typename IntType>
-inline
-bool no_remainder(rational<IntType> const& lhs, rational<IntType> const& rhs)
-{
-  IntType const a = lhs.numerator() * rhs.denominator(),
-                b = lhs.denominator() * rhs.numerator();
-  return (a - b*(a/b)) == 0;
-}
-
-}
+#include "math.hpp"
 
 namespace music {
 
 typedef boost::rational<int> rational;
 
-inline rational
-reciprocal(rational const& r)
-{ return rational(r.denominator(), r.numerator()); }
-
 rational const zero = rational();
-
-inline rational
-gcd(rational const& a, rational const& b)
-{ return b == zero? a: gcd(b, fmod(a, b)); }
 
 typedef rational time_modification;
 
