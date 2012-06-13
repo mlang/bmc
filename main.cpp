@@ -7,13 +7,13 @@
 #include "ttb/ttb.h"
 
 #include "config.hpp"
-#include "ambiguous.hpp"
+#include "score.hpp"
+#include <boost/spirit/include/qi_parse.hpp>
 #include "compiler.hpp"
+
 #include "fluidsynth.hpp"
 #include "lilypond.hpp"
-#include "score.hpp"
 
-#include <boost/spirit/include/qi_parse.hpp>
 #include <thread>
 
 int
@@ -32,6 +32,7 @@ main(int argc, char const *argv[])
   std::istreambuf_iterator<wchar_t> wcin_begin(std::wcin.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
   typedef std::wstring::const_iterator iterator_type;
+
   iterator_type iter = source.begin();
   iterator_type const end = source.end();
   typedef music::braille::error_handler<iterator_type> error_handler_type;
@@ -42,7 +43,7 @@ main(int argc, char const *argv[])
 
   bool const success = parse(iter, end, parser, score);
 
-  if (success && iter == end) {
+  if (success and iter == end) {
     music::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::thread player;
