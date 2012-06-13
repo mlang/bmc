@@ -15,10 +15,10 @@
 namespace music { namespace braille {
 
 /**
- * \brief Calculate the alteration of note pitches.
+ * \brief Calculate the alteration of note and interval pitches.
  *
  * Given the current key signature this compiler pass calculates the
- * alteration (an integer from -2 to 2) value for each note in a measure
+ * alteration (an integer from -3 to 3) value for each note in a measure
  * taking the accidentals into account.
  *
  * Accidental memory is reset at each measure beginning.
@@ -43,10 +43,7 @@ public:
   void set(music::key_signature sig) { key_sig = sig; }
 
   result_type operator() (ambiguous::measure& measure)
-  {
-    reset_memory(key_sig);
-    visit_chronologically(measure);
-  }
+  { reset_memory(), visit_chronologically(measure); }
 
   result_type operator()(ambiguous::note& note)
   { note.alter = to_alter(note.acc, note.octave, note.step); }
@@ -62,13 +59,13 @@ public:
   result_type operator() (Sign&) const { }
 
 private:
-  void reset_memory(music::key_signature key_signature)
+  void reset_memory()
   {
     for (std::size_t octave = 0; octave < 10; ++octave) {
       for (std::size_t step = C; step < steps_per_octave; ++step)
         memory[octave][step] = natural;
       int count = steps_per_octave;
-      switch (key_signature) {
+      switch (key_sig) {
       case  14: memory[octave][B] = double_sharp; if (not --count) break;
       case  13: memory[octave][E] = double_sharp; if (not --count) break;
       case  12: memory[octave][A] = double_sharp; if (not --count) break;
@@ -113,8 +110,8 @@ private:
     if (accidental) memory[octave][step] = *accidental;
 
     switch (memory[octave][step]) {
-    case natural:
-    default:           return 0;
+    default: BOOST_ASSERT(false);
+    case natural:      return 0;
     case flat:         return -1;
     case double_flat:  return -2;
     case triple_flat:  return -3;
@@ -123,9 +120,13 @@ private:
     case triple_sharp: return 3;
     }
   }
+  /** \brief A (multi)map of signs sorted by time
+   */
   struct signmap: std::multimap<rational const, ambiguous::sign&>
   {
-    signmap(ambiguous::measure& measure, rational const& measure_position = rational())
+    signmap( ambiguous::measure& measure
+           , rational const& measure_position = rational()
+           )
     {
       for (ambiguous::voice& voice: measure.voices) {
         rational voice_position(measure_position);
@@ -144,7 +145,7 @@ private:
   };
   void visit_chronologically(ambiguous::measure& measure)
   {
-    for (auto& value: signmap(measure))
+    for (signmap::value_type& value: signmap(measure))
       boost::apply_visitor(*this, value.second);
   }
 };

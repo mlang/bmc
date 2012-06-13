@@ -53,9 +53,7 @@ namespace boost {
     }
     return positive? result: reciprocal(result);
   }
-}
 
-namespace boost {
   namespace math {
     namespace detail {
       template <typename IntType>
@@ -72,15 +70,15 @@ namespace boost {
 
       template <typename IntType>
       inline rational<IntType>
-      lcm_rational(rational<IntType> a, rational<IntType> b)
+      lcm_rational(rational<IntType> const& a, rational<IntType> const& b)
       {
         rational<IntType> const gcd(gcd_rational(a, b));
-        return !gcd? gcd: a/gcd*b;        
+        return !gcd? gcd: a / gcd * b;        
       }
     }
 
     template <typename IntType>
-    struct gcd_evaluator<rational<IntType>>
+    struct gcd_evaluator< rational<IntType> >
     {
       typedef rational<IntType> result_type,
                                 first_argument_type, second_argument_type;
@@ -93,7 +91,7 @@ namespace boost {
     };
 
     template <typename IntType>
-    struct lcm_evaluator<rational<IntType>>
+    struct lcm_evaluator< rational<IntType> >
     {
       typedef rational<IntType> result_type,
                                 first_argument_type, second_argument_type;
