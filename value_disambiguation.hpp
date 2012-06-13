@@ -628,7 +628,7 @@ public:
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
             for (proxied_partial_voice::const_reference value: *partial_voice) {
-              sum += reciprocal(value), ++mean;
+              sum += reciprocal(static_cast<rational>(value)), ++mean;
             }
       mean /= sum;
     }
