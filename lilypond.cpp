@@ -105,8 +105,7 @@ void generator::operator() ( braille::ambiguous::part const& part
 
     unsigned int measure_number = 1;
     if (not part[staff_index].empty()) {
-      rational first_measure_duration(boost::apply_visitor(braille::ambiguous::get_duration(),
-                                                             part[staff_index].front()));
+      rational first_measure_duration(duration(part[staff_index].front()));
       if ((not score.time_sig and first_measure_duration != 1) or
           (score.time_sig and *score.time_sig != first_measure_duration)) {
         os << indent << "  "; ly_partial(first_measure_duration); os << std::endl;
