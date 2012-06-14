@@ -2,7 +2,7 @@
  * BRLTTY - A background process providing access to the console screen (when in
  *          text mode) for a blind person using a refreshable braille display.
  *
- * Copyright (C) 1995-2011 by The BRLTTY Developers.
+ * Copyright (C) 1995-2012 by The BRLTTY Developers.
  *
  * BRLTTY comes with ABSOLUTELY NO WARRANTY.
  *
@@ -32,32 +32,6 @@
 
 #include "file.h"
 #include "log.h"
-
-static char *
-joinStrings (const char *const *strings, int count) {
-  char *string;
-  size_t length = 0;
-  size_t lengths[count];
-  int index;
-
-  for (index=0; index<count; index+=1) {
-    length += lengths[index] = strlen(strings[index]);
-  }
-
-  if ((string = malloc(length+1))) {
-    char *target = string;
-
-    for (index=0; index<count; index+=1) {
-      length = lengths[index];
-      memcpy(target, strings[index], length);
-      target += length;
-    }
-
-    *target = 0;
-  }
-
-  return string;
-}
 
 int
 isPathDelimiter (const char character) {
@@ -102,10 +76,14 @@ getPathDirectory (const char *path) {
   if (!length) length = strlen(path = ".");
   {
     char *directory = malloc(length + 1);
+
     if (directory) {
       memcpy(directory, path, length);
       directory[length] = 0;
+    } else {
+      logMallocError();
     }
+
     return directory;
   }
 }
@@ -135,6 +113,32 @@ isExplicitPath (const char *path) {
   return locatePathName(path) != path;
 }
 
+static char *
+joinStrings (const char *const *strings, int count) {
+  char *string;
+  size_t length = 0;
+  size_t lengths[count];
+  int index;
+
+  for (index=0; index<count; index+=1) {
+    length += lengths[index] = strlen(strings[index]);
+  }
+
+  if ((string = malloc(length+1))) {
+    char *target = string;
+
+    for (index=0; index<count; index+=1) {
+      length = lengths[index];
+      memcpy(target, strings[index], length);
+      target += length;
+    }
+
+    *target = 0;
+  }
+
+  return string;
+}
+
 char *
 makePath (const char *directory, const char *file) {
   const int count = 3;
@@ -153,7 +157,7 @@ makePath (const char *directory, const char *file) {
 }
 
 char *
-ensureExtension (const char *path, const char *extension) {
+ensureFileExtension (const char *path, const char *extension) {
   const char *strings[2];
   int count = 0;
   const size_t pathLength = strlen(path);
@@ -168,9 +172,27 @@ ensureExtension (const char *path, const char *extension) {
   return joinStrings(strings, count);
 }
 
+char *
+makeFilePath (const char *directory, const char *name, const char *extension) {
+  char *path = NULL;
+  char *file = ensureFileExtension(name, extension);
+
+  if (file) {
+    path = makePath(directory, file);
+    free(file);
+  }
+
+  return path;
+}
+
 int
 testPath (const char *path) {
+#ifdef F_OK
   return access(path, F_OK) != -1;
+#else /* F_OK */
+  errno = ENOSYS;
+  return 0;
+#endif /* F_OK */
 }
 
 int
@@ -195,118 +217,254 @@ testFilePath (const char *path) {
 }
 
 int
-ensureDirectory (const char *path) {
+testProgramPath (const char *path) {
+#ifdef X_OK
+  return access(path, X_OK) != -1;
+#else /* X_OK */
+  errno = ENOSYS;
+  return 0;
+#endif /* X_OK */
+}
+
+int
+testDirectoryPath (const char *path) {
+#ifdef S_ISDIR
   struct stat status;
+
   if (stat(path, &status) != -1) {
     if (S_ISDIR(status.st_mode)) return 1;
+    errno = EEXIST;
+  }
+#else /* S_ISDIR */
+  errno = ENOSYS;
+#endif /* S_ISDIR */
+
+  return 0;
+}
+
+int
+createDirectory (const char *path) {
+#if defined(GRUB_RUNTIME)
+  errno = EROFS;
+
+#else /* make directory */
+  if (mkdir(path
+#ifndef __MINGW32__
+           ,S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
+#endif /* __MINGW32__ */
+           ) != -1) return 1;
+#endif /* make directory */
+
+  logMessage(LOG_WARNING, "%s: %s: %s",
+             gettext("cannot create directory"),
+             path, strerror(errno));
+  return 0;
+}
+
+int
+ensureDirectory (const char *path) {
+  if (testDirectoryPath(path)) return 1;
+
+  if (errno == EEXIST) {
     logMessage(LOG_ERR, "not a directory: %s", path);
   } else if (errno != ENOENT) {
     logMessage(LOG_ERR, "cannot access directory: %s: %s", path, strerror(errno));
-  } else if (mkdir(path
-#ifndef __MINGW32__
-                  ,S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH
-#endif /* __MINGW32__ */
-                  ) != -1) {
-    logMessage(LOG_NOTICE, "directory created: %s", path);
-    return 1;
   } else {
-    logMessage(((errno == ENOENT)? LOG_DEBUG: LOG_WARNING),
-               "cannot create directory: %s: %s", path, strerror(errno));
+    {
+      char *directory = getPathDirectory(path);
+      if (!directory) return 0;
+
+      {
+         int exists = ensureDirectory(directory);
+         free(directory);
+         if (!exists) return 0;
+      }
+    }
+
+    if (createDirectory(path)) {
+      logMessage(LOG_NOTICE, "directory created: %s", path);
+      return 1;
+    }
   }
+
   return 0;
+}
+
+const char *writableDirectory = NULL;
+
+const char *
+getWritableDirectory (void) {
+  if (writableDirectory && *writableDirectory)
+    if (ensureDirectory(writableDirectory))
+      return writableDirectory;
+
+  return NULL;
+}
+
+char *
+makeWritablePath (const char *file) {
+  const char *directory = getWritableDirectory();
+  if (directory) return makePath(directory, file);
+  return NULL;
 }
 
 char *
 getWorkingDirectory (void) {
+#if defined(GRUB_RUNTIME)
+  errno = ENOSYS;
+#else /* get working directory */
   size_t size = 0X80;
   char *buffer = NULL;
 
-  do {
+  while (1) {
     {
       char *newBuffer = realloc(buffer, size<<=1);
-      if (!newBuffer) break;
+
+      if (!newBuffer) {
+        logMallocError();
+        break;
+      }
+
       buffer = newBuffer;
     }
 
     if (getcwd(buffer, size)) return buffer;
-  } while (errno == ERANGE);
+
+    if (errno != ERANGE) {
+      logSystemError("getcwd");
+      break;
+    }
+  }
 
   if (buffer) free(buffer);
+#endif /* get working directory */
+
+  logMessage(LOG_WARNING, "%s: %s",
+             gettext("cannot get working directory"),
+             strerror(errno));
   return NULL;
+}
+
+int
+setWorkingDirectory (const char *path) {
+#if defined(GRUB_RUNTIME)
+  errno = ENOSYS;
+#else /* set working directory */
+  if (chdir(path) != -1) return 1;
+#endif /* set working directory */
+
+  logMessage(LOG_WARNING, "%s: %s: %s",
+             gettext("cannot set working directory"),
+             path, strerror(errno));
+  return 0;
 }
 
 char *
 getHomeDirectory (void) {
+#if defined(GRUB_RUNTIME)
+#else /* get home directory */
   char *path = getenv("HOME");
-  if (!path || !*path) return NULL;
-  return strdup(path);
-}
 
-char *
-getOverrideDirectory (void) {
-  static const char subdirectory[] = "." PACKAGE_NAME;
-
-  {
-    char *homeDirectory = getHomeDirectory();
-    if (homeDirectory) {
-      char *directory = makePath(homeDirectory, subdirectory);
-      free(homeDirectory);
-      if (directory) return directory;
-    }
+  if (path && *path) {
+    if ((path = strdup(path))) return path;
+    logMallocError();
   }
-
-  {
-    char *workingDirectory = getWorkingDirectory();
-    if (workingDirectory) {
-      char *directory = makePath(workingDirectory, subdirectory);
-      free(workingDirectory);
-      if (directory) return directory;
-    }
-  }
+#endif /* get home directory */
 
   return NULL;
+}
+
+const char *
+getOverrideDirectory (void) {
+  static const char *directory = NULL;
+
+  if (!directory) {
+    static const char subdirectory[] = "." PACKAGE_NAME;
+
+    {
+      char *homeDirectory = getHomeDirectory();
+
+      if (homeDirectory) {
+        directory = makePath(homeDirectory, subdirectory);
+        free(homeDirectory);
+        if (directory) goto gotDirectory;
+      }
+    }
+
+    {
+      char *workingDirectory = getWorkingDirectory();
+
+      if (workingDirectory) {
+        directory = makePath(workingDirectory, subdirectory);
+        free(workingDirectory);
+        if (directory) goto gotDirectory;
+      }
+    }
+
+    directory = "";
+    logMessage(LOG_WARNING, "no override directory");
+    goto ready;
+
+  gotDirectory:
+    logMessage(LOG_INFO, "Override Directory: %s", directory);
+  }
+
+ready:
+  return *directory? directory: NULL;
 }
 
 FILE *
 openFile (const char *path, const char *mode, int optional) {
   FILE *file = fopen(path, mode);
+
   if (file) {
     logMessage(LOG_DEBUG, "file opened: %s fd=%d", path, fileno(file));
   } else {
     logMessage((optional && (errno == ENOENT))? LOG_DEBUG: LOG_ERR,
                "cannot open file: %s: %s", path, strerror(errno));
   }
+
   return file;
 }
 
 FILE *
 openDataFile (const char *path, const char *mode, int optional) {
-  static const char *overrideDirectory = NULL;
   const char *name = locatePathName(path);
+  const char *overrideDirectory = getOverrideDirectory();
   char *overridePath;
   FILE *file;
 
   if (!overrideDirectory) {
-    if ((overrideDirectory = getOverrideDirectory())) {
-      logMessage(LOG_DEBUG, "override directory: %s", overrideDirectory);
-    } else {
-      logMessage(LOG_DEBUG, "no override directory");
-      overrideDirectory = "";
-    }
-  }
-
-  if (!*overrideDirectory) {
     overridePath = NULL;
   } else if ((overridePath = makePath(overrideDirectory, name))) {
-    if (testPath(overridePath)) {
+    if (testFilePath(overridePath)) {
       file = openFile(overridePath, mode, optional);
       goto done;
     }
   }
 
   if (!(file = openFile(path, mode, optional))) {
-    if (((*mode == 'w') || (*mode == 'a')) && (errno == EACCES) && overridePath) {
-      if (ensureDirectory(overrideDirectory)) file = openFile(overridePath, mode, optional);
+    if ((*mode == 'w') || (*mode == 'a')) {
+      if (errno == ENOENT) {
+        char *directory = getPathDirectory(path);
+
+        if (directory) {
+          int exists = ensureDirectory(directory);
+          free(directory);
+
+          if (exists) {
+            file = openFile(path, mode, optional);
+            goto done;
+          }
+        }
+      }
+
+      if (((errno == EACCES) || (errno == EROFS)) && overridePath) {
+        if (ensureDirectory(overrideDirectory)) {
+          file = openFile(overridePath, mode, optional);
+          goto done;
+        }
+      }
     }
   }
 
@@ -321,7 +479,13 @@ readLine (FILE *file, char **buffer, size_t *size) {
 
   if (ferror(file)) return 0;
   if (feof(file)) return 0;
-  if (!*size) *buffer = malloc(*size = 0X80);
+
+  if (!*size) {
+    if (!(*buffer = malloc(*size = 0X80))) {
+      logMallocError();
+      return 0;
+    }
+  }
 
   if ((line = fgets(*buffer, *size, file))) {
     size_t length = strlen(line); /* Line length including new-line. */
@@ -329,8 +493,18 @@ readLine (FILE *file, char **buffer, size_t *size) {
     /* No trailing new-line means that the buffer isn't big enough. */
     while (line[length-1] != '\n') {
       /* If necessary, extend the buffer. */
-      if ((*size - (length + 1)) == 0)
-        *buffer = realloc(*buffer, (*size <<= 1));
+      if ((*size - (length + 1)) == 0) {
+        size_t newSize = *size << 1;
+        char *newBuffer = realloc(*buffer, newSize);
+
+        if (!newBuffer) {
+          logMallocError();
+          return 0;
+        }
+
+        *buffer = newBuffer;
+        *size = newSize;
+      }
 
       /* Read the rest of the line into the end of the buffer. */
       if (!(line = fgets(&(*buffer)[length], *size-length, file))) {
@@ -383,24 +557,16 @@ processLines (FILE *file, LineHandler handleLine, void *data) {
   return !ferror(file);
 }
 
-void
-formatInputError (char *buffer, int size, const char *file, const int *line, const char *format, va_list argp) {
-  int length = 0;
+size_t
+formatInputError (char *buffer, size_t size, const char *file, const int *line, const char *format, va_list argp) {
+  size_t length;
 
-  if (file) {
-    snprintf(&buffer[length], size-length, "%s", file);
-    length += strlen(&buffer[length]);
-  }
-
-  if (line) {
-    snprintf(&buffer[length], size-length, "[%d]", *line);
-    length += strlen(&buffer[length]);
-  }
-
-  if (length) {
-    snprintf(&buffer[length], size-length, ": ");
-    length += strlen(&buffer[length]);
-  }
-
-  vsnprintf(&buffer[length], size-length, format, argp);
+  STR_BEGIN(buffer, size);
+  if (file) STR_PRINTF("%s", file);
+  if (line) STR_PRINTF("[%d]", *line);
+  if (STR_LENGTH) STR_PRINTF(": ");
+  STR_VPRINTF(format, argp);
+  length = STR_LENGTH;
+  STR_END
+  return length;
 }

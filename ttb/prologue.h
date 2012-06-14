@@ -38,6 +38,24 @@ extern "C" {
 #define ARRAY_COUNT(array) (sizeof((array)) / sizeof((array)[0]))
 #define ARRAY_SIZE(pointer, count) ((count) * sizeof(*(pointer)))
 
+#define STR_BEGIN(buffer, size) { \
+  char *strNext = (buffer); \
+  char *strStart = strNext; \
+  char *strEnd = strStart + (size);
+#define STR_END }
+#define STR_LENGTH (strNext - strStart)
+#define STR_NEXT strNext
+#define STR_LEFT (strEnd - strNext)
+#define STR_ADJUST(length) if ((strNext += (length)) > strEnd) strNext = strEnd
+#define STR_PRINTF(format, ...) { \
+  size_t strLength = snprintf(STR_NEXT, STR_LEFT, format, ## __VA_ARGS__); \
+  STR_ADJUST(strLength); \
+}
+#define STR_VPRINTF(format, arguments) { \
+  size_t strLength = vsnprintf(STR_NEXT, STR_LEFT, format, arguments); \
+  STR_ADJUST(strLength); \
+}
+
 #if defined(__CYGWIN32__) || defined(__MINGW32__)
 #define WINDOWS
 
