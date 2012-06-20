@@ -9,7 +9,7 @@
 
 #include <boost/variant/static_visitor.hpp>
 #include "boost_range/algorithm/all_of.hpp"
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include "compiler_pass.hpp"
 
 namespace music { namespace braille {
@@ -29,7 +29,7 @@ class octave_calculator
 : public boost::static_visitor<bool>
 , public compiler_pass
 {
-  ambiguous::note const* prev;
+  ast::note const* prev;
   music::braille::interval_direction interval_direction;
 
 public:
@@ -44,11 +44,11 @@ public:
   void reset()
   { prev = nullptr; interval_direction = braille::interval_direction::down; }
 
-  result_type operator()(ambiguous::measure& measure)
+  result_type operator()(ast::measure& measure)
   {
-    for (ambiguous::voice& voice: measure.voices) {
-      for (ambiguous::partial_measure& part: voice) {
-        for (ambiguous::partial_voice& partial_voice: part) {
+    for (ast::voice& voice: measure.voices) {
+      for (ast::partial_measure& part: voice) {
+        for (ast::partial_voice& partial_voice: part) {
           if (not all_of(partial_voice, boost::apply_visitor(*this)))
             return false;
         }
@@ -57,7 +57,7 @@ public:
     return true;
   }
 
-  result_type operator()(ambiguous::note& note)
+  result_type operator()(ast::note& note)
   {
     if (note.octave_spec) {
       note.octave = *note.octave_spec;
@@ -81,7 +81,7 @@ public:
     return true;
   }
 
-  result_type operator()(ambiguous::chord& chord)
+  result_type operator()(ast::chord& chord)
   {
     if ((*this)(chord.base)) {
       BOOST_ASSERT(not chord.intervals.empty());

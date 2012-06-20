@@ -8,7 +8,7 @@
 #define BMC_NUMBERS_HPP
 
 #include "config.hpp"
-#include "music.hpp"
+#include "bmc/music.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 
 namespace music { namespace braille {

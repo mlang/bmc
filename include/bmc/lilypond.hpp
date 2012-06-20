@@ -7,8 +7,8 @@
 #ifndef BMC_LILYPOND_HPP_INCLUDED
 #define BMC_LILYPOND_HPP_INCLUDED
 
-#include "ambiguous.hpp"
-#include "output_format.hpp"
+#include "bmc/ast.hpp"
+#include "bmc/output_format.hpp"
 
 namespace music { namespace lilypond {
 
@@ -35,30 +35,30 @@ public:
   /**
    * \brief Generate LilyPond source code for the given braille score.
    */
-  void operator() (braille::ambiguous::score const& score) const;
+  void operator() (braille::ast::score const& score) const;
 
 private:
-  void operator() ( braille::ambiguous::part const& part
-                  , braille::ambiguous::score const& score
+  void operator() ( braille::ast::part const& part
+                  , braille::ast::score const& score
                   ) const;
 
 public:
-  result_type operator() (braille::ambiguous::measure const&) const;
-  result_type operator() (braille::ambiguous::key_and_time_signature const&) const;
+  result_type operator() (braille::ast::measure const&) const;
+  result_type operator() (braille::ast::key_and_time_signature const&) const;
 private:
-  void operator() (braille::ambiguous::voice const&) const;
-  void operator() (braille::ambiguous::partial_measure const&) const;
-  void operator() (braille::ambiguous::partial_voice const&) const;
+  void operator() (braille::ast::voice const&) const;
+  void operator() (braille::ast::partial_measure const&) const;
+  void operator() (braille::ast::partial_voice const&) const;
 public:
   /** @name Operators for visiting music::braille::sign objects */
   /** @{ */
-  result_type operator() (braille::ambiguous::barline const&) const;
-  result_type operator() (braille::ambiguous::simile const&) const;
-  result_type operator() (braille::ambiguous::value_distinction const&) const;
+  result_type operator() (braille::ast::barline const&) const;
+  result_type operator() (braille::ast::simile const&) const;
+  result_type operator() (braille::ast::value_distinction const&) const;
   result_type operator() (braille::hand_sign const&) const;
-  result_type operator() (braille::ambiguous::rest const&) const;
-  result_type operator() (braille::ambiguous::note const&) const;
-  result_type operator() (braille::ambiguous::chord const&) const;
+  result_type operator() (braille::ast::rest const&) const;
+  result_type operator() (braille::ast::note const&) const;
+  result_type operator() (braille::ast::chord const&) const;
   /** @} */
 
 private: // utilities
@@ -66,7 +66,7 @@ private: // utilities
   void ly_clef(std::string const&) const;
   void ly_finger(braille::fingering_list const&) const;
   void ly_key(key_signature const&) const;
-  void ly_rhythm(braille::ambiguous::rhythmic_data const&) const;
+  void ly_rhythm(braille::ast::rhythmic_data const&) const;
   void ly_octave(int) const;
   void ly_partial(rational const&) const;
   void ly_pitch_step(diatonic_step) const;
@@ -77,7 +77,7 @@ private: // utilities
 inline std::ostream&
 operator <<
 ( std::ostream& stream
-, music::braille::ambiguous::score const& score
+, music::braille::ast::score const& score
 ) {
   switch (music::get_output_format(stream)) {
   case music::output_format::lilypond: {

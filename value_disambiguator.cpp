@@ -15,7 +15,7 @@ value_disambiguator::~value_disambiguator()
 }
 
 value_disambiguator::result_type
-value_disambiguator::operator()(ambiguous::measure& measure)
+value_disambiguator::operator()(ast::measure& measure)
 {
   value_disambiguation::measure_interpretations interpretations(measure, time_signature);
 

@@ -15,7 +15,8 @@ add_subdirectory(doxygen)
 add_subdirectory(ttb)
 add_subdirectory(ui)
 find_package(Boost 1.48.0 REQUIRED)
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${bmc_SOURCE_DIR})
+include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++0x)
 add_library(bmc_parse SHARED
@@ -85,7 +86,7 @@ add_custom_target(check
 
 install(TARGETS bmc DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
-
+install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${bmc_SOURCE_DIR}/LICENSE.txt")

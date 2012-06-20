@@ -68,34 +68,34 @@ octave_symbols octave_sign;
 
 step_and_value_symbols::step_and_value_symbols()
 {
-  add(L"⠽", std::make_pair(C, ambiguous::whole_or_16th))
-     (L"⠵", std::make_pair(D, ambiguous::whole_or_16th))
-     (L"⠯", std::make_pair(E, ambiguous::whole_or_16th))
-     (L"⠿", std::make_pair(F, ambiguous::whole_or_16th))
-     (L"⠷", std::make_pair(G, ambiguous::whole_or_16th))
-     (L"⠮", std::make_pair(A, ambiguous::whole_or_16th))
-     (L"⠾", std::make_pair(B, ambiguous::whole_or_16th))
-     (L"⠝", std::make_pair(C, ambiguous::half_or_32th))
-     (L"⠕", std::make_pair(D, ambiguous::half_or_32th))
-     (L"⠏", std::make_pair(E, ambiguous::half_or_32th))
-     (L"⠟", std::make_pair(F, ambiguous::half_or_32th))
-     (L"⠗", std::make_pair(G, ambiguous::half_or_32th))
-     (L"⠎", std::make_pair(A, ambiguous::half_or_32th))
-     (L"⠞", std::make_pair(B, ambiguous::half_or_32th))
-     (L"⠹", std::make_pair(C, ambiguous::quarter_or_64th))
-     (L"⠱", std::make_pair(D, ambiguous::quarter_or_64th))
-     (L"⠫", std::make_pair(E, ambiguous::quarter_or_64th))
-     (L"⠻", std::make_pair(F, ambiguous::quarter_or_64th))
-     (L"⠳", std::make_pair(G, ambiguous::quarter_or_64th))
-     (L"⠪", std::make_pair(A, ambiguous::quarter_or_64th))
-     (L"⠺", std::make_pair(B, ambiguous::quarter_or_64th))
-     (L"⠙", std::make_pair(C, ambiguous::eighth_or_128th))
-     (L"⠑", std::make_pair(D, ambiguous::eighth_or_128th))
-     (L"⠋", std::make_pair(E, ambiguous::eighth_or_128th))
-     (L"⠛", std::make_pair(F, ambiguous::eighth_or_128th))
-     (L"⠓", std::make_pair(G, ambiguous::eighth_or_128th))
-     (L"⠊", std::make_pair(A, ambiguous::eighth_or_128th))
-     (L"⠚", std::make_pair(B, ambiguous::eighth_or_128th))
+  add(L"⠽", std::make_pair(C, ast::whole_or_16th))
+     (L"⠵", std::make_pair(D, ast::whole_or_16th))
+     (L"⠯", std::make_pair(E, ast::whole_or_16th))
+     (L"⠿", std::make_pair(F, ast::whole_or_16th))
+     (L"⠷", std::make_pair(G, ast::whole_or_16th))
+     (L"⠮", std::make_pair(A, ast::whole_or_16th))
+     (L"⠾", std::make_pair(B, ast::whole_or_16th))
+     (L"⠝", std::make_pair(C, ast::half_or_32th))
+     (L"⠕", std::make_pair(D, ast::half_or_32th))
+     (L"⠏", std::make_pair(E, ast::half_or_32th))
+     (L"⠟", std::make_pair(F, ast::half_or_32th))
+     (L"⠗", std::make_pair(G, ast::half_or_32th))
+     (L"⠎", std::make_pair(A, ast::half_or_32th))
+     (L"⠞", std::make_pair(B, ast::half_or_32th))
+     (L"⠹", std::make_pair(C, ast::quarter_or_64th))
+     (L"⠱", std::make_pair(D, ast::quarter_or_64th))
+     (L"⠫", std::make_pair(E, ast::quarter_or_64th))
+     (L"⠻", std::make_pair(F, ast::quarter_or_64th))
+     (L"⠳", std::make_pair(G, ast::quarter_or_64th))
+     (L"⠪", std::make_pair(A, ast::quarter_or_64th))
+     (L"⠺", std::make_pair(B, ast::quarter_or_64th))
+     (L"⠙", std::make_pair(C, ast::eighth_or_128th))
+     (L"⠑", std::make_pair(D, ast::eighth_or_128th))
+     (L"⠋", std::make_pair(E, ast::eighth_or_128th))
+     (L"⠛", std::make_pair(F, ast::eighth_or_128th))
+     (L"⠓", std::make_pair(G, ast::eighth_or_128th))
+     (L"⠊", std::make_pair(A, ast::eighth_or_128th))
+     (L"⠚", std::make_pair(B, ast::eighth_or_128th))
      ;
 }
 
@@ -103,10 +103,10 @@ step_and_value_symbols step_and_value_sign;
 
 rest_symbols::rest_symbols()
 {
-  add(L"⠍", ambiguous::value(ambiguous::whole_or_16th))
-     (L"⠥", ambiguous::value(ambiguous::half_or_32th))
-     (L"⠧", ambiguous::value(ambiguous::quarter_or_64th))
-     (L"⠭", ambiguous::value(ambiguous::eighth_or_128th))
+  add(L"⠍", ast::value(ast::whole_or_16th))
+     (L"⠥", ast::value(ast::half_or_32th))
+     (L"⠧", ast::value(ast::quarter_or_64th))
+     (L"⠭", ast::value(ast::eighth_or_128th))
      ;
 }
 
@@ -140,9 +140,9 @@ finger_symbols finger_sign;
 
 value_distinction_symbols::value_distinction_symbols()
 {
-  add(L"⠣⠂", ambiguous::value_distinction::distinct)
-     (L"⠠⠣⠂", ambiguous::value_distinction::small_follows)
-     (L"⠘⠣⠂", ambiguous::value_distinction::large_follows)
+  add(L"⠣⠂", ast::value_distinction::distinct)
+     (L"⠠⠣⠂", ast::value_distinction::small_follows)
+     (L"⠘⠣⠂", ast::value_distinction::large_follows)
      ;
 }
 
@@ -176,8 +176,8 @@ articulation_symbols articulation_sign;
 
 barline_symbols::barline_symbols()
 {
-  add(L"⠣⠶", ambiguous::begin_repeat)
-     (L"⠣⠆", ambiguous::end_repeat)
+  add(L"⠣⠶", ast::begin_repeat)
+     (L"⠣⠆", ast::end_repeat)
      ;
 }
 

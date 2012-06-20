@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "config.hpp"
-#include "time_signature.hpp"
+#include "bmc/time_signature.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include "ttb/ttb.h"
 
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   destroyTextTable(textTable);
 }
 
-#include "key_signature.hpp"
+#include "bmc/key_signature.hpp"
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
   destroyTextTable(textTable);
 }
 
-#include "measure.hpp"
+#include "bmc/measure.hpp"
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -115,9 +115,9 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+  BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[0][0][0][0]));
-  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+  BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[0][0][0][1]));
   destroyTextTable(textTable);
 }
@@ -144,9 +144,9 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+  BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[1][0][0][0]));
-  BOOST_CHECK(apply_visitor(music::braille::ambiguous::is_rest(),
+  BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[1][1][1][0]));
   destroyTextTable(textTable);
 }
@@ -154,8 +154,8 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
 #include "compiler.hpp"
 
 #define BMC_CHECK_SIGN_LOCATION(sign, line, column) \
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_line(), sign), line);\
-  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ambiguous::get_column(), sign), column)
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ast::get_line(), sign), line);\
+  BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ast::get_column(), sign), column)
 #define BMC_CHECK_LOCATABLE_LOCATION(locatable, LINE, COLUMN) \
   BOOST_CHECK_EQUAL(locatable.line, LINE);\
   BOOST_CHECK_EQUAL(locatable.column, COLUMN)
@@ -255,11 +255,11 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
 
 struct get_type : boost::static_visitor<music::rational>
 {
-  result_type operator()(music::braille::ambiguous::note const& note) const
+  result_type operator()(music::braille::ast::note const& note) const
   { return note.type; }
-  result_type operator()(music::braille::ambiguous::rest const& rest) const
+  result_type operator()(music::braille::ast::rest const& rest) const
   { return rest.type; }
-  result_type operator()(music::braille::ambiguous::chord const& chord) const
+  result_type operator()(music::braille::ast::chord const& chord) const
   { return (*this)(chord.base); }
   template<typename T>
   result_type operator()(T const&) const
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   destroyTextTable(textTable);
 }
 
-#include "score.hpp"
+#include "bmc/score.hpp"
 
 BOOST_AUTO_TEST_CASE(score_solo_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -557,7 +557,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   destroyTextTable(textTable);
 }
 
-#include "lilypond.hpp"
+#include "bmc/lilypond.hpp"
 #include <sstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {

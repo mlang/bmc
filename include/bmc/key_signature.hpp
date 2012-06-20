@@ -4,11 +4,11 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#if !defined(BMC_KEY_SIGNATURE_HPP)
+#ifndef BMC_KEY_SIGNATURE_HPP
 #define BMC_KEY_SIGNATURE_HPP
 
 #include "config.hpp"
-#include "music.hpp"
+#include "bmc/music.hpp"
 #include "numbers.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 

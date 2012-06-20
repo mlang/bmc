@@ -314,7 +314,7 @@ make up this prototype:
    tracking for individual parsed entities.
    brlsym.hpp and brlsym.cpp define a few symbol tables for the purpose of
    parsing braille music code (used in the *_def.hpp files).
-   ambiguous.hpp collects all the data types necessary to represent the result
+   ast.hpp collects all the data types necessary to represent the result
    of parsing the given input (in other words, the abstract syntax tree).
    And finally, music.hpp contains basic utility types which seem common to
    musical notation in general, not tied to a particular type of notation.

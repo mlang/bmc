@@ -7,7 +7,7 @@
 #ifndef BMC_VALUE_DISAMBIGUATOR_HPP
 #define BMC_VALUE_DISAMBIGUATOR_HPP
 
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include "compiler_pass.hpp"
 
 namespace music { namespace braille {
@@ -58,7 +58,7 @@ public:
   void set(music::time_signature const& time_sig)
   { time_signature = time_sig; }
 
-  result_type operator()(ambiguous::measure& measure);
+  result_type operator()(ast::measure& measure);
 };
 
 }}

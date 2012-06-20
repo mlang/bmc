@@ -7,7 +7,7 @@
 #ifndef BMC_VALUE_DISAMBIGUATION_HPP
 #define BMC_VALUE_DISAMBIGUATION_HPP
 
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
@@ -46,7 +46,7 @@ rational const undotted[8] = {
  */
 class value_proxy
 {
-  ambiguous::value value_type:4;
+  ast::value value_type:4;
   value_category category:4;
 
   rational const& undotted_duration() const
@@ -70,7 +70,7 @@ class value_proxy
 
 public:
   value_proxy() : final_type(nullptr), whole_measure_rest(nullptr) {}
-  value_proxy( ambiguous::note& note
+  value_proxy( ast::note& note
              , value_category const& category
              )
   : value_type(note.ambiguous_value), category(category), dots(note.dots)
@@ -79,9 +79,9 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::note& note
+  value_proxy( ast::note& note
              , value_category const& category
-             , ambiguous::value value_type
+             , ast::value value_type
              )
   : value_type(value_type), category(category), dots(note.dots)
   , duration(calculate_duration())
@@ -89,7 +89,7 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::rest& rest
+  value_proxy( ast::rest& rest
              , value_category const& category
              )
   : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
@@ -98,9 +98,9 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::rest& rest
+  value_proxy( ast::rest& rest
              , value_category const& category
-             , ambiguous::value value_type
+             , ast::value value_type
              )
   : value_type(value_type), category(category), dots(rest.dots)
   , duration(calculate_duration())
@@ -108,7 +108,7 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::rest& rest
+  value_proxy( ast::rest& rest
              , value_category const& category
              , rational const& duration
              )
@@ -118,7 +118,7 @@ public:
   , whole_measure_rest(&rest.whole_measure)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::chord& chord
+  value_proxy( ast::chord& chord
              , value_category const& category
              )
   : value_type(chord.base.ambiguous_value), category(category)
@@ -128,9 +128,9 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
-  value_proxy( ambiguous::chord& chord
+  value_proxy( ast::chord& chord
              , value_category const& category
-             , ambiguous::value value_type
+             , ast::value value_type
              )
   : value_type(value_type), category(category), dots(chord.base.dots)
   , duration(calculate_duration())
@@ -187,9 +187,9 @@ class partial_voice_interpretations
 {
   struct maybe_whole_measure_rest : boost::static_visitor<bool>
   {
-    result_type operator()(ambiguous::rest const& rest) const
+    result_type operator()(ast::rest const& rest) const
     {
-      return rest.ambiguous_value == ambiguous::whole_or_16th and
+      return rest.ambiguous_value == ast::whole_or_16th and
              rest.dots == 0;
     }
     template<typename Sign>
@@ -200,7 +200,7 @@ class partial_voice_interpretations
     rational const duration;
   public:
     make_whole_measure_rest(rational const& duration) : duration(duration) {}
-    result_type operator()(ambiguous::rest& rest) const
+    result_type operator()(ast::rest& rest) const
     { return result_type(rest, large, duration); }
     template<typename Sign>
     result_type operator()(Sign const&) const
@@ -208,21 +208,21 @@ class partial_voice_interpretations
   };
 
   static
-  ambiguous::partial_voice::iterator
-  same_category_end( ambiguous::partial_voice::iterator& begin
-                   , ambiguous::partial_voice::iterator const& end
-                   , ambiguous::value_distinction::type distinction
+  ast::partial_voice::iterator
+  same_category_end( ast::partial_voice::iterator& begin
+                   , ast::partial_voice::iterator const& end
+                   , ast::value_distinction::type distinction
                    )
   {
-    if (boost::apply_visitor(ambiguous::is_value_distinction(distinction), *begin)) {
+    if (boost::apply_visitor(ast::is_value_distinction(distinction), *begin)) {
       begin = begin + 1; // Advance the outer iterator to avoid a loop
-      ambiguous::partial_voice::iterator iter(begin);
+      ast::partial_voice::iterator iter(begin);
       if (iter != end and
-          boost::apply_visitor(ambiguous::is_rhythmic(), *iter)) {
-        for (ambiguous::value
-             initial = boost::apply_visitor(ambiguous::get_ambiguous_value(), *iter++);
+          boost::apply_visitor(ast::is_rhythmic(), *iter)) {
+        for (ast::value
+             initial = boost::apply_visitor(ast::get_ambiguous_value(), *iter++);
              iter != end and
-             apply_visitor(ambiguous::get_ambiguous_value(), *iter) == initial;
+             apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
              ++iter);
         return iter;
       }
@@ -238,16 +238,16 @@ class partial_voice_interpretations
    *         beyond its last element.  Otherwise, begin is returned.
    */
   static
-  ambiguous::partial_voice::iterator
-  notegroup_end( ambiguous::partial_voice::iterator const& begin
-               , ambiguous::partial_voice::iterator const& end
+  ast::partial_voice::iterator
+  notegroup_end( ast::partial_voice::iterator const& begin
+               , ast::partial_voice::iterator const& end
                )
   {
-    if (boost::apply_visitor(ambiguous::is_rhythmic(), *begin)) {
-      if (boost::apply_visitor(ambiguous::get_ambiguous_value(), *begin) != ambiguous::eighth_or_128th) {
+    if (boost::apply_visitor(ast::is_rhythmic(), *begin)) {
+      if (boost::apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
         auto iter = begin + 1;
         while (iter != end and
-               boost::apply_visitor(ambiguous::get_ambiguous_value(), *iter) == ambiguous::eighth_or_128th)
+               boost::apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
           ++iter;
 	// A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
@@ -258,7 +258,7 @@ class partial_voice_interpretations
 
   struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
   {
-    large_and_small(ambiguous::sign& sign)
+    large_and_small(ast::sign& sign)
     { reserve(2); boost::apply_visitor(*this, sign); }
 
     template <class Value>
@@ -269,11 +269,11 @@ class partial_voice_interpretations
         emplace_back(value, small);
       }
     }
-    result_type operator()(ambiguous::value_distinction&) {}
+    result_type operator()(ast::value_distinction&) {}
     result_type operator()(braille::hand_sign&) {}
-    result_type operator()(ambiguous::barline&) {}
-    result_type operator()(ambiguous::simile&) {}
-    bool is_grace(ambiguous::note const& note) const
+    result_type operator()(ast::barline&) {}
+    result_type operator()(ast::simile&) {}
+    bool is_grace(ast::note const& note) const
     {
       return std::find(note.articulations.begin(), note.articulations.end(),
                        appoggiatura)
@@ -283,45 +283,45 @@ class partial_voice_interpretations
                       short_appoggiatura)
              != note.articulations.end();
     }
-    bool is_grace(ambiguous::rest const&) const
+    bool is_grace(ast::rest const&) const
     { return false; }
-    bool is_grace(ambiguous::chord const& chord) const
+    bool is_grace(ast::chord const& chord) const
     { return is_grace(chord.base); }
   };
   class notegroup: public boost::static_visitor<void>
   {
     value_category const category;
-    ambiguous::value type;
+    ast::value type;
     value_proxy *stack_begin, *stack_end;
   public:
-    notegroup( ambiguous::partial_voice::iterator const& begin
-             , ambiguous::partial_voice::iterator const& end
+    notegroup( ast::partial_voice::iterator const& begin
+             , ast::partial_voice::iterator const& end
              , value_category const& category
              , value_proxy *stack_end
              )
-    : category(category), type(ambiguous::unknown)
+    : category(category), type(ast::unknown)
     , stack_begin(stack_end), stack_end(stack_end)
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
 
-    result_type operator()(ambiguous::note& note)
+    result_type operator()(ast::note& note)
     {
-      if (type == ambiguous::unknown) type = note.ambiguous_value;
+      if (type == ast::unknown) type = note.ambiguous_value;
       *stack_end++ = value_proxy(note, category, type);
     }
-    result_type operator()(ambiguous::rest& rest)
+    result_type operator()(ast::rest& rest)
     {
-      if (type == ambiguous::unknown) type = rest.ambiguous_value;
+      if (type == ast::unknown) type = rest.ambiguous_value;
       *stack_end++ = value_proxy(rest, category, type);
     }
-    result_type operator()(ambiguous::chord& chord)
+    result_type operator()(ast::chord& chord)
     {
-      if (type == ambiguous::unknown) type = chord.base.ambiguous_value;
+      if (type == ast::unknown) type = chord.base.ambiguous_value;
       *stack_end++ = value_proxy(chord, category, type);
     }
-    result_type operator()(ambiguous::value_distinction&) { BOOST_ASSERT(false); }
+    result_type operator()(ast::value_distinction&) { BOOST_ASSERT(false); }
     result_type operator()(braille::hand_sign&) {}
-    result_type operator()(ambiguous::barline&) {}
-    result_type operator()(ambiguous::simile&) { BOOST_ASSERT(false); }
+    result_type operator()(ast::barline&) {}
+    result_type operator()(ast::simile&) { BOOST_ASSERT(false); }
 
     value_proxy *end() const { return stack_end; }
     rational duration() const
@@ -333,18 +333,18 @@ class partial_voice_interpretations
   {
     value_category const category;
   public:
-    same_category( ambiguous::partial_voice::iterator const& begin
-                 , ambiguous::partial_voice::iterator const& end
+    same_category( ast::partial_voice::iterator const& begin
+                 , ast::partial_voice::iterator const& end
                  , value_category const& category
                  )
     : category(category)
     { std::for_each(begin, end, boost::apply_visitor(*this)); }
 
-    result_type operator()(ambiguous::note& note)
+    result_type operator()(ast::note& note)
     { emplace_back(note, category); }
-    result_type operator()(ambiguous::rest& rest)
+    result_type operator()(ast::rest& rest)
     { emplace_back(rest, category); }
-    result_type operator()(ambiguous::chord& chord)
+    result_type operator()(ast::chord& chord)
     { emplace_back(chord, category); }
 
     template<typename Sign> result_type operator()(Sign const&)
@@ -358,8 +358,8 @@ class partial_voice_interpretations
   bool on_beat(rational const& position) const
   { return no_remainder(position, beat); }
 
-  void recurse( ambiguous::partial_voice::iterator begin
-              , ambiguous::partial_voice::iterator const& end
+  void recurse( ast::partial_voice::iterator begin
+              , ast::partial_voice::iterator const& end
               , value_type::element_type::pointer stack_begin
               , value_type::element_type::pointer stack_end
               , rational const& max_duration
@@ -371,7 +371,7 @@ class partial_voice_interpretations
                    (stack_begin, stack_end, position - start_position)
                   );
     } else {
-      ambiguous::partial_voice::iterator tail;
+      ast::partial_voice::iterator tail;
       if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
         while (std::distance(begin, tail) >= 3) {
           notegroup const group(begin, tail, small, stack_end);
@@ -400,7 +400,7 @@ class partial_voice_interpretations
           }
         }
       } else if ((tail = same_category_end(begin, end,
-                                           ambiguous::value_distinction::large_follows)) > begin) {
+                                           ast::value_distinction::large_follows)) > begin) {
         same_category const group(begin, tail, large);
         if (duration(group) <= max_duration) {
           recurse(tail, end,
@@ -409,7 +409,7 @@ class partial_voice_interpretations
                   position + duration(group));
         }
       } else if ((tail = same_category_end(begin, end,
-                                           ambiguous::value_distinction::small_follows)) > begin) {
+                                           ast::value_distinction::small_follows)) > begin) {
         same_category const group(begin, tail, small);
         if (duration(group) <= max_duration) {
           recurse(tail, end,
@@ -444,7 +444,7 @@ class partial_voice_interpretations
   }
 
 public:
-  partial_voice_interpretations( ambiguous::partial_voice& voice
+  partial_voice_interpretations( ast::partial_voice& voice
                                , rational const& max_duration
                                , rational const& position
                                , music::time_signature const& time_sig
@@ -471,8 +471,8 @@ typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_p
 class partial_measure_interpretations
 : public std::vector<proxied_partial_measure_ptr>
 {
-  void recurse( ambiguous::partial_measure::iterator const& begin
-              , ambiguous::partial_measure::iterator const& end
+  void recurse( ast::partial_measure::iterator const& begin
+              , ast::partial_measure::iterator const& end
               , value_type::element_type::pointer stack_begin
               , value_type::element_type::pointer stack_end
               , rational const& length
@@ -499,7 +499,7 @@ class partial_measure_interpretations
     }
   }
 public:
-  partial_measure_interpretations( ambiguous::partial_measure& partial_measure
+  partial_measure_interpretations( ast::partial_measure& partial_measure
                                  , rational const& max_length
                                  , rational const& position
                                  , music::time_signature const& time_sig
@@ -561,8 +561,8 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
 {
   music::time_signature const time_signature;
 
-  void recurse( ambiguous::voice::iterator const& begin
-              , ambiguous::voice::iterator const& end
+  void recurse( ast::voice::iterator const& begin
+              , ast::voice::iterator const& end
               , value_type::element_type::pointer stack_begin
               , value_type::element_type::pointer stack_end
               , rational const& max_length
@@ -590,7 +590,7 @@ class voice_interpretations : public std::vector<proxied_voice_ptr>
   }
 
 public:
-  voice_interpretations( ambiguous::voice& voice
+  voice_interpretations( ast::voice& voice
                        , rational const& max_length
                        , music::time_signature const& time_sig
                        , bool complete
@@ -695,8 +695,8 @@ class measure_interpretations: std::list<proxied_measure>
                           erase(interpretation): ++interpretation);
   }
 
-  void recurse( std::vector<ambiguous::voice>::iterator const& begin
-              , std::vector<ambiguous::voice>::iterator const& end
+  void recurse( std::vector<ast::voice>::iterator const& begin
+              , std::vector<ast::voice>::iterator const& end
               , value_type::pointer stack_begin
               , value_type::pointer stack_end
               , rational const& length
@@ -763,7 +763,7 @@ public:
   , complete(other.complete)
   {}
 
-  measure_interpretations( ambiguous::measure& measure
+  measure_interpretations( ast::measure& measure
                          , music::time_signature const& time_signature
                          )
   : time_signature(time_signature)

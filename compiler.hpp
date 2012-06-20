@@ -7,7 +7,7 @@
 #ifndef BMC_COMPILER_HPP
 #define BMC_COMPILER_HPP
 
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 
 #include "location_calculator.hpp"
 #include "value_disambiguator.hpp"
@@ -68,13 +68,13 @@ public:
   {
   }
 
-  result_type operator()(ambiguous::score& score)
+  result_type operator()(ast::score& score)
   {
     if (score.time_sig) {
       global_time_signature = *score.time_sig;
     }
 
-    for (ambiguous::part& part: score.parts) {
+    for (ast::part& part: score.parts) {
       for (std::size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
         music::braille::interval_direction interval_direction = music::braille::interval_direction::down;
         switch (staff_index) {
@@ -91,9 +91,9 @@ public:
     }
     return true;
   }
-  result_type operator() (ambiguous::staff& staff)
+  result_type operator() (ast::staff& staff)
   { return all_of(staff, boost::apply_visitor(*this)); }
-  result_type operator()(ambiguous::measure& measure)
+  result_type operator()(ast::measure& measure)
   {
     if (disambiguate_values(measure))
       if (calculate_octaves(measure)) {
@@ -103,7 +103,7 @@ public:
       }
     return false;
   }
-  result_type operator()(ambiguous::key_and_time_signature& key_and_time_sig)
+  result_type operator()(ast::key_and_time_signature& key_and_time_sig)
   {
     calculate_locations(key_and_time_sig);
     disambiguate_values.set(key_and_time_sig.time);

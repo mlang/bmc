@@ -4,7 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "lilypond.hpp"
+#include "bmc/lilypond.hpp"
 #include <algorithm>
 #include <iterator>
 
@@ -24,7 +24,7 @@ generator::generator( std::ostream& os
   os << "\\version" << " " << "\"2.14.2\"" << std::endl;
 }
 
-void generator::operator() (braille::ambiguous::score const& score) const
+void generator::operator() (braille::ast::score const& score) const
 {
   os << "\\score {" << std::endl;
 
@@ -41,12 +41,12 @@ void generator::operator() (braille::ambiguous::score const& score) const
 struct repeat_info: public boost::static_visitor<void>
 {
   bool begin, end;
-  repeat_info(braille::ambiguous::staff_element const& staff_element)
+  repeat_info(braille::ast::staff_element const& staff_element)
   : begin(false)
   , end(false)
   { boost::apply_visitor(*this, staff_element); }  
 
-  result_type operator() (braille::ambiguous::measure const& measure)
+  result_type operator() (braille::ast::measure const& measure)
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
@@ -54,31 +54,31 @@ struct repeat_info: public boost::static_visitor<void>
           std::for_each(partial_voice.begin(), partial_voice.end(),
                         boost::apply_visitor(*this));
   }
-  result_type operator() (braille::ambiguous::key_and_time_signature const&) {}
+  result_type operator() (braille::ast::key_and_time_signature const&) {}
 
-  void operator() (braille::ambiguous::barline const& barline)
+  void operator() (braille::ast::barline const& barline)
   {
     switch (barline) {
-    case braille::ambiguous::begin_repeat: begin = true; break;
-    case braille::ambiguous::end_repeat: end = true; break;
+    case braille::ast::begin_repeat: begin = true; break;
+    case braille::ast::end_repeat: end = true; break;
     }
   }
-  void operator() (braille::ambiguous::simile const&) const
+  void operator() (braille::ast::simile const&) const
   { }
-  void operator() (braille::ambiguous::value_distinction const&) const
+  void operator() (braille::ast::value_distinction const&) const
   { }
   void operator() (braille::hand_sign const&) const
   { }
-  void operator() (braille::ambiguous::rest const&) const
+  void operator() (braille::ast::rest const&) const
   { }
-  void operator() (braille::ambiguous::note const&) const
+  void operator() (braille::ast::note const&) const
   { }
-  void operator() (braille::ambiguous::chord const&) const
+  void operator() (braille::ast::chord const&) const
   { }
 };
 
-void generator::operator() ( braille::ambiguous::part const& part
-                           , braille::ambiguous::score const& score
+void generator::operator() ( braille::ast::part const& part
+                           , braille::ast::score const& score
                            ) const
 {
   std::string indent("    ");
@@ -116,14 +116,14 @@ void generator::operator() ( braille::ambiguous::part const& part
     for (size_t measure_index = 0; measure_index < part[staff_index].size();
          ++measure_index)
     {
-      braille::ambiguous::staff_element const& this_measure = part[staff_index][measure_index];
+      braille::ast::staff_element const& this_measure = part[staff_index][measure_index];
 
       os << indent << "  "; boost::apply_visitor(*this, this_measure);
 
       bool barcheck = true;
       repeat_info this_repeat(this_measure);
       if (measure_index < part[staff_index].size() - 1) {
-        braille::ambiguous::staff_element const& next_measure =
+        braille::ast::staff_element const& next_measure =
           part[staff_index][measure_index + 1];
         repeat_info next_repeat(next_measure);
         if (this_repeat.end and next_repeat.begin) {
@@ -147,12 +147,12 @@ void generator::operator() ( braille::ambiguous::part const& part
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::key_and_time_signature const& key_and_time_sig) const
+generator::operator() (braille::ast::key_and_time_signature const& key_and_time_sig) const
 {
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::measure const& measure) const
+generator::operator() (braille::ast::measure const& measure) const
 {
   if (measure.voices.size() == 1) {
     (*this)(measure.voices.front());
@@ -168,7 +168,7 @@ generator::operator() (braille::ambiguous::measure const& measure) const
   }
 }
 
-void generator::operator() (braille::ambiguous::voice const& voice) const
+void generator::operator() (braille::ast::voice const& voice) const
 {
   for (size_t partial_measure_index = 0; partial_measure_index < voice.size();
        ++partial_measure_index)
@@ -179,7 +179,7 @@ void generator::operator() (braille::ambiguous::voice const& voice) const
 }
 
 void
-generator::operator() (braille::ambiguous::partial_measure const& partial_measure) const
+generator::operator() (braille::ast::partial_measure const& partial_measure) const
 {
   if (partial_measure.size() == 1) {
     (*this)(partial_measure.front());
@@ -196,7 +196,7 @@ generator::operator() (braille::ambiguous::partial_measure const& partial_measur
 }
 
 void
-generator::operator() (braille::ambiguous::partial_voice const& partial_voice) const
+generator::operator() (braille::ast::partial_voice const& partial_voice) const
 {
   for (size_t element_index = 0; element_index < partial_voice.size();
        ++element_index)
@@ -207,18 +207,18 @@ generator::operator() (braille::ambiguous::partial_voice const& partial_voice) c
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::barline const&) const
+generator::operator() (braille::ast::barline const&) const
 {
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::simile const&) const
+generator::operator() (braille::ast::simile const&) const
 {
   BOOST_ASSERT(false);
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::value_distinction const&) const
+generator::operator() (braille::ast::value_distinction const&) const
 {
 }
 
@@ -228,7 +228,7 @@ generator::operator() (braille::hand_sign const&) const
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::rest const& rest) const
+generator::operator() (braille::ast::rest const& rest) const
 {
   os << "r";
   if (rest.whole_measure) os << "1";
@@ -239,7 +239,7 @@ generator::operator() (braille::ambiguous::rest const& rest) const
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::note const& note) const
+generator::operator() (braille::ast::note const& note) const
 {
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
@@ -270,7 +270,7 @@ generator::operator() (braille::ambiguous::note const& note) const
 }
 
 generator::result_type
-generator::operator() (braille::ambiguous::chord const& chord) const
+generator::operator() (braille::ast::chord const& chord) const
 {
   os << "<";
   ly_pitch_step(chord.base.step);
@@ -278,7 +278,7 @@ generator::operator() (braille::ambiguous::chord const& chord) const
   ly_octave(chord.base.octave);
   if (chord.base.tie) os << "~";
   ly_finger(chord.base.fingers);
-  for (braille::ambiguous::interval const& interval: chord.intervals) {
+  for (braille::ast::interval const& interval: chord.intervals) {
     os << " ";
     ly_pitch_step(interval.step);
     ly_accidental(interval.alter);
@@ -330,7 +330,7 @@ void generator::ly_key(key_signature const& key) const
   os << " " << "\\major";
 }
 
-void generator::ly_rhythm(braille::ambiguous::rhythmic_data const& rhythm) const
+void generator::ly_rhythm(braille::ast::rhythmic_data const& rhythm) const
 {
   if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
   std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');

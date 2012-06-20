@@ -4,7 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "music.hpp"
+#include "bmc/music.hpp"
 
 namespace music {
 

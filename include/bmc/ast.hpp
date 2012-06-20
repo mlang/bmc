@@ -4,8 +4,8 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef BMC_AMBIGUOUS_HPP
-#define BMC_AMBIGUOUS_HPP
+#ifndef BMC_AST_HPP
+#define BMC_AST_HPP
 
 #include <cmath>
 #include <type_traits>
@@ -14,8 +14,8 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 
-#include "music.hpp"
-#include "braille_music.hpp"
+#include "bmc/music.hpp"
+#include "bmc/braille_music.hpp"
 
 namespace music { namespace braille {
 
@@ -26,12 +26,8 @@ namespace music { namespace braille {
  * right now.  However, it is likely that we will need two different ways of
  * storing our data, one form immediately after parsing, and another as a result
  * of the necessary transformations on top of that.
- *
- * The namespace is called 'ambiguous' because it resembles the pure,
- * unprocessed parse result which is by the nature of braille music code
- * ambiguous (exact note and rest values need to be calculated).
  */
-namespace ambiguous {
+namespace ast {
 
 enum value
 {
@@ -52,7 +48,7 @@ struct locatable
  */
 struct rhythmic_data
 {
-  ambiguous::value ambiguous_value;
+  ast::value ambiguous_value;
   unsigned dots;
   rational type; // filled in by value_disambiguation.hpp
   rhythmic_data(): ambiguous_value(unknown), dots(0) {}
@@ -80,7 +76,7 @@ struct pitched
   unsigned octave;
   diatonic_step step;
   int alter;
-  boost::optional<ambiguous::tie> tie;
+  boost::optional<ast::tie> tie;
 };
 
 struct note : locatable, rhythmic_data, rhythmic, pitched
@@ -165,7 +161,7 @@ struct score {
 
 namespace music {
   namespace braille {
-    namespace ambiguous {
+    namespace ast {
 
       /// Visitors
 
@@ -235,7 +231,7 @@ namespace music {
 
 namespace music {
   namespace braille {
-    namespace ambiguous {
+    namespace ast {
       struct get_duration: boost::static_visitor<rational>
       {
         result_type operator() (rhythmic const& note) const
@@ -264,7 +260,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ambiguous::partial_voice::const_reference sign
+            , music::braille::ast::partial_voice::const_reference sign
             )
   {
     return r + duration(sign);
@@ -275,7 +271,7 @@ namespace boost {
 
 namespace music {
   namespace braille {
-    namespace ambiguous {
+    namespace ast {
       inline
       rational
       duration(partial_voice const& partial_voice)
@@ -300,7 +296,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ambiguous::voice::const_reference partial_measure
+            , music::braille::ast::voice::const_reference partial_measure
             )
   {
     return r + duration(partial_measure);
@@ -309,7 +305,7 @@ namespace boost {
 
 namespace music {
   namespace braille {
-    namespace ambiguous {
+    namespace ast {
       inline
       rational
       duration(voice const& voice)
@@ -347,7 +343,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ambiguous::staff::const_reference staff_element
+            , music::braille::ast::staff::const_reference staff_element
             )
   {
     return r + duration(staff_element);
@@ -356,7 +352,7 @@ namespace boost {
 
 namespace music {
   namespace braille {
-    namespace ambiguous {
+    namespace ast {
       inline
       rational
       duration(staff const& staff)
@@ -371,63 +367,63 @@ namespace music {
 #include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::rest,
-  (music::braille::ambiguous::value, ambiguous_value)
+  music::braille::ast::rest,
+  (music::braille::ast::value, ambiguous_value)
   (unsigned, dots)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::note,
+  music::braille::ast::note,
   (std::vector<music::articulation>, articulations)
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
   (music::diatonic_step, step)
-  (music::braille::ambiguous::value, ambiguous_value)
+  (music::braille::ast::value, ambiguous_value)
   (unsigned, dots)
-  (std::vector<music::braille::ambiguous::slur>, slurs)
+  (std::vector<music::braille::ast::slur>, slurs)
   (music::braille::fingering_list, fingers)
-  (boost::optional<music::braille::ambiguous::tie>, tie)
+  (boost::optional<music::braille::ast::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::interval,
+  music::braille::ast::interval,
   (boost::optional<music::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
   (music::interval, steps)
   (music::braille::fingering_list, fingers)
-  (boost::optional<music::braille::ambiguous::tie>, tie)
+  (boost::optional<music::braille::ast::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::chord,
-  (music::braille::ambiguous::note, base)
-  (std::vector<music::braille::ambiguous::interval>, intervals)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::value_distinction,
-  (music::braille::ambiguous::value_distinction::type, value)
+  music::braille::ast::chord,
+  (music::braille::ast::note, base)
+  (std::vector<music::braille::ast::interval>, intervals)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::simile,
+  music::braille::ast::value_distinction,
+  (music::braille::ast::value_distinction::type, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::simile,
   (boost::optional<unsigned>, octave_spec)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::measure,
+  music::braille::ast::measure,
   (boost::optional<unsigned>, ending)
-  (std::vector<music::braille::ambiguous::voice>, voices)
+  (std::vector<music::braille::ast::voice>, voices)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::key_and_time_signature,
+  music::braille::ast::key_and_time_signature,
   (music::key_signature, key)
   (music::time_signature, time)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ambiguous::score,
+  music::braille::ast::score,
   (music::key_signature, key_sig)
   (boost::optional<music::time_signature>, time_sig)
-  (std::vector<music::braille::ambiguous::part>, parts)
+  (std::vector<music::braille::ast::part>, parts)
 )
 
 #endif

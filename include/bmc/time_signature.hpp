@@ -8,7 +8,7 @@
 #define BMC_TIME_SIGNATURE_HPP
 
 #include "config.hpp"
-#include "music.hpp"
+#include "bmc/music.hpp"
 #include "numbers.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 

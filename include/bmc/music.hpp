@@ -7,7 +7,7 @@
 #ifndef BMC_MUSIC_HPP
 #define BMC_MUSIC_HPP
 
-#include "math.hpp"
+#include "bmc/math.hpp"
 
 namespace music {
 

@@ -7,12 +7,12 @@
 #include "ttb/ttb.h"
 
 #include "config.hpp"
-#include "score.hpp"
+#include "bmc/score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
 #include "compiler.hpp"
 
 #include "fluidsynth.hpp"
-#include "lilypond.hpp"
+#include "bmc/lilypond.hpp"
 
 #include <thread>
 

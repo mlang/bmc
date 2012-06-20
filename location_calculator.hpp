@@ -9,9 +9,9 @@
 
 #include <map>
 #include <boost/variant/static_visitor.hpp>
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include "compiler_pass.hpp"
-#include "error_handler.hpp"
+#include "bmc/error_handler.hpp"
 
 namespace music { namespace braille {
 
@@ -34,11 +34,11 @@ public:
   , handler(handler)
   {}
 
-  result_type operator()(ambiguous::measure& measure) const
+  result_type operator()(ast::measure& measure) const
   {
-    for (ambiguous::voice& voice: measure.voices) {
-      for (ambiguous::partial_measure& part: voice) {
-        for (ambiguous::partial_voice& partial_voice: part) {
+    for (ast::voice& voice: measure.voices) {
+      for (ast::partial_measure& part: voice) {
+        for (ast::partial_voice& partial_voice: part) {
           std::for_each(partial_voice.begin(), partial_voice.end(),
                         boost::apply_visitor(*this));
           (*this)(partial_voice);
@@ -47,10 +47,10 @@ public:
       }
       (*this)(voice);
     }
-    (*this)(static_cast<ambiguous::locatable&>(measure));
+    (*this)(static_cast<ast::locatable&>(measure));
   }
 
-  result_type operator()(ambiguous::locatable& lexeme) const
+  result_type operator()(ast::locatable& lexeme) const
   {
     typedef typename ErrorHandler::iterator_type iterator_type;
     iterator_type const error_position(handler.iters[lexeme.id]);
@@ -58,7 +58,7 @@ public:
     lexeme.column = std::distance(line_start, error_position) + 1;
   }
 
-  result_type operator()(ambiguous::barline&) const { }
+  result_type operator()(ast::barline&) const { }
   result_type operator()(hand_sign&) const { }
 };
 

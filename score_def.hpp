@@ -6,7 +6,7 @@
 
 #ifndef BMC_SCORE_DEF_HPP
 #define BMC_SCORE_DEF_HPP
-#include "score.hpp"
+#include "bmc/score.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include <boost/spirit/include/qi_core.hpp>
@@ -72,6 +72,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   ;
   staff = (key_and_time_signature | measure) % (whitespace | eol);
   key_and_time_signature = key_signature >> time_signature;
+  //global_key_and_time_signature = key_signature >> time_signature >> *(brl(5) >> brl(2) >> time_signature);
 
   right_hand_sign = brl(46) >> brl(345) > optional_dot;
   left_hand_sign = brl(456) >> brl(345) > optional_dot;

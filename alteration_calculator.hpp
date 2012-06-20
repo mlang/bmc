@@ -9,7 +9,7 @@
 
 #include <map>
 #include <boost/variant/static_visitor.hpp>
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include "compiler_pass.hpp"
 
 namespace music { namespace braille {
@@ -42,13 +42,13 @@ public:
    */
   void set(music::key_signature sig) { key_sig = sig; }
 
-  result_type operator() (ambiguous::measure& measure)
+  result_type operator() (ast::measure& measure)
   { reset_memory(), visit_chronologically(measure); }
 
-  result_type operator()(ambiguous::note& note)
+  result_type operator()(ast::note& note)
   { note.alter = to_alter(note.acc, note.octave, note.step); }
 
-  result_type operator()(ambiguous::chord& chord)
+  result_type operator()(ast::chord& chord)
   {
     (*this)(chord.base);
     for (auto& interval: chord.intervals)
@@ -122,18 +122,18 @@ private:
   }
   /** \brief A (multi)map of signs sorted by time
    */
-  struct signmap: std::multimap<rational const, ambiguous::sign&>
+  struct signmap: std::multimap<rational const, ast::sign&>
   {
-    signmap( ambiguous::measure& measure
+    signmap( ast::measure& measure
            , rational const& measure_position = rational()
            )
     {
-      for (ambiguous::voice& voice: measure.voices) {
+      for (ast::voice& voice: measure.voices) {
         rational voice_position(measure_position);
-        for (ambiguous::partial_measure& partial_measure: voice) {
-          for (ambiguous::partial_voice& partial_voice: partial_measure) {
+        for (ast::partial_measure& partial_measure: voice) {
+          for (ast::partial_voice& partial_voice: partial_measure) {
             rational position(voice_position);
-            for (ambiguous::sign& sign: partial_voice) {
+            for (ast::sign& sign: partial_voice) {
               insert(value_type(position, sign));
               position += duration(sign);
             }
@@ -143,7 +143,7 @@ private:
       }
     }
   };
-  void visit_chronologically(ambiguous::measure& measure)
+  void visit_chronologically(ast::measure& measure)
   {
     for (signmap::value_type& value: signmap(measure))
       boost::apply_visitor(*this, value.second);

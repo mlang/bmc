@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include <fluidsynth.h>
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 #include "midi.hpp"
 
 namespace music {
@@ -29,9 +29,9 @@ public:
   void operator()(midi::note_on const&);
   void operator()(midi::note_off const&);
 
-  void operator()(braille::ambiguous::score const&);
-  void operator()(braille::ambiguous::measure const&);
-  result_type operator()(braille::ambiguous::key_and_time_signature const&) {};
+  void operator()(braille::ast::score const&);
+  void operator()(braille::ast::measure const&);
+  result_type operator()(braille::ast::key_and_time_signature const&) {};
 private:
   void play();
 };

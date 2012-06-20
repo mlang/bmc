@@ -47,10 +47,10 @@ fluidsynth::operator()(midi::note_off const& note)
 { fluid_synth_noteoff(synth, note.channel, note.note); }
 
 void
-fluidsynth::operator()(braille::ambiguous::score const& score)
+fluidsynth::operator()(braille::ast::score const& score)
 {
-  for(braille::ambiguous::part const& part: score.parts) {
-    for(braille::ambiguous::staff const& staff: part)
+  for(braille::ast::part const& part: score.parts) {
+    for(braille::ast::staff const& staff: part)
     {
       current_position = zero;
       std::for_each(staff.begin(), staff.end(), boost::apply_visitor(*this));
@@ -89,7 +89,7 @@ class midi_performer : public boost::static_visitor<void>
 public:
   midi_performer(midi::event_queue& queue, rational& position)
   : queue(queue), position(position) {}
-  result_type operator()(braille::ambiguous::note const& note) const
+  result_type operator()(braille::ast::note const& note) const
   {
     int const chromatic[7] = { 0, 2, 4, 6, 7, 9, 11 };
     queue.push(midi::note_on(position, 0,
@@ -97,9 +97,9 @@ public:
                              90, note.as_rational()));
     position += note.as_rational();
   }
-  result_type operator()(braille::ambiguous::rest const& rest) const
+  result_type operator()(braille::ast::rest const& rest) const
   { position += rest.as_rational(); }
-  result_type operator()(braille::ambiguous::chord const& chord) const
+  result_type operator()(braille::ast::chord const& chord) const
   {
     (*this)(chord.base);
     // ...
@@ -113,12 +113,12 @@ public:
 namespace music {
 
 void
-fluidsynth::operator()(braille::ambiguous::measure const& measure)
+fluidsynth::operator()(braille::ast::measure const& measure)
 {
-  for (braille::ambiguous::voice const& voice: measure.voices) {
+  for (braille::ast::voice const& voice: measure.voices) {
     rational voice_position(current_position);
-    for (braille::ambiguous::partial_measure const& partial_measure: voice) {
-      for (braille::ambiguous::partial_voice const& partial_voice: partial_measure) {
+    for (braille::ast::partial_measure const& partial_measure: voice) {
+      for (braille::ast::partial_voice const& partial_voice: partial_measure) {
         rational position(voice_position);
         midi_performer perform(queue, position);
         std::for_each(partial_voice.begin(), partial_voice.end(),

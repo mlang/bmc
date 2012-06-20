@@ -10,7 +10,7 @@
 #include <map>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/mpl/bool.hpp>
-#include "ambiguous.hpp"
+#include "bmc/ast.hpp"
 
 namespace music { namespace braille {
 
@@ -26,7 +26,7 @@ struct annotation
   {
   }
 
-  void operator()( ambiguous::locatable& ast
+  void operator()( ast::locatable& ast
                  , Iterator begin, Iterator /*end*/
                  ) const
   {
