@@ -345,9 +345,6 @@ make up this prototype:
    FluidSynth C API to allow playing of scores.
  * Testing and utilities:
    The file test.cpp contains all the test cases implemented so far.
-   For the convenience of developers, brltr.cpp contains a small command-line
-   tool which can be used to translate text characters to Unicode braille
-   given a particular braille table (see Text to braille).
  * The program:
    main.cpp contains the main routine necessary to link a final executable.
 

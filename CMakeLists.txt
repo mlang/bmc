@@ -39,9 +39,6 @@ target_link_libraries(bmc bmc_parse ${FLUIDSYNTH_LIBRARY})
 add_definitions(-DHAVE_ICONV_H=1)
 add_definitions(-DHAVE_WCHAR_H=1)
 add_definitions(-DTABLES_DIRECTORY="${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/Tables")
-add_executable(brltr brltr.cpp)
-target_link_libraries(brltr bmc_ttb)
-install(TARGETS brltr DESTINATION bin)
 
 add_executable(bmc_test test.cpp)
 set_target_properties(bmc_test
