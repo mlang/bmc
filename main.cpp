@@ -7,9 +7,9 @@
 #include "ttb/ttb.h"
 
 #include "config.hpp"
-#include "bmc/score.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
-#include "compiler.hpp"
+#include "bmc/braille/parsing/grammar/score.hpp"
+#include "bmc/braille/semantic_analysis.hpp"
 
 #include "fluidsynth.hpp"
 #include "bmc/lilypond.hpp"

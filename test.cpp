@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "config.hpp"
-#include "bmc/time_signature.hpp"
+#include "bmc/braille/parsing/grammar/time_signature.hpp"
 #include <boost/spirit/include/qi.hpp>
 #include "ttb/ttb.h"
 
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   destroyTextTable(textTable);
 }
 
-#include "bmc/key_signature.hpp"
+#include "bmc/braille/parsing/grammar/key_signature.hpp"
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
   destroyTextTable(textTable);
 }
 
-#include "bmc/measure.hpp"
+#include "bmc/braille/parsing/grammar/measure.hpp"
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   destroyTextTable(textTable);
 }
 
-#include "compiler.hpp"
+#include "bmc/braille/semantic_analysis.hpp"
 
 #define BMC_CHECK_SIGN_LOCATION(sign, line, column) \
   BOOST_CHECK_EQUAL(boost::apply_visitor(music::braille::ast::get_line(), sign), line);\
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   destroyTextTable(textTable);
 }
 
-#include "bmc/score.hpp"
+#include "bmc/braille/parsing/grammar/score.hpp"
 
 BOOST_AUTO_TEST_CASE(score_solo_test1) {
   textTable = compileTextTable(DIR "ttb/Tables/de.ttb");

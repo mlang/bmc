@@ -7,11 +7,11 @@
 #ifndef BMC_MEASURE_DEF_HPP
 #define BMC_MEASURE_DEF_HPP
 
-#include "bmc/measure.hpp"
+#include "bmc/braille/parsing/grammar/measure.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
-#include "bmc/error_handler.hpp"
-#include "annotation.hpp"
+#include "bmc/braille/parsing/error_handler.hpp"
+#include "bmc/braille/parsing/annotation.hpp"
 #include <boost/spirit/include/qi_core.hpp>
 #include <boost/spirit/include/qi_attr.hpp>
 #include <boost/spirit/include/qi_eol.hpp>

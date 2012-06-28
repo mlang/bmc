@@ -9,11 +9,11 @@
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
-#include "bmc/ast.hpp"
-#include "error_handler.hpp"
-#include "measure.hpp"
-#include "key_signature.hpp"
-#include "time_signature.hpp"
+#include "bmc/braille/ast.hpp"
+#include "bmc/braille/parsing/error_handler.hpp"
+#include "bmc/braille/parsing/grammar/measure.hpp"
+#include "bmc/braille/parsing/grammar/key_signature.hpp"
+#include "bmc/braille/parsing/grammar/time_signature.hpp"
 
 namespace music { namespace braille {
 

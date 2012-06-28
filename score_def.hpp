@@ -6,7 +6,7 @@
 
 #ifndef BMC_SCORE_DEF_HPP
 #define BMC_SCORE_DEF_HPP
-#include "bmc/score.hpp"
+#include "bmc/braille/parsing/grammar/score.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include <boost/spirit/include/qi_core.hpp>

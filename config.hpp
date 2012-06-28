@@ -4,8 +4,8 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#if !defined(CONFIG_HPP)
-#define CONFIG_HPP
+#ifndef BMC_CONFIG_HPP
+#define BMC_CONFIG_HPP
 
 #define BOOST_SPIRIT_ACTIONS_ALLOW_ATTR_COMPAT
 #define BOOST_SPIRIT_USE_PHOENIX_V3

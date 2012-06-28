@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include <fluidsynth.h>
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 #include "midi.hpp"
 
 namespace music {

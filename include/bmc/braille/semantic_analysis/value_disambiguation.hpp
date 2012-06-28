@@ -7,7 +7,7 @@
 #ifndef BMC_VALUE_DISAMBIGUATION_HPP
 #define BMC_VALUE_DISAMBIGUATION_HPP
 
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>

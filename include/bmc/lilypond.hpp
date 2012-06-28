@@ -7,7 +7,7 @@
 #ifndef BMC_LILYPOND_HPP_INCLUDED
 #define BMC_LILYPOND_HPP_INCLUDED
 
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 #include "bmc/output_format.hpp"
 
 namespace music { namespace lilypond {

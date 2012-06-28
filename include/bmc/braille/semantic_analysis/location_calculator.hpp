@@ -9,9 +9,9 @@
 
 #include <map>
 #include <boost/variant/static_visitor.hpp>
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
-#include "bmc/error_handler.hpp"
+#include "bmc/braille/parsing/error_handler.hpp"
 
 namespace music { namespace braille {
 

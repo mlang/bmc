@@ -10,7 +10,7 @@
 #include <map>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/mpl/bool.hpp>
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 
 namespace music { namespace braille {
 

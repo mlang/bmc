@@ -9,9 +9,9 @@
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
-#include "bmc/ast.hpp"
-#include "bmc/numbers.hpp"
-#include "bmc/error_handler.hpp"
+#include "bmc/braille/ast.hpp"
+#include "bmc/braille/parsing/grammar/numbers.hpp"
+#include "bmc/braille/parsing/error_handler.hpp"
 
 namespace music { namespace braille {
 

@@ -1,5 +1,11 @@
-#include "value_disambiguator.hpp"
-#include "value_disambiguation.hpp"
+// Copyright (C) 2012  Mario Lang <mlang@delysid.org>
+//
+// Distributed under the terms of the GNU General Public License version 3.
+// (see accompanying file LICENSE.txt or copy at
+//  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
+
+#include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
+#include "bmc/braille/semantic_analysis/value_disambiguation.hpp"
 
 namespace music { namespace braille {
 

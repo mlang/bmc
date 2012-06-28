@@ -7,7 +7,7 @@
 #ifndef BMC_VALUE_DISAMBIGUATOR_HPP
 #define BMC_VALUE_DISAMBIGUATOR_HPP
 
-#include "bmc/ast.hpp"
+#include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
 
 namespace music { namespace braille {

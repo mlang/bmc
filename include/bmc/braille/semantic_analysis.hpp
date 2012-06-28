@@ -4,15 +4,14 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef BMC_COMPILER_HPP
-#define BMC_COMPILER_HPP
+#ifndef BMC_BRAILLE_SEMANTIC_ANALYSIS_HPP_INCLUDED
+#define BMC_BRAILLE_SEMANTIC_ANALYSIS_HPP_INCLUDED
 
-#include "bmc/ast.hpp"
-
-#include "location_calculator.hpp"
-#include "value_disambiguator.hpp"
-#include "octave_calculator.hpp"
-#include "alteration_calculator.hpp"
+#include "bmc/braille/ast.hpp"
+#include "bmc/braille/semantic_analysis/location_calculator.hpp"
+#include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
+#include "bmc/braille/semantic_analysis/octave_calculator.hpp"
+#include "bmc/braille/semantic_analysis/alteration_calculator.hpp"
 #include "boost_range/algorithm/all_of.hpp"
 
 #include <boost/function.hpp>
