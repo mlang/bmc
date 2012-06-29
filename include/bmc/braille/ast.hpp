@@ -51,7 +51,7 @@ struct rhythmic_data
   ast::value ambiguous_value;
   unsigned dots;
   rational type; // filled in by value_disambiguation.hpp
-  rhythmic_data(): ambiguous_value(unknown), dots(0) {}
+  rhythmic_data(): ambiguous_value(unknown), dots(0), type() {}
 };
 
 /** \brief Base class for everything that implies a rhythmic value.
@@ -92,7 +92,7 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
 
 struct rest : locatable, rhythmic_data, rhythmic
 {
-  rest() : whole_measure(false) {}
+  rest(): locatable(), rhythmic_data(), whole_measure(false) {}
   bool whole_measure; // filled in by disambiguate.hpp
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
