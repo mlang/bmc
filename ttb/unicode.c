@@ -16,7 +16,7 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #ifdef HAVE_ICU
 #include <unicode/uchar.h>
@@ -27,8 +27,8 @@
 #include <iconv.h>
 #endif /* HAVE_ICONV_H */
 
-#include "unicode.h"
-#include "ascii.h"
+#include <bmc/ttb/unicode.h>
+#include <bmc/ttb/ascii.h>
 
 int
 getCharacterWidth (wchar_t character) {

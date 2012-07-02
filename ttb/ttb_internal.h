@@ -23,8 +23,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include "bitmask.h"
-#include "unicode.h"
+#include <bmc/ttb/bitmask.h>
+#include <bmc/ttb/unicode.h>
 
 typedef uint32_t TextTableOffset;
 

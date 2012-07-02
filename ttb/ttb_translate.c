@@ -16,16 +16,16 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 
-#include "log.h"
-#include "file.h"
-#include "charset.h"
-#include "ttb.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/file.h>
+#include <bmc/ttb/charset.h>
+#include <bmc/ttb/ttb.h>
 #include "ttb_internal.h"
-#include "brldots.h"
+#include <bmc/ttb/brldots.h>
 
 static const unsigned char internalTextTableBytes[] = {
 #include "text.auto.h"

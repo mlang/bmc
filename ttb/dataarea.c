@@ -16,12 +16,12 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <string.h>
 
-#include "log.h"
-#include "dataarea.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/dataarea.h>
 
 struct DataAreaStruct {
   unsigned char *address;

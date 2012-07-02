@@ -16,19 +16,19 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <string.h>
 #include <locale.h>
 
-#include "log.h"
-#include "file.h"
-#include "datafile.h"
-#include "dataarea.h"
-#include "charset.h"
-#include "ttb.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/file.h>
+#include <bmc/ttb/datafile.h>
+#include <bmc/ttb/dataarea.h>
+#include <bmc/ttb/charset.h>
+#include <bmc/ttb/ttb.h>
 #include "ttb_internal.h"
-#include "ttb_compile.h"
+#include <bmc/ttb/ttb_compile.h>
 
 #ifdef __MINGW32__
 #include "sys_windows.h"

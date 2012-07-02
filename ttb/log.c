@@ -16,7 +16,7 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -40,7 +40,7 @@ localtime_r (const time_t *timep, struct tm *result) {
 }
 #endif /* __MSDOS__ */
 
-#include "log.h"
+#include <bmc/ttb/log.h>
 
 const char *const logLevelNames[] = {
   "emergency", "alert", "critical", "error",

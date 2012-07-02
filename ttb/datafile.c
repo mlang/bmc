@@ -16,7 +16,7 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -27,13 +27,13 @@
 #include <unicode/uchar.h>
 #endif /* HAVE_ICU */
 
-#include "log.h"
-#include "file.h"
-#include "queue.h"
-#include "datafile.h"
-#include "charset.h"
-#include "unicode.h"
-#include "brldots.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/file.h>
+#include <bmc/ttb/queue.h>
+#include <bmc/ttb/datafile.h>
+#include <bmc/ttb/charset.h>
+#include <bmc/ttb/unicode.h>
+#include <bmc/ttb/brldots.h>
 
 struct DataFileStruct {
   const char *name;

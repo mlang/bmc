@@ -16,17 +16,17 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 
-#include "log.h"
-#include "file.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/file.h>
 
-#include "ttb.h"
-#include "ttb_internal.h"
+#include <bmc/ttb/ttb.h>
+#include <bmc/ttb/ttb_internal.h>
 
 typedef struct {
   void *object;

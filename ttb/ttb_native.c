@@ -16,12 +16,12 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
-#include "file.h"
-#include "ttb.h"
+#include <bmc/ttb/file.h>
+#include <bmc/ttb/ttb.h>
 #include "ttb_internal.h"
-#include "ttb_compile.h"
+#include <bmc/ttb/ttb_compile.h>
 
 static int
 getCharacterOperand (DataFile *file, wchar_t *character) {

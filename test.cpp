@@ -7,7 +7,7 @@
 #include "config.hpp"
 #include "bmc/braille/parsing/grammar/time_signature.hpp"
 #include <boost/spirit/include/qi.hpp>
-#include "ttb/ttb.h"
+#include <bmc/ttb/ttb.h>
 
 #define BOOST_TEST_MODULE bmc_test
 #include <boost/test/included/unit_test.hpp>

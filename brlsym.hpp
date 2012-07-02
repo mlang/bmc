@@ -9,9 +9,9 @@
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_symbols.hpp>
-#include "bmc/braille/ast.hpp"
-#include "ttb/ttb.h"
-#include "ttb/unicode.h"
+#include <bmc/braille/ast.hpp>
+#include <bmc/ttb/ttb.h>
+#include <bmc/ttb/unicode.h>
 
 namespace music { namespace braille {
 

@@ -16,7 +16,7 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -33,9 +33,9 @@
 #include <langinfo.h>
 #endif /* platform-specific includes */
 
-#include "log.h"
-#include "charset.h"
-#include "unicode.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/charset.h>
+#include <bmc/ttb/unicode.h>
 
 static char *currentCharset = NULL;
 

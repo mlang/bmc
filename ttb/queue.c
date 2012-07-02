@@ -16,10 +16,10 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
-#include "log.h"
-#include "queue.h"
+#include <bmc/ttb/log.h>
+#include <bmc/ttb/queue.h>
 
 struct QueueStruct {
   Element *head;

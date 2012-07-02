@@ -16,7 +16,7 @@
  * This software is maintained by Dave Mielke <dave@mielke.cc>.
  */
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -30,8 +30,8 @@
 #include <sys/file.h>
 #endif /* HAVE_SYS_FILE_H */
 
-#include "file.h"
-#include "log.h"
+#include <bmc/ttb/file.h>
+#include <bmc/ttb/log.h>
 
 int
 isPathDelimiter (const char character) {
