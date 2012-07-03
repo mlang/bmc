@@ -19,7 +19,7 @@
 #ifndef BRLTTY_INCLUDED_DATAFILE
 #define BRLTTY_INCLUDED_DATAFILE
 
-#include "queue.h"
+#include <bmc/ttb/queue.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -19,7 +19,7 @@
 #ifndef BRLTTY_INCLUDED_LOG
 #define BRLTTY_INCLUDED_LOG
 
-#include "prologue.h"
+#include <bmc/ttb/prologue.h>
 
 #include <stdarg.h>
 

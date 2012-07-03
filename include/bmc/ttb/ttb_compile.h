@@ -25,7 +25,7 @@ extern "C" {
 
 #include <stdio.h>
 
-#include "datafile.h"
+#include <bmc/ttb/datafile.h>
 
 typedef struct TextTableDataStruct TextTableData;
 extern void destroyTextTableData (TextTableData *ttd);

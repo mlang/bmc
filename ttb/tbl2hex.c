@@ -26,7 +26,7 @@
 #include <bmc/ttb/file.h>
 
 #include <bmc/ttb/ttb.h>
-#include <bmc/ttb/ttb_internal.h>
+#include "ttb_internal.h"
 
 typedef struct {
   void *object;
