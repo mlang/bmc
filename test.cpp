@@ -180,10 +180,9 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
-  music::braille::compiler<error_handler_type> compile(error_handler);
-  compile.global_time_signature = music::time_signature(3, 4);
+  music::braille::compiler<error_handler_type> compile(error_handler, music::time_signature(3, 4));
   BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(duration(attribute), compile.global_time_signature);
+  BOOST_CHECK_EQUAL(duration(attribute), music::rational(3, 4));
   BMC_CHECK_LOCATABLE_LOCATION(attribute, 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0], 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0], 1, 1);
@@ -214,10 +213,9 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
-  music::braille::compiler<error_handler_type> compile(errors);
-  compile.global_time_signature = music::time_signature(3, 4);
+  music::braille::compiler<error_handler_type> compile(errors, music::time_signature(3, 4));
   BOOST_CHECK(compile(attribute));
-
+  BOOST_CHECK_EQUAL(duration(attribute), music::rational(3, 4));
   BMC_CHECK_LOCATABLE_LOCATION(attribute, 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0][0], 1, 1);
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[1][0][0], 1, 6);

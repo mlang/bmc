@@ -47,11 +47,12 @@ class compiler : public compiler_pass, public boost::static_visitor<bool>
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
-
-public:
   music::time_signature global_time_signature;
 
-  compiler(ErrorHandler& error_handler)
+public:
+  compiler( ErrorHandler& error_handler
+          , music::time_signature const& time_signature = music::time_signature(4, 4)
+          )
   : compiler_pass( boost::phoenix::function<ErrorHandler>(error_handler)
                    ( L"Error"
                    , boost::phoenix::arg_names::_2
@@ -63,7 +64,7 @@ public:
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
   , calculate_alterations(report_error)
-  , global_time_signature(4, 4)
+  , global_time_signature(time_signature)
   {
   }
 
@@ -74,15 +75,21 @@ public:
     }
 
     for (ast::part& part: score.parts) {
-      for (std::size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
-        music::braille::interval_direction interval_direction = music::braille::interval_direction::down;
+      for (std::size_t staff_index = 0;
+           staff_index < part.size();
+           ++staff_index) {
+        music::braille::interval_direction
+        interval_direction = music::braille::interval_direction::down;
         switch (staff_index) {
-        case 0: interval_direction = music::braille::interval_direction::down; break;
-        case 1: interval_direction = music::braille::interval_direction::up;   break;
+        case 0:
+          interval_direction = music::braille::interval_direction::down;
+          break;
+        case 1:
+          interval_direction = music::braille::interval_direction::up;
+          break;
         default: BOOST_ASSERT(false);
         }
         calculate_octaves.set(interval_direction);
-        disambiguate_values.set(global_time_signature);
         calculate_alterations.set(score.key_sig);
         if (not (*this)(part[staff_index])) return false;
         calculate_octaves.reset();
@@ -90,10 +97,13 @@ public:
     }
     return true;
   }
+
   result_type operator() (ast::staff& staff)
   { return all_of(staff, boost::apply_visitor(*this)); }
+
   result_type operator()(ast::measure& measure)
   {
+    disambiguate_values.set(global_time_signature);
     if (disambiguate_values(measure))
       if (calculate_octaves(measure)) {
         calculate_alterations(measure);
