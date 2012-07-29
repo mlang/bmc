@@ -7,6 +7,10 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
+#include <xercesc/framework/URLInputSource.hpp>
+#include <xercesc/framework/Wrapper4InputSource.hpp>
+
+#include <libxml/catalog.h>
 
 #include <ctime>
 #include <iostream>
@@ -67,6 +71,50 @@ typedef std::unique_ptr<xercesc::DOMLSSerializer, dom_deleter>
 typedef std::unique_ptr<xercesc::DOMLSOutput, dom_deleter>
         unique_dom_ls_output_ptr;
 
+#define FOREACH_DOM_CHILD(ITER, PARENT) \
+        for (XERCES_CPP_NAMESPACE::DOMNode *ITER = PARENT->getFirstChild(); \
+             ITER != nullptr; ITER = ITER->getNextSibling())
+
+class catalog_resource_resolver : public XERCES_CPP_NAMESPACE::DOMLSResourceResolver
+{
+  xmlCatalogPtr catalog;
+public:
+  catalog_resource_resolver(char const * filename)
+  : catalog(xmlLoadACatalog(filename))
+  {}
+
+  ~catalog_resource_resolver() { xmlFreeCatalog(catalog); }
+
+  XERCES_CPP_NAMESPACE::DOMLSInput*
+  resolveResource( XMLCh const * const /* resourceType */
+                 , XMLCh const * const /* namespaceUri */
+                 , XMLCh const * const publicId
+                 , XMLCh const * const /* systemId */
+                 , XMLCh const * const baseURI
+                 )
+  {
+    char * pubId = XERCES_CPP_NAMESPACE::XMLString::transcode(publicId);
+    xmlChar const * newSystemId = xmlACatalogResolvePublic(catalog, reinterpret_cast<xmlChar const *>(pubId));
+    XERCES_CPP_NAMESPACE::XMLString::release(&pubId);
+    if (newSystemId) {
+      XERCES_CPP_NAMESPACE::URLInputSource
+      *input_source = new XERCES_CPP_NAMESPACE::URLInputSource
+      (baseURI,
+       XERCES_CPP_NAMESPACE::XMLString::transcode(reinterpret_cast<char const *>
+                                                  (newSystemId)
+                                                 ),
+       publicId);
+      
+      XERCES_CPP_NAMESPACE::DOMLSInput
+      *input = new XERCES_CPP_NAMESPACE::Wrapper4InputSource(input_source);
+
+      return input;
+    }
+
+    return nullptr;
+  }
+};
+
 class document
 {
   unique_dom_document_ptr dom_document;
@@ -81,24 +129,23 @@ public:
   , indent(true)
   { initialize_empty_document(); }
 
+  static bool node_name_equals( XERCES_CPP_NAMESPACE::DOMNode *node
+                              , std::string const& name
+                              )
+  {
+    return XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
+                                                   xml_string(name.c_str()));
+  }
   document(char const *uri)
   : dom_document(deserialize(uri))
   , score_partwise(dom_document->getDocumentElement())
   , indent(false)
   {
-    for (XERCES_CPP_NAMESPACE::DOMNode *node = score_partwise->getFirstChild();
-         node != nullptr;
-         node = node->getNextSibling())
-    {
-      if (node->getNodeType() == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE)
-      {
-        if (XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
-                                                    xml_string("identification")))
-        {
+    FOREACH_DOM_CHILD(node, score_partwise) {
+      if (node->getNodeType() == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE) {
+        if (node_name_equals(node, "identification")) {
           identification = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
-        } else if (XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
-                                                           xml_string("part-list")))
-        {
+        } else if (node_name_equals(node, "part-list")) {
           part_list = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
         }
       }
@@ -187,8 +234,11 @@ public:
                 << std::endl
                 << e.getMessage() << std::endl;
     }
+
     return false;
   }
+
+private:
   static XERCES_CPP_NAMESPACE::DOMDocument *deserialize(char const *uri)
   {
     XERCES_CPP_NAMESPACE_USE
@@ -198,10 +248,13 @@ public:
       *ls = DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
       unique_dom_ls_parser_ptr
       parser(ls->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, 0));
+      catalog_resource_resolver resolver("/etc/xml/catalog");
 
       {
         DOMConfiguration *configuration = parser->getDomConfig();
 
+        if (configuration->canSetParameter(XMLUni::fgDOMResourceResolver, &resolver))
+          configuration->setParameter(XMLUni::fgDOMResourceResolver, &resolver);
         if (configuration->canSetParameter(XMLUni::fgDOMValidate, true))
           configuration->setParameter(XMLUni::fgDOMValidate, true);
       }
@@ -213,8 +266,11 @@ public:
                 << std::endl
                 << e.getMessage() << std::endl;
     }
+
     return nullptr;
   }
+
+public:
   friend std::ostream& operator<< (std::ostream& stream, document const& doc)
   {
     doc.serialize(stream);
