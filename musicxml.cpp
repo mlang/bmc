@@ -12,9 +12,12 @@
 
 #include <libxml/catalog.h>
 
+#include <boost/assert.hpp>
+
 #include <ctime>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 namespace music { namespace musicxml {
 
@@ -71,10 +74,6 @@ typedef std::unique_ptr<xercesc::DOMLSSerializer, dom_deleter>
 typedef std::unique_ptr<xercesc::DOMLSOutput, dom_deleter>
         unique_dom_ls_output_ptr;
 
-#define FOREACH_DOM_CHILD(ITER, PARENT) \
-        for (XERCES_CPP_NAMESPACE::DOMNode *ITER = PARENT->getFirstChild(); \
-             ITER != nullptr; ITER = ITER->getNextSibling())
-
 class catalog_resource_resolver : public XERCES_CPP_NAMESPACE::DOMLSResourceResolver
 {
   xmlCatalogPtr catalog;
@@ -115,11 +114,92 @@ public:
   }
 };
 
+class part;
+
+class measure
+{
+  friend class part;
+  XERCES_CPP_NAMESPACE::DOMElement *this_element;
+  measure(XERCES_CPP_NAMESPACE::DOMElement *element)
+  : this_element(element)
+  {}
+};
+
+class document;
+
+class part
+{
+  friend class document;
+  XERCES_CPP_NAMESPACE::DOMElement *this_element, *part_list;
+  std::vector<measure> measures;
+
+  part( XERCES_CPP_NAMESPACE::DOMElement *element
+      , XERCES_CPP_NAMESPACE::DOMElement *part_list
+      )
+  : this_element(element)
+  , part_list(part_list)
+  {
+    xml_string measure_tag_name("measure");
+
+    for (XERCES_CPP_NAMESPACE::DOMElement *
+         element = this_element->getFirstElementChild();
+         element != nullptr;
+         element = element->getNextElementSibling())
+    {
+      if (XERCES_CPP_NAMESPACE::XMLString::equals
+          (element->getTagName(), measure_tag_name)) {
+        measures.emplace_back(measure(element));
+      }
+    }
+  }
+
+public:
+  ~part() { this_element = part_list = nullptr; }
+
+  std::string id() const {
+    char *id_transcoded(XERCES_CPP_NAMESPACE::XMLString::transcode(this_element->getAttribute(xml_string("id"))));
+    std::string part_id(id_transcoded);
+    XERCES_CPP_NAMESPACE::XMLString::release(&id_transcoded);
+    return part_id;
+  }
+
+  std::string name() const {
+    XMLCh const *id_(this_element->getAttribute(xml_string("id")));
+    for (XERCES_CPP_NAMESPACE::DOMElement *
+         element = part_list->getFirstElementChild();
+         element != nullptr;
+         element = element->getNextElementSibling())
+    {
+      if (XERCES_CPP_NAMESPACE::XMLString::equals(element->getTagName(),
+                                                  xml_string("score-part")) and
+          XERCES_CPP_NAMESPACE::XMLString::equals(element->getAttribute(xml_string("id")), id_))
+      {
+        for (XERCES_CPP_NAMESPACE::DOMElement *
+             score_part_element = element->getFirstElementChild();
+             score_part_element != nullptr;
+             score_part_element = score_part_element->getNextElementSibling())
+        {
+          if (XERCES_CPP_NAMESPACE::XMLString::equals(score_part_element->getTagName(), xml_string("part-name")))
+          {
+            char *text_content(XERCES_CPP_NAMESPACE::XMLString::transcode(score_part_element->getTextContent()));
+            std::string text(text_content);
+            XERCES_CPP_NAMESPACE::XMLString::release(&text_content);
+            return text;
+          }
+        }
+      }
+    }
+
+    return "";
+  }
+};
+
 class document
 {
   unique_dom_document_ptr dom_document;
   XERCES_CPP_NAMESPACE::DOMElement *score_partwise, *identification, *part_list;
   bool indent;
+  std::vector<part> partwise;
 public:
   document()
   : dom_document(create_dom_document())
@@ -129,30 +209,49 @@ public:
   , indent(true)
   { initialize_empty_document(); }
 
-  static bool node_name_equals( XERCES_CPP_NAMESPACE::DOMNode *node
-                              , std::string const& name
-                              )
+  static bool tag_name_equals( XERCES_CPP_NAMESPACE::DOMElement *element
+                             , std::string const& name
+                             )
   {
-    return XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
+    return XERCES_CPP_NAMESPACE::XMLString::equals(element->getTagName(),
                                                    xml_string(name.c_str()));
   }
   document(char const *uri)
   : dom_document(deserialize(uri))
   , score_partwise(dom_document->getDocumentElement())
+  , identification(nullptr)
+  , part_list(nullptr)
   , indent(false)
   {
-    FOREACH_DOM_CHILD(node, score_partwise) {
-      if (node->getNodeType() == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE) {
-        if (node_name_equals(node, "identification")) {
-          identification = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
-        } else if (node_name_equals(node, "part-list")) {
-          part_list = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
-        }
+    BOOST_ASSERT(tag_name_equals(score_partwise, "score-partwise"));
+    for (XERCES_CPP_NAMESPACE::DOMElement *
+         element = score_partwise->getFirstElementChild();
+         element != nullptr;
+         element = element->getNextElementSibling())
+    {
+      if (tag_name_equals(element, "identification")) {
+        identification = element;
+      } else if (tag_name_equals(element, "part-list")) {
+        part_list = element;
+        break;
+      }
+    }
+    BOOST_ASSERT(part_list != nullptr);
+    for (XERCES_CPP_NAMESPACE::DOMElement *
+         element = part_list->getNextElementSibling();
+         element != nullptr;
+         element = element->getNextElementSibling())
+    {
+      if (tag_name_equals(element, "part") and
+          element->hasAttribute(xml_string("id"))) {
+        partwise.emplace_back(part(element, part_list));
       }
     }
   }
 
   ~document() { score_partwise = identification = part_list = nullptr; }
+
+  std::vector<part> const& parts() const { return partwise; }
 
 private:
   static XERCES_CPP_NAMESPACE::DOMDocument *create_dom_document()
@@ -278,20 +377,31 @@ public:
   }
 };
 
+struct xerces_platform
+{
+  xerces_platform() { XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize(); }
+  ~xerces_platform() { XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate(); }
+};
+
 }}
 
 #include <xercesc/util/PlatformUtils.hpp>
 
 int main(int argc, char const *argv[])
 {
-  XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+  music::musicxml::xerces_platform xerces;
+
   if (argc == 1) {
     music::musicxml::document musicxml;
     std::cout << musicxml;
   } else if (argc == 2) {
     music::musicxml::document musicxml(argv[1]);
+    std::cout << musicxml.parts().size() << " parts" << std::endl;
+    for (auto part: musicxml.parts()) {
+      std::cout << "Part name: " << part.name() << std::endl;
+    }
     std::cout << musicxml;
   }
-  XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
+
   return EXIT_SUCCESS;
 }
