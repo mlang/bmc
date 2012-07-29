@@ -7,7 +7,6 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
-#include <xercesc/util/OutOfMemoryException.hpp>
 
 #include <ctime>
 #include <iostream>
@@ -61,6 +60,8 @@ struct dom_deleter
 
 typedef std::unique_ptr<xercesc::DOMDocument, dom_deleter>
         unique_dom_document_ptr;
+typedef std::unique_ptr<xercesc::DOMLSParser, dom_deleter>
+        unique_dom_ls_parser_ptr;
 typedef std::unique_ptr<xercesc::DOMLSSerializer, dom_deleter>
         unique_dom_ls_serializer_ptr;
 typedef std::unique_ptr<xercesc::DOMLSOutput, dom_deleter>
@@ -70,13 +71,39 @@ class document
 {
   unique_dom_document_ptr dom_document;
   XERCES_CPP_NAMESPACE::DOMElement *score_partwise, *identification, *part_list;
+  bool indent;
 public:
   document()
   : dom_document(create_dom_document())
   , score_partwise(dom_document->getDocumentElement())
   , identification(create_identification())
   , part_list(dom_document->createElement(xml_string("part-list")))
+  , indent(true)
   { initialize_empty_document(); }
+
+  document(char const *uri)
+  : dom_document(deserialize(uri))
+  , score_partwise(dom_document->getDocumentElement())
+  , indent(false)
+  {
+    for (XERCES_CPP_NAMESPACE::DOMNode *node = score_partwise->getFirstChild();
+         node != nullptr;
+         node = node->getNextSibling())
+    {
+      if (node->getNodeType() == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE)
+      {
+        if (XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
+                                                    xml_string("identification")))
+        {
+          identification = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
+        } else if (XERCES_CPP_NAMESPACE::XMLString::equals(node->getNodeName(),
+                                                           xml_string("part-list")))
+        {
+          part_list = static_cast<XERCES_CPP_NAMESPACE::DOMElement*>(node);
+        }
+      }
+    }
+  }
 
   ~document() { score_partwise = identification = part_list = nullptr; }
 
@@ -95,9 +122,9 @@ private:
       return dom->createDocument(nullptr, score_type,
                                  dom->createDocumentType(score_type,
                                                          dtd_public, dtd_url));
-    } else {
-      return nullptr;
     }
+
+    return nullptr;
   }
 
   void initialize_empty_document()
@@ -134,7 +161,7 @@ private:
   }
 
 public:
-  bool write_to_stream(std::ostream& stream) const
+  bool serialize(std::ostream& stream) const
   {
     XERCES_CPP_NAMESPACE_USE
 
@@ -142,28 +169,55 @@ public:
       DOMImplementationLS
       *ls = DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
       unique_dom_ls_serializer_ptr serializer(ls->createLSSerializer());
-      DOMConfiguration *configuration = serializer->getDomConfig();
 
-      if (configuration->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true))
-        configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+      if (indent) {
+        DOMConfiguration *configuration = serializer->getDomConfig();
+
+        if (configuration->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+          configuration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+      }
 
       unique_dom_ls_output_ptr output(ls->createLSOutput());
-      ostream_format_target format_target(stream);
-      output->setByteStream(&format_target);
+      ostream_format_target ostream(stream);
+      output->setByteStream(&ostream);
 
       return serializer->write(dom_document.get(), output.get());
-    } catch (const OutOfMemoryException&) {
-      std::cerr << "OutOfMemoryException" << std::endl;
     } catch (XMLException& e) {
       std::cerr << "An error occurred during creation of output transcoder. Msg is:"
-		<< std::endl
-		<< e.getMessage() << std::endl;
+                << std::endl
+                << e.getMessage() << std::endl;
     }
     return false;
   }
+  static XERCES_CPP_NAMESPACE::DOMDocument *deserialize(char const *uri)
+  {
+    XERCES_CPP_NAMESPACE_USE
+
+    try {
+      DOMImplementationLS
+      *ls = DOMImplementationRegistry::getDOMImplementation(xml_string("ls"));
+      unique_dom_ls_parser_ptr
+      parser(ls->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, 0));
+
+      {
+        DOMConfiguration *configuration = parser->getDomConfig();
+
+        if (configuration->canSetParameter(XMLUni::fgDOMValidate, true))
+          configuration->setParameter(XMLUni::fgDOMValidate, true);
+      }
+
+      return static_cast<XERCES_CPP_NAMESPACE::DOMDocument*>
+             ( parser->parseURI(uri)->cloneNode(true) );
+    } catch (XMLException& e) {
+      std::cerr << "An error occurred during creation of output transcoder. Msg is:"
+                << std::endl
+                << e.getMessage() << std::endl;
+    }
+    return nullptr;
+  }
   friend std::ostream& operator<< (std::ostream& stream, document const& doc)
   {
-    doc.write_to_stream(stream);
+    doc.serialize(stream);
     return stream;
   }
 };
@@ -172,11 +226,14 @@ public:
 
 #include <xercesc/util/PlatformUtils.hpp>
 
-int main()
+int main(int argc, char const *argv[])
 {
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
-  {
+  if (argc == 1) {
     music::musicxml::document musicxml;
+    std::cout << musicxml;
+  } else if (argc == 2) {
+    music::musicxml::document musicxml(argv[1]);
     std::cout << musicxml;
   }
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
