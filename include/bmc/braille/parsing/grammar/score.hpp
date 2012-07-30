@@ -37,7 +37,7 @@ struct score_grammar : boost::spirit::qi::grammar<Iterator, ast::score()>
   boost::spirit::qi::rule<Iterator, ast::key_and_time_signature()> key_and_time_signature;
   boost::spirit::qi::rule<Iterator> right_hand_sign, left_hand_sign;
   boost::spirit::qi::rule<Iterator> eom;
-  boost::spirit::qi::rule<Iterator> optional_dot, whitespace;
+  boost::spirit::qi::rule<Iterator> optional_dot, whitespace, indent;
 };
 
 }}
