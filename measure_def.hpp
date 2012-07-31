@@ -56,8 +56,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
   note = (*articulation_sign)   [at_c<0>(_val) = _1]
-      >> -accidental_sign       [at_c<1>(_val) = _1]
-      >> -octave_sign           [at_c<2>(_val) = _1]
+      >> (-accidental_sign)     [at_c<1>(_val) = _1]
+      >> (-octave_sign)         [at_c<2>(_val) = _1]
       >> step_and_value_sign    [at_c<3>(_val) = at_c<0>(_1),
                                  at_c<4>(_val) = at_c<1>(_1)]
       >> dots                   [at_c<5>(_val) = _1]
