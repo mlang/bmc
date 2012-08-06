@@ -9,7 +9,6 @@
 
 #include "bmc/braille/ast.hpp"
 #include <cmath>
-#include <boost/foreach.hpp>
 #include <boost/range/numeric.hpp>
 #include <memory>
 #include <sstream>
@@ -665,13 +664,13 @@ template <typename Char>
 std::basic_ostream<Char>&
 operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
 {
-  BOOST_FOREACH(proxied_measure::const_reference voice, measure) {
+  for(proxied_measure::const_reference voice: measure) {
     os << '[';
-    BOOST_FOREACH(proxied_voice::const_reference part, *voice) {
+    for(proxied_voice::const_reference part: *voice) {
       os << '{';
-      BOOST_FOREACH(proxied_partial_measure::const_reference partial_voice, *part) {
+      for(proxied_partial_measure::const_reference partial_voice: *part) {
         os << '(';
-        BOOST_FOREACH(proxied_partial_voice::const_reference value, *partial_voice) {
+        for(proxied_partial_voice::const_reference value: *partial_voice) {
           os << '<' << rational(value).numerator() << '/' << rational(value).denominator() << '>';
         }
         os << ')';
