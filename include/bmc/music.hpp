@@ -11,7 +11,7 @@
 
 namespace music {
 
-typedef boost::rational<int> rational;
+typedef boost::rational<std::int_fast32_t> rational;
 
 rational const zero = rational();
 
