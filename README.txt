@@ -32,7 +32,7 @@ include directory is enough to build BMC.  There is no need to link any Boost
 Library files to the final executable.
 
  [2] http://www.boost.org/
- [3] http://www.boost.org/doc/libs/1_49_0/?view=filtered_header-only
+ [3] http://www.boost.org/doc/libs/1_50_0/?view=filtered_header-only
 
 
 Parsing
@@ -56,7 +56,7 @@ data structures as synthesized attributes of its grammars.  We can make use
 of STL containers and even more specific types like Boost.Variant or
 Boost.Optional to construct our abstract syntax tree.
 
- [4] http://www.boost.org/doc/libs/1_49_0/libs/spirit/doc/html/index.html
+ [4] http://www.boost.org/doc/libs/1_50_0/libs/spirit/doc/html/index.html
 
 We are using a helper-class called error_handler to save iterators into the
 original input data for parsed entities such that we can report the exact
@@ -175,7 +175,7 @@ Library and Boost conding standards.
     native range-based for-loops.
 
    [7] http://en.wikipedia.org/wiki/C++11#Range-based_for-loop
-   {8] http://www.boost.org/doc/libs/1_47_0/doc/html/foreach.html
+   {8] http://www.boost.org/doc/libs/1_50_0/doc/html/foreach.html
 
   * Right angle bracket[9]: Template code tends to look ugly if the programmer
     needs to put spaces between two consecutive angle brackets.  Fortunately,
@@ -198,8 +198,8 @@ Library and Boost conding standards.
     boost::chrono[13] as a (temporary) replacement.
 
    [11] http://en.wikipedia.org/wiki/C++11#Threading_facilities
-   [12] http://www.boost.org/doc/libs/1_49_0/doc/html/thread.html
-   [13] http://www.boost.org/doc/libs/1_49_0/doc/html/chrono.html
+   [12] http://www.boost.org/doc/libs/1_50_0/doc/html/thread.html
+   [13] http://www.boost.org/doc/libs/1_50_0/doc/html/chrono.html
 
 
 * const qualifier: C++ is ambiguous regarding the placement of const qualifiers.
