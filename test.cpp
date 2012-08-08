@@ -32,6 +32,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   BOOST_CHECK_EQUAL(attribute, music::time_signature(12, 8));
   BOOST_CHECK_EQUAL(attribute, music::rational(3, 2));
   BOOST_CHECK_EQUAL(attribute.numerator(), 12);
+  BOOST_CHECK_EQUAL(attribute.denominator(), 8);
   destroyTextTable(textTable);
 }
 
@@ -345,12 +346,10 @@ BOOST_AUTO_TEST_CASE(score_solo_test2) {
 }
 
 BOOST_AUTO_TEST_CASE(common_factor) {
-  music::rational a(1, 4), b(1, 8);
-  BOOST_CHECK_EQUAL(gcd(a, b), b);
-  BOOST_CHECK_EQUAL(gcd(music::rational(1, 8), music::rational(1, 12)),
-                    music::rational(1, 24));
-  BOOST_CHECK_EQUAL(lcm(music::rational(1, 8), music::rational(1, 12)),
-                    music::rational(1, 4));
+  music::rational const a(1, 4), b(1, 8), c(1, 12), d(1, 24);
+  BOOST_CHECK_EQUAL(boost::math::gcd(a, b), b);
+  BOOST_CHECK_EQUAL(boost::math::gcd(b, c), d);
+  BOOST_CHECK_EQUAL(boost::math::lcm(b, c), a);
 }
 
 #include <fstream>
