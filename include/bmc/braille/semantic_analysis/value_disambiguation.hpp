@@ -689,9 +689,11 @@ class measure_interpretations: std::list<proxied_measure>
 
   void erase_incomplete_interpretations()
   {
-    for (iterator interpretation = begin(); interpretation != end();
-         interpretation = duration(*interpretation) != time_signature?
-                          erase(interpretation): ++interpretation);
+    erase(std::remove_if(begin(), end(),
+                         [this](reference measure) -> bool {
+                           return duration(measure) != this->time_signature;
+                         }),
+          end());
   }
 
   void recurse( std::vector<ast::voice>::iterator const& begin
@@ -742,9 +744,11 @@ class measure_interpretations: std::list<proxied_measure>
       // Do not consider possibilities below a certain margin as valid
       if (single_best_score) {
         rational const margin(best_score * rational(2, 3));
-        for (iterator measure = begin(); measure != end();
-             measure = measure->harmonic_mean() < margin?
-                       erase(measure): ++measure);
+        erase(std::remove_if(begin(), end(),
+                             [&margin](reference measure) -> bool {
+                               return measure.harmonic_mean() < margin;
+                             }),
+              end());
       }
     }
   }
