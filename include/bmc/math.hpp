@@ -55,28 +55,6 @@ namespace boost {
   }
 
   namespace math {
-    namespace detail {
-      template <typename IntType>
-      inline rational<IntType>
-      gcd_rational(rational<IntType> a, rational<IntType> b)
-      {
-        while (true) {
-          if (!a) return b;
-          b -= a * rational_cast<IntType>(b / a);
-          if (!b) return a;
-          a -= b * rational_cast<IntType>(a / b);
-        }
-      }
-
-      template <typename IntType>
-      inline rational<IntType>
-      lcm_rational(rational<IntType> const& a, rational<IntType> const& b)
-      {
-        rational<IntType> const gcd(gcd_rational(a, b));
-        return !gcd? gcd: a / gcd * b;        
-      }
-    }
-
     template <typename IntType>
     struct gcd_evaluator< rational<IntType> >
     {
@@ -86,7 +64,8 @@ namespace boost {
                              , second_argument_type const &b
                              ) const
       {
-        return detail::gcd_rational(a, b);
+        return result_type(gcd(a.numerator(), b.numerator()),
+                           lcm(a.denominator(), b.denominator()));
       }
     };
 
@@ -99,7 +78,8 @@ namespace boost {
                              , second_argument_type const &b
                              ) const
       {
-        return detail::lcm_rational(a, b);
+        return result_type(lcm(a.numerator(), b.numerator()),
+                           gcd(a.denominator(), b.denominator()));
       }
     };
   }
