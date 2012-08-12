@@ -100,7 +100,7 @@ public:
   {}
   void push(value_type const& event)
   {
-    pulse = gcd(pulse, gcd(event.begin(), event.duration()));
+    pulse = boost::math::gcd(pulse, boost::math::gcd(event.begin(), event.duration()));
     base_type::push(event);
   }
   /**
