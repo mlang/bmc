@@ -63,7 +63,8 @@ fluidsynth::operator()(braille::ast::score const& score)
 void
 fluidsynth::play()
 {
-  typedef std::chrono::high_resolution_clock clock;
+  typedef std::chrono::steady_clock clock;
+  //static_assert(clock::is_steady, "std::chrono::steady_clock is not steady");
   clock::duration const ppm(clock::duration::period::den * 60 / ppq);
   clock::time_point event_time(clock::now());
   rational position;
