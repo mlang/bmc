@@ -5,9 +5,6 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "config.hpp"
-#include "bmc/braille/parsing/grammar/time_signature.hpp"
-#include <boost/spirit/include/qi.hpp>
-#include <bmc/ttb/ttb.h>
 
 #define BOOST_TEST_MODULE bmc_test
 #include <boost/test/included/unit_test.hpp>
@@ -18,8 +15,21 @@
 #define DIR ""
 #endif
 
+#include <bmc/ttb/ttb.h>
+
+struct text_table
+{
+  text_table() { textTable = compileTextTable(DIR "ttb/Tables/de.ttb"); }
+  ~text_table() { destroyTextTable(textTable); }
+};
+
+BOOST_GLOBAL_FIXTURE(text_table);
+
+#include <boost/spirit/include/qi_parse.hpp>
+#include <boost/spirit/include/qi_core.hpp>
+#include <bmc/braille/parsing/grammar/time_signature.hpp>
+
 BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#ab(");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -33,13 +43,11 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   BOOST_CHECK_EQUAL(attribute, music::rational(3, 2));
   BOOST_CHECK_EQUAL(attribute.numerator(), 12);
   BOOST_CHECK_EQUAL(attribute.denominator(), 8);
-  destroyTextTable(textTable);
 }
 
 #include "bmc/braille/parsing/grammar/key_signature.hpp"
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -50,11 +58,9 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, 0);
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#f3");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -65,11 +71,9 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, 6);
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"22");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -80,13 +84,11 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
   BOOST_CHECK(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, -2);
-  destroyTextTable(textTable);
 }
 
 #include "spirit/qi/primitive/brl.hpp"
 
 BOOST_AUTO_TEST_CASE(brl_parser_test) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"#A");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -94,13 +96,11 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
   music::braille::brl_type brl;
   BOOST_CHECK(boost::spirit::qi::parse(begin, end, brl(3456) >> brl(1)));
   BOOST_CHECK(begin == end);
-  destroyTextTable(textTable);
 }
 
 #include "bmc/braille/parsing/grammar/measure.hpp"
 
 BOOST_AUTO_TEST_CASE(measure_test1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"vu.");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -120,11 +120,9 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
                             attribute.voices[0][0][0][0]));
   BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[0][0][0][1]));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(measure_test2) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r.2`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -149,7 +147,6 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
                             attribute.voices[1][0][0][0]));
   BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
                             attribute.voices[1][1][1][0]));
-  destroyTextTable(textTable);
 }
 
 #include "bmc/braille/semantic_analysis.hpp"
@@ -162,7 +159,6 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_CHECK_EQUAL(locatable.column, COLUMN)
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r72`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -190,12 +186,9 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   BMC_CHECK_LOCATABLE_LOCATION(attribute.voices[0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][0], 1, 1);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[0][0][0][1], 1, 3);
-
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"_r.2`v$k_t!,v!5");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -225,12 +218,9 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][0][0], 1, 9);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][1][0], 1, 13);
   BMC_CHECK_SIGN_LOCATION(attribute.voices[1][1][1][1], 1, 14);
-
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(notegroup_test1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"!yefg{ijd_n");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -248,8 +238,6 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(9));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-
-  destroyTextTable(textTable);
 }
 
 struct get_type : boost::static_visitor<music::rational>
@@ -266,7 +254,6 @@ struct get_type : boost::static_visitor<music::rational>
 };
 
 BOOST_AUTO_TEST_CASE(compiler_test1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"!yefg{ijd_n");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -295,13 +282,11 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][6]), music::rational(1, 16));
   BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][7]), music::rational(1, 16));
   BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][8]), music::rational(1, 2));
-  destroyTextTable(textTable);
 }
 
 #include "bmc/braille/parsing/grammar/score.hpp"
 
 BOOST_AUTO_TEST_CASE(score_solo_test1) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::wstring const input(L"⠨⠽⠅⠐⠯⠃⠵⠁⠯⠃⠽⠁⠯⠃⠵⠁⠯⠃⠨⠽⠐⠯⠵⠯⠽⠯⠵⠯ ⠮⠅⠿⠇⠡⠯⠃⠿⠇⠽⠁⠿⠇⠯⠃⠿⠇⠮⠿⠯⠿⠽⠿⠯⠿2k");
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -318,12 +303,9 @@ BOOST_AUTO_TEST_CASE(score_solo_test1) {
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(2));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(score_solo_test2) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wstring const input(L"#c/\n⠐⠞⠃⠝⠞⠎⠚⠂⠈⠉⠞⠟⠗⠁⠎⠾⠽⠐⠢⠕⠽⠚⠊⠓2k");
   typedef std::wstring::const_iterator iterator_type;
@@ -341,8 +323,6 @@ BOOST_AUTO_TEST_CASE(score_solo_test2) {
   BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(1));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
-
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(common_factor) {
@@ -355,7 +335,6 @@ BOOST_AUTO_TEST_CASE(common_factor) {
 #include <fstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v01.bmc");
   BOOST_CHECK(file.good());
@@ -381,12 +360,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0]), music::rational(3, 4) * 32);
-
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v02.bmc");
   BOOST_CHECK(file.good());
@@ -410,11 +386,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(2, 4));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v03) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v03.bmc");
   BOOST_CHECK(file.good());
@@ -438,11 +412,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(12, 8));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v13.bmc");
   BOOST_CHECK(file.good());
@@ -466,11 +438,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v13.de.bmc");
   BOOST_CHECK(file.good());
@@ -494,11 +464,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 4));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v19) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v19.bmc");
   BOOST_CHECK(file.good());
@@ -522,11 +490,9 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(3, 8));
-  destroyTextTable(textTable);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v30.bmc");
   BOOST_CHECK(file.good());
@@ -551,14 +517,12 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][0]), music::rational(1, 8));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0][1]), music::rational(4, 4));
-  destroyTextTable(textTable);
 }
 
 #include "bmc/lilypond.hpp"
 #include <sstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v01.bmc");
   BOOST_CHECK(file.good());
@@ -594,7 +558,6 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v01_ly_with_locations) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v01.bmc");
   BOOST_CHECK(file.good());
@@ -632,7 +595,6 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly_with_locations) {
 
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v13.bmc");
   BOOST_CHECK(file.good());
@@ -668,7 +630,6 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v19_ly) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v19.bmc");
   BOOST_CHECK(file.good());
@@ -704,7 +665,6 @@ BOOST_AUTO_TEST_CASE(bwv988_v19_ly) {
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
-  textTable = compileTextTable(DIR "ttb/Tables/de.ttb");
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v30.bmc");
   BOOST_CHECK(file.good());
