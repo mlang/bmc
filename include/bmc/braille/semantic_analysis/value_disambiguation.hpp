@@ -55,10 +55,8 @@ class value_proxy
     return undotted[category * 4 + value_type];
   }
 
-  unsigned dots;
-
   rational duration;
-  rational calculate_duration()
+  rational calculate_duration(unsigned dots)
   {
     rational const base(undotted_duration());
     return dots? base * 2 - base / pow(2, dots): base;
@@ -72,8 +70,8 @@ public:
   value_proxy( ast::note& note
              , value_category const& category
              )
-  : value_type(note.ambiguous_value), category(category), dots(note.dots)
-  , duration(calculate_duration())
+  : value_type(note.ambiguous_value), category(category)
+  , duration(calculate_duration(note.dots))
   , final_type(&note.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
@@ -82,8 +80,8 @@ public:
              , value_category const& category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), dots(note.dots)
-  , duration(calculate_duration())
+  : value_type(value_type), category(category)
+  , duration(calculate_duration(note.dots))
   , final_type(&note.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
@@ -91,8 +89,8 @@ public:
   value_proxy( ast::rest& rest
              , value_category const& category
              )
-  : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
-  , duration(calculate_duration())
+  : value_type(rest.ambiguous_value), category(category)
+  , duration(calculate_duration(rest.dots))
   , final_type(&rest.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
@@ -101,8 +99,8 @@ public:
              , value_category const& category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), dots(rest.dots)
-  , duration(calculate_duration())
+  : value_type(value_type), category(category)
+  , duration(calculate_duration(rest.dots))
   , final_type(&rest.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
@@ -111,7 +109,7 @@ public:
              , value_category const& category
              , rational const& duration
              )
-  : value_type(rest.ambiguous_value), category(category), dots(rest.dots)
+  : value_type(rest.ambiguous_value), category(category)
   , duration(duration)
   , final_type(&rest.type)
   , whole_measure_rest(&rest.whole_measure)
@@ -121,8 +119,7 @@ public:
              , value_category const& category
              )
   : value_type(chord.base.ambiguous_value), category(category)
-  , dots(chord.base.dots)
-  , duration(calculate_duration())
+  , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
@@ -131,8 +128,8 @@ public:
              , value_category const& category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), dots(chord.base.dots)
-  , duration(calculate_duration())
+  : value_type(value_type), category(category)
+  , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
