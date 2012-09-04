@@ -9,6 +9,7 @@
 
 #include "bmc/braille/ast.hpp"
 #include <cmath>
+#include <boost/smart_ptr/intrusive_ptr.hpp>
 #include <boost/range/numeric.hpp>
 #include <memory>
 #include <sstream>
@@ -162,6 +163,7 @@ duration(std::vector<value_proxy> const& values)
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration;
+  std::size_t use_count;
 public:
   typedef std::vector<value_proxy> base_type;
   proxied_partial_voice( const_pointer begin
@@ -170,13 +172,20 @@ public:
                        )
   : base_type(begin, end)
   , duration(duration)
+  , use_count(0)
   {
   }
 
   operator rational const&() const { return duration; }
+
+  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p)
+  { ++p->use_count; }
+
+  friend inline void intrusive_ptr_release(proxied_partial_voice *p)
+  { if (--p->use_count == 0) delete p; }
 };
 
-typedef std::shared_ptr<proxied_partial_voice const> proxied_partial_voice_ptr;
+typedef boost::intrusive_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
 
 class partial_voice_interpretations
 : public std::vector<proxied_partial_voice_ptr>
@@ -363,7 +372,7 @@ class partial_voice_interpretations
               )
   {
     if (begin == end) {
-      emplace_back(std::make_shared<value_type::element_type>
+      emplace_back(new value_type::element_type
                    (stack_begin, stack_end, position - start_position)
                   );
     } else {
@@ -478,9 +487,7 @@ class partial_measure_interpretations
   {
     if (begin == end) {
       if (stack_begin != stack_end)
-        emplace_back(std::make_shared<value_type::element_type>
-                     (stack_begin, stack_end)
-                    );
+        emplace_back(std::make_shared<value_type::element_type>(stack_begin, stack_end));
     } else {
       auto const tail = begin + 1;
       for (partial_voice_interpretations::const_reference possibility:
@@ -608,9 +615,7 @@ class proxied_measure : public std::vector<proxied_voice_ptr>
 {
   rational mean;
 public:
-  proxied_measure( proxied_voice_ptr const *begin
-                 , proxied_voice_ptr const *end
-                 )
+  proxied_measure(const_pointer begin, const_pointer end)
   : std::vector<proxied_voice_ptr>(begin, end)
   , mean()
   {
@@ -684,15 +689,6 @@ class measure_interpretations: std::list<proxied_measure>
   music::time_signature time_signature;
   bool complete;
 
-  void erase_incomplete_interpretations()
-  {
-    erase(std::remove_if(begin(), end(),
-                         [this](reference measure) -> bool {
-                           return duration(measure) != this->time_signature;
-                         }),
-          end());
-  }
-
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
               , value_type::pointer stack_begin
@@ -704,7 +700,7 @@ class measure_interpretations: std::list<proxied_measure>
       if (stack_begin != stack_end) {
         if (not complete or length == time_signature) {
           if (not complete and length == time_signature) {
-            erase_incomplete_interpretations();
+            clear();
             complete = true;
           }
           emplace_back(stack_begin, stack_end);
@@ -741,11 +737,9 @@ class measure_interpretations: std::list<proxied_measure>
       // Do not consider possibilities below a certain margin as valid
       if (single_best_score) {
         rational const margin(best_score * rational(2, 3));
-        erase(std::remove_if(begin(), end(),
-                             [&margin](reference measure) -> bool {
-                               return measure.harmonic_mean() < margin;
-                             }),
-              end());
+        remove_if([&margin](reference measure) -> bool {
+                    return measure.harmonic_mean() < margin;
+                  });
       }
     }
   }
