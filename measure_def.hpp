@@ -21,7 +21,7 @@
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_statement.hpp>
+#include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
 namespace music { namespace braille {
