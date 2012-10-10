@@ -18,9 +18,10 @@
 #include <boost/spirit/include/qi_eps.hpp>
 #include <boost/spirit/include/qi_optional.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/phoenix/function/function.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/phoenix/operator/arithmetic.hpp>
+#include <boost/phoenix/operator/self.hpp>
 #include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
