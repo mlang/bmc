@@ -151,6 +151,18 @@ typedef std::vector<staff_element> staff;
 
 typedef std::vector<staff> part;
 
+typedef boost::variant<measure, key_and_time_signature> paragraph_element;
+typedef std::vector<paragraph_element> paragraph;
+
+struct section
+{
+  typedef unsigned number_type;
+  typedef std::pair<number_type, number_type> range_type;
+  boost::optional<number_type> number;
+  boost::optional<range_type> range;
+  std::vector<paragraph> paragraphs;
+};
+
 struct score {
   key_signature key_sig;
   boost::optional<time_signature> time_sig;
@@ -417,6 +429,13 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::key_and_time_signature,
   (music::key_signature, key)
   (music::time_signature, time)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::section,
+  (boost::optional<music::braille::ast::section::number_type>, number)
+  (boost::optional<music::braille::ast::section::range_type>, range)
+  (std::vector<music::braille::ast::paragraph>, paragraphs)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
