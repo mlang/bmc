@@ -189,7 +189,6 @@ public:
 typedef boost::intrusive_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
 
 class partial_voice_interpretations
-: public std::vector<proxied_partial_voice_ptr>
 {
   struct maybe_whole_measure_rest : boost::static_visitor<bool>
   {
@@ -370,8 +369,8 @@ class partial_voice_interpretations
 
   void recurse( ast::partial_voice::iterator begin
               , ast::partial_voice::iterator const& end
-              , value_type::element_type::pointer stack_begin
-              , value_type::element_type::pointer stack_end
+              , value_proxy *stack_begin
+              , value_proxy *stack_end
               , rational const& max_duration
               , rational const& position
               )
@@ -463,8 +462,7 @@ public:
   , beat(1, time_signature.denominator())
   , yield(yield)
   {
-    value_type::element_type::pointer
-    stack = new value_type::element_type::value_type[voice.size()];
+    value_proxy *stack = new value_proxy[voice.size()];
     recurse(voice.begin(), voice.end(), stack, stack, max_duration, position);
     delete [] stack;
   }
