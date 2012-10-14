@@ -360,6 +360,10 @@ class partial_voice_interpretations
   music::time_signature const& time_signature;
   rational const start_position;
   rational const beat;
+  std::function<void( value_proxy const*
+                    , value_proxy const*
+                    , rational const&
+                    )> const& yield;
 
   bool on_beat(rational const& position) const
   { return no_remainder(position, beat); }
@@ -373,9 +377,7 @@ class partial_voice_interpretations
               )
   {
     if (begin == end) {
-      emplace_back(new value_type::element_type
-                   (stack_begin, stack_end, position - start_position)
-                  );
+      yield(stack_begin, stack_end, position - start_position);
     } else {
       ast::partial_voice::iterator tail;
       if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
@@ -454,10 +456,12 @@ public:
                                , rational const& max_duration
                                , rational const& position
                                , music::time_signature const& time_sig
+                               , std::function<void(value_proxy const*, value_proxy const*, rational const&)> const& yield
                                )
   : time_signature(time_sig)
   , start_position(position)
   , beat(1, time_signature.denominator())
+  , yield(yield)
   {
     value_type::element_type::pointer
     stack = new value_type::element_type::value_type[voice.size()];
@@ -490,18 +494,42 @@ partial_measure_interpretations( ast::partial_measure::iterator const& begin
     if (stack_begin != stack_end) yield(stack_begin, stack_end);
   } else {
     auto const tail = begin + 1;
-    for (partial_voice_interpretations::const_reference possibility:
-         partial_voice_interpretations(*begin, length, position, time_sig)) {
-      rational const partial_voice_duration(duration(possibility));
-      if (stack_begin == stack_end or partial_voice_duration == length) {
-        *stack_end = possibility;
-        partial_measure_interpretations( tail, end
-                                       , stack_begin, stack_end + 1
-                                       , partial_voice_duration, position
-                                       , time_sig
-                                       , yield
-                                       );
-      }
+    if (stack_begin == stack_end) {
+      partial_voice_interpretations
+      ( *begin, length, position, time_sig
+      , [stack_begin, stack_end, &tail, &end, &position, &time_sig, &yield]
+        ( value_proxy const *f
+        , value_proxy const *l
+        , rational const& duration
+        ) {
+          stack_end->reset(new proxied_partial_voice(f, l, duration));
+          partial_measure_interpretations( tail, end
+                                         , stack_begin, stack_end + 1
+                                         , duration, position
+                                         , time_sig
+                                         , yield
+                                         );
+        }
+      );
+    } else {
+      partial_voice_interpretations
+      ( *begin, length, position, time_sig
+      , [stack_begin, stack_end, &tail, &end, &length, &position, &time_sig, &yield]
+        ( value_proxy const *f
+        , value_proxy const *l
+        , rational const& duration
+        ) {
+          if (duration == length) {
+            stack_end->reset(new proxied_partial_voice(f, l, duration));
+            partial_measure_interpretations( tail, end
+                                           , stack_begin, stack_end + 1
+                                           , duration, position
+                                           , time_sig
+                                           , yield
+                                           );
+          }
+        }
+      );
     }
   }
 }
@@ -619,7 +647,8 @@ voice_interpretations( ast::voice& voice
   stack = new proxied_partial_measure_ptr[voice.size()];
   voice_interpretations( voice.begin(), voice.end()
                        , stack, stack
-                       , max_length, time_sig, callback
+                       , max_length, time_sig
+                       , callback
                        );
   delete [] stack;
 }
