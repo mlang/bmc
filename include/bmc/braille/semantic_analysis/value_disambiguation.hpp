@@ -542,9 +542,9 @@ class proxied_voice : public std::vector<proxied_partial_measure_ptr>
   rational const duration;
 public:
   typedef std::vector<proxied_partial_measure_ptr> base_type;
-  proxied_voice(const_pointer begin, const_pointer end)
+  proxied_voice(const_pointer begin, const_pointer end, rational const& duration)
   : base_type(begin, end)
-  , duration(std::accumulate(begin, end, zero))
+  , duration(duration)
   {}
   operator rational const&() const { return duration; }
 };
@@ -722,7 +722,7 @@ class measure_interpretations: std::forward_list<proxied_measure>
         ) {
           if ((stack_begin == stack_end and not this->complete) or
               (duration == length)) {
-            *stack_end = std::make_shared<proxied_voice>(f, l);
+            *stack_end = std::make_shared<proxied_voice>(f, l, duration);
             this->recurse(tail, end, stack_begin, stack_end + 1, duration);
           }
         }
@@ -805,7 +805,7 @@ public:
   using base_type::end;
   using base_type::empty;
   using base_type::front;
-  size_type size() const { return empty()? 0: std::distance(cbegin(), cend()); }
+  size_type size() const { return empty()? 0: std::distance(begin(), end()); }
 };
 
 }
