@@ -474,48 +474,57 @@ typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
 typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
 
-class partial_measure_interpretations
-: public std::vector<proxied_partial_measure_ptr>
+template<typename Callback>
+inline void
+partial_measure_interpretations( ast::partial_measure::iterator const& begin
+                               , ast::partial_measure::iterator const& end
+                               , proxied_partial_voice_ptr *stack_begin
+                               , proxied_partial_voice_ptr *stack_end
+                               , rational const& length
+                               , rational const& position
+                               , music::time_signature const& time_sig
+                               , Callback yield
+                               )
 {
-  void recurse( ast::partial_measure::iterator const& begin
-              , ast::partial_measure::iterator const& end
-              , value_type::element_type::pointer stack_begin
-              , value_type::element_type::pointer stack_end
-              , rational const& length
-              , rational const& position
-              , music::time_signature const& time_sig
-              )
-  {
-    if (begin == end) {
-      if (stack_begin != stack_end)
-        emplace_back(std::make_shared<value_type::element_type>(stack_begin, stack_end));
-    } else {
-      auto const tail = begin + 1;
-      for (partial_voice_interpretations::const_reference possibility:
-           partial_voice_interpretations(*begin, length, position, time_sig)) {
-        rational const partial_voice_duration(duration(possibility));
-        if (stack_begin == stack_end or partial_voice_duration == length) {
-          *stack_end = possibility;
-          recurse(tail, end, stack_begin, stack_end + 1,
-                  partial_voice_duration, position, time_sig);
-        }
+  if (begin == end) {
+    if (stack_begin != stack_end) yield(stack_begin, stack_end);
+  } else {
+    auto const tail = begin + 1;
+    for (partial_voice_interpretations::const_reference possibility:
+         partial_voice_interpretations(*begin, length, position, time_sig)) {
+      rational const partial_voice_duration(duration(possibility));
+      if (stack_begin == stack_end or partial_voice_duration == length) {
+        *stack_end = possibility;
+        partial_measure_interpretations( tail, end
+                                       , stack_begin, stack_end + 1
+                                       , partial_voice_duration, position
+                                       , time_sig
+                                       , yield
+                                       );
       }
     }
   }
-public:
-  partial_measure_interpretations( ast::partial_measure& partial_measure
-                                 , rational const& max_length
-                                 , rational const& position
-                                 , music::time_signature const& time_sig
-                                 )
-  {
-    value_type::element_type::pointer
-    stack = new value_type::element_type::value_type[partial_measure.size()];
-    recurse(partial_measure.begin(), partial_measure.end(),
-            stack, stack, max_length, position, time_sig);
-    delete [] stack;
-  }
-};
+}
+
+template<typename Callback>
+inline void
+partial_measure_interpretations( ast::partial_measure& partial_measure
+                               , rational const& max_length
+                               , rational const& position
+                               , music::time_signature const& time_sig
+                               , Callback callback
+                               )
+{
+  proxied_partial_voice_ptr *
+  stack = new proxied_partial_voice_ptr[partial_measure.size()];
+  partial_measure_interpretations( partial_measure.begin()
+                                 , partial_measure.end()
+                                 , stack, stack
+                                 , max_length, position, time_sig
+                                 , callback
+                                 );
+  delete [] stack;
+}
 
 inline rational
 duration(proxied_partial_measure const& voices)
@@ -578,16 +587,23 @@ voice_interpretations( ast::voice::iterator const& begin
     }
   } else {
     auto const tail = begin + 1;
-    for (partial_measure_interpretations::const_reference possibility:
-         partial_measure_interpretations(*begin, max_length,
-                                         duration(stack_begin, stack_end),
-                                         time_signature)) {
-      *stack_end = possibility;
-      voice_interpretations( tail, end, stack_begin, stack_end + 1
-                           , max_length - duration(possibility), time_signature
-                           , yield
-                           );
-    }
+    partial_measure_interpretations
+    ( *begin, max_length, duration(stack_begin, stack_end), time_signature
+    , [ stack_begin, stack_end
+      , &tail, &end
+      , &max_length, &time_signature
+      , &yield
+      ]
+      ( proxied_partial_voice_ptr *f
+      , proxied_partial_voice_ptr *l
+      ) {
+        *stack_end = std::make_shared<proxied_partial_measure>(f, l);
+        voice_interpretations( tail, end, stack_begin, stack_end + 1
+                             , max_length - duration(*stack_end), time_signature
+                             , yield
+                             );
+      }
+    );
   }
 }
 
