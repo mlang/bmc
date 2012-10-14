@@ -11,6 +11,7 @@
 #include <cmath>
 #include <boost/smart_ptr/intrusive_ptr.hpp>
 #include <boost/range/numeric.hpp>
+#include <forward_list>
 #include <memory>
 #include <sstream>
 
@@ -560,52 +561,52 @@ duration( proxied_partial_measure_ptr *const begin
 
 typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
 
-class voice_interpretations : public std::vector<proxied_voice_ptr>
+template<typename Callback>
+inline void
+voice_interpretations( ast::voice::iterator const& begin
+                     , ast::voice::iterator const& end
+                     , proxied_partial_measure_ptr *stack_begin
+                     , proxied_partial_measure_ptr *stack_end
+                     , rational const& max_length
+                     , music::time_signature const& time_signature
+                     , Callback yield
+                     )
 {
-  music::time_signature const time_signature;
-
-  void recurse( ast::voice::iterator const& begin
-              , ast::voice::iterator const& end
-              , value_type::element_type::pointer stack_begin
-              , value_type::element_type::pointer stack_end
-              , rational const& max_length
-              , bool complete
-              )
-  {
-    if (begin == end) {
-      if (stack_begin != stack_end) {
-        if (not complete or duration(stack_begin, stack_end) == time_signature)
-          emplace_back(std::make_shared<value_type::element_type>
-                       (stack_begin, stack_end)
-                      );
-      }
-    } else {
-      auto const tail = begin + 1;
-      for (partial_measure_interpretations::const_reference possibility:
-           partial_measure_interpretations(*begin, max_length,
-                                           duration(stack_begin, stack_end),
-                                           time_signature)) {
-        *stack_end = possibility;
-        recurse(tail, end, stack_begin, stack_end + 1,
-                max_length - duration(possibility), complete);
-      }
+  if (begin == end) {
+    if (stack_begin != stack_end) {
+      yield(stack_begin, stack_end, duration(stack_begin, stack_end));
+    }
+  } else {
+    auto const tail = begin + 1;
+    for (partial_measure_interpretations::const_reference possibility:
+         partial_measure_interpretations(*begin, max_length,
+                                         duration(stack_begin, stack_end),
+                                         time_signature)) {
+      *stack_end = possibility;
+      voice_interpretations( tail, end, stack_begin, stack_end + 1
+                           , max_length - duration(possibility), time_signature
+                           , yield
+                           );
     }
   }
+}
 
-public:
-  voice_interpretations( ast::voice& voice
-                       , rational const& max_length
-                       , music::time_signature const& time_sig
-                       , bool complete
-                       )
-  : time_signature(time_sig)
-  {
-    value_type::element_type::pointer
-    stack = new value_type::element_type::value_type[voice.size()];
-    recurse(voice.begin(), voice.end(), stack, stack, max_length, complete);
-    delete [] stack;
-  }
-};
+template<typename Callback>
+inline void
+voice_interpretations( ast::voice& voice
+                     , rational const& max_length
+                     , music::time_signature const& time_sig
+                     , Callback callback
+                     )
+{
+  proxied_partial_measure_ptr *
+  stack = new proxied_partial_measure_ptr[voice.size()];
+  voice_interpretations( voice.begin(), voice.end()
+                       , stack, stack
+                       , max_length, time_sig, callback
+                       );
+  delete [] stack;
+}
 
 inline rational const&
 duration(proxied_voice_ptr const& voice)
@@ -684,10 +685,11 @@ operator<<(std::basic_ostream<Char>& os, proxied_measure const& measure)
   return os;
 }
 
-class measure_interpretations: std::list<proxied_measure>
+class measure_interpretations: std::forward_list<proxied_measure>
 {
   music::time_signature time_signature;
   bool complete;
+  iterator last;
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
@@ -700,23 +702,31 @@ class measure_interpretations: std::list<proxied_measure>
       if (stack_begin != stack_end) {
         if (not complete or length == time_signature) {
           if (not complete and length == time_signature) {
-            clear();
+            if (not empty()) {
+              clear();
+              last = before_begin();
+            }
             complete = true;
           }
-          emplace_back(stack_begin, stack_end);
+          last = emplace_after(last, stack_begin, stack_end);
         }
       }
     } else {
       auto const tail = begin + 1;
-      for (voice_interpretations::const_reference possibility:
-           voice_interpretations(*begin, length, time_signature, complete)) {
-        rational const voice_duration(duration(possibility));
-        if ((stack_begin == stack_end and not complete) or
-            voice_duration == length) {
-          *stack_end = possibility;
-          recurse(tail, end, stack_begin, stack_end + 1, voice_duration);
+      voice_interpretations
+      ( *begin, length, time_signature
+      , [stack_begin, stack_end, &tail, &end, &length, this]
+        ( proxied_partial_measure_ptr *f
+        , proxied_partial_measure_ptr *l
+        , rational const& duration
+        ) {
+          if ((stack_begin == stack_end and not this->complete) or
+              (duration == length)) {
+            *stack_end = std::make_shared<proxied_voice>(f, l);
+            this->recurse(tail, end, stack_begin, stack_end + 1, duration);
+          }
         }
-      }
+      );
     }
   }
 
@@ -745,7 +755,7 @@ class measure_interpretations: std::list<proxied_measure>
   }
 
 public:
-  typedef std::list<proxied_measure> base_type;
+  typedef std::forward_list<proxied_measure> base_type;
 
   measure_interpretations()
   : complete(false)
@@ -760,8 +770,10 @@ public:
   measure_interpretations( ast::measure& measure
                          , music::time_signature const& time_signature
                          )
-  : time_signature(time_signature)
+  : base_type()
+  , time_signature(time_signature)
   , complete(false)
+  , last(before_begin())
   {
     BOOST_ASSERT(time_signature >= 0);
     value_type::pointer
@@ -793,7 +805,7 @@ public:
   using base_type::end;
   using base_type::empty;
   using base_type::front;
-  using base_type::size;
+  size_type size() const { return empty()? 0: std::distance(cbegin(), cend()); }
 };
 
 }
