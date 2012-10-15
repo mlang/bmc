@@ -623,7 +623,7 @@ voice_interpretations( ast::voice::iterator const& begin
       ( proxied_partial_voice_ptr *f
       , proxied_partial_voice_ptr *l
       ) {
-        *stack_end = std::make_shared<proxied_partial_measure>(f, l);
+        stack_end->reset(new proxied_partial_measure(f, l));
         voice_interpretations( tail, end, stack_begin, stack_end + 1
                              , max_length - duration(*stack_end), time_signature
                              , yield
@@ -765,7 +765,7 @@ class measure_interpretations: std::forward_list<proxied_measure>
         ) {
           if ((stack_begin == stack_end and not this->complete) or
               (duration == length)) {
-            *stack_end = std::make_shared<proxied_voice>(f, l, duration);
+            stack_end->reset(new proxied_voice(f, l, duration));
             this->recurse(tail, end, stack_begin, stack_end + 1, duration);
           }
         }
