@@ -214,19 +214,18 @@ class partial_voice_interpretations
 
   static
   ast::partial_voice::iterator
-  same_category_end( ast::partial_voice::iterator& begin
+  same_category_end( ast::partial_voice::iterator const& begin
                    , ast::partial_voice::iterator const& end
                    , ast::value_distinction::type distinction
                    )
   {
-    if (boost::apply_visitor(ast::is_value_distinction(distinction), *begin)) {
-      begin = begin + 1; // Advance the outer iterator to avoid a loop
-      ast::partial_voice::iterator iter(begin);
-      if (iter != end and
-          boost::apply_visitor(ast::is_rhythmic(), *iter)) {
+    if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
+      ast::partial_voice::iterator iter(begin + 1);
+      if (iter != end and apply_visitor(ast::is_rhythmic(), *iter)) {
         for (ast::value
-             initial = boost::apply_visitor(ast::get_ambiguous_value(), *iter++);
+             initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
              iter != end and
+             apply_visitor(ast::is_rhythmic(), *iter) and
              apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
              ++iter);
         return iter;
@@ -248,11 +247,11 @@ class partial_voice_interpretations
                , ast::partial_voice::iterator const& end
                )
   {
-    if (boost::apply_visitor(ast::is_rhythmic(), *begin)) {
-      if (boost::apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
+    if (apply_visitor(ast::is_rhythmic(), *begin)) {
+      if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
         auto iter = begin + 1;
         while (iter != end and
-               boost::apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
+               apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
           ++iter;
 	// A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
@@ -311,17 +310,17 @@ class partial_voice_interpretations
     result_type operator()(ast::note& note)
     {
       if (type == ast::unknown) type = note.ambiguous_value;
-      *stack_end++ = value_proxy(note, category, type);
+      new (stack_end++) value_proxy(note, category, type);
     }
     result_type operator()(ast::rest& rest)
     {
       if (type == ast::unknown) type = rest.ambiguous_value;
-      *stack_end++ = value_proxy(rest, category, type);
+      new (stack_end++) value_proxy(rest, category, type);
     }
     result_type operator()(ast::chord& chord)
     {
       if (type == ast::unknown) type = chord.base.ambiguous_value;
-      *stack_end++ = value_proxy(chord, category, type);
+      new (stack_end++) value_proxy(chord, category, type);
     }
     result_type operator()(ast::value_distinction&) { BOOST_ASSERT(false); }
     result_type operator()(braille::hand_sign&) {}
@@ -351,13 +350,13 @@ class partial_voice_interpretations
     { emplace_back(rest, category); }
     result_type operator()(ast::chord& chord)
     { emplace_back(chord, category); }
-
+    result_type operator()(ast::value_distinction const&) {}
     template<typename Sign> result_type operator()(Sign const&)
     { BOOST_ASSERT(false); }
   };
 
   music::time_signature const& time_signature;
-  rational const start_position;
+  rational const& start_position;
   rational const beat;
   std::function<void( value_proxy const*
                     , value_proxy const*
@@ -367,73 +366,69 @@ class partial_voice_interpretations
   bool on_beat(rational const& position) const
   { return no_remainder(position, beat); }
 
-  void recurse( ast::partial_voice::iterator begin
-              , ast::partial_voice::iterator const& end
-              , value_proxy *stack_begin
+  void recurse( ast::partial_voice::iterator const& iterator
               , value_proxy *stack_end
               , rational const& max_duration
               , rational const& position
-              )
+              ) const
   {
-    if (begin == end) {
+    if (iterator == voice_end) {
       yield(stack_begin, stack_end, position - start_position);
     } else {
       ast::partial_voice::iterator tail;
-      if (on_beat(position) and (tail = notegroup_end(begin, end)) > begin) {
-        while (std::distance(begin, tail) >= 3) {
-          notegroup const group(begin, tail, small, stack_end);
+      if (on_beat(position) and (tail = notegroup_end(iterator, voice_end)) > iterator) {
+        while (std::distance(iterator, tail) >= 3) {
+          notegroup const group(iterator, tail, small, stack_end);
           rational const group_duration(group.duration());
           if (group_duration <= max_duration) {
             rational const next_position(position + group_duration);
             if (on_beat(next_position)) {
-              recurse(tail, end, stack_begin, group.end(),
-                      max_duration - group_duration, next_position);
+              recurse(tail, group.end(), max_duration - group_duration, next_position);
             }
           }
           --tail;
         }
 
-        large_and_small const possibilities(*begin);
-        tail = begin; ++tail;
+        large_and_small const possibilities(*iterator);
+        tail = iterator; ++tail;
         if (possibilities.empty()) {
-          recurse(tail, end, stack_begin, stack_end, max_duration, position);
+          recurse(tail, stack_end, max_duration, position);
         } else {
           for (large_and_small::const_reference value: possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
-              recurse(tail, end, stack_begin, stack_end + 1,
+              recurse(tail, stack_end + 1,
                       max_duration - value, position + value);
             }
           }
         }
-      } else if ((tail = same_category_end(begin, end,
-                                           ast::value_distinction::large_follows)) > begin) {
-        same_category const group(begin, tail, large);
+      } else if ((tail = same_category_end(iterator, voice_end,
+                                           ast::value_distinction::large_follows)) > iterator) {
+        same_category const group(iterator, tail, large);
         if (duration(group) <= max_duration) {
-          recurse(tail, end,
-                  stack_begin, std::copy(group.begin(), group.end(), stack_end),
+          recurse(tail,
+                  std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
                   position + duration(group));
         }
-      } else if ((tail = same_category_end(begin, end,
-                                           ast::value_distinction::small_follows)) > begin) {
-        same_category const group(begin, tail, small);
+      } else if ((tail = same_category_end(iterator, voice_end,
+                                           ast::value_distinction::small_follows)) > iterator) {
+        same_category const group(iterator, tail, small);
         if (duration(group) <= max_duration) {
-          recurse(tail, end,
-                  stack_begin, std::copy(group.begin(), group.end(), stack_end),
+          recurse(tail, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
                   position + duration(group));
         }
       } else {
-        large_and_small const possibilities(*begin);
-        tail = begin; ++tail;
+        large_and_small const possibilities(*iterator);
+        tail = iterator; ++tail;
         if (possibilities.empty()) {
-          recurse(tail, end, stack_begin, stack_end, max_duration, position);
+          recurse(tail, stack_end, max_duration, position);
         } else {
           for(large_and_small::const_reference value: possibilities) {
             if (value <= max_duration) {
               *stack_end = value;
-              recurse(tail, end, stack_begin, stack_end + 1,
+              recurse(tail, stack_end + 1,
                       max_duration - value, position + value);
             }
           }
@@ -441,14 +436,17 @@ class partial_voice_interpretations
 
         if (stack_begin == stack_end and position == 0 and
             time_signature != 1 and
-            boost::apply_visitor(maybe_whole_measure_rest(), *begin)) {
-          *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *begin);
-          recurse(tail, end, stack_begin, stack_end + 1,
+            boost::apply_visitor(maybe_whole_measure_rest(), *iterator)) {
+          *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *iterator);
+          recurse(tail, stack_end + 1,
                   zero, position + time_signature);
         }
       }
     }
   }
+
+  ast::partial_voice::iterator const voice_end;
+  value_proxy *const stack_begin;
 
 public:
   partial_voice_interpretations( ast::partial_voice& voice
@@ -461,11 +459,11 @@ public:
   , start_position(position)
   , beat(1, time_signature.denominator())
   , yield(yield)
-  {
-    value_proxy *stack = new value_proxy[voice.size()];
-    recurse(voice.begin(), voice.end(), stack, stack, max_duration, position);
-    delete [] stack;
-  }
+  , voice_end(voice.end())
+  , stack_begin(new value_proxy[voice.size()])
+  { recurse(voice.begin(), stack_begin, max_duration, position); }
+  ~partial_voice_interpretations()
+  { delete [] stack_begin; }
 };
 
 inline rational const&
@@ -588,12 +586,6 @@ inline rational
 operator+(rational const& r, proxied_partial_measure_ptr const& part)
 { return r + duration(part); }
 
-inline rational
-duration( proxied_partial_measure_ptr *const begin
-        , proxied_partial_measure_ptr *const end
-        )
-{ return std::accumulate(begin, end, zero); }
-
 typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
 
 template<typename Callback>
@@ -603,29 +595,33 @@ voice_interpretations( ast::voice::iterator const& begin
                      , proxied_partial_measure_ptr *stack_begin
                      , proxied_partial_measure_ptr *stack_end
                      , rational const& max_length
+                     , rational const& position
                      , music::time_signature const& time_signature
                      , Callback yield
                      )
 {
   if (begin == end) {
     if (stack_begin != stack_end) {
-      yield(stack_begin, stack_end, duration(stack_begin, stack_end));
+      yield(stack_begin, stack_end, position);
     }
   } else {
     auto const tail = begin + 1;
     partial_measure_interpretations
-    ( *begin, max_length, duration(stack_begin, stack_end), time_signature
+    ( *begin, max_length, position, time_signature
     , [ stack_begin, stack_end
       , &tail, &end
-      , &max_length, &time_signature
+      , &max_length, &position, &time_signature
       , &yield
       ]
       ( proxied_partial_voice_ptr *f
       , proxied_partial_voice_ptr *l
       ) {
         stack_end->reset(new proxied_partial_measure(f, l));
+        rational const partial_measure_duration(duration(*stack_end));
         voice_interpretations( tail, end, stack_begin, stack_end + 1
-                             , max_length - duration(*stack_end), time_signature
+                             , max_length - partial_measure_duration
+                             , position + partial_measure_duration
+                             , time_signature
                              , yield
                              );
       }
@@ -645,7 +641,7 @@ voice_interpretations( ast::voice& voice
   stack = new proxied_partial_measure_ptr[voice.size()];
   voice_interpretations( voice.begin(), voice.end()
                        , stack, stack
-                       , max_length, time_sig
+                       , max_length, zero, time_sig
                        , callback
                        );
   delete [] stack;
