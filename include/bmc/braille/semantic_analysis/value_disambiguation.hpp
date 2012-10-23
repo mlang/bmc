@@ -223,7 +223,7 @@ public:
            )
   : category(category), type(ast::unknown)
   , stack_begin(stack_end), stack_end(stack_end)
-  { std::for_each(begin, end, boost::apply_visitor(*this)); }
+  { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note& note)
   {
@@ -264,7 +264,7 @@ public:
                , value_category const& category
                )
   : category(category)
-  { std::for_each(begin, end, boost::apply_visitor(*this)); }
+  { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note& note)
   { emplace_back(note, category); }
@@ -394,8 +394,8 @@ public:
 
         if (stack_begin == stack_end and position == 0 and
             time_signature != 1 and
-            boost::apply_visitor(maybe_whole_measure_rest(), *iterator)) {
-          *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *iterator);
+            apply_visitor(maybe_whole_measure_rest(), *iterator)) {
+          *stack_end = apply_visitor(make_whole_measure_rest(time_signature), *iterator);
           recurse(iterator + 1, stack_end + 1,
                   zero, position + time_signature);
         }
