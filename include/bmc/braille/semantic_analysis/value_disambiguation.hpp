@@ -188,30 +188,95 @@ public:
 
 typedef boost::intrusive_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
 
-class partial_voice_interpretations
+struct maybe_whole_measure_rest : boost::static_visitor<bool>
 {
-  struct maybe_whole_measure_rest : boost::static_visitor<bool>
+  result_type operator()(ast::rest const& rest) const
   {
-    result_type operator()(ast::rest const& rest) const
-    {
-      return rest.ambiguous_value == ast::whole_or_16th and
-             rest.dots == 0;
-    }
-    template<typename Sign>
-    result_type operator()(Sign const&) const { return false; }
-  };
-  class make_whole_measure_rest : public boost::static_visitor<value_proxy>
-  {
-    rational const duration;
-  public:
-    make_whole_measure_rest(rational const& duration) : duration(duration) {}
-    result_type operator()(ast::rest& rest) const
-    { return result_type(rest, large, duration); }
-    template<typename Sign>
-    result_type operator()(Sign const&) const
-    { BOOST_ASSERT(false); return value_proxy(); }
-  };
+    return rest.ambiguous_value == ast::whole_or_16th and
+           rest.dots == 0;
+  }
+  template<typename Sign>
+  result_type operator()(Sign const&) const { return false; }
+};
+class make_whole_measure_rest : public boost::static_visitor<value_proxy>
+{
+  rational const duration;
+public:
+  make_whole_measure_rest(rational const& duration) : duration(duration) {}
+  result_type operator()(ast::rest& rest) const
+  { return result_type(rest, large, duration); }
+  template<typename Sign>
+  result_type operator()(Sign const&) const
+  { BOOST_ASSERT(false); return value_proxy(); }
+};
 
+class notegroup: public boost::static_visitor<void>
+{
+  value_category const category;
+  ast::value type;
+  value_proxy *stack_begin, *stack_end;
+public:
+  notegroup( ast::partial_voice::iterator const& begin
+           , ast::partial_voice::iterator const& end
+           , value_category const& category
+           , value_proxy *stack_end
+           )
+  : category(category), type(ast::unknown)
+  , stack_begin(stack_end), stack_end(stack_end)
+  { std::for_each(begin, end, boost::apply_visitor(*this)); }
+
+  result_type operator()(ast::note& note)
+  {
+    if (type == ast::unknown) type = note.ambiguous_value;
+    new (stack_end++) value_proxy(note, category, type);
+  }
+  result_type operator()(ast::rest& rest)
+  {
+    if (type == ast::unknown) type = rest.ambiguous_value;
+    new (stack_end++) value_proxy(rest, category, type);
+  }
+  result_type operator()(ast::chord& chord)
+  {
+    if (type == ast::unknown) type = chord.base.ambiguous_value;
+    new (stack_end++) value_proxy(chord, category, type);
+  }
+  result_type operator()(ast::value_distinction&) { BOOST_ASSERT(false); }
+  result_type operator()(braille::hand_sign&) {}
+  result_type operator()(ast::barline&) {}
+  result_type operator()(ast::simile&) { BOOST_ASSERT(false); }
+
+  value_proxy *end() const { return stack_end; }
+  rational duration() const
+  { return std::accumulate(stack_begin, stack_end, zero); }
+};
+
+class same_category
+: public std::vector<value_proxy>
+, public boost::static_visitor<void>
+{
+  value_category const category;
+public:
+  same_category( ast::partial_voice::iterator const& begin
+               , ast::partial_voice::iterator const& end
+               , value_category const& category
+               )
+  : category(category)
+  { std::for_each(begin, end, boost::apply_visitor(*this)); }
+
+  result_type operator()(ast::note& note)
+  { emplace_back(note, category); }
+  result_type operator()(ast::rest& rest)
+  { emplace_back(rest, category); }
+  result_type operator()(ast::chord& chord)
+  { emplace_back(chord, category); }
+  result_type operator()(ast::value_distinction const&) {}
+  template<typename Sign> result_type operator()(Sign const&)
+  { BOOST_ASSERT(false); }
+};
+
+template<typename Callback>
+class partial_voice_interpreter
+{
   static
   ast::partial_voice::iterator
   same_category_end( ast::partial_voice::iterator const& begin
@@ -253,119 +318,32 @@ class partial_voice_interpretations
         while (iter != end and
                apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
           ++iter;
-	// A note group is only valid if it consists of at least 3 rhythmic signs
+        // A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
       }
     }
     return begin;
   }
 
-  struct large_and_small : std::vector<value_proxy>, boost::static_visitor<void>
-  {
-    large_and_small(ast::sign& sign)
-    { reserve(2); boost::apply_visitor(*this, sign); }
-
-    template <class Value>
-    result_type operator()(Value& value)
-    {
-      if (not is_grace(value)) {
-        emplace_back(value, large);
-        emplace_back(value, small);
-      }
-    }
-    result_type operator()(ast::value_distinction&) {}
-    result_type operator()(braille::hand_sign&) {}
-    result_type operator()(ast::barline&) {}
-    result_type operator()(ast::simile&) {}
-    bool is_grace(ast::note const& note) const
-    {
-      return std::find(note.articulations.begin(), note.articulations.end(),
-                       appoggiatura)
-             != note.articulations.end()
-             ||
-             std::find(note.articulations.begin(), note.articulations.end(),
-                      short_appoggiatura)
-             != note.articulations.end();
-    }
-    bool is_grace(ast::rest const&) const
-    { return false; }
-    bool is_grace(ast::chord const& chord) const
-    { return is_grace(chord.base); }
-  };
-  class notegroup: public boost::static_visitor<void>
-  {
-    value_category const category;
-    ast::value type;
-    value_proxy *stack_begin, *stack_end;
-  public:
-    notegroup( ast::partial_voice::iterator const& begin
-             , ast::partial_voice::iterator const& end
-             , value_category const& category
-             , value_proxy *stack_end
-             )
-    : category(category), type(ast::unknown)
-    , stack_begin(stack_end), stack_end(stack_end)
-    { std::for_each(begin, end, boost::apply_visitor(*this)); }
-
-    result_type operator()(ast::note& note)
-    {
-      if (type == ast::unknown) type = note.ambiguous_value;
-      new (stack_end++) value_proxy(note, category, type);
-    }
-    result_type operator()(ast::rest& rest)
-    {
-      if (type == ast::unknown) type = rest.ambiguous_value;
-      new (stack_end++) value_proxy(rest, category, type);
-    }
-    result_type operator()(ast::chord& chord)
-    {
-      if (type == ast::unknown) type = chord.base.ambiguous_value;
-      new (stack_end++) value_proxy(chord, category, type);
-    }
-    result_type operator()(ast::value_distinction&) { BOOST_ASSERT(false); }
-    result_type operator()(braille::hand_sign&) {}
-    result_type operator()(ast::barline&) {}
-    result_type operator()(ast::simile&) { BOOST_ASSERT(false); }
-
-    value_proxy *end() const { return stack_end; }
-    rational duration() const
-    { return std::accumulate(stack_begin, stack_end, zero); }
-  };
-  class same_category
-  : public std::vector<value_proxy>
-  , public boost::static_visitor<void>
-  {
-    value_category const category;
-  public:
-    same_category( ast::partial_voice::iterator const& begin
-                 , ast::partial_voice::iterator const& end
-                 , value_category const& category
-                 )
-    : category(category)
-    { std::for_each(begin, end, boost::apply_visitor(*this)); }
-
-    result_type operator()(ast::note& note)
-    { emplace_back(note, category); }
-    result_type operator()(ast::rest& rest)
-    { emplace_back(rest, category); }
-    result_type operator()(ast::chord& chord)
-    { emplace_back(chord, category); }
-    result_type operator()(ast::value_distinction const&) {}
-    template<typename Sign> result_type operator()(Sign const&)
-    { BOOST_ASSERT(false); }
-  };
-
   music::time_signature const& time_signature;
   rational const& start_position;
   rational const beat;
-  std::function<void( value_proxy const*
-                    , value_proxy const*
-                    , rational const&
-                    )> const& yield;
+  Callback yield;
+  ast::partial_voice& voice;
+  ast::partial_voice::iterator const voice_end;
+  value_proxy *const stack_begin;
 
   bool on_beat(rational const& position) const
   { return no_remainder(position, beat); }
 
+  inline
+  void large_and_small( ast::partial_voice::iterator const& iterator
+                      , value_proxy *stack_end
+                      , rational const& max_duration
+                      , rational const& position
+                      ) const;
+
+public:
   void recurse( ast::partial_voice::iterator const& iterator
               , value_proxy *stack_end
               , rational const& max_duration
@@ -389,19 +367,7 @@ class partial_voice_interpretations
           --tail;
         }
 
-        large_and_small const possibilities(*iterator);
-        tail = iterator; ++tail;
-        if (possibilities.empty()) {
-          recurse(tail, stack_end, max_duration, position);
-        } else {
-          for (large_and_small::const_reference value: possibilities) {
-            if (value <= max_duration) {
-              *stack_end = value;
-              recurse(tail, stack_end + 1,
-                      max_duration - value, position + value);
-            }
-          }
-        }
+        large_and_small(iterator, stack_end, max_duration, position);
       } else if ((tail = same_category_end(iterator, voice_end,
                                            ast::value_distinction::large_follows)) > iterator) {
         same_category const group(iterator, tail, large);
@@ -420,51 +386,127 @@ class partial_voice_interpretations
                   position + duration(group));
         }
       } else {
-        large_and_small const possibilities(*iterator);
-        tail = iterator; ++tail;
-        if (possibilities.empty()) {
-          recurse(tail, stack_end, max_duration, position);
-        } else {
-          for(large_and_small::const_reference value: possibilities) {
-            if (value <= max_duration) {
-              *stack_end = value;
-              recurse(tail, stack_end + 1,
-                      max_duration - value, position + value);
-            }
-          }
-        }
+        large_and_small(iterator, stack_end, max_duration, position);
 
         if (stack_begin == stack_end and position == 0 and
             time_signature != 1 and
             boost::apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = boost::apply_visitor(make_whole_measure_rest(time_signature), *iterator);
-          recurse(tail, stack_end + 1,
+          recurse(iterator + 1, stack_end + 1,
                   zero, position + time_signature);
         }
       }
     }
   }
 
-  ast::partial_voice::iterator const voice_end;
-  value_proxy *const stack_begin;
-
-public:
-  partial_voice_interpretations( ast::partial_voice& voice
-                               , rational const& max_duration
-                               , rational const& position
-                               , music::time_signature const& time_sig
-                               , std::function<void(value_proxy const*, value_proxy const*, rational const&)> const& yield
-                               )
+  partial_voice_interpreter( ast::partial_voice& voice
+                           , rational const& position
+                           , music::time_signature const& time_sig
+                           , Callback yield
+                           )
   : time_signature(time_sig)
   , start_position(position)
   , beat(1, time_signature.denominator())
   , yield(yield)
+  , voice(voice)
   , voice_end(voice.end())
   , stack_begin(new value_proxy[voice.size()])
-  { recurse(voice.begin(), stack_begin, max_duration, position); }
-  ~partial_voice_interpretations()
-  { delete [] stack_begin; }
+  {}
+  ~partial_voice_interpreter() { delete [] stack_begin; }
+  void operator()(rational const& max_duration) const
+  { recurse(voice.begin(), stack_begin, max_duration, start_position); }
 };
+
+template<typename Callback>
+class large_and_small_visitor : public boost::static_visitor<bool>
+{
+  ast::partial_voice::iterator const& iterator;
+  value_proxy *const proxy;
+  rational const& max_duration;
+  rational const& position;
+  partial_voice_interpreter<Callback> const& interpreter;
+public:
+  large_and_small_visitor(ast::partial_voice::iterator const& iterator
+                         ,value_proxy *stack_end
+                         ,rational const& max_duration
+                         ,rational const& position
+                         ,partial_voice_interpreter<Callback> const& interpreter)
+  : iterator(iterator)
+  , proxy(stack_end)
+  , max_duration(max_duration)
+  , position(position)
+  , interpreter(interpreter)
+  {}
+
+  template <class Value>
+  result_type operator()(Value& value) const
+  {
+    if (not is_grace(value)) {
+      value_proxy *const next = proxy + 1;
+      if (*new(proxy)value_proxy(value, large) <= max_duration)
+        interpreter.recurse( iterator + 1, next
+                           , max_duration - *proxy, position + *proxy
+                           );
+      if (*new(proxy)value_proxy(value, small) <= max_duration)
+        interpreter.recurse( iterator + 1, next
+                           , max_duration - *proxy, position + *proxy
+                           );
+      return true;
+    }
+    return false;
+  }
+  result_type operator()(ast::value_distinction&) const { return false; }
+  result_type operator()(braille::hand_sign&) const { return false; }
+  result_type operator()(ast::barline&) const { return false; }
+  result_type operator()(ast::simile&) const { return false; }
+  bool is_grace(ast::note const& note) const
+  {
+    return std::find(note.articulations.begin(), note.articulations.end(),
+                     appoggiatura)
+           != note.articulations.end()
+           ||
+           std::find(note.articulations.begin(), note.articulations.end(),
+                    short_appoggiatura)
+           != note.articulations.end();
+  }
+  bool is_grace(ast::rest const&) const
+  { return false; }
+  bool is_grace(ast::chord const& chord) const
+  { return is_grace(chord.base); }
+};
+
+template<typename Callback>
+inline void
+partial_voice_interpreter<Callback>
+::
+large_and_small( ast::partial_voice::iterator const& iterator
+               , value_proxy *stack_end
+               , rational const& max_duration
+               , rational const& position
+               ) const
+{
+  if (not boost::apply_visitor( large_and_small_visitor<Callback>
+                                ( iterator, stack_end, max_duration, position
+                                , *this
+                                )
+                              , *iterator
+                              )
+     )
+    recurse(iterator + 1, stack_end, max_duration, position);
+}
+
+template<typename Callback>
+inline void
+partial_voice_interpretations( ast::partial_voice& voice
+                             , rational const& max_duration
+                             , rational const& position
+                             , music::time_signature const& time_sig
+                             , Callback yield
+                             )
+{
+  partial_voice_interpreter<Callback>
+  (voice, position, time_sig, yield)(max_duration);
+}
 
 inline rational const&
 duration(proxied_partial_voice_ptr const& partial_voice)
