@@ -35,6 +35,7 @@ class alteration_calculator
 public:
   alteration_calculator(report_error_type const& report_error)
   : compiler_pass(report_error)
+  , key_sig()
   {}
 
   /**
