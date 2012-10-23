@@ -227,16 +227,19 @@ public:
 
   result_type operator()(ast::note& note)
   {
+    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = note.ambiguous_value;
     new (stack_end++) value_proxy(note, category, type);
   }
   result_type operator()(ast::rest& rest)
   {
+    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
     new (stack_end++) value_proxy(rest, category, type);
   }
   result_type operator()(ast::chord& chord)
   {
+    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     new (stack_end++) value_proxy(chord, category, type);
   }
@@ -336,6 +339,8 @@ class partial_voice_interpreter
   bool on_beat(rational const& position) const
   { return no_remainder(position, beat); }
 
+  /** \brief Try the common large and small variations.
+   */
   inline
   void large_and_small( ast::partial_voice::iterator const& iterator
                       , value_proxy *stack_end
@@ -372,8 +377,7 @@ public:
                                            ast::value_distinction::large_follows)) > iterator) {
         same_category const group(iterator, tail, large);
         if (duration(group) <= max_duration) {
-          recurse(tail,
-                  std::copy(group.begin(), group.end(), stack_end),
+          recurse(tail, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
                   position + duration(group));
         }
@@ -413,6 +417,7 @@ public:
   , stack_begin(new value_proxy[voice.size()])
   {}
   ~partial_voice_interpreter() { delete [] stack_begin; }
+
   void operator()(rational const& max_duration) const
   { recurse(voice.begin(), stack_begin, max_duration, start_position); }
 };
@@ -426,11 +431,12 @@ class large_and_small_visitor : public boost::static_visitor<bool>
   rational const& position;
   partial_voice_interpreter<Callback> const& interpreter;
 public:
-  large_and_small_visitor(ast::partial_voice::iterator const& iterator
-                         ,value_proxy *stack_end
-                         ,rational const& max_duration
-                         ,rational const& position
-                         ,partial_voice_interpreter<Callback> const& interpreter)
+  large_and_small_visitor( ast::partial_voice::iterator const& iterator
+                         , value_proxy *stack_end
+                         , rational const& max_duration
+                         , rational const& position
+                         , partial_voice_interpreter<Callback> const& interpreter
+                         )
   : iterator(iterator)
   , proxy(stack_end)
   , max_duration(max_duration)
@@ -485,12 +491,13 @@ large_and_small( ast::partial_voice::iterator const& iterator
                , rational const& position
                ) const
 {
-  if (not boost::apply_visitor( large_and_small_visitor<Callback>
-                                ( iterator, stack_end, max_duration, position
-                                , *this
-                                )
-                              , *iterator
-                              )
+  // Skip this sign if it does not result in at least one possible proxy
+  if (not apply_visitor( large_and_small_visitor<Callback>
+                         ( iterator, stack_end, max_duration, position
+                         , *this
+                         )
+                       , *iterator
+                       )
      )
     recurse(iterator + 1, stack_end, max_duration, position);
 }
