@@ -715,14 +715,16 @@ public:
   rational const &harmonic_mean()
   {
     if (mean == zero) {
-      rational sum;
+      rational::int_type n=0, d=1;
       for (const_reference voice: *this)
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
             for (proxied_partial_voice::const_reference value: *partial_voice) {
-              sum += reciprocal(static_cast<rational>(value)), ++mean;
+              n = n*static_cast<rational>(value).numerator() + static_cast<rational>(value).denominator()*d;
+              d = static_cast<rational>(value).numerator() * d;
+              ++mean;
             }
-      mean /= sum;
+      mean /= rational(n, d);
     }
     return mean;
   }
