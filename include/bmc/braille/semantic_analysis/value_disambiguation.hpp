@@ -9,7 +9,6 @@
 
 #include "bmc/braille/ast.hpp"
 #include <cmath>
-#include <forward_list>
 #include <memory>
 #include <sstream>
 #include <boost/smart_ptr/intrusive_ptr.hpp>
@@ -222,13 +221,13 @@ public:
   }
   result_type operator()(ast::rest &rest)
   {
-    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
+    BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
     new (stack_end++) value_proxy(rest, category, type);
   }
   result_type operator()(ast::chord &chord)
   {
-    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
+    BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     new (stack_end++) value_proxy(chord, category, type);
   }
