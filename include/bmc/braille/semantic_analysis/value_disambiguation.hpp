@@ -712,18 +712,27 @@ public:
   {
   }
 
+  /** @brief Gives the harmonic mean of all rhythmic values in this
+   *         interpretation of a measure.
+   *
+   * As the harmonic mean tends strongly toward the least elements of the list
+   * it mitigates (compared to the arithmetic mean) the influence of large
+   * outliers and increases the influence of small values.
+   *
+   * @see http://en.wikipedia.org/wiki/Harmonic_mean
+   */
   rational const &harmonic_mean()
   {
     if (mean == zero) {
+      // Avoid expensive (and unneeded) gcd in rational::operator+=
       rational::int_type n=0, d=1;
       for (const_reference voice: *this)
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
-            for (rational const &value: *partial_voice) {
-              n = n*value.numerator() + d*value.denominator();
-              d *= value.numerator();
+            for (rational const &value: *partial_voice)
+              n = n*value.numerator() + d*value.denominator(),
+              d *= value.numerator(),
               ++mean;
-            }
       mean /= rational(n, d);
     }
     return mean;
