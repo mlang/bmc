@@ -703,18 +703,19 @@ rational const &
 duration(proxied_voice_ptr const &voice)
 { return *voice; }
 
+/** @brief Represents a possible interpretation of an ast::measure.
+ */
 class proxied_measure : public std::vector<proxied_voice_ptr>
 {
   rational mean;
 public:
   proxied_measure(const_pointer begin, const_pointer end)
   : std::vector<proxied_voice_ptr>(begin, end)
-  , mean()
+  , mean() // Do not precalculate the harmonic mean as it is potentially unused
   {
   }
 
-  /** @brief Gives the harmonic mean of all rhythmic values in this
-   *         interpretation of a measure.
+  /** @brief Harmonic mean of all contained rhythmic values.
    *
    * As the harmonic mean tends strongly toward the least elements of the list
    * it mitigates (compared to the arithmetic mean) the influence of large
@@ -739,6 +740,10 @@ public:
     return mean;
   }
 
+  /** @breif Transfer the herein learnt information to the refered-to objects.
+   *
+   * @note This member function should only be called on one found result.
+   */
   void accept() const
   {
     for (const_reference voice: *this)
@@ -749,7 +754,10 @@ public:
   }
 };
 
-inline rational
+/** @brief Duration of a proxied_measure.
+ */
+inline
+rational
 duration(proxied_measure const &voices)
 {
   rational value;
@@ -803,9 +811,10 @@ class measure_interpretations: std::vector<proxied_measure>
       if (stack_begin != stack_end) {
         if (not complete or length == time_signature) {
           if (not complete and length == time_signature) {
-            if (not empty()) {
-              clear();
-            }
+            // We found the first intepretation matching the time signature.
+            // So this is not an anacrusis.  Drop accumulated (incomplete)
+            // interpretations and continue more efficiently.
+            clear();
             complete = true;
           }
           emplace_back(stack_begin, stack_end);
