@@ -231,8 +231,7 @@ generator::result_type
 generator::operator() (braille::ast::rest const& rest) const
 {
   os << "r";
-  if (rest.whole_measure) os << "1";
-  else ly_rhythm(rest);
+  ly_rhythm(rest);
   if (include_locations) {
     os << "%{" << rest.line << ":" << rest.column << "%}";
   }
@@ -332,7 +331,10 @@ void generator::ly_key(key_signature const& key) const
 
 void generator::ly_rhythm(braille::ast::rhythmic_data const& rhythm) const
 {
-  if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
+  if (rhythm.type) {
+    if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
+    else os << rhythm.type.denominator() << '*' << rhythm.type.numerator();
+  }
   std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');
 }
 
