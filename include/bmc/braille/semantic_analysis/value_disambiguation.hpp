@@ -520,7 +520,8 @@ typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
 
 template<typename Callback>
-inline void
+inline
+void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , ast::partial_measure::iterator const &end
                                , proxied_partial_voice_ptr *stack_begin
@@ -786,11 +787,10 @@ operator<<(std::basic_ostream<Char> &os, proxied_measure const &measure)
   return os;
 }
 
-class measure_interpretations: std::forward_list<proxied_measure>
+class measure_interpretations: std::vector<proxied_measure>
 {
   music::time_signature time_signature;
   bool complete;
-  iterator last;
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
@@ -805,18 +805,17 @@ class measure_interpretations: std::forward_list<proxied_measure>
           if (not complete and length == time_signature) {
             if (not empty()) {
               clear();
-              last = before_begin();
             }
             complete = true;
           }
-          last = emplace_after(last, stack_begin, stack_end);
+          emplace_back(stack_begin, stack_end);
         }
       }
     } else {
       auto const tail = begin + 1;
       voice_interpretations
       ( *begin, length, time_signature
-      , [stack_begin, stack_end, &tail, &end, &length, this]
+      , [ stack_begin, stack_end, &tail, &end, &length, this ]
         ( proxied_partial_measure_ptr *f
         , proxied_partial_measure_ptr *l
         , rational const& duration
@@ -848,15 +847,16 @@ class measure_interpretations: std::forward_list<proxied_measure>
       // Do not consider possibilities below a certain margin as valid
       if (single_best_score) {
         rational const margin(best_score * rational(2, 3));
-        remove_if([&margin](reference measure) -> bool {
-                    return measure.harmonic_mean() < margin;
-                  });
+        base_type good;
+        for (reference measure: *this)
+          if (measure.harmonic_mean() > margin) good.push_back(measure);
+        assign(good.begin(), good.end());
       }
     }
   }
 
 public:
-  typedef std::forward_list<proxied_measure> base_type;
+  typedef std::vector<proxied_measure> base_type;
 
   measure_interpretations()
   : complete(false)
@@ -874,7 +874,6 @@ public:
   : base_type()
   , time_signature(time_signature)
   , complete(false)
-  , last(before_begin())
   {
     BOOST_ASSERT(time_signature >= 0);
     value_type::pointer
@@ -906,7 +905,7 @@ public:
   using base_type::end;
   using base_type::empty;
   using base_type::front;
-  size_type size() const { return empty()? 0: std::distance(begin(), end()); }
+  using base_type::size;
 };
 
 }
