@@ -719,9 +719,9 @@ public:
       for (const_reference voice: *this)
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
-            for (proxied_partial_voice::const_reference value: *partial_voice) {
-              n = n*static_cast<rational>(value).numerator() + static_cast<rational>(value).denominator()*d;
-              d = static_cast<rational>(value).numerator() * d;
+            for (rational const &value: *partial_voice) {
+              n = n*value.numerator() + d*value.denominator();
+              d *= value.numerator();
               ++mean;
             }
       mean /= rational(n, d);
