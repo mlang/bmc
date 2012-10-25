@@ -78,7 +78,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 
   right_hand_sign = brl(46) >> brl(345) > optional_dot;
   left_hand_sign = brl(456) >> brl(345) > optional_dot;
-  eom = brl(126) >> brl(13);
+  eom = brl(126) >> brl(13) >> !brl(3);
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
 
 

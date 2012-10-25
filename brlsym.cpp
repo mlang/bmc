@@ -178,6 +178,7 @@ barline_symbols::barline_symbols()
 {
   add(L"⠣⠶", ast::begin_repeat)
      (L"⠣⠆", ast::end_repeat)
+     (L"⠣⠅⠄", ast::end_part)
      ;
 }
 

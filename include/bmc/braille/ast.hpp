@@ -125,7 +125,7 @@ struct simile : locatable {
   boost::optional<unsigned> octave_spec;
 };
 
-enum barline { begin_repeat, end_repeat };
+enum barline { begin_repeat, end_repeat, end_part };
 
 typedef boost::variant< note, rest, chord
                       , value_distinction
