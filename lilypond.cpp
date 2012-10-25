@@ -300,6 +300,8 @@ void generator::ly_clef(std::string const& clef) const
   os << "\\clef \"" << clef << "\"";
 }
 
+namespace {
+
 class print_fingering: public boost::static_visitor<std::ostream&>
 {
   std::ostream& os;
@@ -311,11 +313,12 @@ public:
   { return os << "-" << finger; }
 };
 
+}
+
 void generator::ly_finger(braille::fingering_list const& fingers) const
 {
   print_fingering write_to_stream(os);
-  std::for_each(fingers.begin(), fingers.end(),
-                boost::apply_visitor(write_to_stream));
+  for_each(fingers.begin(), fingers.end(), apply_visitor(write_to_stream));
 }
 
 void generator::ly_key(key_signature const& key) const
@@ -332,8 +335,8 @@ void generator::ly_key(key_signature const& key) const
 void generator::ly_rhythm(braille::ast::rhythmic_data const& rhythm) const
 {
   if (rhythm.type) {
-    if (rhythm.type.numerator() == 1) os << rhythm.type.denominator();
-    else os << rhythm.type.denominator() << '*' << rhythm.type.numerator();
+    os << rhythm.type.denominator();
+    if (rhythm.type.numerator() != 1) os << '*' << rhythm.type.numerator();
   }
   std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');
 }
