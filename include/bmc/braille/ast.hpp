@@ -104,10 +104,13 @@ struct interval : locatable, pitched
   fingering_list fingers;
 };
 
+struct chord_tied {};
+
 struct chord : locatable, rhythmic
 {
   note base;
   std::vector<interval> intervals;
+  boost::optional<chord_tied> all_tied;
   virtual rational as_rational() const
   { return base.as_rational(); }
 };
@@ -407,6 +410,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::chord,
   (music::braille::ast::note, base)
   (std::vector<music::braille::ast::interval>, intervals)
+  (boost::optional<music::braille::ast::chord_tied>, all_tied)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

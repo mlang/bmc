@@ -40,6 +40,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
   boost::spirit::qi::rule<Iterator, ast::slur()> slur_sign;
   boost::spirit::qi::rule<Iterator, ast::tie()> tie_sign;
+  boost::spirit::qi::rule<Iterator, ast::chord_tied()> chord_tied_sign;
   boost::spirit::qi::rule<Iterator, ast::value_distinction()> value_distinction;
   boost::spirit::qi::rule<Iterator>
   full_measure_in_accord, partial_measure_sign, partial_measure_in_accord,

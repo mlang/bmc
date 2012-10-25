@@ -70,7 +70,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
-  chord = note >> +interval;
+  chord_tied_sign = brl(46) >> brl(14);
+  chord = note >> +interval >> -chord_tied_sign;
   interval = -accidental_sign
           >> -octave_sign
           >> interval_sign
