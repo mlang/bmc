@@ -79,11 +79,22 @@ struct pitched
   boost::optional<ast::tie> tie;
 };
 
+struct stem : rhythmic
+{
+  rational type;
+  unsigned dots;
+  boost::optional<ast::tie> tied;
+
+  rational as_rational() const
+  { return type * 2 - type / pow(2, dots); }
+};
+
 struct note : locatable, rhythmic_data, rhythmic, pitched
 {
   std::vector<articulation> articulations;
   std::vector<slur> slurs;
   fingering_list fingers;
+  std::vector<stem> extra_stems;
 
   note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
@@ -387,6 +398,12 @@ BOOST_FUSION_ADAPT_STRUCT(
   (unsigned, dots)
 )
 BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::stem,
+  (music::rational, type)
+  (unsigned, dots)
+  (boost::optional<music::braille::ast::tie>, tied)
+)
+BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::note,
   (std::vector<music::articulation>, articulations)
   (boost::optional<music::accidental>, acc)
@@ -397,6 +414,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (std::vector<music::braille::ast::slur>, slurs)
   (music::braille::fingering_list, fingers)
   (boost::optional<music::braille::ast::tie>, tie)
+  (std::vector<music::braille::ast::stem>, extra_stems)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::interval,

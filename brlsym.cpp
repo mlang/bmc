@@ -184,5 +184,15 @@ barline_symbols::barline_symbols()
 
 barline_symbols barline_sign;
 
+stem_symbols::stem_symbols()
+{
+  add(L"⠸⠄", rational(1, 1))
+     (L"⠸⠅", rational(1, 2))
+     (L"⠸⠁", rational(1, 4))
+     ;
+}
+
+stem_symbols stem_sign;
+
 }}
 

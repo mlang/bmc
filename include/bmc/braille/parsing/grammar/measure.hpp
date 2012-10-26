@@ -30,6 +30,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, ast::partial_measure()> partial_measure;
   boost::spirit::qi::rule<Iterator, ast::partial_voice()> partial_voice;
   boost::spirit::qi::rule<Iterator, ast::note()> note;
+  boost::spirit::qi::rule<Iterator, ast::stem()> stem;
   boost::spirit::qi::rule<Iterator, ast::rest()> rest;
   boost::spirit::qi::rule<Iterator, ast::chord()> chord;
   boost::spirit::qi::rule<Iterator, ast::interval()> interval;
