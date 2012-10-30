@@ -24,7 +24,7 @@ generator::generator( std::ostream& os
   os << "\\version" << " " << "\"2.14.2\"" << std::endl;
 }
 
-void generator::operator() (braille::ast::score const& score) const
+void generator::operator() (braille::ast::score const& score)
 {
   os << "\\score {" << std::endl;
 
@@ -44,15 +44,14 @@ struct repeat_info: public boost::static_visitor<void>
   repeat_info(braille::ast::staff_element const& staff_element)
   : begin(false)
   , end(false)
-  { boost::apply_visitor(*this, staff_element); }  
+  { apply_visitor(*this, staff_element); }  
 
   result_type operator() (braille::ast::measure const& measure)
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
         for (auto const& partial_voice: partial_measure)
-          std::for_each(partial_voice.begin(), partial_voice.end(),
-                        boost::apply_visitor(*this));
+          for_each(partial_voice.begin(), partial_voice.end(), apply_visitor(*this));
   }
   result_type operator() (braille::ast::key_and_time_signature const&) {}
 
@@ -79,9 +78,9 @@ struct repeat_info: public boost::static_visitor<void>
 
 void generator::operator() ( braille::ast::part const& part
                            , braille::ast::score const& score
-                           ) const
+                           )
 {
-  std::string indent("    ");
+  indent = "    ";
   if (part.size() == 2) {
     os << indent << "\\new PianoStaff <<" << std::endl;
     indent += "  ";
@@ -113,18 +112,27 @@ void generator::operator() ( braille::ast::part const& part
       }
     }
 
-    for (size_t measure_index = 0; measure_index < part[staff_index].size();
+    for (std::size_t measure_index = 0;
+         measure_index < part[staff_index].size();
          ++measure_index)
     {
-      braille::ast::staff_element const& this_measure = part[staff_index][measure_index];
+      std::size_t new_measure_index = process_repeat_with_alternatives(part[staff_index], measure_index);
 
-      os << indent << "  "; boost::apply_visitor(*this, this_measure);
+      if (new_measure_index != measure_index) {
+        measure_index = new_measure_index;
+        continue;
+      }
+
+      braille::ast::staff_element const&
+      this_measure = part[staff_index][measure_index];
+
+      os << indent << "  "; apply_visitor(*this, this_measure);
 
       bool barcheck = true;
       repeat_info this_repeat(this_measure);
       if (measure_index < part[staff_index].size() - 1) {
-        braille::ast::staff_element const& next_measure =
-          part[staff_index][measure_index + 1];
+        braille::ast::staff_element const&
+        next_measure = part[staff_index][measure_index + 1];
         repeat_info next_repeat(next_measure);
         if (this_repeat.end and next_repeat.begin) {
           os << " " << "\\bar \":|:\"" << " ";
@@ -201,7 +209,7 @@ generator::operator() (braille::ast::partial_voice const& partial_voice) const
   for (size_t element_index = 0; element_index < partial_voice.size();
        ++element_index)
   {
-    boost::apply_visitor(*this, partial_voice[element_index]);
+    apply_visitor(*this, partial_voice[element_index]);
     if (element_index != partial_voice.size() - 1) os << " ";
   }
 }
@@ -359,6 +367,103 @@ void generator::ly_pitch_step(diatonic_step step) const
 {
   static char const* steps = "cdefgab";
   os << steps[step];
+}
+
+struct is_alternative : boost::static_visitor<bool>
+{
+  result_type operator()(braille::ast::measure const& measure) const
+  { return measure.ending; }
+  result_type operator()(braille::ast::key_and_time_signature const&) const
+  { return false; }
+};
+
+struct has_end_of_part_barline: boost::static_visitor<bool>
+{
+  result_type operator() (braille::ast::measure const& measure) const
+  {
+    for (auto const& voice: measure.voices)
+      for (auto const& partial_measure: voice)
+        for (auto const& partial_voice: partial_measure)
+          if (std::any_of( partial_voice.begin(), partial_voice.end()
+                         , apply_visitor(*this)
+                         )
+             )
+            return true;
+    return false;
+  }
+  result_type operator() (braille::ast::key_and_time_signature const&) const
+  { return false; }
+
+  result_type operator() (braille::ast::barline const& barline) const
+  { return barline == braille::ast::end_part; }
+  result_type operator() (braille::ast::simile const&) const
+  { return false; }
+  result_type operator() (braille::ast::value_distinction const&) const
+  { return false; }
+  result_type operator() (braille::hand_sign const&) const
+  { return false; }
+  result_type operator() (braille::ast::rest const&) const
+  { return false; }
+  result_type operator() (braille::ast::note const&) const
+  { return false; }
+  result_type operator() (braille::ast::chord const&) const
+  { return false; }
+};
+
+std::size_t
+generator::process_repeat_with_alternatives( braille::ast::staff const& staff
+                                           , std::size_t index
+                                           ) const
+{
+  std::vector<std::size_t> alternatives;
+  std::size_t i;
+  for (i = index; i < staff.size(); ++i) {
+    if (apply_visitor(is_alternative(), staff[i])) alternatives.push_back(i);
+    if (apply_visitor(has_end_of_part_barline(), staff[i])) {
+      ++i; break;
+    }
+  }
+  if (not alternatives.empty()) {
+    // We found a section of repeated music with alternative endings.
+    os << indent << "  " << "\\repeat volta " << alternatives.size() << " {" << std::endl;
+    for (std::size_t measure_index = index;
+         measure_index < alternatives.front(); ++measure_index)
+    {
+      braille::ast::staff_element const& this_measure = staff[measure_index];
+
+      os << indent << "    "; apply_visitor(*this, this_measure);
+
+      bool barcheck = true;
+      repeat_info this_repeat(this_measure);
+      if (measure_index < staff.size() - 1) {
+        braille::ast::staff_element const&
+        next_measure = staff[measure_index + 1];
+        repeat_info next_repeat(next_measure);
+        if (this_repeat.end and next_repeat.begin) {
+          os << " " << "\\bar \":|:\"" << " ";
+          barcheck = false;
+        } else if (next_repeat.begin) {
+          os << " " << "\\bar \"|:\"" << " ";
+          barcheck = false;
+        }
+      }
+      if (barcheck and this_repeat.end) {
+        os << " " << "\\bar \":|\"" << " ";
+        barcheck = false;
+      }
+      if (barcheck) os << " |" << std::endl;
+    }
+    os << indent << "  " << "}" << std::endl;
+    os << indent << "  " << "\\alternative {" << std::endl;
+    for (auto measure_index: alternatives) {
+      braille::ast::staff_element const& this_measure = staff[measure_index];
+
+      os << indent << "    " << "{"; apply_visitor(*this, this_measure); os << "}" << std::endl;
+    }
+    os << indent << "  " << "}" << std::endl;
+    return i;
+  }
+  return index;
 }
 
 }}

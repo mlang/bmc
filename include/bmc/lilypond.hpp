@@ -19,6 +19,8 @@ class generator: public boost::static_visitor<void>
 {
   std::ostream& os;
   bool const layout, midi, include_locations;
+  std::string indent;
+
 public:
   /**
    * \brief Construct a LilyPond source code generator.
@@ -35,12 +37,12 @@ public:
   /**
    * \brief Generate LilyPond source code for the given braille score.
    */
-  void operator() (braille::ast::score const& score) const;
+  void operator() (braille::ast::score const& score);
 
 private:
   void operator() ( braille::ast::part const& part
                   , braille::ast::score const& score
-                  ) const;
+                  );
 
 public:
   result_type operator() (braille::ast::measure const&) const;
@@ -70,6 +72,10 @@ private: // utilities
   void ly_octave(int) const;
   void ly_partial(rational const&) const;
   void ly_pitch_step(diatonic_step) const;
+
+  std::size_t process_repeat_with_alternatives( braille::ast::staff const&
+                                              , std::size_t
+                                              ) const;
 };
 
 }}
