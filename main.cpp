@@ -52,6 +52,7 @@ main(int argc, char const *argv[])
         player = std::thread(music::fluidsynth(SOUNDFONT_PATH), score);
 
       music::lilypond_output_format(std::cout);
+      //music::include_locations_for_lilypond(std::cout);
       std::cout << score;
 
       if (player.joinable()) player.join();

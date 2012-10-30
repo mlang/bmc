@@ -26,16 +26,21 @@ generator::generator( std::ostream& os
 
 void generator::operator() (braille::ast::score const& score)
 {
-  os << "\\score {" << std::endl;
-
+  os << "music =" << std::endl;
   os << "  " << "<<" << std::endl;
   for (auto const& part: score.parts) (*this)(part, score);
   os << "  " << ">>" << std::endl << std::endl;
 
-  if (layout) os << "  " << "\\layout { }" << std::endl;
-  if (midi)   os << "  " << "\\midi { }" << std::endl;
-
-  os << "}" << std::endl;
+  if (layout)
+    os << "\\score {" << std::endl
+       << "  " << "\\music" << std::endl
+       << "  " << "\\layout { }" << std::endl
+       << "}" << std::endl;
+  if (midi)
+    os << "\\score {" << std::endl
+       << "  " << "\\unfoldRepeats \\music" << std::endl
+       << "  " << "\\midi { }" << std::endl
+       << "}" << std::endl;
 }
 
 struct repeat_info: public boost::static_visitor<void>
