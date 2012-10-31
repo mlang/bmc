@@ -243,8 +243,12 @@ generator::operator() (braille::hand_sign const&) const
 generator::result_type
 generator::operator() (braille::ast::rest const& rest) const
 {
-  os << "r";
-  ly_rhythm(rest);
+  if (rest.whole_measure) {
+    os << "R"; if (rest.type) os << "1" << "*" << rest.type;
+  } else {
+    os << "r"; ly_rhythm(rest);
+  }
+
   if (include_locations) {
     os << "%{" << rest.line << ":" << rest.column << "%}";
   }
