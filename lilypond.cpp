@@ -123,11 +123,12 @@ void generator::operator() ( braille::ast::part const& part
     {
       std::size_t new_measure_index = process_repeat_with_alternatives(part[staff_index], measure_index);
 
-      if (new_measure_index != measure_index) {
+      while (new_measure_index != measure_index) {
         measure_index = new_measure_index;
-        continue;
+        new_measure_index = process_repeat_with_alternatives(part[staff_index], measure_index);
       }
 
+      if (measure_index < part[staff_index].size()) {
       braille::ast::staff_element const&
       this_measure = part[staff_index][measure_index];
 
@@ -153,6 +154,7 @@ void generator::operator() ( braille::ast::part const& part
       }
       if (barcheck) os << " | ";
       os << "% " << measure_number++ << std::endl;
+      }
     }
     os << indent << "}" << std::endl;
   }
