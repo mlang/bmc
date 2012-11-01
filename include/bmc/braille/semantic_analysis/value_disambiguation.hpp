@@ -125,6 +125,22 @@ public:
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
+  value_proxy(ast::moving_note &chord, value_category const &category)
+  : value_type(chord.base.ambiguous_value), category(category)
+  , duration(calculate_duration(chord.base.dots))
+  , final_type(&chord.base.type)
+  , whole_measure_rest(nullptr)
+  { BOOST_ASSERT(*final_type == zero); }
+
+  value_proxy( ast::moving_note &chord, value_category const &category
+             , ast::value value_type
+             )
+  : value_type(value_type), category(category)
+  , duration(calculate_duration(chord.base.dots))
+  , final_type(&chord.base.type)
+  , whole_measure_rest(nullptr)
+  { BOOST_ASSERT(*final_type == zero); }
+
   operator rational const &() const { return duration; }
 
   bool operator==(value_proxy const &rhs) const
@@ -231,6 +247,12 @@ public:
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     new (stack_end++) value_proxy(chord, category, type);
   }
+  result_type operator()(ast::moving_note &chord)
+  {
+    BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
+    if (type == ast::unknown) type = chord.base.ambiguous_value;
+    new (stack_end++) value_proxy(chord, category, type);
+  }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::hand_sign &) {}
   result_type operator()(ast::barline &) {}
@@ -259,6 +281,8 @@ public:
   result_type operator()(ast::rest &rest)
   { emplace_back(rest, category); }
   result_type operator()(ast::chord &chord)
+  { emplace_back(chord, category); }
+  result_type operator()(ast::moving_note &chord)
   { emplace_back(chord, category); }
   result_type operator()(ast::value_distinction const &) {}
   template<typename Sign> result_type operator()(Sign const &)
@@ -472,6 +496,7 @@ public:
   }
   bool is_grace(ast::rest const &) const { return false; }
   bool is_grace(ast::chord const &chord) const { return is_grace(chord.base); }
+  bool is_grace(ast::moving_note const &chord) const { return is_grace(chord.base); }
 };
 
 template<typename Callback>

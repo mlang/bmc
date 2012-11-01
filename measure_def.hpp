@@ -43,7 +43,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   voice = partial_measure % partial_measure_sign;
   partial_measure = partial_voice % partial_measure_in_accord;
   partial_voice = +( newline
-                   | chord | note | rest
+                   | moving_note | chord | note | rest
                    | value_distinction
                    | hand_sign
                    | simile
@@ -75,6 +75,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   chord_tied_sign = brl(46) >> brl(14);
   chord = note >> +interval >> -chord_tied_sign;
+  moving_note = note >> moving_intervals;
+  moving_intervals = +(interval >> brl(6)) >> interval;
   interval = -accidental_sign
           >> -octave_sign
           >> interval_sign

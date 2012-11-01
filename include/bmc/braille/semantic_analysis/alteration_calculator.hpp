@@ -55,6 +55,12 @@ public:
     for (auto& interval: chord.intervals)
       interval.alter = to_alter(interval.acc, interval.octave, interval.step);
   }
+  result_type operator()(ast::moving_note &chord)
+  {
+    (*this)(chord.base);
+    for (auto& interval: chord.intervals)
+      interval.alter = to_alter(interval.acc, interval.octave, interval.step);
+  }
 
   template <typename Sign>
   result_type operator() (Sign&) const { }

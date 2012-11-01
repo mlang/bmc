@@ -33,6 +33,8 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, ast::stem()> stem;
   boost::spirit::qi::rule<Iterator, ast::rest()> rest;
   boost::spirit::qi::rule<Iterator, ast::chord()> chord;
+  boost::spirit::qi::rule<Iterator, ast::moving_note()> moving_note;
+  boost::spirit::qi::rule<Iterator, std::vector<ast::interval>()> moving_intervals;
   boost::spirit::qi::rule<Iterator, ast::interval()> interval;
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;

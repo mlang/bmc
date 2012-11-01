@@ -104,6 +104,29 @@ public:
     return false;
   }
 
+  result_type operator()(ast::moving_note &chord)
+  {
+    if ((*this)(chord.base)) {
+      BOOST_ASSERT(not chord.intervals.empty());
+      for (auto& interval: chord.intervals) {
+        int step = chord.base.step;
+        unsigned octave = chord.base.octave;
+        if (interval_direction == braille::interval_direction::down) {
+          step -= interval.steps;
+        } else {
+          step += interval.steps;
+        }
+        while (step > B) { octave++; step -= steps_per_octave; }
+        while (step < 0) { octave--; step += steps_per_octave; }
+        if (interval.octave_spec) octave = *interval.octave_spec;
+        interval.octave = octave;
+        interval.step = static_cast<diatonic_step>(step);
+      }
+      return true;
+    }
+    return false;
+  }
+
   template <typename Sign>
   result_type operator()(Sign&) const
   { return true; }

@@ -56,11 +56,12 @@ struct repeat_info: public boost::static_visitor<void>
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
         for (auto const& partial_voice: partial_measure)
-          for_each(partial_voice.begin(), partial_voice.end(), apply_visitor(*this));
+          for_each( partial_voice.begin(), partial_voice.end()
+                  , apply_visitor(*this));
   }
   result_type operator() (braille::ast::key_and_time_signature const&) {}
 
-  void operator() (braille::ast::barline const& barline)
+  result_type operator() (braille::ast::barline const& barline)
   {
     switch (barline) {
     case braille::ast::begin_repeat: begin = true; break;
@@ -78,6 +79,8 @@ struct repeat_info: public boost::static_visitor<void>
   void operator() (braille::ast::note const&) const
   { }
   void operator() (braille::ast::chord const&) const
+  { }
+  void operator() (braille::ast::moving_note const&) const
   { }
 };
 
@@ -308,6 +311,26 @@ generator::operator() (braille::ast::chord const& chord) const
   ly_rhythm(chord.base);
 }
 
+generator::result_type
+generator::operator() (braille::ast::moving_note const& chord) const
+{
+  os << "<<{";
+  (*this)(chord.base);
+  os << "}\\\\{";
+  rational const moving_type(chord.base.as_rational() / chord.intervals.size());
+  for (braille::ast::interval const& interval: chord.intervals) {
+    os << " ";
+    ly_pitch_step(interval.step);
+    ly_accidental(interval.alter);
+    ly_octave(interval.octave);
+    os << moving_type.denominator();
+    if (moving_type.numerator() != 1) os << '*' << moving_type.numerator();
+    if (interval.tie) os << "~";
+    ly_finger(interval.fingers);
+  }
+  os << " }>>";
+}
+
 void generator::ly_accidental(int alteration) const
 {
   while (alteration < 0) { os << "es"; ++alteration; }
@@ -407,17 +430,8 @@ struct has_end_of_part_barline: boost::static_visitor<bool>
 
   result_type operator() (braille::ast::barline const& barline) const
   { return barline == braille::ast::end_part; }
-  result_type operator() (braille::ast::simile const&) const
-  { return false; }
-  result_type operator() (braille::ast::value_distinction const&) const
-  { return false; }
-  result_type operator() (braille::hand_sign const&) const
-  { return false; }
-  result_type operator() (braille::ast::rest const&) const
-  { return false; }
-  result_type operator() (braille::ast::note const&) const
-  { return false; }
-  result_type operator() (braille::ast::chord const&) const
+  template<typename T>
+  result_type operator() (T const&) const
   { return false; }
 };
 

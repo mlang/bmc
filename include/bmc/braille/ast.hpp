@@ -122,6 +122,21 @@ struct chord : locatable, rhythmic
   note base;
   std::vector<interval> intervals;
   boost::optional<chord_tied> all_tied;
+
+  virtual rational as_rational() const
+  { return base.as_rational(); }
+};
+
+/** The moving-note device, although infrequently employed,
+ *  is chiefly useful for vocal music and keyboard settings of
+ *  hymns. Complications of fingering, phrasing and nuances render it
+ *  unsuitable for instrumental music in general.
+ */
+struct moving_note : locatable, rhythmic
+{
+  note base;
+  std::vector<interval> intervals;
+
   virtual rational as_rational() const
   { return base.as_rational(); }
 };
@@ -138,7 +153,7 @@ struct simile : locatable {
 
 enum barline { begin_repeat, end_repeat, end_part };
 
-typedef boost::variant< note, rest, chord
+typedef boost::variant< note, rest, chord, moving_note
                       , value_distinction
                       , hand_sign, simile, barline
                       >
@@ -212,6 +227,8 @@ namespace music {
         result_type operator()(rest const& rest) const
         { return rest.ambiguous_value; }
         result_type operator()(chord const& chord) const
+        { return (*this)(chord.base); }
+        result_type operator()(moving_note const& chord) const
         { return (*this)(chord.base); }
         template<typename T>
         result_type operator()(T const&) const
@@ -429,6 +446,11 @@ BOOST_FUSION_ADAPT_STRUCT(
   (music::braille::ast::note, base)
   (std::vector<music::braille::ast::interval>, intervals)
   (boost::optional<music::braille::ast::chord_tied>, all_tied)
+)
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::moving_note,
+  (music::braille::ast::note, base)
+  (std::vector<music::braille::ast::interval>, intervals)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

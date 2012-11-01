@@ -248,6 +248,8 @@ struct get_type : boost::static_visitor<music::rational>
   { return rest.type; }
   result_type operator()(music::braille::ast::chord const& chord) const
   { return (*this)(chord.base); }
+  result_type operator()(music::braille::ast::moving_note const& chord) const
+  { return (*this)(chord.base); }
   template<typename T>
   result_type operator()(T const&) const
   { return music::zero; }
@@ -269,7 +271,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(attribute.voices[0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0][0].size() == 9);
-  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(22));
+  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(31));
   BOOST_CHECK(errors.iters[0] == input.begin());
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));

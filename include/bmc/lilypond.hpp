@@ -61,6 +61,7 @@ public:
   result_type operator() (braille::ast::rest const&) const;
   result_type operator() (braille::ast::note const&) const;
   result_type operator() (braille::ast::chord const&) const;
+  result_type operator() (braille::ast::moving_note const&) const;
   /** @} */
 
 private: // utilities
