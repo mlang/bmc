@@ -64,5 +64,11 @@ value_disambiguator::operator()(ast::measure& measure)
   }
   return false;
 }
+bool
+value_disambiguator::end_of_staff() const {
+  if (not anacrusis->empty())
+    report_error(anacrusis->get_measure_id(), L"Unterminated anacrusis");
+  return anacrusis->empty();
+}
 
 }}

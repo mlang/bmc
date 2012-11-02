@@ -59,6 +59,8 @@ public:
   { time_signature = time_sig; }
 
   result_type operator()(ast::measure& measure);
+
+  bool end_of_staff() const;
 };
 
 }}

@@ -821,6 +821,7 @@ operator<<(std::basic_ostream<Char> &os, proxied_measure const &measure)
 
 class measure_interpretations: std::vector<proxied_measure>
 {
+  std::size_t id;
   music::time_signature time_signature;
   bool complete;
 
@@ -892,11 +893,13 @@ public:
   typedef std::vector<proxied_measure> base_type;
 
   measure_interpretations()
-  : complete(false)
+  : id(0)
+  , complete(false)
   {}
 
   measure_interpretations(measure_interpretations const& other)
   : base_type(other.begin(), other.end())
+  , id(other.id)
   , time_signature(other.time_signature)
   , complete(other.complete)
   {}
@@ -905,6 +908,7 @@ public:
                          , music::time_signature const& time_signature
                          )
   : base_type()
+  , id(measure.id)
   , time_signature(time_signature)
   , complete(false)
   {
@@ -932,6 +936,8 @@ public:
         if (duration(lhs) + duration(rhs) == time_signature) ++matches;
     return matches == 1;
   }
+
+  std::size_t get_measure_id() const { return id; }
 
   using base_type::begin;
   using base_type::clear;

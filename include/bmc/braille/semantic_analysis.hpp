@@ -99,7 +99,7 @@ public:
   }
 
   result_type operator() (ast::staff& staff)
-  { return all_of(staff, boost::apply_visitor(*this)); }
+  { return all_of(staff, boost::apply_visitor(*this)) && disambiguate_values.end_of_staff(); }
 
   result_type operator()(ast::measure& measure)
   {
