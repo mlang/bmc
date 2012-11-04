@@ -39,7 +39,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
   boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
-  boost::spirit::qi::rule<Iterator, ast::simile()> simile;
+  boost::spirit::qi::rule<Iterator, ast::simile(), boost::spirit::qi::locals<unsigned>> simile;
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
   boost::spirit::qi::rule<Iterator, ast::slur()> slur_sign;
   boost::spirit::qi::rule<Iterator, ast::tie()> tie_sign;

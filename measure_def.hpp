@@ -37,6 +37,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
           annotation_function;
 
   music::braille::brl_type brl;
+  boost::spirit::qi::_a_type _a;
 
   start = -ending >> (voice % full_measure_in_accord);
 
@@ -95,7 +96,11 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   boost::spirit::eol_type eol;
   boost::spirit::eps_type eps;
   boost::spirit::attr_type attr;
-  simile = -octave_sign >> brl(2356);
+  simile = eps[_a = 0]
+        >> (-octave_sign)[at_c<0>(_val) = _1]
+        >> +(brl(2356)[_a += 1])
+        >> eps[at_c<1>(_val) = _a];
+
   whitespace = space | brl(0);
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 

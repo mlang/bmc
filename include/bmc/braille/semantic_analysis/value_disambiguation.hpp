@@ -483,7 +483,11 @@ public:
   result_type operator()(ast::value_distinction &) const { return false; }
   result_type operator()(braille::hand_sign &) const { return false; }
   result_type operator()(ast::barline &) const { return false; }
-  result_type operator()(ast::simile &) const { return false; }
+  result_type operator()(ast::simile &simile) const
+  {
+    return false;
+  }
+
   bool is_grace(ast::note const &note) const
   {
     return std::find(note.articulations.begin(), note.articulations.end(),

@@ -149,6 +149,7 @@ struct value_distinction : locatable
 
 struct simile : locatable {
   boost::optional<unsigned> octave_spec;
+  unsigned count;
 };
 
 enum barline { begin_repeat, end_repeat, end_part };
@@ -461,6 +462,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::simile,
   (boost::optional<unsigned>, octave_spec)
+  (unsigned, count)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
