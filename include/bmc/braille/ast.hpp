@@ -150,6 +150,8 @@ struct value_distinction : locatable
 struct simile : locatable {
   boost::optional<unsigned> octave_spec;
   unsigned count;
+
+  rational duration;                    // Filled by value_disambiguation
 };
 
 enum barline { begin_repeat, end_repeat, end_part };

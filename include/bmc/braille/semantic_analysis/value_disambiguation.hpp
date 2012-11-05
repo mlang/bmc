@@ -48,6 +48,10 @@ class value_proxy
 {
   ast::value value_type:4;
   value_category category:4;
+  unsigned partial_measure_simile:1;
+  rational duration;
+  rational *final_type;
+  bool *whole_measure_rest;
 
   rational const &undotted_duration() const
   {
@@ -56,20 +60,21 @@ class value_proxy
     return undotted[category * 4 + value_type];
   }
 
-  rational duration;
   rational calculate_duration(unsigned dots)
   {
     rational const base(undotted_duration());
     return dots? base * 2 - base / pow(2, dots): base;
   }
 
-  rational *final_type;
-  bool *whole_measure_rest;
-
 public:
-  value_proxy() : final_type(nullptr), whole_measure_rest(nullptr) {}
+  value_proxy()
+  : partial_measure_simile(0)
+  , final_type(nullptr)
+  , whole_measure_rest(nullptr)
+  {}
+
   value_proxy(ast::note &note, value_category const &category)
-  : value_type(note.ambiguous_value), category(category)
+  : value_type(note.ambiguous_value), category(category), partial_measure_simile(0)
   , duration(calculate_duration(note.dots))
   , final_type(&note.type)
   , whole_measure_rest(nullptr)
@@ -78,14 +83,14 @@ public:
   value_proxy( ast::note &note, value_category const &category
              , ast::value value_type
              )
-  : value_type(value_type), category(category)
+  : value_type(value_type), category(category), partial_measure_simile(0)
   , duration(calculate_duration(note.dots))
   , final_type(&note.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ast::rest &rest, value_category const &category)
-  : value_type(rest.ambiguous_value), category(category)
+  : value_type(rest.ambiguous_value), category(category), partial_measure_simile(0)
   , duration(calculate_duration(rest.dots))
   , final_type(&rest.type)
   , whole_measure_rest(nullptr)
@@ -94,7 +99,7 @@ public:
   value_proxy(ast::rest &rest, value_category const &category
              , ast::value value_type
              )
-  : value_type(value_type), category(category)
+  : value_type(value_type), category(category), partial_measure_simile(0)
   , duration(calculate_duration(rest.dots))
   , final_type(&rest.type)
   , whole_measure_rest(nullptr)
@@ -103,14 +108,14 @@ public:
   value_proxy( ast::rest &rest, value_category const &category
              , rational const& duration
              )
-  : value_type(rest.ambiguous_value), category(category)
+  : value_type(rest.ambiguous_value), category(category), partial_measure_simile(0)
   , duration(duration)
   , final_type(&rest.type)
   , whole_measure_rest(&rest.whole_measure)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ast::chord &chord, value_category const &category)
-  : value_type(chord.base.ambiguous_value), category(category)
+  : value_type(chord.base.ambiguous_value), category(category), partial_measure_simile(0)
   , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
@@ -119,14 +124,14 @@ public:
   value_proxy( ast::chord &chord, value_category const &category
              , ast::value value_type
              )
-  : value_type(value_type), category(category)
+  : value_type(value_type), category(category), partial_measure_simile(0)
   , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
   value_proxy(ast::moving_note &chord, value_category const &category)
-  : value_type(chord.base.ambiguous_value), category(category)
+  : value_type(chord.base.ambiguous_value), category(category), partial_measure_simile(0)
   , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
@@ -135,10 +140,16 @@ public:
   value_proxy( ast::moving_note &chord, value_category const &category
              , ast::value value_type
              )
-  : value_type(value_type), category(category)
+  : value_type(value_type), category(category), partial_measure_simile(0)
   , duration(calculate_duration(chord.base.dots))
   , final_type(&chord.base.type)
   , whole_measure_rest(nullptr)
+  { BOOST_ASSERT(*final_type == zero); }
+
+  value_proxy(ast::simile &simile, rational const& duration)
+  : value_type(ast::unknown), category(large), partial_measure_simile(1)
+  , duration(duration * simile.count)
+  , final_type(&simile.duration), whole_measure_rest(nullptr)
   { BOOST_ASSERT(*final_type == zero); }
 
   operator rational const &() const { return duration; }
@@ -157,7 +168,8 @@ public:
       *final_type = duration;
       *whole_measure_rest = true;
     } else {
-      *final_type = undotted_duration();
+      if (partial_measure_simile) *final_type = duration;
+      else *final_type = undotted_duration();
     }
   }
 };
@@ -348,9 +360,6 @@ class partial_voice_interpreter
   ast::partial_voice::iterator const voice_end;
   value_proxy *const stack_begin;
 
-  bool on_beat(rational const &position) const
-  { return no_remainder(position, beat); }
-
   /** \brief Try the common large and small variations.
    */
   inline
@@ -361,6 +370,8 @@ class partial_voice_interpreter
                       ) const;
 
 public:
+  bool on_beat(rational const &position) const
+  { return no_remainder(position, beat); }
   void recurse( ast::partial_voice::iterator const &iterator
               , value_proxy *stack_end
               , rational const &max_duration
@@ -447,7 +458,9 @@ class large_and_small_visitor : public boost::static_visitor<bool>
 {
   ast::partial_voice::iterator const &rest;
   value_proxy *const proxy;
-  rational const &max_duration, &position;
+  rational const &max_duration
+               , &position
+               ;
   partial_voice_interpreter<Callback> const &interpreter;
 public:
   large_and_small_visitor( ast::partial_voice::iterator const &rest
@@ -485,7 +498,15 @@ public:
   result_type operator()(ast::barline &) const { return false; }
   result_type operator()(ast::simile &simile) const
   {
-    return false;
+    if (interpreter.on_beat(position)) {
+      if (position > 0) {
+        if (*new(proxy)value_proxy(simile, position) <= max_duration)
+          interpreter.recurse( rest, proxy + 1
+                             , max_duration - *proxy, position + *proxy
+                             );
+      }
+    }
+    return true;
   }
 
   bool is_grace(ast::note const &note) const
