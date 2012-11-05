@@ -20,6 +20,7 @@ class generator: public boost::static_visitor<void>
   std::ostream& os;
   bool const layout, midi, include_locations;
   std::string indent;
+  rational last_type;
 
 public:
   /**
@@ -45,12 +46,12 @@ private:
                   );
 
 public:
-  result_type operator() (braille::ast::measure const&) const;
-  result_type operator() (braille::ast::key_and_time_signature const&) const;
+  result_type operator() (braille::ast::measure const&);
+  result_type operator() (braille::ast::key_and_time_signature const&);
 private:
-  void operator() (braille::ast::voice const&) const;
-  void operator() (braille::ast::partial_measure const&) const;
-  void operator() (braille::ast::partial_voice const&) const;
+  void operator() (braille::ast::voice const&);
+  void operator() (braille::ast::partial_measure const&);
+  void operator() (braille::ast::partial_voice const&);
 public:
   /** @name Operators for visiting music::braille::sign objects */
   /** @{ */
@@ -58,10 +59,10 @@ public:
   result_type operator() (braille::ast::simile const&) const;
   result_type operator() (braille::ast::value_distinction const&) const;
   result_type operator() (braille::hand_sign const&) const;
-  result_type operator() (braille::ast::rest const&) const;
-  result_type operator() (braille::ast::note const&) const;
-  result_type operator() (braille::ast::chord const&) const;
-  result_type operator() (braille::ast::moving_note const&) const;
+  result_type operator() (braille::ast::rest const&);
+  result_type operator() (braille::ast::note const&);
+  result_type operator() (braille::ast::chord const&);
+  result_type operator() (braille::ast::moving_note const&);
   /** @} */
 
 private: // utilities
@@ -69,14 +70,14 @@ private: // utilities
   void ly_clef(std::string const&) const;
   void ly_finger(braille::fingering_list const&) const;
   void ly_key(key_signature const&) const;
-  void ly_rhythm(braille::ast::rhythmic_data const&) const;
+  void ly_rhythm(braille::ast::rhythmic_data const&);
   void ly_octave(int) const;
   void ly_partial(rational const&) const;
   void ly_pitch_step(diatonic_step) const;
 
   std::size_t process_repeat_with_alternatives( braille::ast::staff const&
                                               , std::size_t
-                                              ) const;
+                                              );
 };
 
 }}
