@@ -32,6 +32,8 @@ set_target_properties(bmc_parse
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
 target_link_libraries(bmc_parse bmc_ttb)
+add_executable(bmc2ly bmc2ly.cpp)
+target_link_libraries(bmc2ly bmc_parse)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 add_executable(bmc main.cpp fluidsynth.cpp)
 find_library(FLUIDSYNTH_LIBRARY fluidsynth)
@@ -84,7 +86,7 @@ add_custom_target(check
                   DEPENDS bmc_test
                  )
 
-install(TARGETS bmc DESTINATION bin)
+install(TARGETS bmc bmc2ly DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
 install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
 # build a CPack driven installer package
