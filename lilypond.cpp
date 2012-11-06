@@ -10,7 +10,7 @@
 
 namespace music { namespace lilypond {
 
-generator::generator( std::ostream& os
+generator::generator( std::ostream &os
                     , bool layout
                     , bool midi
                     , bool include_locations)
@@ -24,7 +24,8 @@ generator::generator( std::ostream& os
   os << "\\version" << " " << "\"2.14.2\"" << std::endl;
 }
 
-void generator::operator() (braille::ast::score const& score)
+void
+generator::operator() (braille::ast::score const &score)
 {
   os << "music =" << std::endl;
   os << "  " << "<<" << std::endl;
@@ -63,14 +64,14 @@ struct repeat_info: public boost::static_visitor<void>
   }
   result_type operator() (braille::ast::key_and_time_signature const&) {}
 
-  result_type operator() (braille::ast::barline const& barline)
+  result_type operator() (braille::ast::barline const &barline)
   {
     switch (barline) {
     case braille::ast::begin_repeat: begin = true; break;
     case braille::ast::end_repeat: end = true; break;
     }
   }
-  void operator() (braille::ast::simile const&) const
+  result_type operator() (braille::ast::simile const&) const
   { }
   void operator() (braille::ast::value_distinction const&) const
   { }
@@ -88,9 +89,10 @@ struct repeat_info: public boost::static_visitor<void>
 
 }
 
-void generator::operator() ( braille::ast::part const& part
-                           , braille::ast::score const& score
-                           )
+void
+generator::operator() ( braille::ast::part const &part
+                      , braille::ast::score const &score
+                      )
 {
   indent = "    ";
   if (part.size() == 2) {
@@ -169,13 +171,13 @@ void generator::operator() ( braille::ast::part const& part
 }
 
 generator::result_type
-generator::operator() (braille::ast::key_and_time_signature const& key_and_time_sig)
+generator::operator() (braille::ast::key_and_time_signature const &key_and_time_sig)
 {
   // @todo Implement.
 }
 
 generator::result_type
-generator::operator() (braille::ast::measure const& measure)
+generator::operator() (braille::ast::measure const &measure)
 {
   if (measure.voices.size() == 1) {
     (*this)(measure.voices.front());
@@ -191,7 +193,8 @@ generator::operator() (braille::ast::measure const& measure)
   }
 }
 
-void generator::operator() (braille::ast::voice const& voice)
+void
+generator::operator() (braille::ast::voice const &voice)
 {
   for (size_t partial_measure_index = 0; partial_measure_index < voice.size();
        ++partial_measure_index)
@@ -202,7 +205,7 @@ void generator::operator() (braille::ast::voice const& voice)
 }
 
 void
-generator::operator() (braille::ast::partial_measure const& partial_measure)
+generator::operator() (braille::ast::partial_measure const &partial_measure)
 {
   if (partial_measure.size() == 1) {
     (*this)(partial_measure.front());
@@ -219,7 +222,7 @@ generator::operator() (braille::ast::partial_measure const& partial_measure)
 }
 
 void
-generator::operator() (braille::ast::partial_voice const& partial_voice)
+generator::operator() (braille::ast::partial_voice const &partial_voice)
 {
   last_type = rational();
   for (size_t element_index = 0; element_index < partial_voice.size();
@@ -231,28 +234,28 @@ generator::operator() (braille::ast::partial_voice const& partial_voice)
 }
 
 generator::result_type
-generator::operator() (braille::ast::barline const&) const
+generator::operator() (braille::ast::barline const &) const
 {
 }
 
 generator::result_type
-generator::operator() (braille::ast::simile const&) const
+generator::operator() (braille::ast::simile const &) const
 {
   //BOOST_ASSERT(false);
 }
 
 generator::result_type
-generator::operator() (braille::ast::value_distinction const&) const
+generator::operator() (braille::ast::value_distinction const &) const
 {
 }
 
 generator::result_type
-generator::operator() (braille::hand_sign const&) const
+generator::operator() (braille::hand_sign const &) const
 {
 }
 
 generator::result_type
-generator::operator() (braille::ast::rest const& rest)
+generator::operator() (braille::ast::rest const &rest)
 {
   if (rest.whole_measure) {
     os << "R"; if (rest.type) os << "1" << "*" << rest.type;
@@ -267,7 +270,7 @@ generator::operator() (braille::ast::rest const& rest)
 }
 
 generator::result_type
-generator::operator() (braille::ast::note const& note)
+generator::operator() (braille::ast::note const &note)
 {
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
@@ -298,7 +301,7 @@ generator::operator() (braille::ast::note const& note)
 }
 
 generator::result_type
-generator::operator() (braille::ast::chord const& chord)
+generator::operator() (braille::ast::chord const &chord)
 {
   os << "<";
   ly_pitch_step(chord.base.step);
@@ -319,12 +322,13 @@ generator::operator() (braille::ast::chord const& chord)
 }
 
 generator::result_type
-generator::operator() (braille::ast::moving_note const& chord)
+generator::operator() (braille::ast::moving_note const &chord)
 {
   os << "<<{";
   last_type = 0;
   (*this)(chord.base);
   os << "}\\\\{";
+  // @todo Account for dotted intervals.
   rational const moving_type(chord.base.as_rational() / chord.intervals.size());
   for (braille::ast::interval const& interval: chord.intervals) {
     os << " ";
@@ -337,28 +341,30 @@ generator::operator() (braille::ast::moving_note const& chord)
     ly_finger(interval.fingers);
   }
   os << " }>>";
-  last_type = 0;
+  last_type = 0;                        // Next note should have rhythm info
 }
 
-void generator::ly_accidental(int alteration) const
+void
+generator::ly_accidental(int alteration) const
 {
   while (alteration < 0) { os << "es"; ++alteration; }
   while (alteration > 0) { os << "is"; --alteration; }
 }
 
-void generator::ly_clef(std::string const& clef) const
+void
+generator::ly_clef(std::string const& clef) const
 {
   os << "\\clef \"" << clef << "\"";
 }
 
 namespace {
 
-class print_fingering: public boost::static_visitor<std::ostream&>
+class print_fingering: public boost::static_visitor<std::ostream &>
 {
-  std::ostream& os;
+  std::ostream &os;
 public:
-  print_fingering(std::ostream& os): os(os) {}
-  result_type operator() (braille::finger_change const& change) const
+  print_fingering(std::ostream &os): os(os) {}
+  result_type operator() (braille::finger_change const &change) const
   { return os << "-\"" << change.first << "-" << change.second << "\""; }
   result_type operator() (unsigned finger) const
   { return os << "-" << finger; }
@@ -366,13 +372,15 @@ public:
 
 }
 
-void generator::ly_finger(braille::fingering_list const& fingers) const
+void
+generator::ly_finger(braille::fingering_list const &fingers) const
 {
   print_fingering write_to_stream(os);
   for_each(fingers.begin(), fingers.end(), apply_visitor(write_to_stream));
 }
 
-void generator::ly_key(key_signature const& key) const
+void
+generator::ly_key(key_signature const &key) const
 {
   char const *flats[] = { "f", "bes", "ees", "aes", "des", "ges", "ces" };
   char const *sharps[] = { "g", "d", "a", "e", "b", "fis", "cis" };
@@ -383,7 +391,8 @@ void generator::ly_key(key_signature const& key) const
   os << " " << "\\major";
 }
 
-void generator::ly_rhythm(braille::ast::rhythmic_data const& rhythm)
+void
+generator::ly_rhythm(braille::ast::rhythmic_data const &rhythm)
 {
   if (rhythm.type != last_type) {
     os << rhythm.type.denominator();
@@ -393,37 +402,47 @@ void generator::ly_rhythm(braille::ast::rhythmic_data const& rhythm)
   std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');
 }
 
-void generator::ly_octave(int octave) const
+void
+generator::ly_octave(int octave) const
 {
   int const default_octave = 4;
   while (octave > default_octave) { os << "'"; --octave; };
   while (octave < default_octave) { os << ","; ++octave; };
 }
 
-void generator::ly_partial(rational const& duration) const
+void
+generator::ly_partial(rational const& duration) const
 {
   os << "\\partial" << " " << duration.denominator();
   if (duration.numerator() != 1) os << "*" << duration.numerator();
   os << " ";
 }
 
-void generator::ly_pitch_step(diatonic_step step) const
+void
+generator::ly_pitch_step(diatonic_step step) const
 {
   static char const* steps = "cdefgab";
   os << steps[step];
 }
 
+namespace {
+
 struct is_alternative : boost::static_visitor<bool>
 {
-  result_type operator()(braille::ast::measure const& measure) const
+  result_type operator() (braille::ast::measure const &measure) const
   { return measure.ending; }
-  result_type operator()(braille::ast::key_and_time_signature const&) const
+  result_type operator() (braille::ast::key_and_time_signature const&) const
   { return false; }
 };
 
-struct has_end_of_part_barline: boost::static_visitor<bool>
+class has_barline: public boost::static_visitor<bool>
 {
-  result_type operator() (braille::ast::measure const& measure) const
+  braille::ast::barline type;
+public:
+  has_barline(braille::ast::barline const &type)
+  : type(type)
+  {}
+  result_type operator() (braille::ast::measure const &measure) const
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
@@ -435,18 +454,20 @@ struct has_end_of_part_barline: boost::static_visitor<bool>
             return true;
     return false;
   }
-  result_type operator() (braille::ast::key_and_time_signature const&) const
+  result_type operator() (braille::ast::key_and_time_signature const &) const
   { return false; }
 
-  result_type operator() (braille::ast::barline const& barline) const
-  { return barline == braille::ast::end_part; }
+  result_type operator() (braille::ast::barline const &barline) const
+  { return barline == type; }
   template<typename T>
   result_type operator() (T const&) const
   { return false; }
 };
 
+}
+
 std::size_t
-generator::process_repeat_with_alternatives( braille::ast::staff const& staff
+generator::process_repeat_with_alternatives( braille::ast::staff const &staff
                                            , std::size_t index
                                            )
 {
@@ -458,8 +479,11 @@ generator::process_repeat_with_alternatives( braille::ast::staff const& staff
       alternatives.emplace_back();
       indices = &alternatives.back();
     }
+    if (i > index and apply_visitor(has_barline(braille::ast::begin_repeat), staff[i])) {
+      break;
+    }
     if (indices) indices->push_back(i);
-    if (apply_visitor(has_end_of_part_barline(), staff[i])) {
+    if (apply_visitor(has_barline(braille::ast::end_part), staff[i])) {
       ++i; break;
     }
   }

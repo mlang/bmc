@@ -26,7 +26,7 @@ music =
         }
         \alternative {
           {<d' d'>8 r r4  | }
-          {<d' d'>4 r  | }
+          {<d' d'>4 r | }
         }
         \repeat volta 2 {
           << { a'4 a''~}\\{r16 fis''-3 e'' g'' fis'' e'' d'' cis''-2} >> |
@@ -73,7 +73,7 @@ music =
         }
         \alternative {
           {d8 d'16 c'-3 d' c'-1 b a  | }
-          {d8 a, d,4  | }
+          {d8 a, d,4 | }
         }
         \repeat volta 2 {
            d'8 cis' d' a |
