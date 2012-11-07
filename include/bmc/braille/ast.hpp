@@ -204,7 +204,15 @@ typedef boost::variant< note, rest, chord, moving_note
                       , hand_sign, barline
                       >
         sign;
-struct partial_voice : locatable, std::vector<sign> {};
+struct partial_voice : locatable, std::vector<sign>
+{
+  partial_voice()
+  : std::vector<sign>()
+  {}
+  partial_voice(const_iterator begin, const_iterator const &end)
+  : std::vector<sign>(begin, end)
+  {}
+};
 struct partial_measure : locatable, std::vector<partial_voice> {};
 struct voice : locatable, std::vector<partial_measure> {};
 

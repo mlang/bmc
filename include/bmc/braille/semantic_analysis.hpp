@@ -33,9 +33,14 @@ public:
   {
     return true;
   }
-  result_type operator() (ast::simile const &) const
+  result_type operator() (ast::simile const &simile) const
   {
-    std::clog << "partial_measure_simile" << std::endl;
+    if (duration(target) == (simile.duration / simile.count)) {
+      ast::unfolded::partial_voice repeated(target.begin(), target.end());
+      for (int i = 0; i < simile.count; ++i) {
+        target.insert(target.end(), repeated.begin(), repeated.end());
+      }
+    }
     return true;
   }
 
