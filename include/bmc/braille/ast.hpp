@@ -195,10 +195,35 @@ struct section
   std::vector<paragraph> paragraphs;
 };
 
+/** These data structures correspond to an unrolled representation which
+ *  replaces partial measure simile with the musical material they represent.
+ */
+namespace unfolded {
+
+typedef boost::variant< note, rest, chord, moving_note
+                      , hand_sign, barline
+                      >
+        sign;
+struct partial_voice : locatable, std::vector<sign> {};
+struct partial_measure : locatable, std::vector<partial_voice> {};
+struct voice : locatable, std::vector<partial_measure> {};
+
+struct measure : locatable
+{
+  boost::optional<unsigned> ending;
+  std::vector<voice> voices;
+};
+typedef boost::variant<measure, ast::key_and_time_signature> staff_element;
+struct staff : std::vector<staff_element> {};
+struct part : std::vector<staff> {};
+
+}
+
 struct score {
   key_signature key_sig;
   boost::optional<time_signature> time_sig;
   std::vector<part> parts;
+  std::vector<unfolded::part> unfolded_part;
 };
 
 }}}
@@ -288,12 +313,19 @@ namespace music {
         result_type operator() (value_distinction const&) const { return result_type(); }
 
         result_type operator() (measure const&) const;
+        result_type operator() (unfolded::measure const&) const;
         result_type operator() (key_and_time_signature const&) const { return result_type(); }
       };
 
       inline
       rational
       duration(partial_voice::const_reference sign)
+      {
+        return apply_visitor(get_duration(), sign);
+      }
+      inline
+      rational
+      duration(unfolded::partial_voice::const_reference sign)
       {
         return apply_visitor(get_duration(), sign);
       }
@@ -307,6 +339,15 @@ namespace boost {
   rational<IntType>
   operator+ ( rational<IntType> const& r
             , music::braille::ast::partial_voice::const_reference sign
+            )
+  {
+    return r + duration(sign);
+  }
+  template <typename IntType>
+  inline
+  rational<IntType>
+  operator+ ( rational<IntType> const& r
+            , music::braille::ast::unfolded::partial_voice::const_reference sign
             )
   {
     return r + duration(sign);
@@ -325,10 +366,24 @@ namespace music {
         // BOOST_ASSERT(not partial_voice.empty());
         return boost::accumulate(partial_voice, rational());
       }
+      inline
+      rational
+      duration(unfolded::partial_voice const& partial_voice)
+      {
+        // BOOST_ASSERT(not partial_voice.empty());
+        return boost::accumulate(partial_voice, rational());
+      }
 
       inline
       rational
       duration(partial_measure const& partial_measure)
+      {
+        BOOST_ASSERT(not partial_measure.empty());
+        return duration(partial_measure.front());
+      }
+      inline
+      rational
+      duration(unfolded::partial_measure const& partial_measure)
       {
         BOOST_ASSERT(not partial_measure.empty());
         return duration(partial_measure.front());
@@ -347,6 +402,15 @@ namespace boost {
   {
     return r + duration(partial_measure);
   }
+  template <typename IntType>
+  inline
+  rational<IntType>
+  operator+ ( rational<IntType> const& r
+            , music::braille::ast::unfolded::voice::const_reference partial_measure
+            )
+  {
+    return r + duration(partial_measure);
+  }
 }
 
 namespace music {
@@ -358,10 +422,23 @@ namespace music {
       {
         return boost::accumulate(voice, rational());
       }
+      inline
+      rational
+      duration(unfolded::voice const& voice)
+      {
+        return boost::accumulate(voice, rational());
+      }
 
       inline
       rational
       duration(measure const& measure)
+      {
+        BOOST_ASSERT(not measure.voices.empty());
+        return duration(measure.voices.front());
+      }
+      inline
+      rational
+      duration(unfolded::measure const& measure)
       {
         BOOST_ASSERT(not measure.voices.empty());
         return duration(measure.voices.front());
@@ -373,10 +450,22 @@ namespace music {
       {
         return duration(measure);
       }
+      inline
+      get_duration::result_type
+      get_duration::operator() (unfolded::measure const& measure) const
+      {
+        return duration(measure);
+      }
 
       inline
       rational
       duration(staff::const_reference staff_element)
+      {
+        return boost::apply_visitor(get_duration(), staff_element);
+      }
+      inline
+      rational
+      duration(unfolded::staff::const_reference staff_element)
       {
         return boost::apply_visitor(get_duration(), staff_element);
       }
@@ -394,6 +483,15 @@ namespace boost {
   {
     return r + duration(staff_element);
   }
+  template <typename IntType>
+  inline
+  rational<IntType>
+  operator+ ( rational<IntType> const& r
+            , music::braille::ast::unfolded::staff::const_reference staff_element
+            )
+  {
+    return r + duration(staff_element);
+  }
 }
 
 namespace music {
@@ -402,6 +500,12 @@ namespace music {
       inline
       rational
       duration(staff const& staff)
+      {
+        return boost::accumulate(staff, rational());
+      }
+      inline
+      rational
+      duration(unfolded::staff const& staff)
       {
         return boost::accumulate(staff, rational());
       }

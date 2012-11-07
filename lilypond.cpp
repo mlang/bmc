@@ -29,7 +29,7 @@ generator::operator() (braille::ast::score const &score)
 {
   os << "music =" << std::endl;
   os << "  " << "<<" << std::endl;
-  for (auto const& part: score.parts) (*this)(part, score);
+  for (auto const& part: score.unfolded_part) (*this)(part, score);
   os << "  " << ">>" << std::endl << std::endl;
 
   if (layout)
@@ -49,12 +49,12 @@ namespace {
 struct repeat_info: public boost::static_visitor<void>
 {
   bool begin, end;
-  repeat_info(braille::ast::staff_element const& staff_element)
+  repeat_info(braille::ast::unfolded::staff_element const& staff_element)
   : begin(false)
   , end(false)
   { apply_visitor(*this, staff_element); }  
 
-  result_type operator() (braille::ast::measure const& measure)
+  result_type operator() (braille::ast::unfolded::measure const& measure)
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
@@ -71,10 +71,6 @@ struct repeat_info: public boost::static_visitor<void>
     case braille::ast::end_repeat: end = true; break;
     }
   }
-  result_type operator() (braille::ast::simile const&) const
-  { }
-  void operator() (braille::ast::value_distinction const&) const
-  { }
   void operator() (braille::hand_sign const&) const
   { }
   void operator() (braille::ast::rest const&) const
@@ -90,7 +86,7 @@ struct repeat_info: public boost::static_visitor<void>
 }
 
 void
-generator::operator() ( braille::ast::part const &part
+generator::operator() ( braille::ast::unfolded::part const &part
                       , braille::ast::score const &score
                       )
 {
@@ -138,7 +134,7 @@ generator::operator() ( braille::ast::part const &part
       }
 
       if (measure_index < part[staff_index].size()) {
-      braille::ast::staff_element const&
+      braille::ast::unfolded::staff_element const&
       this_measure = part[staff_index][measure_index];
 
       os << indent << "  "; apply_visitor(*this, this_measure);
@@ -146,7 +142,7 @@ generator::operator() ( braille::ast::part const &part
       bool barcheck = true;
       repeat_info this_repeat(this_measure);
       if (measure_index < part[staff_index].size() - 1) {
-        braille::ast::staff_element const&
+        braille::ast::unfolded::staff_element const&
         next_measure = part[staff_index][measure_index + 1];
         repeat_info next_repeat(next_measure);
         if (this_repeat.end and next_repeat.begin) {
@@ -177,7 +173,7 @@ generator::operator() (braille::ast::key_and_time_signature const &key_and_time_
 }
 
 generator::result_type
-generator::operator() (braille::ast::measure const &measure)
+generator::operator() (braille::ast::unfolded::measure const &measure)
 {
   if (measure.voices.size() == 1) {
     (*this)(measure.voices.front());
@@ -194,7 +190,7 @@ generator::operator() (braille::ast::measure const &measure)
 }
 
 void
-generator::operator() (braille::ast::voice const &voice)
+generator::operator() (braille::ast::unfolded::voice const &voice)
 {
   for (size_t partial_measure_index = 0; partial_measure_index < voice.size();
        ++partial_measure_index)
@@ -205,7 +201,7 @@ generator::operator() (braille::ast::voice const &voice)
 }
 
 void
-generator::operator() (braille::ast::partial_measure const &partial_measure)
+generator::operator() (braille::ast::unfolded::partial_measure const &partial_measure)
 {
   if (partial_measure.size() == 1) {
     (*this)(partial_measure.front());
@@ -222,7 +218,7 @@ generator::operator() (braille::ast::partial_measure const &partial_measure)
 }
 
 void
-generator::operator() (braille::ast::partial_voice const &partial_voice)
+generator::operator() (braille::ast::unfolded::partial_voice const &partial_voice)
 {
   last_type = rational();
   for (size_t element_index = 0; element_index < partial_voice.size();
@@ -235,17 +231,6 @@ generator::operator() (braille::ast::partial_voice const &partial_voice)
 
 generator::result_type
 generator::operator() (braille::ast::barline const &) const
-{
-}
-
-generator::result_type
-generator::operator() (braille::ast::simile const &) const
-{
-  //BOOST_ASSERT(false);
-}
-
-generator::result_type
-generator::operator() (braille::ast::value_distinction const &) const
 {
 }
 
@@ -429,7 +414,7 @@ namespace {
 
 struct is_alternative : boost::static_visitor<bool>
 {
-  result_type operator() (braille::ast::measure const &measure) const
+  result_type operator() (braille::ast::unfolded::measure const &measure) const
   { return measure.ending; }
   result_type operator() (braille::ast::key_and_time_signature const&) const
   { return false; }
@@ -442,7 +427,7 @@ public:
   has_barline(braille::ast::barline const &type)
   : type(type)
   {}
-  result_type operator() (braille::ast::measure const &measure) const
+  result_type operator() (braille::ast::unfolded::measure const &measure) const
   {
     for (auto const& voice: measure.voices)
       for (auto const& partial_measure: voice)
@@ -467,7 +452,7 @@ public:
 }
 
 std::size_t
-generator::process_repeat_with_alternatives( braille::ast::staff const &staff
+generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const &staff
                                            , std::size_t index
                                            )
 {
@@ -494,14 +479,14 @@ generator::process_repeat_with_alternatives( braille::ast::staff const &staff
     for (std::size_t measure_index = index;
          measure_index < alternatives.front().front(); ++measure_index)
     {
-      braille::ast::staff_element const& this_measure = staff[measure_index];
+      braille::ast::unfolded::staff_element const& this_measure = staff[measure_index];
 
       os << indent << "    "; apply_visitor(*this, this_measure);
 
       bool barcheck = true;
       repeat_info this_repeat(this_measure);
       if (measure_index < staff.size() - 1) {
-        braille::ast::staff_element const&
+        braille::ast::unfolded::staff_element const&
         next_measure = staff[measure_index + 1];
         repeat_info next_repeat(next_measure);
         if (this_repeat.end and next_repeat.begin) {
@@ -524,7 +509,7 @@ generator::process_repeat_with_alternatives( braille::ast::staff const &staff
     for (auto indices: alternatives) {
       os << indent << "    " << "{";
       for (std::size_t measure_index: indices) {
-        braille::ast::staff_element const& this_measure = staff[measure_index];
+        braille::ast::unfolded::staff_element const& this_measure = staff[measure_index];
 
         apply_visitor(*this, this_measure); os << " | ";
       }

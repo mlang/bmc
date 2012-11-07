@@ -41,23 +41,21 @@ public:
   void operator() (braille::ast::score const& score);
 
 private:
-  void operator() ( braille::ast::part const& part
+  void operator() ( braille::ast::unfolded::part const& part
                   , braille::ast::score const& score
                   );
 
 public:
-  result_type operator() (braille::ast::measure const&);
+  result_type operator() (braille::ast::unfolded::measure const&);
   result_type operator() (braille::ast::key_and_time_signature const&);
 private:
-  void operator() (braille::ast::voice const&);
-  void operator() (braille::ast::partial_measure const&);
-  void operator() (braille::ast::partial_voice const&);
+  void operator() (braille::ast::unfolded::voice const&);
+  void operator() (braille::ast::unfolded::partial_measure const&);
+  void operator() (braille::ast::unfolded::partial_voice const&);
 public:
   /** @name Operators for visiting music::braille::sign objects */
   /** @{ */
   result_type operator() (braille::ast::barline const&) const;
-  result_type operator() (braille::ast::simile const&) const;
-  result_type operator() (braille::ast::value_distinction const&) const;
   result_type operator() (braille::hand_sign const&) const;
   result_type operator() (braille::ast::rest const&);
   result_type operator() (braille::ast::note const&);
@@ -75,7 +73,7 @@ private: // utilities
   void ly_partial(rational const&) const;
   void ly_pitch_step(diatonic_step) const;
 
-  std::size_t process_repeat_with_alternatives( braille::ast::staff const&
+  std::size_t process_repeat_with_alternatives( braille::ast::unfolded::staff const&
                                               , std::size_t
                                               );
 };

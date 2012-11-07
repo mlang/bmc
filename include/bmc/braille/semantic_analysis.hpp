@@ -21,6 +21,72 @@
 
 namespace music { namespace braille {
 
+class sign_converter: public boost::static_visitor<bool>
+{
+  ast::unfolded::partial_voice &target;
+public:
+  sign_converter(ast::unfolded::partial_voice &target)
+  : target(target)
+  {}
+
+  result_type operator() (ast::value_distinction const &) const
+  {
+    return true;
+  }
+  result_type operator() (ast::simile const &) const
+  {
+    std::clog << "partial_measure_simile" << std::endl;
+    return true;
+  }
+
+  template<typename T>
+  result_type operator() (T const &t) const
+  {
+    target.emplace_back(t);
+    return true;
+  }
+};
+
+class staff_converter: public boost::static_visitor<bool>
+{
+  ast::unfolded::staff &target;
+public:
+  staff_converter( ast::unfolded::staff &target )
+  : target(target)
+  {}
+
+  result_type operator() (ast::measure const &measure) const
+  {
+    ast::unfolded::measure unfolded_measure;
+    unfolded_measure.ending = measure.ending;
+    for (ast::voice const &voice: measure.voices) {
+      unfolded_measure.voices.emplace_back();
+      ast::unfolded::voice &new_voice = unfolded_measure.voices.back();
+      for (ast::partial_measure const &partial_measure: voice) {
+        new_voice.emplace_back();
+        ast::unfolded::partial_measure &new_partial_measure = new_voice.back();
+        for (ast::partial_voice const &partial_voice: partial_measure) {
+          new_partial_measure.emplace_back();
+          ast::unfolded::partial_voice &new_partial_voice = new_partial_measure.back();
+          sign_converter convert(new_partial_voice);
+          if (not std::all_of( partial_voice.begin(), partial_voice.end()
+                             , apply_visitor(convert)
+                             )
+             )
+            return false;
+        }
+      }
+    }
+    target.emplace_back(unfolded_measure);
+    return true;
+  }
+  result_type operator() (ast::key_and_time_signature const &key_and_time_signature) const
+  {
+    target.emplace_back(key_and_time_signature);
+    return true;
+  }
+};
+
 /**
  * \brief The <code>compiler</code> processes the raw parsed syntax tree to fill
  *        in musical information implied by the given input.
@@ -95,7 +161,35 @@ public:
         calculate_octaves.reset();
       }
     }
+    return unfold(score);
+  }
+
+  result_type unfold (ast::score &score)
+  {
+    for (ast::part const &part: score.parts) {
+      score.unfolded_part.emplace_back();
+      if (not unfold(part, score.unfolded_part.back(), score)) return false;
+    }
     return true;
+  }
+  result_type unfold ( ast::part const &source
+                     , ast::unfolded::part &target
+                     , ast::score const &score
+                     )
+  {
+    for (ast::staff const &staff: source) {
+      target.emplace_back();
+      if (not unfold(staff, target.back(), score)) return false;
+    }
+    return true;
+  }
+  result_type unfold ( ast::staff const &source
+                     , ast::unfolded::staff &target
+                     , ast::score const &score
+                     )
+  {
+    staff_converter convert(target);
+    return std::all_of(source.begin(), source.end(), boost::apply_visitor(convert));
   }
 
   result_type operator() (ast::staff& staff)
