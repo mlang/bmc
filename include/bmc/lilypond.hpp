@@ -56,6 +56,7 @@ public:
   /** @name Operators for visiting music::braille::sign objects */
   /** @{ */
   result_type operator() (braille::ast::barline const&) const;
+  result_type operator() (braille::ast::tie const&) const;
   result_type operator() (braille::hand_sign const&) const;
   result_type operator() (braille::ast::rest const&);
   result_type operator() (braille::ast::note const&);

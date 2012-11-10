@@ -71,16 +71,12 @@ struct repeat_info: public boost::static_visitor<void>
     case braille::ast::end_repeat: end = true; break;
     }
   }
-  void operator() (braille::hand_sign const&) const
-  { }
-  void operator() (braille::ast::rest const&) const
-  { }
-  void operator() (braille::ast::note const&) const
-  { }
-  void operator() (braille::ast::chord const&) const
-  { }
-  void operator() (braille::ast::moving_note const&) const
-  { }
+  void operator() (braille::hand_sign const&) const {}
+  void operator() (braille::ast::tie const&) const {}
+  void operator() (braille::ast::rest const&) const {}
+  void operator() (braille::ast::note const&) const {}
+  void operator() (braille::ast::chord const&) const {}
+  void operator() (braille::ast::moving_note const&) const {}
 };
 
 }
@@ -231,6 +227,11 @@ generator::operator() (braille::ast::unfolded::partial_voice const &partial_voic
 
 generator::result_type
 generator::operator() (braille::ast::barline const &) const
+{
+}
+
+generator::result_type
+generator::operator() (braille::ast::tie const &) const
 {
 }
 

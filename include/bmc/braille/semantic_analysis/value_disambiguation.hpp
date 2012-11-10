@@ -266,6 +266,7 @@ public:
     new (stack_end++) value_proxy(chord, category, type);
   }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
+  result_type operator()(braille::ast::tie &) {}
   result_type operator()(braille::hand_sign &) {}
   result_type operator()(ast::barline &) {}
   result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
@@ -495,6 +496,7 @@ public:
   }
   result_type operator()(ast::value_distinction &) const { return false; }
   result_type operator()(braille::hand_sign &) const { return false; }
+  result_type operator()(braille::ast::tie &) const { return false; }
   result_type operator()(ast::barline &) const { return false; }
   result_type operator()(ast::simile &simile) const
   {

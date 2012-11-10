@@ -148,6 +148,25 @@ value_distinction_symbols::value_distinction_symbols()
 
 value_distinction_symbols value_distinction_sign;
 
+slur_symbols::slur_symbols()
+{
+  add(L"⠉",  ast::slur::type::single)
+     (L"⠐⠉", ast::slur::type::cross_staff)
+     ;
+}
+
+slur_symbols slur_sign;
+
+tie_symbols::tie_symbols()
+{
+  add(L"⠈⠉", ast::tie::type::single)
+     (L"⠨⠉", ast::tie::type::chord)
+     (L"⠘⠉", ast::tie::type::arpeggio)
+     ;
+}
+
+tie_symbols tie_sign;
+
 articulation_symbols::articulation_symbols()
 {
   add(L"⠢", short_appoggiatura)

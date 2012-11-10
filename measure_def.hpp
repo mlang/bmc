@@ -45,7 +45,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   partial_measure = partial_voice % partial_measure_in_accord;
   partial_voice = +( newline
                    | moving_note | chord | note | rest
-                   | value_distinction
+                   | value_distinction | tie
                    | hand_sign
                    | simile
                    | barline_sign
@@ -63,14 +63,14 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
       >> step_and_value_sign    [at_c<3>(_val) = at_c<0>(_1),
                                  at_c<4>(_val) = at_c<1>(_1)]
       >> dots                   [at_c<5>(_val) = _1]
-      >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
+      >> repeat(0, 2)[slur]     [at_c<6>(_val) = _1]
       >> fingering              [at_c<7>(_val) = _1]
-      >> repeat(0, 2)[slur_sign][at_c<6>(_val) = _1]
-      >> (-tie_sign)            [at_c<8>(_val) = _1]
+      >> repeat(0, 2)[slur]     [at_c<6>(_val) = _1]
+      >> (-simple_tie)          [at_c<8>(_val) = _1]
       >> (*stem)                [at_c<9>(_val) = _1]
        ;
 
-  stem = stem_sign >> dots >> -tie_sign;
+  stem = stem_sign >> dots >> -tie;
 
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
@@ -82,10 +82,10 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
           >> -octave_sign
           >> interval_sign
           >> fingering
-          >> -tie_sign;
+          >> -simple_tie;
 
-  slur_sign = brl(14);
-  tie_sign = brl(4) >> brl(14);
+  slur = slur_sign;
+  tie = tie_sign;
 
   value_distinction = value_distinction_sign;
 
@@ -96,6 +96,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   boost::spirit::eol_type eol;
   boost::spirit::eps_type eps;
   boost::spirit::attr_type attr;
+  simple_tie = brl(4) >> brl(14) >> attr(ast::tie::single);
   simile = eps[_a = 0]
         >> (-octave_sign)[at_c<0>(_val) = _1]
         >> +(brl(2356)[_a += 1])
@@ -127,7 +128,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(chord);
   BMC_LOCATABLE_SET_ID(value_distinction);
   BMC_LOCATABLE_SET_ID(simile);
-  BMC_LOCATABLE_SET_ID(tie_sign);
+  BMC_LOCATABLE_SET_ID(tie);
 #undef BMC_LOCATABLE_SET_ID
   
   note.name("note");

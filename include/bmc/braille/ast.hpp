@@ -65,9 +65,17 @@ public:
   virtual rational as_rational() const = 0;
 };
 
-struct slur {};
+struct slur : locatable
+{
+  enum type { single, cross_staff };
+  type value;
+};
 
-struct tie : locatable {};
+struct tie : locatable
+{
+  enum type { single, chord, arpeggio };
+  type value;
+};
 
 struct pitched
 {
@@ -147,7 +155,8 @@ struct value_distinction : locatable
   type value;
 };
 
-struct simile : locatable {
+struct simile : locatable
+{
   boost::optional<unsigned> octave_spec;
   unsigned count;
 
@@ -157,7 +166,7 @@ struct simile : locatable {
 enum barline { begin_repeat, end_repeat, end_part };
 
 typedef boost::variant< note, rest, chord, moving_note
-                      , value_distinction
+                      , value_distinction, tie
                       , hand_sign, simile, barline
                       >
         sign;
@@ -201,7 +210,7 @@ struct section
 namespace unfolded {
 
 typedef boost::variant< note, rest, chord, moving_note
-                      , hand_sign, barline
+                      , tie, hand_sign, barline
                       >
         sign;
 struct partial_voice : locatable, std::vector<sign>
@@ -319,6 +328,7 @@ namespace music {
         result_type operator() (hand_sign const&) const { return result_type(); }
         result_type operator() (simile const&) const { return result_type(); }
         result_type operator() (value_distinction const&) const { return result_type(); }
+        result_type operator() (tie const &) const { return result_type(); }
 
         result_type operator() (measure const&) const;
         result_type operator() (unfolded::measure const&) const;
@@ -524,6 +534,14 @@ namespace music {
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::slur,
+  (music::braille::ast::slur::type, value)
+)
+BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::tie,
+  (music::braille::ast::tie::type, value)
+)
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::rest,
   (music::braille::ast::value, ambiguous_value)

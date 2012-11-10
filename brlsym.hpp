@@ -48,6 +48,8 @@ BMC_DEFINE_SYMBOL_TABLE(interval, interval_symbols, interval_sign)
 BMC_DEFINE_SYMBOL_TABLE(unsigned, finger_symbols, finger_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::value_distinction::type,
                         value_distinction_symbols, value_distinction_sign)
+BMC_DEFINE_SYMBOL_TABLE(ast::slur::type, slur_symbols, slur_sign)
+BMC_DEFINE_SYMBOL_TABLE(ast::tie::type, tie_symbols, tie_sign)
 BMC_DEFINE_SYMBOL_TABLE(music::articulation, articulation_symbols, articulation_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::barline, barline_symbols, barline_sign)
 BMC_DEFINE_SYMBOL_TABLE(music::rational, stem_symbols, stem_sign)

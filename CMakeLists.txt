@@ -72,6 +72,7 @@ set(BMC_TEST_NAMES
     bwv988_v02_ly
     bwv988_v04_ly
     bwv988_v05_ly
+    bwv988_v06_ly
     bwv988_v13_ly
     bwv988_v19_ly
     bwv988_v30_ly

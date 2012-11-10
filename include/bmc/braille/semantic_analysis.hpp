@@ -37,9 +37,8 @@ public:
   {
     if (duration(target) == (simile.duration / simile.count)) {
       ast::unfolded::partial_voice repeated(target.begin(), target.end());
-      for (int i = 0; i < simile.count; ++i) {
+      for (unsigned i = 0; i < simile.count; ++i)
         target.insert(target.end(), repeated.begin(), repeated.end());
-      }
     }
     return true;
   }
@@ -72,10 +71,9 @@ public:
         ast::unfolded::partial_measure &new_partial_measure = new_voice.back();
         for (ast::partial_voice const &partial_voice: partial_measure) {
           new_partial_measure.emplace_back();
-          ast::unfolded::partial_voice &new_partial_voice = new_partial_measure.back();
-          sign_converter convert(new_partial_voice);
+          sign_converter unfold(new_partial_measure.back());
           if (not std::all_of( partial_voice.begin(), partial_voice.end()
-                             , apply_visitor(convert)
+                             , apply_visitor(unfold)
                              )
              )
             return false;
@@ -166,6 +164,7 @@ public:
         calculate_octaves.reset();
       }
     }
+
     return unfold(score);
   }
 
@@ -193,8 +192,8 @@ public:
                      , ast::score const &score
                      )
   {
-    staff_converter convert(target);
-    return std::all_of(source.begin(), source.end(), boost::apply_visitor(convert));
+    staff_converter unfold(target);
+    return std::all_of(source.begin(), source.end(), apply_visitor(unfold));
   }
 
   result_type operator() (ast::staff& staff)
