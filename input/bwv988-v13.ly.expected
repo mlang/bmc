@@ -11,14 +11,14 @@ music =
         d''32-4 e'' d'' cis'' d''8~ d''32 cis'' d''-1 e'' fis''16 g'' \appoggiatura a''1*0 g''16 fis'' e'' d'' | % 2
         g''32 a'' g'' fis'' g''8~ g''32 fis'' e'' fis'' g''16 e'' a' b'' a'' g'' | % 3
         \appoggiatura g''-4 fis''32 e'' fis'' e'' d''8~ d''32 cis'' d''-1 e'' fis''16 g''-1 a'' b''32 c''' b''16 a'' | % 4
-        g''32 f''-2 e''16 \mordent f''8~-3 f''32 d'' g'' a''-1 b'' c''' d'''16 c''' b'' a'' g''-4 | % 5
+        g''32 f''-2 e''16 f''8~\mordent -3 f''32 d'' g'' a''-1 b'' c''' d'''16 c''' b'' a'' g''-4 | % 5
         f''32 e'' d''16 \appoggiatura d''1*0-2 e''8~ e''32 d'' c'' b'-2 c''-1 d'' e''16 d'' g'' e''-4 c'' | % 6
         b'32 a'-2 g'16 a'8~-3 a'32 g' a' b' c''-5 fis' g' a' d' fis' e' d' a'-4 g' fis' c'' | % 7
         c''32-4 b' a'16 b'8~ b'32 a' g' fis'-2 g'-1 b' d'' fis'' g'' fis''-3 e'' d'' fis''-2 a''-3 b'' c''' | % 8
         b''32-3 a'' g''16~ g''32 fis''-4 e''16~ e''32 dis'' e''16~-1 e''32 fis'' g''16~ g''32 a'' b''16~ b''32 g'' fis'' e'' | % 9
         a''32-5 g'' fis''16~ fis''32 e'' d''16~ d''32 cis'' d''16~-1 d''32 e'' fis''16~ fis''32 g'' a''16~ a''32 fis'' e'' d'' | % 10
         g''32-3 a'' b'' a'' g''16-. fis''-. e''32 fis''-3 g'' fis'' e''16-. d''-. cis''32-3 d'' e'' d'' cis''16-. b'-. | % 11
-        a'4.~ a'32 cis'' b' a' b' cis'' d''-1 e'' fis''16 \turn g'' | % 12
+        a'4.~ a'32 cis'' b' a' b' cis'' d''-1 e'' fis''16 g''\turn  | % 12
         a''32-. d'' cis''-2 d'' e'' d'' cis'' d'' a' d''-4 g'-1 d''-5 fis'-2 d'' e' d'' fis' d'' a' d'' fis' d'' d' c''-4 | % 13
         b'32-.-1 d'' cis'' d'' e'' d'' cis'' d'' b' d''-5 a' d'' g' d'' fis'-2 d'' g' d'' b'-4 d'' g'-2 d'' e' d'' | % 14
         cis''32-. g' fis'-2 g' a' g' fis' g'-1 e'' cis'' b'-1 cis'' d'' cis'' b' cis'' g''-. e'' d''-2 e''-1 a'' g'' fis'' e'' | % 15
@@ -26,11 +26,11 @@ music =
          fis''32-3 g'' fis'' e'' fis''8~ fis''32 e'' fis'' g''-1 a''16 b'' \appoggiatura c'''1*0 b''16 a'' g'' fis''-2 | % 17
         g''32 a'' g'' fis'' g''8~-5 g''32 fis'-1 g'-1 a' b'16 c'' \appoggiatura d''1*0 c''16 b' a' g' | % 18
         e''32-3 fis'' e'' dis'' e''8~-1 e''16 gis''-3 gis''-2 a'' a''-2 b'' b''-4 c''' | % 19
-        e''32 dis''-3 cis''16 \mordent dis''8~ dis''~ dis''32 dis''-2 e'' fis'' e''-1 dis''-4 cis'' b' a' g'-2 a'-1 fis'' | % 20
+        e''32 dis''-3 cis''16 dis''8~\mordent  dis''~ dis''32 dis''-2 e'' fis'' e''-1 dis''-4 cis'' b' a' g'-2 a'-1 fis'' | % 20
         g'32-. e''-3 dis'' e'' f'' e'' dis'' e''-1 fis'' e'' g'' e'' a'' e'' b'' e'' c'''-4 e'' d''' e'' c''' e'' b'' e'' | % 21
         c'''32-. e'' dis''-2 e'' f'' e'' dis'' e''-1 c''' e'' b'' e'' a'' e'' g'' e'' fis'' e'' g'' e'' a'' e'' dis''-2 cis'' | % 22
         dis''32-. a''-4 g'' a'' b'' a'' g'' a'' b'-. g''-4 fis'' g'' a'' g'' fis'' g'' a'-. fis''-3 e'' fis'' g'' a'' g'' fis'' | % 23
-        << {g''16 dis'' dis''-3 e'' e''-5 a' a'-5 g' \mordent g'8~-4-2-3 g'32 b'-1 c'' d''}\\{r4 r8 dis' e'-1 r} >> | % 24
+        << {g''16 dis'' dis''-3 e'' e''-5 a' a'-5 g' g'8~\mordent -4-2-3 g'32 b'-1 c'' d''}\\{r4 r8 dis' e'-1 r} >> | % 24
         e''32 f'' e'' dis'' e''8~ e''16 a' \appoggiatura b'1*0-3 a'16 g' \appoggiatura a'1*0-4 g'16 fis' fis'-1 e'' | % 25
         d''32-3 e'' d'' cis'' d''8~ d''16 g' \appoggiatura a'1*0-3 g'16 f' \appoggiatura g'1*0-4 f'16 e' e'-1 d'' | % 26
         c''32 b' a'16~ a'32 g' fis'16~-3 fis'32 e' d'16~ d'32 e' fis'16~ fis'32 g'-1 a'16~ a'32 b'-1 c''16~ | % 27

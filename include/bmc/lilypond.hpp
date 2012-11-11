@@ -21,6 +21,7 @@ class generator: public boost::static_visitor<void>
   bool const layout, midi, include_locations;
   std::string indent;
   rational last_type;
+  unsigned last_dots;
 
 public:
   /**
