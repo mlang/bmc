@@ -36,6 +36,12 @@ public:
   using rational::operator==; bool operator==(time_signature const&) const;
   int_type numerator() const { return d_num; }
   int_type denominator() const { return d_den; }
+
+  friend
+  std::ostream &operator<< ( std::ostream &os
+                           , time_signature const &signature
+                           )
+  { return os << signature.numerator() << '/' << signature.denominator(); }
 };
 
 enum diatonic_step { C = 0, D, E, F, G, A, B, steps_per_octave };

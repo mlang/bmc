@@ -6,7 +6,7 @@ music =
       \new Staff {
         \clef "treble"
         \key g \major
-        \time 3/4
+        \time 6/8
         b'8.-4 a'16 b'8 d'8. g'16 b'8 | % 1
         a'8. g'16 a'8-1 d''4. | % 2
         g''8.\mordent -4 fis''16 g''8-5 a'8. e''16 g''8 | % 3
@@ -43,7 +43,7 @@ music =
       \new Staff {
         \clef "bass"
         \key g \major
-        \time 3/4
+        \time 6/8
         g4\mordent  g,8 g4.~\mordent  | % 1
         g4. fis8. e16 d8-5 | % 2
         e4 d'8 cis'4-3 a8 | % 3

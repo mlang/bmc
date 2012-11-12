@@ -6,7 +6,7 @@ music =
       \new Staff {
         \clef "treble"
         \key g \major
-        \time 1/1
+        \time 4/4
         << {b'8-2 a' b' c'' d'' a' d'' c''}\\{r1} >> | % 1
         << {b'8 d''-3 g''4~ g''8-"5-4" a''16 g'' fis''4-3}\\{g'8 fis' g' a'-2 b'-1  fis'  b'-1  a'-1} >> | % 2
         << {g''8 fis''-2 g'' a'' b'' fis''-3 b'' a''}\\{ g'8 b'  e''4~ e''8 fis''16-3 e'' d''4} >> | % 3
@@ -27,7 +27,7 @@ music =
       \new Staff {
         \clef "bass"
         \key g \major
-        \time 1/1
+        \time 4/4
         g,4 g~ g8 fis16 e fis8 d | % 1
         g8 a-4 b c' d'4.-"1-5" dis'8-4 | % 2
         e'4 r8 c'-3 g d' g' a'16-3 b' | % 3

@@ -6,7 +6,7 @@ music =
       \new Staff {
         \clef "treble"
         \key g \major
-        \time 1/2
+        \time 2/4
         \repeat volta 2 {
           b'4-1 e''~\mordent -3 |
           e''8 d''16 c'' d''-3 c'' b' a'-2 |
@@ -53,7 +53,7 @@ music =
       \new Staff {
         \clef "bass"
         \key g \major
-        \time 1/2
+        \time 2/4
         \repeat volta 2 {
           g8 fis g e |
           fis8 e fis d |
