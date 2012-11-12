@@ -26,6 +26,8 @@ time_signature_grammar<Iterator>::time_signature_grammar()
   start = brl(3456)
        >> upper_number[_a = _1]
        >> lower_number[_val = construct<music::time_signature>(_a, _1)]
+        | brl(46)
+       >> brl(14)[_val = construct<music::time_signature>(4, 4)]
         ;
 }
 
