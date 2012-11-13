@@ -100,6 +100,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   simile = eps[_a = 0]
         >> (-octave_sign)[at_c<0>(_val) = _1]
         >> +(brl(2356)[_a += 1])
+        >> -(brl(3456) >> upper_number[_a = _1])
         >> eps[at_c<1>(_val) = _a];
 
   whitespace = space | brl(0);

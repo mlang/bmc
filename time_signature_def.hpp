@@ -28,6 +28,8 @@ time_signature_grammar<Iterator>::time_signature_grammar()
        >> lower_number[_val = construct<music::time_signature>(_a, _1)]
         | brl(46)
        >> brl(14)[_val = construct<music::time_signature>(4, 4)]
+        | brl(456)
+       >> brl(14)[_val = construct<music::time_signature>(4, 4)]
         ;
 }
 

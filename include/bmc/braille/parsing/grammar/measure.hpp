@@ -48,7 +48,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator>
   full_measure_in_accord, partial_measure_sign, partial_measure_in_accord,
   optional_dot, whitespace, newline;
-  lower_number_grammar<Iterator> lower_number;
+  upper_number_grammar<Iterator> upper_number;
   boost::spirit::qi::rule<Iterator, unsigned()> ending;
 };
 
