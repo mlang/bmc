@@ -229,7 +229,13 @@ struct measure : locatable
 {
   boost::optional<unsigned> ending;
   std::vector<voice> voices;
+  unsigned count;
+
+  measure()
+  : count(1)
+  {}
 };
+
 typedef boost::variant<measure, ast::key_and_time_signature> staff_element;
 struct staff : std::vector<staff_element> {};
 struct part : std::vector<staff> {};

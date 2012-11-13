@@ -172,6 +172,7 @@ generator::operator() (braille::ast::key_and_time_signature const &key_and_time_
 generator::result_type
 generator::operator() (braille::ast::unfolded::measure const &measure)
 {
+  if (measure.count > 1) os << "\\repeat unfold " << measure.count << " { ";
   if (measure.voices.size() == 1) {
     (*this)(measure.voices.front());
   } else {
@@ -184,6 +185,7 @@ generator::operator() (braille::ast::unfolded::measure const &measure)
     }
     os << " >>";
   }
+  if (measure.count > 1) os << " }";
 }
 
 void

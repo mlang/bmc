@@ -48,6 +48,7 @@ namespace value_disambiguation {
 class value_disambiguator: public compiler_pass
 {
   music::time_signature time_signature;
+  rational prev_duration;
   value_disambiguation::measure_interpretations *anacrusis;
 
 public:

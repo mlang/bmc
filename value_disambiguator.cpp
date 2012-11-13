@@ -12,6 +12,7 @@ namespace music { namespace braille {
 value_disambiguator::value_disambiguator(report_error_type const& report_error)
 : compiler_pass(report_error)
 , time_signature(4, 4)
+, prev_duration(0)
 , anacrusis(new value_disambiguation::measure_interpretations())
 {}
 
@@ -23,12 +24,14 @@ value_disambiguator::~value_disambiguator()
 value_disambiguator::result_type
 value_disambiguator::operator()(ast::measure& measure)
 {
-  value_disambiguation::measure_interpretations interpretations(measure, time_signature);
+  value_disambiguation::measure_interpretations
+  interpretations(measure, time_signature, prev_duration);
 
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (anacrusis->empty()) {
       *anacrusis = interpretations;
+      prev_duration = 0;
       return true;
     } else {
       if (anacrusis->completes_uniquely(interpretations)) {
@@ -36,6 +39,7 @@ value_disambiguator::operator()(ast::measure& measure)
           for (auto& rhs: interpretations) {
             if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();
+              prev_duration = duration(rhs);
               anacrusis->clear();
               return true;
             }
@@ -47,6 +51,7 @@ value_disambiguator::operator()(ast::measure& measure)
 
   if (interpretations.size() == 1) {
     interpretations.front().accept();
+    prev_duration = duration(interpretations.front());
     return true;
   }
 
@@ -64,6 +69,7 @@ value_disambiguator::operator()(ast::measure& measure)
   }
   return false;
 }
+
 bool
 value_disambiguator::end_of_staff() const {
   if (not anacrusis->empty())
