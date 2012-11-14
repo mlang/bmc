@@ -24,9 +24,17 @@ namespace music { namespace braille {
 class sign_converter: public boost::static_visitor<bool>
 {
   ast::unfolded::partial_voice &target;
+  std::size_t const voice_index, voice_count;
+  ast::unfolded::measure *prev_unfolded_measure;
 public:
-  sign_converter(ast::unfolded::partial_voice &target)
+  sign_converter( ast::unfolded::partial_voice &target
+                , std::size_t voice_index, std::size_t voice_count
+                , ast::unfolded::measure *prev_unfolded_measure
+                )
   : target(target)
+  , voice_index(voice_index)
+  , voice_count(voice_count)
+  , prev_unfolded_measure(prev_unfolded_measure)
   {}
 
   result_type operator() (ast::value_distinction const &) const
@@ -35,10 +43,19 @@ public:
   }
   result_type operator() (ast::simile const &simile) const
   {
-    if (duration(target) == (simile.duration / simile.count)) {
-      ast::unfolded::partial_voice repeated(target.begin(), target.end());
-      for (unsigned i = 0; i < simile.count; ++i)
-        target.insert(target.end(), repeated.begin(), repeated.end());
+    if (not duration(target)) {
+      if (prev_unfolded_measure and voice_count == 1) {
+        prev_unfolded_measure->count += simile.count - 1;
+        target.insert(target.end(), prev_unfolded_measure->voices[voice_index][0][0].begin(), prev_unfolded_measure->voices[voice_index][0][0].end());
+      } else if (prev_unfolded_measure) {
+        target.insert(target.end(), prev_unfolded_measure->voices[voice_index][0][0].begin(), prev_unfolded_measure->voices[voice_index][0][0].end());
+      }
+    } else {
+      if (duration(target) == (simile.duration / simile.count)) {
+        ast::unfolded::partial_voice repeated(target.begin(), target.end());
+        for (unsigned i = 0; i < simile.count; ++i)
+          target.insert(target.end(), repeated.begin(), repeated.end());
+      }
     }
     return true;
   }
@@ -54,24 +71,32 @@ public:
 class staff_converter: public boost::static_visitor<bool>
 {
   ast::unfolded::staff &target;
+  ast::unfolded::measure *prev_unfolded_measure;
 public:
   staff_converter( ast::unfolded::staff &target )
   : target(target)
+  , prev_unfolded_measure(nullptr)
   {}
 
-  result_type operator() (ast::measure const &measure) const
+  result_type operator() (ast::measure const &measure)
   {
     ast::unfolded::measure unfolded_measure;
     unfolded_measure.ending = measure.ending;
     for (ast::voice const &voice: measure.voices) {
+      std::size_t voice_index = unfolded_measure.voices.size();
       unfolded_measure.voices.emplace_back();
       ast::unfolded::voice &new_voice = unfolded_measure.voices.back();
       for (ast::partial_measure const &partial_measure: voice) {
+        std::size_t const partial_measure_index = new_voice.size();
         new_voice.emplace_back();
         ast::unfolded::partial_measure &new_partial_measure = new_voice.back();
         for (ast::partial_voice const &partial_voice: partial_measure) {
+          std::size_t const partial_voice_index = new_partial_measure.size();
           new_partial_measure.emplace_back();
-          sign_converter unfold(new_partial_measure.back());
+          sign_converter unfold( new_partial_measure.back()
+                               , voice_index, measure.voices.size()
+                               , prev_unfolded_measure
+                               );
           if (not std::all_of( partial_voice.begin(), partial_voice.end()
                              , apply_visitor(unfold)
                              )
@@ -81,6 +106,7 @@ public:
       }
     }
     target.emplace_back(unfolded_measure);
+    prev_unfolded_measure = boost::get<ast::unfolded::measure>(&target.back());
     return true;
   }
   result_type operator() (ast::key_and_time_signature const &key_and_time_signature) const
