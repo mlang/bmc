@@ -86,9 +86,7 @@ public:
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy( ast::note &note, value_category category
-             , ast::value value_type
-             )
+  value_proxy(ast::note &note, value_category category, ast::value value_type)
   : type(ptr_type::note), note_ptr(&note)
   , value_type(value_type), category(category)
   , duration(calculate_duration(note.dots))
@@ -106,11 +104,8 @@ public:
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy( ast::rest &rest, value_category category
-             , rational const& duration
-             )
+  value_proxy(ast::rest &rest, rational const &duration)
   : type(ptr_type::whole_measure_rest), rest_ptr(&rest)
-  , value_type(rest.ambiguous_value), category(category)
   , duration(duration)
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
@@ -221,18 +216,6 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
   }
   template<typename Sign>
   result_type operator()(Sign const &) const { return false; }
-};
-
-class make_whole_measure_rest : public boost::static_visitor<value_proxy>
-{
-  rational const duration;
-public:
-  make_whole_measure_rest(rational const &duration) : duration(duration) {}
-  result_type operator()(ast::rest &rest) const
-  { return result_type(rest, large, duration); }
-  template<typename Sign>
-  result_type operator()(Sign const &) const
-  { BOOST_ASSERT(false); return value_proxy(); }
 };
 
 class notegroup: public boost::static_visitor<void>
@@ -437,7 +420,7 @@ public:
         if (stack_begin == stack_end and position == 0 and
             time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
-          *stack_end = apply_visitor(make_whole_measure_rest(time_signature), *iterator);
+          *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), time_signature);
           recurse(iterator + 1, stack_end + 1,
                   zero, position + time_signature);
         }
