@@ -46,12 +46,21 @@ rational const undotted[8] = {
  */
 class value_proxy
 {
+  struct ptr_type
+  {
+    enum type { uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile };
+  };
+  ptr_type::type type:3;  
   ast::value value_type:4;
   value_category category:4;
-  unsigned partial_measure_simile:1;
+  union {
+    ast::note *note_ptr;
+    ast::rest *rest_ptr;
+    ast::chord *chord_ptr;
+    ast::moving_note *moving_note_ptr;
+    ast::simile *simile_ptr;
+  };
   rational duration;
-  rational *final_type;
-  bool *whole_measure_rest;
 
   rational const &undotted_duration() const
   {
@@ -68,108 +77,108 @@ class value_proxy
 
 public:
   value_proxy()
-  : partial_measure_simile(0)
-  , final_type(nullptr)
-  , whole_measure_rest(nullptr)
+  : type(ptr_type::uninitialized)
   {}
 
-  value_proxy(ast::note &note, value_category const &category)
-  : value_type(note.ambiguous_value), category(category), partial_measure_simile(0)
+  value_proxy(ast::note &note, value_category category)
+  : type(ptr_type::note), note_ptr(&note)
+  , value_type(note.ambiguous_value), category(category)
   , duration(calculate_duration(note.dots))
-  , final_type(&note.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy( ast::note &note, value_category const &category
+  value_proxy( ast::note &note, value_category category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), partial_measure_simile(0)
+  : type(ptr_type::note), note_ptr(&note)
+  , value_type(value_type), category(category)
   , duration(calculate_duration(note.dots))
-  , final_type(&note.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, value_category const &category)
-  : value_type(rest.ambiguous_value), category(category), partial_measure_simile(0)
+  value_proxy(ast::rest &rest, value_category category)
+  : type(ptr_type::rest), rest_ptr(&rest)
+  , value_type(rest.ambiguous_value), category(category)
   , duration(calculate_duration(rest.dots))
-  , final_type(&rest.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, value_category const &category
-             , ast::value value_type
-             )
-  : value_type(value_type), category(category), partial_measure_simile(0)
+  value_proxy(ast::rest &rest, value_category category, ast::value value_type)
+  : type(ptr_type::rest), rest_ptr(&rest)
+  , value_type(value_type), category(category)
   , duration(calculate_duration(rest.dots))
-  , final_type(&rest.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy( ast::rest &rest, value_category const &category
+  value_proxy( ast::rest &rest, value_category category
              , rational const& duration
              )
-  : value_type(rest.ambiguous_value), category(category), partial_measure_simile(0)
+  : type(ptr_type::whole_measure_rest), rest_ptr(&rest)
+  , value_type(rest.ambiguous_value), category(category)
   , duration(duration)
-  , final_type(&rest.type)
-  , whole_measure_rest(&rest.whole_measure)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::chord &chord, value_category const &category)
-  : value_type(chord.base.ambiguous_value), category(category), partial_measure_simile(0)
+  value_proxy(ast::chord &chord, value_category category)
+  : type(ptr_type::chord), chord_ptr(&chord)
+  , value_type(chord.base.ambiguous_value), category(category)
   , duration(calculate_duration(chord.base.dots))
-  , final_type(&chord.base.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(chord_ptr->type == zero); }
 
-  value_proxy( ast::chord &chord, value_category const &category
+  value_proxy( ast::chord &chord, value_category category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), partial_measure_simile(0)
+  : type(ptr_type::chord), chord_ptr(&chord)
+  , value_type(value_type), category(category)
   , duration(calculate_duration(chord.base.dots))
-  , final_type(&chord.base.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(chord_ptr->type == zero); }
 
-  value_proxy(ast::moving_note &chord, value_category const &category)
-  : value_type(chord.base.ambiguous_value), category(category), partial_measure_simile(0)
+  value_proxy(ast::moving_note &chord, value_category category)
+  : type(ptr_type::moving_note), moving_note_ptr(&chord)
+  , value_type(chord.base.ambiguous_value), category(category)
   , duration(calculate_duration(chord.base.dots))
-  , final_type(&chord.base.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
-  value_proxy( ast::moving_note &chord, value_category const &category
+  value_proxy( ast::moving_note &chord, value_category category
              , ast::value value_type
              )
-  : value_type(value_type), category(category), partial_measure_simile(0)
+  : type(ptr_type::moving_note), moving_note_ptr(&chord)
+  , value_type(value_type), category(category)
   , duration(calculate_duration(chord.base.dots))
-  , final_type(&chord.base.type)
-  , whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
   value_proxy(ast::simile &simile, rational const& duration)
-  : value_type(ast::unknown), category(large), partial_measure_simile(1)
+  : type(ptr_type::simile), simile_ptr(&simile)
   , duration(duration * simile.count)
-  , final_type(&simile.duration), whole_measure_rest(nullptr)
-  { BOOST_ASSERT(*final_type == zero); }
+  { BOOST_ASSERT(simile_ptr->duration == zero); }
 
   operator rational const &() const { return duration; }
 
   bool operator==(value_proxy const &rhs) const
-  { return final_type == rhs.final_type && duration == rhs.duration; }
+  { return type == rhs.type && note_ptr == rhs.note_ptr && duration == rhs.duration; }
 
   /** \brief Fill the infomation gathered about this partiuclar interpretation
     *        into the AST
    */
   void accept() const
   {
-    BOOST_ASSERT(final_type);
-    BOOST_ASSERT(*final_type == zero);
-    if (whole_measure_rest) {
-      *final_type = duration;
-      *whole_measure_rest = true;
-    } else {
-      if (partial_measure_simile) *final_type = duration;
-      else *final_type = undotted_duration();
+    switch (type) {
+    case ptr_type::note:
+      note_ptr->type = undotted_duration();
+      break;
+    case ptr_type::rest:
+      rest_ptr->type = undotted_duration();
+      break;
+    case ptr_type::whole_measure_rest:
+      rest_ptr->type = duration;
+      rest_ptr->whole_measure = true;
+      break;
+    case ptr_type::chord:
+      chord_ptr->base.type = undotted_duration();
+      break;
+    case ptr_type::moving_note:
+      moving_note_ptr->base.type = undotted_duration();
+      break;
+    case ptr_type::simile:
+      simile_ptr->duration = duration;
+      break;
+    default:
+    case ptr_type::uninitialized: BOOST_ASSERT(false);
     }
   }
 };
