@@ -50,7 +50,7 @@ class value_proxy
   {
     enum type { uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile };
   };
-  ptr_type::type type:3;  
+  ptr_type::type type:4;  
   ast::value value_type:4;
   value_category category:4;
   union {
@@ -793,15 +793,15 @@ public:
   {
     if (mean == zero) {
       // Avoid expensive (and unneeded) gcd in rational::operator+=
-      rational::int_type n=0, d=1;
+      rational::int_type n=0, d=1, count=0;
       for (const_reference voice: *this)
         for (proxied_voice::const_reference part: *voice)
           for (proxied_partial_measure::const_reference partial_voice: *part)
             for (rational const &value: *partial_voice)
               n = n*value.numerator() + d*value.denominator(),
               d *= value.numerator(),
-              ++mean;
-      mean /= rational(n, d);
+              ++count;
+      mean.assign(count*d, n);
     }
     return mean;
   }
