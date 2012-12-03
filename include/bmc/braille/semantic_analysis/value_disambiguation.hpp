@@ -294,7 +294,13 @@ public:
   { BOOST_ASSERT(false); }
 };
 
-template<typename Callback>
+typedef std::function<void( value_proxy const *
+                          , value_proxy const *
+                          , rational const &
+                          )
+                     >
+        partial_voice_interpretation_function;
+
 class partial_voice_interpreter
 {
   static
@@ -349,7 +355,7 @@ class partial_voice_interpreter
   rational const &start_position;
   rational const beat;
   rational const last_measure_duration_;
-  Callback yield;
+  partial_voice_interpretation_function const &yield;
   ast::partial_voice &voice;
   ast::partial_voice::iterator const voice_end;
   value_proxy *const stack_begin;
@@ -432,7 +438,7 @@ public:
                            , rational const &position
                            , music::time_signature const &time_sig
                            , rational const &last_measure_duration_
-                           , Callback yield
+                           , partial_voice_interpretation_function const &yield
                            )
   : time_signature(time_sig)
   , start_position(position)
@@ -450,7 +456,6 @@ public:
   rational const &last_measure_duration() const { return last_measure_duration_; }
 };
 
-template<typename Callback>
 class large_and_small_visitor : public boost::static_visitor<bool>
 {
   ast::partial_voice::iterator const &rest;
@@ -458,13 +463,13 @@ class large_and_small_visitor : public boost::static_visitor<bool>
   rational const &max_duration
                , &position
                ;
-  partial_voice_interpreter<Callback> const &interpreter;
+  partial_voice_interpreter const &interpreter;
 public:
   large_and_small_visitor( ast::partial_voice::iterator const &rest
                          , value_proxy *stack_end
                          , rational const &max_duration
                          , rational const &position
-                         , partial_voice_interpreter<Callback> const &interpreter
+                         , partial_voice_interpreter const &interpreter
                          )
   : rest(rest)
   , proxy(stack_end)
@@ -531,10 +536,9 @@ public:
   bool is_grace(ast::moving_note const &chord) const { return is_grace(chord.base); }
 };
 
-template<typename Callback>
 inline
 void
-partial_voice_interpreter<Callback>
+partial_voice_interpreter
 ::
 large_and_small( ast::partial_voice::iterator const &iterator
                , value_proxy *stack_end
@@ -544,7 +548,7 @@ large_and_small( ast::partial_voice::iterator const &iterator
 {
   // Skip this sign if it does not result in at least one possible proxy
   auto rest = iterator; ++rest;
-  if (not apply_visitor( large_and_small_visitor<Callback>
+  if (not apply_visitor( large_and_small_visitor
                          (rest, stack_end, max_duration, position, *this)
                        , *iterator
                        )
@@ -552,7 +556,6 @@ large_and_small( ast::partial_voice::iterator const &iterator
     recurse(rest, stack_end, max_duration, position);
 }
 
-template<typename Callback>
 inline
 void
 partial_voice_interpretations( ast::partial_voice &voice
@@ -560,10 +563,10 @@ partial_voice_interpretations( ast::partial_voice &voice
                              , rational const &position
                              , music::time_signature const &time_sig
                              , rational const &last_measure_duration
-                             , Callback yield
+                             , partial_voice_interpretation_function const &yield
                              )
 {
-  partial_voice_interpreter<Callback>
+  partial_voice_interpreter
   (voice, position, time_sig, last_measure_duration, yield)(max_duration);
 }
 
@@ -575,8 +578,12 @@ duration(proxied_partial_voice_ptr const &partial_voice)
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
 typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
+typedef std::function<void( proxied_partial_voice_ptr const *
+                          , proxied_partial_voice_ptr const *
+                          )
+                     >
+        partial_measure_interpretation_function;
 
-template<typename Callback>
 inline
 void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
@@ -587,7 +594,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , rational const &position
                                , music::time_signature const &time_sig
                                , rational const &last_measure_duration
-                               , Callback yield
+                               , partial_measure_interpretation_function const &yield
                                )
 {
   if (begin == end) {
@@ -641,7 +648,6 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
   }
 }
 
-template<typename Callback>
 inline
 void
 partial_measure_interpretations( ast::partial_measure &partial_measure
@@ -649,7 +655,7 @@ partial_measure_interpretations( ast::partial_measure &partial_measure
                                , rational const &position
                                , music::time_signature const &time_sig
                                , rational const &last_measure_duration
-                               , Callback callback
+                               , partial_measure_interpretation_function const &callback
                                )
 {
   proxied_partial_voice_ptr *
@@ -701,8 +707,13 @@ public:
 };
 
 typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
+typedef std::function<void( proxied_partial_measure_ptr const *
+                          , proxied_partial_measure_ptr const *
+                          , rational const &
+                          )
+                     >
+        voice_interpretation_function;
 
-template<typename Callback>
 inline
 void
 voice_interpretations( ast::voice::iterator const &begin
@@ -713,7 +724,7 @@ voice_interpretations( ast::voice::iterator const &begin
                      , rational const &position
                      , music::time_signature const &time_signature
                      , rational const &last_measure_duration
-                     , Callback yield
+                     , voice_interpretation_function const &yield
                      )
 {
   if (begin == end) {
@@ -728,8 +739,8 @@ voice_interpretations( ast::voice::iterator const &begin
       , &max_length, &position, &time_signature, &last_measure_duration
       , &yield
       ]
-      ( proxied_partial_voice_ptr *f
-      , proxied_partial_voice_ptr *l
+      ( proxied_partial_voice_ptr const *f
+      , proxied_partial_voice_ptr const *l
       ) {
         stack_end->reset(new proxied_partial_measure(f, l));
         rational const partial_measure_duration(duration(*stack_end));
@@ -744,14 +755,13 @@ voice_interpretations( ast::voice::iterator const &begin
   }
 }
 
-template<typename Callback>
 inline
 void
 voice_interpretations( ast::voice &voice
                      , rational const &max_length
                      , music::time_signature const &time_sig
                      , rational const &last_measure_duration
-                     , Callback callback
+                     , voice_interpretation_function const &callback
                      )
 {
   proxied_partial_measure_ptr *
@@ -893,9 +903,9 @@ class measure_interpretations: std::vector<proxied_measure>
       voice_interpretations
       ( *begin, length, time_signature, last_measure_duration
       , [ stack_begin, stack_end, &tail, &end, &length, this ]
-        ( proxied_partial_measure_ptr *f
-        , proxied_partial_measure_ptr *l
-        , rational const& duration
+        ( proxied_partial_measure_ptr const *f
+        , proxied_partial_measure_ptr const *l
+        , rational const &duration
         ) {
           if ((stack_begin == stack_end and not this->complete) or
               (duration == length)) {
