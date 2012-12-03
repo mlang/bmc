@@ -207,6 +207,30 @@ public:
 
 typedef boost::intrusive_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
 
+struct global_state
+{
+  music::time_signature time_signature;
+  rational last_measure_duration;
+  rational beat;
+  bool exact_match_found;
+
+  global_state()
+  : time_signature()
+  , beat(1, time_signature.denominator())
+  , exact_match_found(false)
+  {}
+
+  global_state( music::time_signature const &time_signature
+              , rational const &last_measure_duration
+              , rational const &beat
+              )
+  : time_signature(time_signature)
+  , last_measure_duration(last_measure_duration)
+  , beat(beat)
+  , exact_match_found(false)
+  {}
+};
+
 struct maybe_whole_measure_rest : boost::static_visitor<bool>
 {
   result_type operator()(ast::rest const &rest) const
@@ -351,10 +375,8 @@ class partial_voice_interpreter
     return begin;
   }
 
-  music::time_signature const &time_signature;
+  global_state const &state;
   rational const &start_position;
-  rational const beat;
-  rational const last_measure_duration_;
   partial_voice_interpretation_function const &yield;
   ast::partial_voice &voice;
   ast::partial_voice::iterator const voice_end;
@@ -371,7 +393,7 @@ class partial_voice_interpreter
 
 public:
   bool on_beat(rational const &position) const
-  { return no_remainder(position, beat); }
+  { return no_remainder(position, state.beat); }
   void recurse( ast::partial_voice::iterator const &iterator
               , value_proxy *stack_end
               , rational const &max_duration
@@ -424,11 +446,11 @@ public:
         large_and_small(iterator, stack_end, max_duration, position);
 
         if (stack_begin == stack_end and position == 0 and
-            time_signature != 1 and
+            state.time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
-          *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), time_signature);
+          *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
           recurse(iterator + 1, stack_end + 1,
-                  zero, position + time_signature);
+                  zero, position + state.time_signature);
         }
       }
     }
@@ -436,14 +458,11 @@ public:
 
   partial_voice_interpreter( ast::partial_voice &voice
                            , rational const &position
-                           , music::time_signature const &time_sig
-                           , rational const &last_measure_duration_
+                           , global_state const &state
                            , partial_voice_interpretation_function const &yield
                            )
-  : time_signature(time_sig)
+  : state(state)
   , start_position(position)
-  , beat(1, time_signature.denominator())
-  , last_measure_duration_(last_measure_duration_)
   , yield(yield)
   , voice(voice)
   , voice_end(voice.end())
@@ -453,7 +472,7 @@ public:
 
   void operator()(rational const &max_duration) const
   { recurse(voice.begin(), stack_begin, max_duration, start_position); }
-  rational const &last_measure_duration() const { return last_measure_duration_; }
+  rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
 
 class large_and_small_visitor : public boost::static_visitor<bool>
@@ -561,14 +580,10 @@ void
 partial_voice_interpretations( ast::partial_voice &voice
                              , rational const &max_duration
                              , rational const &position
-                             , music::time_signature const &time_sig
-                             , rational const &last_measure_duration
+                             , global_state const &state
                              , partial_voice_interpretation_function const &yield
                              )
-{
-  partial_voice_interpreter
-  (voice, position, time_sig, last_measure_duration, yield)(max_duration);
-}
+{ partial_voice_interpreter(voice, position, state, yield)(max_duration); }
 
 inline
 rational const &
@@ -578,6 +593,7 @@ duration(proxied_partial_voice_ptr const &partial_voice)
 typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
 
 typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
+
 typedef std::function<void( proxied_partial_voice_ptr const *
                           , proxied_partial_voice_ptr const *
                           )
@@ -592,8 +608,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , proxied_partial_voice_ptr *stack_end
                                , rational const &length
                                , rational const &position
-                               , music::time_signature const &time_sig
-                               , rational const &last_measure_duration
+                               , global_state const &state
                                , partial_measure_interpretation_function const &yield
                                )
 {
@@ -603,10 +618,10 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
     auto const tail = begin + 1;
     if (stack_begin == stack_end) {
       partial_voice_interpretations
-      ( *begin, length, position, time_sig, last_measure_duration
+      ( *begin, length, position, state
       , [ stack_begin, stack_end
         , &tail, &end
-        , &position, &time_sig, &last_measure_duration
+        , &position, &state
         , &yield
         ]
         ( value_proxy const *f
@@ -617,16 +632,16 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
           partial_measure_interpretations( tail, end
                                          , stack_begin, stack_end + 1
                                          , duration, position
-                                         , time_sig, last_measure_duration
+                                         , state
                                          , yield
                                          );
         }
       );
     } else {
       partial_voice_interpretations
-      ( *begin, length, position, time_sig, last_measure_duration
+      ( *begin, length, position, state
       , [ stack_begin, stack_end, &tail, &end
-        , &length, &position, &time_sig, &last_measure_duration
+        , &length, &position, &state
         , &yield
         ]
         ( value_proxy const *f
@@ -638,7 +653,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
             partial_measure_interpretations( tail, end
                                            , stack_begin, stack_end + 1
                                            , duration, position
-                                           , time_sig, last_measure_duration
+                                           , state
                                            , yield
                                            );
           }
@@ -653,8 +668,7 @@ void
 partial_measure_interpretations( ast::partial_measure &partial_measure
                                , rational const &max_length
                                , rational const &position
-                               , music::time_signature const &time_sig
-                               , rational const &last_measure_duration
+                               , global_state const &state
                                , partial_measure_interpretation_function const &callback
                                )
 {
@@ -664,7 +678,7 @@ partial_measure_interpretations( ast::partial_measure &partial_measure
                                  , partial_measure.end()
                                  , stack, stack
                                  , max_length, position
-                                 , time_sig, last_measure_duration
+                                 , state
                                  , callback
                                  );
   delete [] stack;
@@ -722,8 +736,7 @@ voice_interpretations( ast::voice::iterator const &begin
                      , proxied_partial_measure_ptr *stack_end
                      , rational const &max_length
                      , rational const &position
-                     , music::time_signature const &time_signature
-                     , rational const &last_measure_duration
+                     , global_state const &state
                      , voice_interpretation_function const &yield
                      )
 {
@@ -734,9 +747,9 @@ voice_interpretations( ast::voice::iterator const &begin
   } else {
     auto const tail = begin + 1;
     partial_measure_interpretations
-    ( *begin, max_length, position, time_signature, last_measure_duration
+    ( *begin, max_length, position, state
     , [ stack_begin, stack_end, &tail, &end
-      , &max_length, &position, &time_signature, &last_measure_duration
+      , &max_length, &position, &state
       , &yield
       ]
       ( proxied_partial_voice_ptr const *f
@@ -747,7 +760,7 @@ voice_interpretations( ast::voice::iterator const &begin
         voice_interpretations( tail, end, stack_begin, stack_end + 1
                              , max_length - partial_measure_duration
                              , position + partial_measure_duration
-                             , time_signature, last_measure_duration
+                             , state
                              , yield
                              );
       }
@@ -759,8 +772,7 @@ inline
 void
 voice_interpretations( ast::voice &voice
                      , rational const &max_length
-                     , music::time_signature const &time_sig
-                     , rational const &last_measure_duration
+                     , global_state const &state
                      , voice_interpretation_function const &callback
                      )
 {
@@ -768,7 +780,8 @@ voice_interpretations( ast::voice &voice
   stack = new proxied_partial_measure_ptr[voice.size()];
   voice_interpretations( voice.begin(), voice.end()
                        , stack, stack
-                       , max_length, zero, time_sig, last_measure_duration
+                       , max_length, zero
+                       , state
                        , callback
                        );
   delete [] stack;
@@ -871,12 +884,9 @@ operator<<(std::basic_ostream<Char> &os, proxied_measure const &measure)
   return os;
 }
 
-class measure_interpretations: std::vector<proxied_measure>
+class measure_interpretations: std::vector<proxied_measure>, public global_state
 {
   std::size_t id;
-  music::time_signature time_signature;
-  rational last_measure_duration;
-  bool complete;
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
@@ -887,13 +897,13 @@ class measure_interpretations: std::vector<proxied_measure>
   {
     if (begin == end) {
       if (stack_begin != stack_end) {
-        if (not complete or length == time_signature) {
-          if (not complete and length == time_signature) {
+        if (not exact_match_found or length == time_signature) {
+          if (not exact_match_found and length == time_signature) {
             // We found the first intepretation matching the time signature.
             // So this is not an anacrusis.  Drop accumulated (incomplete)
             // interpretations and continue more efficiently.
             clear();
-            complete = true;
+            exact_match_found = true;
           }
           emplace_back(stack_begin, stack_end);
         }
@@ -901,13 +911,13 @@ class measure_interpretations: std::vector<proxied_measure>
     } else {
       auto const tail = begin + 1;
       voice_interpretations
-      ( *begin, length, time_signature, last_measure_duration
+      ( *begin, length, *this
       , [ stack_begin, stack_end, &tail, &end, &length, this ]
         ( proxied_partial_measure_ptr const *f
         , proxied_partial_measure_ptr const *l
         , rational const &duration
         ) {
-          if ((stack_begin == stack_end and not this->complete) or
+          if ((stack_begin == stack_end and not this->exact_match_found) or
               (duration == length)) {
             stack_end->reset(new proxied_voice(f, l, duration));
             this->recurse(tail, end, stack_begin, stack_end + 1, duration);
@@ -920,7 +930,7 @@ class measure_interpretations: std::vector<proxied_measure>
   void cleanup()
   {
     // Drop interpretations with a significant lower harmonic mean
-    if (complete and size() > 1) {
+    if (exact_match_found and size() > 1) {
       rational best_score;
       bool single_best_score = false;
       for (reference possibility: *this) {
@@ -947,14 +957,12 @@ public:
 
   measure_interpretations()
   : id(0)
-  , complete(false)
   {}
 
   measure_interpretations(measure_interpretations const& other)
   : base_type(other.begin(), other.end())
+  , global_state(other)
   , id(other.id)
-  , time_signature(other.time_signature)
-  , complete(other.complete)
   {}
 
   measure_interpretations( ast::measure& measure
@@ -962,10 +970,11 @@ public:
                          , rational const &last_measure_duration = rational(0)
                          )
   : base_type()
+  , global_state( time_signature
+                , last_measure_duration
+                , rational(1, time_signature.denominator())
+                )
   , id(measure.id)
-  , time_signature(time_signature)
-  , last_measure_duration(last_measure_duration)
-  , complete(false)
   {
     BOOST_ASSERT(time_signature >= 0);
     value_type::pointer
@@ -979,7 +988,7 @@ public:
   }
 
   bool contains_complete_measure() const
-  { return complete; }
+  { return exact_match_found; }
 
   bool completes_uniquely(measure_interpretations const &other) const
   {
