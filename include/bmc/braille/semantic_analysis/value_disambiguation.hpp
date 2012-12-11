@@ -375,6 +375,7 @@ class partial_voice_interpreter
     return begin;
   }
 
+  bool last_partial_measure;
   global_state const &state;
   rational const &start_position;
   partial_voice_interpretation_function const &yield;
@@ -401,7 +402,10 @@ public:
               ) const
   {
     if (iterator == voice_end) {
-      yield(stack_begin, stack_end, position - start_position);
+      if (not (last_partial_measure and state.exact_match_found
+               and
+               static_cast<bool>(max_duration)))
+        yield(stack_begin, stack_end, position - start_position);
     } else {
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
@@ -458,10 +462,12 @@ public:
 
   partial_voice_interpreter( ast::partial_voice &voice
                            , rational const &position
+                           , bool last_partial_measure
                            , global_state const &state
                            , partial_voice_interpretation_function const &yield
                            )
-  : state(state)
+  : last_partial_measure(last_partial_measure)
+  , state(state)
   , start_position(position)
   , yield(yield)
   , voice(voice)
@@ -580,10 +586,11 @@ void
 partial_voice_interpretations( ast::partial_voice &voice
                              , rational const &max_duration
                              , rational const &position
+                             , bool last_partial_measure
                              , global_state const &state
                              , partial_voice_interpretation_function const &yield
                              )
-{ partial_voice_interpreter(voice, position, state, yield)(max_duration); }
+{ partial_voice_interpreter(voice, position, last_partial_measure, state, yield)(max_duration); }
 
 inline
 rational const &
@@ -608,6 +615,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , proxied_partial_voice_ptr *stack_end
                                , rational const &length
                                , rational const &position
+                               , bool last_partial_measure
                                , global_state const &state
                                , partial_measure_interpretation_function const &yield
                                )
@@ -618,10 +626,10 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
     auto const tail = begin + 1;
     if (stack_begin == stack_end) {
       partial_voice_interpretations
-      ( *begin, length, position, state
+      ( *begin, length, position, last_partial_measure, state
       , [ stack_begin, stack_end
         , &tail, &end
-        , &position, &state
+        , &position, last_partial_measure, &state
         , &yield
         ]
         ( value_proxy const *f
@@ -632,6 +640,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
           partial_measure_interpretations( tail, end
                                          , stack_begin, stack_end + 1
                                          , duration, position
+                                         , last_partial_measure
                                          , state
                                          , yield
                                          );
@@ -639,9 +648,9 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
       );
     } else {
       partial_voice_interpretations
-      ( *begin, length, position, state
+      ( *begin, length, position, last_partial_measure, state
       , [ stack_begin, stack_end, &tail, &end
-        , &length, &position, &state
+        , &length, &position, last_partial_measure, &state
         , &yield
         ]
         ( value_proxy const *f
@@ -653,6 +662,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
             partial_measure_interpretations( tail, end
                                            , stack_begin, stack_end + 1
                                            , duration, position
+                                           , last_partial_measure
                                            , state
                                            , yield
                                            );
@@ -668,6 +678,7 @@ void
 partial_measure_interpretations( ast::partial_measure &partial_measure
                                , rational const &max_length
                                , rational const &position
+                               , bool last_partial_measure
                                , global_state const &state
                                , partial_measure_interpretation_function const &callback
                                )
@@ -678,6 +689,7 @@ partial_measure_interpretations( ast::partial_measure &partial_measure
                                  , partial_measure.end()
                                  , stack, stack
                                  , max_length, position
+                                 , last_partial_measure
                                  , state
                                  , callback
                                  );
@@ -747,7 +759,7 @@ voice_interpretations( ast::voice::iterator const &begin
   } else {
     auto const tail = begin + 1;
     partial_measure_interpretations
-    ( *begin, max_length, position, state
+    ( *begin, max_length, position, tail == end, state
     , [ stack_begin, stack_end, &tail, &end
       , &max_length, &position, &state
       , &yield
