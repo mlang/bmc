@@ -23,7 +23,7 @@ add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             measure.cpp score.cpp
-            value_disambiguator.cpp
+            value_disambiguation.cpp value_disambiguator.cpp
             lilypond.cpp
            )
 set_target_properties(bmc_parse

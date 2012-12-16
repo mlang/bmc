@@ -33,11 +33,6 @@ enum value_category
   large, small
 };
 
-rational const undotted[8] = {
-  rational(1, 1), rational(1, 2), rational(1, 4), rational(1, 8),
-  rational(1, 16), rational(1, 32), rational(1, 64), rational(1, 128)
-};
-
 /**
  * \brief A possible interpretation of a value (note, rest or chord).
  *
@@ -46,11 +41,11 @@ rational const undotted[8] = {
  */
 class value_proxy
 {
-  struct ptr_type
+  enum class ptr_type: uint8_t
   {
-    enum type { uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile };
+    uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
   };
-  ptr_type::type type:4;  
+  ptr_type type;  
   ast::value value_type:4;
   value_category category:4;
   union {
@@ -62,18 +57,8 @@ class value_proxy
   };
   rational duration;
 
-  rational const &undotted_duration() const
-  {
-    BOOST_ASSERT(category==large || category==small);
-    BOOST_ASSERT(value_type >= 0 and value_type < 4);
-    return undotted[category * 4 + value_type];
-  }
-
-  rational calculate_duration(unsigned dots)
-  {
-    rational const base(undotted_duration());
-    return dots? base * 2 - base / pow(2, dots): base;
-  }
+  rational const &undotted_duration() const;
+  rational calculate_duration(unsigned dots) const;
 
 public:
   value_proxy()
@@ -150,32 +135,7 @@ public:
   /** \brief Fill the infomation gathered about this partiuclar interpretation
     *        into the AST
    */
-  void accept() const
-  {
-    switch (type) {
-    case ptr_type::note:
-      note_ptr->type = undotted_duration();
-      break;
-    case ptr_type::rest:
-      rest_ptr->type = undotted_duration();
-      break;
-    case ptr_type::whole_measure_rest:
-      rest_ptr->type = duration;
-      rest_ptr->whole_measure = true;
-      break;
-    case ptr_type::chord:
-      chord_ptr->base.type = undotted_duration();
-      break;
-    case ptr_type::moving_note:
-      moving_note_ptr->base.type = undotted_duration();
-      break;
-    case ptr_type::simile:
-      simile_ptr->duration = duration;
-      break;
-    default:
-    case ptr_type::uninitialized: BOOST_ASSERT(false);
-    }
-  }
+  void accept() const;
 };
 
 inline rational
@@ -191,9 +151,9 @@ public:
   proxied_partial_voice( const_pointer begin, const_pointer end
                        , rational const &duration
                        )
-  : base_type(begin, end)
-  , duration(duration)
-  , use_count(0)
+  : base_type(begin, end) // copy the given range of value_proxy objects
+  , duration(duration)    // remember the accumulative duration of all elements
+  , use_count(0)          // initialize use count to 0
   {}
 
   operator rational const &() const { return duration; }
@@ -231,93 +191,7 @@ struct global_state
   {}
 };
 
-struct maybe_whole_measure_rest : boost::static_visitor<bool>
-{
-  result_type operator()(ast::rest const &rest) const
-  {
-    return rest.ambiguous_value == ast::whole_or_16th and
-           rest.dots == 0;
-  }
-  template<typename Sign>
-  result_type operator()(Sign const &) const { return false; }
-};
-
-class notegroup: public boost::static_visitor<void>
-{
-  value_category const category;
-  ast::value type;
-  value_proxy *const stack_begin, *stack_end;
-public:
-  notegroup( ast::partial_voice::iterator const &begin
-           , ast::partial_voice::iterator const &end
-           , value_category const &category
-           , value_proxy *stack_end
-           )
-  : category(category), type(ast::unknown)
-  , stack_begin(stack_end), stack_end(stack_end)
-  { std::for_each(begin, end, apply_visitor(*this)); }
-
-  result_type operator()(ast::note &note)
-  {
-    BOOST_ASSERT(note.ambiguous_value != ast::unknown);
-    if (type == ast::unknown) type = note.ambiguous_value;
-    new (stack_end++) value_proxy(note, category, type);
-  }
-  result_type operator()(ast::rest &rest)
-  {
-    BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
-    if (type == ast::unknown) type = rest.ambiguous_value;
-    new (stack_end++) value_proxy(rest, category, type);
-  }
-  result_type operator()(ast::chord &chord)
-  {
-    BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
-    if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, category, type);
-  }
-  result_type operator()(ast::moving_note &chord)
-  {
-    BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
-    if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, category, type);
-  }
-  result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
-  result_type operator()(braille::ast::tie &) {}
-  result_type operator()(braille::hand_sign &) {}
-  result_type operator()(ast::barline &) {}
-  result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
-
-  value_proxy *end() const { return stack_end; }
-  rational duration() const
-  { return std::accumulate(stack_begin, stack_end, zero); }
-};
-
-class same_category
-: public std::vector<value_proxy>
-, public boost::static_visitor<void>
-{
-  value_category const category;
-public:
-  same_category( ast::partial_voice::iterator const &begin
-               , ast::partial_voice::iterator const &end
-               , value_category const &category
-               )
-  : category(category)
-  { std::for_each(begin, end, apply_visitor(*this)); }
-
-  result_type operator()(ast::note &note)
-  { emplace_back(note, category); }
-  result_type operator()(ast::rest &rest)
-  { emplace_back(rest, category); }
-  result_type operator()(ast::chord &chord)
-  { emplace_back(chord, category); }
-  result_type operator()(ast::moving_note &chord)
-  { emplace_back(chord, category); }
-  result_type operator()(ast::value_distinction const &) {}
-  template<typename Sign> result_type operator()(Sign const &)
-  { BOOST_ASSERT(false); }
-};
-
+// Called if a valid interpretation of a partial voice has been found.
 typedef std::function<void( value_proxy const *
                           , value_proxy const *
                           , rational const &
@@ -325,263 +199,6 @@ typedef std::function<void( value_proxy const *
                      >
         partial_voice_interpretation_function;
 
-class partial_voice_interpreter
-{
-  static
-  ast::partial_voice::iterator
-  same_category_end( ast::partial_voice::iterator const &begin
-                   , ast::partial_voice::iterator const &end
-                   , ast::value_distinction::type distinction
-                   )
-  {
-    if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
-      ast::partial_voice::iterator iter(begin + 1);
-      if (iter != end and apply_visitor(ast::is_rhythmic(), *iter)) {
-        for (ast::value
-             initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
-             iter != end and
-             apply_visitor(ast::is_rhythmic(), *iter) and
-             apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
-             ++iter);
-        return iter;
-      }
-    }
-    return begin;
-  }
-  /**
-   * \brief Find end of note group.
-   *
-   * \param begin The beginning of the range of signs to examine
-   * \param end   The end of the range of signs to examine
-   * \return If note group was found the returned iterator points one element
-   *         beyond its last element.  Otherwise, begin is returned.
-   */
-  static
-  ast::partial_voice::iterator
-  notegroup_end( ast::partial_voice::iterator const &begin
-               , ast::partial_voice::iterator const &end
-               )
-  {
-    if (apply_visitor(ast::is_rhythmic(), *begin)) {
-      if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
-        auto iter = begin + 1;
-        while (iter != end and
-               apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
-          ++iter;
-        // A note group is only valid if it consists of at least 3 rhythmic signs
-        if (std::distance(begin, iter) > 2) return iter;
-      }
-    }
-    return begin;
-  }
-
-  bool last_partial_measure;
-  global_state const &state;
-  rational const &start_position;
-  partial_voice_interpretation_function const &yield;
-  ast::partial_voice &voice;
-  ast::partial_voice::iterator const voice_end;
-  value_proxy *const stack_begin;
-
-  /** \brief Try the common large and small variations.
-   */
-  inline
-  void large_and_small( ast::partial_voice::iterator const &iterator
-                      , value_proxy *stack_end
-                      , rational const &max_duration
-                      , rational const &position
-                      ) const;
-
-public:
-  bool on_beat(rational const &position) const
-  { return no_remainder(position, state.beat); }
-  void recurse( ast::partial_voice::iterator const &iterator
-              , value_proxy *stack_end
-              , rational const &max_duration
-              , rational const &position
-              ) const
-  {
-    if (iterator == voice_end) {
-      if (not (last_partial_measure and state.exact_match_found
-               and
-               static_cast<bool>(max_duration)))
-        yield(stack_begin, stack_end, position - start_position);
-    } else {
-      ast::partial_voice::iterator tail;
-      if (on_beat(position) and
-          (tail = notegroup_end(iterator, voice_end)) > iterator) {
-        // Try all possible notegroups, starting with the longest
-        while (std::distance(iterator, tail) >= 3) {
-          notegroup const group(iterator, tail, small, stack_end);
-          rational const group_duration(group.duration());
-          if (group_duration <= max_duration) {
-            rational const next_position(position + group_duration);
-            if (on_beat(next_position)) {
-              recurse(tail, group.end(), max_duration - group_duration, next_position);
-            }
-          }
-          --tail;
-        }
-
-        large_and_small(iterator, stack_end, max_duration, position);
-      } else if ((tail = same_category_end
-                         ( iterator, voice_end
-                         , ast::value_distinction::large_follows
-                         )
-                 ) > iterator) {
-        same_category const group(iterator, tail, large);
-        if (duration(group) <= max_duration) {
-          recurse(tail, std::copy(group.begin(), group.end(), stack_end),
-                  max_duration - duration(group),
-                  position + duration(group));
-        }
-      } else if ((tail = same_category_end
-                         ( iterator, voice_end
-                         , ast::value_distinction::small_follows
-                         )
-                 ) > iterator) {
-        same_category const group(iterator, tail, small);
-        if (duration(group) <= max_duration) {
-          recurse(tail, std::copy(group.begin(), group.end(), stack_end),
-                  max_duration - duration(group),
-                  position + duration(group));
-        }
-      } else {
-        large_and_small(iterator, stack_end, max_duration, position);
-
-        if (stack_begin == stack_end and position == 0 and
-            state.time_signature != 1 and
-            apply_visitor(maybe_whole_measure_rest(), *iterator)) {
-          *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
-          recurse(iterator + 1, stack_end + 1,
-                  zero, position + state.time_signature);
-        }
-      }
-    }
-  }
-
-  partial_voice_interpreter( ast::partial_voice &voice
-                           , rational const &position
-                           , bool last_partial_measure
-                           , global_state const &state
-                           , partial_voice_interpretation_function const &yield
-                           )
-  : last_partial_measure(last_partial_measure)
-  , state(state)
-  , start_position(position)
-  , yield(yield)
-  , voice(voice)
-  , voice_end(voice.end())
-  , stack_begin(new value_proxy[voice.size()])
-  {}
-  ~partial_voice_interpreter() { delete [] stack_begin; }
-
-  void operator()(rational const &max_duration) const
-  { recurse(voice.begin(), stack_begin, max_duration, start_position); }
-  rational const &last_measure_duration() const { return state.last_measure_duration; }
-};
-
-class large_and_small_visitor : public boost::static_visitor<bool>
-{
-  ast::partial_voice::iterator const &rest;
-  value_proxy *const proxy;
-  rational const &max_duration
-               , &position
-               ;
-  partial_voice_interpreter const &interpreter;
-public:
-  large_and_small_visitor( ast::partial_voice::iterator const &rest
-                         , value_proxy *stack_end
-                         , rational const &max_duration
-                         , rational const &position
-                         , partial_voice_interpreter const &interpreter
-                         )
-  : rest(rest)
-  , proxy(stack_end)
-  , max_duration(max_duration)
-  , position(position)
-  , interpreter(interpreter)
-  {}
-
-  template <class Value>
-  result_type operator()(Value &value) const
-  {
-    if (not is_grace(value)) {
-      value_proxy *const next = proxy + 1;
-      if (*new(proxy)value_proxy(value, large) <= max_duration)
-        interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy
-                           );
-      if (*new(proxy)value_proxy(value, small) <= max_duration)
-        interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy
-                           );
-      return true;
-    }
-    return false;
-  }
-  result_type operator()(ast::value_distinction &) const { return false; }
-  result_type operator()(braille::hand_sign &) const { return false; }
-  result_type operator()(braille::ast::tie &) const { return false; }
-  result_type operator()(ast::barline &) const { return false; }
-  result_type operator()(ast::simile &simile) const
-  {
-    if (not position) { // full measure simile
-      if (*new(proxy)value_proxy
-          (simile, interpreter.last_measure_duration()) > rational(0) and
-          static_cast<rational>(*proxy) / simile.count <= max_duration) {
-        rational const duration(static_cast<rational>(*proxy) / simile.count);
-        interpreter.recurse( rest, proxy + 1
-                           , max_duration - duration, position + duration
-                           );
-      }
-    } else { // partial measure simile
-      if (interpreter.on_beat(position)) {
-        if (*new(proxy)value_proxy(simile, position) <= max_duration)
-          interpreter.recurse( rest, proxy + 1
-                             , max_duration - *proxy, position + *proxy
-                             );
-      }
-    }
-    return true;
-  }
-
-  bool is_grace(ast::note const &note) const
-  {
-    return std::find(note.articulations.begin(), note.articulations.end(),
-                     appoggiatura)
-           != note.articulations.end()
-           ||
-           std::find(note.articulations.begin(), note.articulations.end(),
-                    short_appoggiatura)
-           != note.articulations.end();
-  }
-  bool is_grace(ast::rest const &) const { return false; }
-  bool is_grace(ast::chord const &chord) const { return is_grace(chord.base); }
-  bool is_grace(ast::moving_note const &chord) const { return is_grace(chord.base); }
-};
-
-inline
-void
-partial_voice_interpreter
-::
-large_and_small( ast::partial_voice::iterator const &iterator
-               , value_proxy *stack_end
-               , rational const &max_duration
-               , rational const &position
-               ) const
-{
-  // Skip this sign if it does not result in at least one possible proxy
-  auto rest = iterator; ++rest;
-  if (not apply_visitor( large_and_small_visitor
-                         (rest, stack_end, max_duration, position, *this)
-                       , *iterator
-                       )
-     )
-    recurse(rest, stack_end, max_duration, position);
-}
-
-inline
 void
 partial_voice_interpretations( ast::partial_voice &voice
                              , rational const &max_duration
@@ -589,8 +206,7 @@ partial_voice_interpretations( ast::partial_voice &voice
                              , bool last_partial_measure
                              , global_state const &state
                              , partial_voice_interpretation_function const &yield
-                             )
-{ partial_voice_interpreter(voice, position, last_partial_measure, state, yield)(max_duration); }
+                             );
 
 inline
 rational const &
@@ -607,73 +223,6 @@ typedef std::function<void( proxied_partial_voice_ptr const *
                      >
         partial_measure_interpretation_function;
 
-inline
-void
-partial_measure_interpretations( ast::partial_measure::iterator const &begin
-                               , ast::partial_measure::iterator const &end
-                               , proxied_partial_voice_ptr *stack_begin
-                               , proxied_partial_voice_ptr *stack_end
-                               , rational const &length
-                               , rational const &position
-                               , bool last_partial_measure
-                               , global_state const &state
-                               , partial_measure_interpretation_function const &yield
-                               )
-{
-  if (begin == end) {
-    if (stack_begin != stack_end) yield(stack_begin, stack_end);
-  } else {
-    auto const tail = begin + 1;
-    if (stack_begin == stack_end) {
-      partial_voice_interpretations
-      ( *begin, length, position, last_partial_measure, state
-      , [ stack_begin, stack_end
-        , &tail, &end
-        , &position, last_partial_measure, &state
-        , &yield
-        ]
-        ( value_proxy const *f
-        , value_proxy const *l
-        , rational const &duration
-        ) {
-          stack_end->reset(new proxied_partial_voice(f, l, duration));
-          partial_measure_interpretations( tail, end
-                                         , stack_begin, stack_end + 1
-                                         , duration, position
-                                         , last_partial_measure
-                                         , state
-                                         , yield
-                                         );
-        }
-      );
-    } else {
-      partial_voice_interpretations
-      ( *begin, length, position, last_partial_measure, state
-      , [ stack_begin, stack_end, &tail, &end
-        , &length, &position, last_partial_measure, &state
-        , &yield
-        ]
-        ( value_proxy const *f
-        , value_proxy const *l
-        , rational const &duration
-        ) {
-          if (duration == length) {
-            stack_end->reset(new proxied_partial_voice(f, l, duration));
-            partial_measure_interpretations( tail, end
-                                           , stack_begin, stack_end + 1
-                                           , duration, position
-                                           , last_partial_measure
-                                           , state
-                                           , yield
-                                           );
-          }
-        }
-      );
-    }
-  }
-}
-
-inline
 void
 partial_measure_interpretations( ast::partial_measure &partial_measure
                                , rational const &max_length
@@ -681,20 +230,7 @@ partial_measure_interpretations( ast::partial_measure &partial_measure
                                , bool last_partial_measure
                                , global_state const &state
                                , partial_measure_interpretation_function const &callback
-                               )
-{
-  proxied_partial_voice_ptr *
-  stack = new proxied_partial_voice_ptr[partial_measure.size()];
-  partial_measure_interpretations( partial_measure.begin()
-                                 , partial_measure.end()
-                                 , stack, stack
-                                 , max_length, position
-                                 , last_partial_measure
-                                 , state
-                                 , callback
-                                 );
-  delete [] stack;
-}
+                               );
 
 inline
 rational
@@ -733,6 +269,7 @@ public:
 };
 
 typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
+
 typedef std::function<void( proxied_partial_measure_ptr const *
                           , proxied_partial_measure_ptr const *
                           , rational const &
@@ -740,64 +277,12 @@ typedef std::function<void( proxied_partial_measure_ptr const *
                      >
         voice_interpretation_function;
 
-inline
-void
-voice_interpretations( ast::voice::iterator const &begin
-                     , ast::voice::iterator const &end
-                     , proxied_partial_measure_ptr *stack_begin
-                     , proxied_partial_measure_ptr *stack_end
-                     , rational const &max_length
-                     , rational const &position
-                     , global_state const &state
-                     , voice_interpretation_function const &yield
-                     )
-{
-  if (begin == end) {
-    if (stack_begin != stack_end) {
-      yield(stack_begin, stack_end, position);
-    }
-  } else {
-    auto const tail = begin + 1;
-    partial_measure_interpretations
-    ( *begin, max_length, position, tail == end, state
-    , [ stack_begin, stack_end, &tail, &end
-      , &max_length, &position, &state
-      , &yield
-      ]
-      ( proxied_partial_voice_ptr const *f
-      , proxied_partial_voice_ptr const *l
-      ) {
-        stack_end->reset(new proxied_partial_measure(f, l));
-        rational const partial_measure_duration(duration(*stack_end));
-        voice_interpretations( tail, end, stack_begin, stack_end + 1
-                             , max_length - partial_measure_duration
-                             , position + partial_measure_duration
-                             , state
-                             , yield
-                             );
-      }
-    );
-  }
-}
-
-inline
 void
 voice_interpretations( ast::voice &voice
                      , rational const &max_length
                      , global_state const &state
                      , voice_interpretation_function const &callback
-                     )
-{
-  proxied_partial_measure_ptr *
-  stack = new proxied_partial_measure_ptr[voice.size()];
-  voice_interpretations( voice.begin(), voice.end()
-                       , stack, stack
-                       , max_length, zero
-                       , state
-                       , callback
-                       );
-  delete [] stack;
-}
+                     );
 
 inline
 rational const &
@@ -824,35 +309,13 @@ public:
    *
    * @see http://en.wikipedia.org/wiki/Harmonic_mean
    */
-  rational const &harmonic_mean()
-  {
-    if (mean == zero) {
-      // Avoid expensive (and unneeded) gcd in rational::operator+=
-      rational::int_type n=0, d=1, count=0;
-      for (const_reference voice: *this)
-        for (proxied_voice::const_reference part: *voice)
-          for (proxied_partial_measure::const_reference partial_voice: *part)
-            for (rational const &value: *partial_voice)
-              n = n*value.numerator() + d*value.denominator(),
-              d *= value.numerator(),
-              ++count;
-      mean.assign(count*d, n);
-    }
-    return mean;
-  }
+  rational const &harmonic_mean();
 
   /** @breif Transfer the herein learnt information to the refered-to objects.
    *
    * @note This member function should only be called on one found result.
    */
-  void accept() const
-  {
-    for (const_reference voice: *this)
-      for (auto const &partial_measure: *voice)
-        for (auto const &partial_voice: *partial_measure)
-          for_each(partial_voice->begin(), partial_voice->end(),
-                   std::mem_fun_ref(&value_proxy::accept));
-  }
+  void accept() const;
 };
 
 /** @brief Duration of a proxied_measure.
