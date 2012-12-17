@@ -368,64 +368,9 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
               , value_type::pointer stack_begin
               , value_type::pointer stack_end
               , rational const& length
-              )
-  {
-    if (begin == end) {
-      if (stack_begin != stack_end) {
-        if (not exact_match_found or length == time_signature) {
-          if (not exact_match_found and length == time_signature) {
-            // We found the first intepretation matching the time signature.
-            // So this is not an anacrusis.  Drop accumulated (incomplete)
-            // interpretations and continue more efficiently.
-            clear();
-            exact_match_found = true;
-          }
-          emplace_back(stack_begin, stack_end);
-        }
-      }
-    } else {
-      auto const tail = begin + 1;
-      voice_interpretations
-      ( *begin, length, *this
-      , [ stack_begin, stack_end, &tail, &end, &length, this ]
-        ( proxied_partial_measure_ptr const *f
-        , proxied_partial_measure_ptr const *l
-        , rational const &duration
-        ) {
-          if ((stack_begin == stack_end and not this->exact_match_found) or
-              (duration == length)) {
-            stack_end->reset(new proxied_voice(f, l, duration));
-            this->recurse(tail, end, stack_begin, stack_end + 1, duration);
-          }
-        }
-      );
-    }
-  }
+	      );
 
-  void cleanup()
-  {
-    // Drop interpretations with a significant lower harmonic mean
-    if (exact_match_found and size() > 1) {
-      rational best_score;
-      bool single_best_score = false;
-      for (reference possibility: *this) {
-        rational const score(possibility.harmonic_mean());
-        if (score > best_score) {
-          best_score = score, single_best_score = true;
-        } else if (score == best_score) {
-          single_best_score = false;
-        }
-      }
-      // Do not consider possibilities below a certain margin as valid
-      if (single_best_score) {
-        rational const margin(best_score * rational(2, 3));
-        base_type good;
-        for (reference measure: *this)
-          if (measure.harmonic_mean() > margin) good.push_back(measure);
-        assign(good.begin(), good.end());
-      }
-    }
-  }
+  void cleanup();
 
 public:
   typedef std::vector<proxied_measure> base_type;
