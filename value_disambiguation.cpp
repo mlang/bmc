@@ -201,7 +201,7 @@ class partial_voice_interpreter
   partial_voice_interpretation_function const &yield;
   ast::partial_voice &voice;
   ast::partial_voice::iterator const voice_end;
-  value_proxy *const stack_begin;
+  std::unique_ptr<value_proxy[]> stack_begin;
 
   /** \brief Try the common large and small variations.
    */
@@ -225,7 +225,7 @@ public:
       if (not (last_partial_measure and state.exact_match_found
                and
                static_cast<bool>(max_duration)))
-        yield(stack_begin, stack_end, position - start_position);
+        yield(stack_begin.get(), stack_end, position - start_position);
     } else {
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
@@ -269,7 +269,7 @@ public:
       } else {
         large_and_small(iterator, stack_end, max_duration, position);
 
-        if (stack_begin == stack_end and position == 0 and
+        if (stack_begin.get() == stack_end and position == 0 and
             state.time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
@@ -294,10 +294,9 @@ public:
   , voice_end(voice.end())
   , stack_begin(new value_proxy[voice.size()])
   {}
-  ~partial_voice_interpreter() { delete [] stack_begin; }
 
   void operator()(rational const &max_duration) const
-  { recurse(voice.begin(), stack_begin, max_duration, start_position); }
+  { recurse(voice.begin(), stack_begin.get(), max_duration, start_position); }
   rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
 
@@ -492,17 +491,16 @@ partial_measure_interpretations( ast::partial_measure &partial_measure
                                , partial_measure_interpretation_function const &callback
                                )
 {
-  proxied_partial_voice_ptr *
-  stack = new proxied_partial_voice_ptr[partial_measure.size()];
+  std::unique_ptr<proxied_partial_voice_ptr[]>
+  stack(new proxied_partial_voice_ptr[partial_measure.size()]);
   partial_measure_interpretations( partial_measure.begin()
                                  , partial_measure.end()
-                                 , stack, stack
-                                 , max_length, position
-                                 , last_partial_measure
+                                 , stack.get()
+                                 , stack.get()
+                                 , max_length, position, last_partial_measure
                                  , state
                                  , callback
-                                 );
-  delete [] stack;
+                                 ) ;
 }
 
 inline
@@ -552,15 +550,14 @@ voice_interpretations( ast::voice &voice
                      , voice_interpretation_function const &callback
                      )
 {
-  proxied_partial_measure_ptr *
-  stack = new proxied_partial_measure_ptr[voice.size()];
+  std::unique_ptr<proxied_partial_measure_ptr[]>
+  stack(new proxied_partial_measure_ptr[voice.size()]);
   voice_interpretations( voice.begin(), voice.end()
-                       , stack, stack
+                       , stack.get(), stack.get()
                        , max_length, zero
                        , state
                        , callback
-                       );
-  delete [] stack;
+                       ) ;
 }
 
 rational const &

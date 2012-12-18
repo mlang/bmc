@@ -397,12 +397,12 @@ public:
   , id(measure.id)
   {
     BOOST_ASSERT(time_signature >= 0);
-    value_type::pointer
-    stack = new value_type::value_type[measure.voices.size()];
-    recurse(measure.voices.begin(), measure.voices.end(),
-            stack, stack,
-            time_signature);
-    delete [] stack;
+    std::unique_ptr<value_type::value_type[]>
+    stack(new value_type::value_type[measure.voices.size()]);
+    recurse( measure.voices.begin(), measure.voices.end()
+           , stack.get(), stack.get()
+           , time_signature
+           ) ;
 
     cleanup();
   }
