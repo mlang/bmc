@@ -198,7 +198,7 @@ class partial_voice_interpreter
   bool last_partial_measure;
   global_state const &state;
   rational const &start_position;
-  partial_voice_interpretation_function const &yield;
+  proxied_partial_voice::function const &yield;
   ast::partial_voice &voice;
   ast::partial_voice::iterator const voice_end;
   std::unique_ptr<value_proxy[]> stack_begin;
@@ -284,7 +284,7 @@ public:
                            , rational const &position
                            , bool last_partial_measure
                            , global_state const &state
-                           , partial_voice_interpretation_function const &yield
+                           , proxied_partial_voice::function const &yield
                            )
   : last_partial_measure(last_partial_measure)
   , state(state)
@@ -403,13 +403,13 @@ large_and_small( ast::partial_voice::iterator const &iterator
 }
 
 void
-partial_voice_interpretations( ast::partial_voice &voice
-                             , rational const &max_duration
-                             , rational const &position
-                             , bool last_partial_measure
-                             , global_state const &state
-                             , partial_voice_interpretation_function const &yield
-                             )
+proxied_partial_voice::foreach( ast::partial_voice &voice
+                              , rational const &max_duration
+                              , rational const &position
+                              , bool last_partial_measure
+                              , global_state const &state
+                              , proxied_partial_voice::function const &yield
+                              )
 {
   partial_voice_interpreter
   (voice, position, last_partial_measure, state, yield)
@@ -420,13 +420,13 @@ inline
 void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , ast::partial_measure::iterator const &end
-                               , proxied_partial_voice_ptr *stack_begin
-                               , proxied_partial_voice_ptr *stack_end
+                               , proxied_partial_voice::shared_ptr *stack_begin
+                               , proxied_partial_voice::shared_ptr *stack_end
                                , rational const &length
                                , rational const &position
                                , bool last_partial_measure
                                , global_state const &state
-                               , partial_measure_interpretation_function const &yield
+                               , proxied_partial_measure::function const &yield
                                )
 {
   if (begin == end) {
@@ -434,7 +434,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
   } else {
     auto const tail = begin + 1;
     if (stack_begin == stack_end) {
-      partial_voice_interpretations
+      proxied_partial_voice::foreach
       ( *begin, length, position, last_partial_measure, state
       , [ stack_begin, stack_end
         , &tail, &end
@@ -456,7 +456,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
         }
       );
     } else {
-      partial_voice_interpretations
+      proxied_partial_voice::foreach
       ( *begin, length, position, last_partial_measure, state
       , [ stack_begin, stack_end, &tail, &end
         , &length, &position, last_partial_measure, &state
@@ -483,16 +483,16 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
 }
 
 void
-partial_measure_interpretations( ast::partial_measure &partial_measure
-                               , rational const &max_length
-                               , rational const &position
-                               , bool last_partial_measure
-                               , global_state const &state
-                               , partial_measure_interpretation_function const &callback
-                               )
+proxied_partial_measure::foreach( ast::partial_measure &partial_measure
+                                , rational const &max_length
+                                , rational const &position
+                                , bool last_partial_measure
+                                , global_state const &state
+                                , proxied_partial_measure::function const &callback
+                                )
 {
-  std::unique_ptr<proxied_partial_voice_ptr[]>
-  stack(new proxied_partial_voice_ptr[partial_measure.size()]);
+  std::unique_ptr<proxied_partial_voice::shared_ptr[]>
+  stack(new proxied_partial_voice::shared_ptr[partial_measure.size()]);
   partial_measure_interpretations( partial_measure.begin()
                                  , partial_measure.end()
                                  , stack.get()
@@ -507,12 +507,12 @@ inline
 void
 voice_interpretations( ast::voice::iterator const &begin
                      , ast::voice::iterator const &end
-                     , proxied_partial_measure_ptr *stack_begin
-                     , proxied_partial_measure_ptr *stack_end
+                     , proxied_partial_measure::shared_ptr *stack_begin
+                     , proxied_partial_measure::shared_ptr *stack_end
                      , rational const &max_length
                      , rational const &position
                      , global_state const &state
-                     , voice_interpretation_function const &yield
+                     , proxied_voice::function const &yield
                      )
 {
   if (begin == end) {
@@ -521,14 +521,14 @@ voice_interpretations( ast::voice::iterator const &begin
     }
   } else {
     auto const tail = begin + 1;
-    partial_measure_interpretations
+    proxied_partial_measure::foreach
     ( *begin, max_length, position, tail == end, state
     , [ stack_begin, stack_end, &tail, &end
       , &max_length, &position, &state
       , &yield
       ]
-      ( proxied_partial_voice_ptr const *f
-      , proxied_partial_voice_ptr const *l
+      ( proxied_partial_voice::shared_ptr const *f
+      , proxied_partial_voice::shared_ptr const *l
       ) {
         stack_end->reset(new proxied_partial_measure(f, l));
         rational const partial_measure_duration(duration(*stack_end));
@@ -544,14 +544,14 @@ voice_interpretations( ast::voice::iterator const &begin
 }
 
 void
-voice_interpretations( ast::voice &voice
-                     , rational const &max_length
-                     , global_state const &state
-                     , voice_interpretation_function const &callback
-                     )
+proxied_voice::foreach( ast::voice &voice
+                      , rational const &max_length
+                      , global_state const &state
+                      , proxied_voice::function const &callback
+                      )
 {
-  std::unique_ptr<proxied_partial_measure_ptr[]>
-  stack(new proxied_partial_measure_ptr[voice.size()]);
+  std::unique_ptr<proxied_partial_measure::shared_ptr[]>
+  stack(new proxied_partial_measure::shared_ptr[voice.size()]);
   voice_interpretations( voice.begin(), voice.end()
                        , stack.get(), stack.get()
                        , max_length, zero
@@ -612,11 +612,11 @@ measure_interpretations::recurse
     }
   } else {
     auto const tail = begin + 1;
-    voice_interpretations
+    proxied_voice::foreach
     ( *begin, length, *this
     , [ stack_begin, stack_end, &tail, &end, &length, this ]
-      ( proxied_partial_measure_ptr const *f
-      , proxied_partial_measure_ptr const *l
+      ( proxied_partial_measure::shared_ptr const *f
+      , proxied_partial_measure::shared_ptr const *l
       , rational const &duration
       ) {
         if ((stack_begin == stack_end and not this->exact_match_found) or

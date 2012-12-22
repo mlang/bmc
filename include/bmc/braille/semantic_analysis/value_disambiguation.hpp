@@ -142,31 +142,6 @@ inline rational
 duration(std::vector<value_proxy> const &values)
 { return boost::accumulate(values, zero); }
 
-class proxied_partial_voice : public std::vector<value_proxy>
-{
-  rational const duration;
-  std::size_t use_count;
-public:
-  typedef std::vector<value_proxy> base_type;
-  proxied_partial_voice( const_pointer begin, const_pointer end
-                       , rational const &duration
-                       )
-  : base_type(begin, end) // copy the given range of value_proxy objects
-  , duration(duration)    // remember the accumulative duration of all elements
-  , use_count(0)          // initialize use count to 0
-  {}
-
-  operator rational const &() const { return duration; }
-
-  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p)
-  { ++p->use_count; }
-
-  friend inline void intrusive_ptr_release(proxied_partial_voice *p)
-  { if (--p->use_count == 0) delete p; }
-};
-
-typedef boost::intrusive_ptr<proxied_partial_voice> proxied_partial_voice_ptr;
-
 struct global_state
 {
   music::time_signature time_signature;
@@ -191,46 +166,74 @@ struct global_state
   {}
 };
 
-// Called if a valid interpretation of a partial voice has been found.
-typedef std::function<void( value_proxy const *
-                          , value_proxy const *
-                          , rational const &
-                          )
-                     >
-        partial_voice_interpretation_function;
+class proxied_partial_voice : public std::vector<value_proxy>
+{
+  rational const duration;
+  std::size_t use_count;
+public:
+  typedef std::vector<value_proxy> base_type;
+  proxied_partial_voice( const_pointer begin, const_pointer end
+                       , rational const &duration
+                       )
+  : base_type(begin, end) // copy the given range of value_proxy objects
+  , duration(duration)    // remember the accumulative duration of all elements
+  , use_count(0)          // initialize use count to 0
+  {}
 
-void
-partial_voice_interpretations( ast::partial_voice &voice
-                             , rational const &max_duration
-                             , rational const &position
-                             , bool last_partial_measure
-                             , global_state const &state
-                             , partial_voice_interpretation_function const &yield
-                             );
+  operator rational const &() const { return duration; }
+
+  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p)
+  { ++p->use_count; }
+
+  friend inline void intrusive_ptr_release(proxied_partial_voice *p)
+  { if (--p->use_count == 0) delete p; }
+
+  typedef boost::intrusive_ptr<proxied_partial_voice> shared_ptr;
+
+  typedef std::function<void( value_proxy const *
+                            , value_proxy const *
+                            , rational const &
+                            )
+                       >
+          function;
+
+  static void
+  foreach( ast::partial_voice &
+         , rational const &max_duration
+         , rational const &position
+         , bool last_partial_measure
+         , global_state const &
+         , function const &
+         ) ;
+};
 
 inline
 rational const &
-duration(proxied_partial_voice_ptr const &partial_voice)
+duration(proxied_partial_voice::shared_ptr const &partial_voice)
 { return *partial_voice; }
 
-typedef std::vector<proxied_partial_voice_ptr> proxied_partial_measure;
+struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
+{
+  typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
+  proxied_partial_measure(const_pointer begin, const_pointer end)
+  : std::vector<proxied_partial_voice::shared_ptr>(begin, end)
+  {}
 
-typedef std::shared_ptr<proxied_partial_measure const> proxied_partial_measure_ptr;
+  typedef std::function<void( proxied_partial_voice::shared_ptr const *
+                            , proxied_partial_voice::shared_ptr const *
+                            )
+                       >
+          function;
 
-typedef std::function<void( proxied_partial_voice_ptr const *
-                          , proxied_partial_voice_ptr const *
-                          )
-                     >
-        partial_measure_interpretation_function;
-
-void
-partial_measure_interpretations( ast::partial_measure &partial_measure
-                               , rational const &max_length
-                               , rational const &position
-                               , bool last_partial_measure
-                               , global_state const &state
-                               , partial_measure_interpretation_function const &callback
-                               );
+  static void
+  foreach( ast::partial_measure &partial_measure
+         , rational const &max_length
+         , rational const &position
+         , bool last_partial_measure
+         , global_state const &
+         , function const &
+         ) ;
+};
 
 inline
 rational
@@ -251,14 +254,14 @@ duration(proxied_partial_measure const &voices)
 
 inline
 rational
-duration(proxied_partial_measure_ptr const &voices)
+duration(proxied_partial_measure::shared_ptr const &voices)
 { return duration(*voices); }
 
-class proxied_voice : public std::vector<proxied_partial_measure_ptr>
+class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
 {
   rational const duration;
 public:
-  typedef std::vector<proxied_partial_measure_ptr> base_type;
+  typedef std::vector<proxied_partial_measure::shared_ptr> base_type;
   proxied_voice( const_pointer begin, const_pointer end
                , rational const &duration
                )
@@ -266,37 +269,36 @@ public:
   , duration(duration)
   {}
   operator rational const &() const { return duration; }
+
+  typedef std::shared_ptr<proxied_voice const> shared_ptr;
+  typedef std::function<void( proxied_partial_measure::shared_ptr const *
+                            , proxied_partial_measure::shared_ptr const *
+                            , rational const &
+                            )
+                       >
+          function;
+
+  static void
+  foreach( ast::voice &voice
+         , rational const &max_length
+         , global_state const &
+         , function const &
+         ) ;
 };
-
-typedef std::shared_ptr<proxied_voice const> proxied_voice_ptr;
-
-typedef std::function<void( proxied_partial_measure_ptr const *
-                          , proxied_partial_measure_ptr const *
-                          , rational const &
-                          )
-                     >
-        voice_interpretation_function;
-
-void
-voice_interpretations( ast::voice &voice
-                     , rational const &max_length
-                     , global_state const &state
-                     , voice_interpretation_function const &callback
-                     );
 
 inline
 rational const &
-duration(proxied_voice_ptr const &voice)
+duration(proxied_voice::shared_ptr const &voice)
 { return *voice; }
 
 /** @brief Represents a possible interpretation of an ast::measure.
  */
-class proxied_measure : public std::vector<proxied_voice_ptr>
+class proxied_measure : public std::vector<proxied_voice::shared_ptr>
 {
   rational mean;
 public:
   proxied_measure(const_pointer begin, const_pointer end)
-  : std::vector<proxied_voice_ptr>(begin, end)
+  : std::vector<proxied_voice::shared_ptr>(begin, end)
   , mean() // Do not precalculate the harmonic mean as it is potentially unused
   {
   }
@@ -311,7 +313,7 @@ public:
    */
   rational const &harmonic_mean();
 
-  /** @breif Transfer the herein learnt information to the refered-to objects.
+  /** @brief Transfer the herein learnt information to the refered-to objects.
    *
    * @note This member function should only be called on one found result.
    */
@@ -367,8 +369,8 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
               , std::vector<ast::voice>::iterator const& end
               , value_type::pointer stack_begin
               , value_type::pointer stack_end
-              , rational const& length
-	      );
+              , rational const &length
+	      ) ;
 
   void cleanup();
 
