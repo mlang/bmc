@@ -182,7 +182,7 @@ public:
 
   operator rational const &() const { return duration; }
 
-  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p)
+  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p) BOOST_NOEXCEPT
   { ++p->use_count; }
 
   friend inline void intrusive_ptr_release(proxied_partial_voice *p)
@@ -190,11 +190,7 @@ public:
 
   typedef boost::intrusive_ptr<proxied_partial_voice> shared_ptr;
 
-  typedef std::function<void( value_proxy const *
-                            , value_proxy const *
-                            , rational const &
-                            )
-                       >
+  typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
 
   static void
@@ -219,11 +215,7 @@ struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
   : std::vector<proxied_partial_voice::shared_ptr>(begin, end)
   {}
 
-  typedef std::function<void( proxied_partial_voice::shared_ptr const *
-                            , proxied_partial_voice::shared_ptr const *
-                            )
-                       >
-          function;
+  typedef std::function<void(const_pointer, const_pointer)> function;
 
   static void
   foreach( ast::partial_measure &partial_measure
@@ -271,11 +263,7 @@ public:
   operator rational const &() const { return duration; }
 
   typedef std::shared_ptr<proxied_voice const> shared_ptr;
-  typedef std::function<void( proxied_partial_measure::shared_ptr const *
-                            , proxied_partial_measure::shared_ptr const *
-                            , rational const &
-                            )
-                       >
+  typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
 
   static void
