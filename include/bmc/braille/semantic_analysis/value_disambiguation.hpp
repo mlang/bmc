@@ -193,14 +193,13 @@ public:
   typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
 
-  static void
-  foreach( ast::partial_voice &
-         , rational const &max_duration
-         , rational const &position
-         , bool last_partial_measure
-         , global_state const &
-         , function const &
-         ) ;
+  static void foreach( ast::partial_voice &
+                     , rational const &max_duration
+                     , rational const &position
+                     , bool last_partial_measure
+                     , global_state const &
+                     , function const &
+                     ) ;
 };
 
 inline
@@ -210,21 +209,21 @@ duration(proxied_partial_voice::shared_ptr const &partial_voice)
 
 struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
 {
-  typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
   proxied_partial_measure(const_pointer begin, const_pointer end)
   : std::vector<proxied_partial_voice::shared_ptr>(begin, end)
   {}
 
+  typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
+
   typedef std::function<void(const_pointer, const_pointer)> function;
 
-  static void
-  foreach( ast::partial_measure &partial_measure
-         , rational const &max_length
-         , rational const &position
-         , bool last_partial_measure
-         , global_state const &
-         , function const &
-         ) ;
+  static void foreach( ast::partial_measure &
+                     , rational const &max_length
+                     , rational const &position
+                     , bool last_partial_measure
+                     , global_state const &
+                     , function const &
+                     ) ;
 };
 
 inline
@@ -260,18 +259,19 @@ public:
   : base_type(begin, end)
   , duration(duration)
   {}
+
   operator rational const &() const { return duration; }
 
   typedef std::shared_ptr<proxied_voice const> shared_ptr;
+
   typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
 
-  static void
-  foreach( ast::voice &voice
-         , rational const &max_length
-         , global_state const &
-         , function const &
-         ) ;
+  static void foreach( ast::voice &
+                     , rational const &max_length
+                     , global_state const &
+                     , function const &
+                     ) ;
 };
 
 inline
@@ -288,8 +288,7 @@ public:
   proxied_measure(const_pointer begin, const_pointer end)
   : std::vector<proxied_voice::shared_ptr>(begin, end)
   , mean() // Do not precalculate the harmonic mean as it is potentially unused
-  {
-  }
+  {}
 
   /** @brief Harmonic mean of all contained rhythmic values.
    *
@@ -358,7 +357,7 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
               , value_type::pointer stack_begin
               , value_type::pointer stack_end
               , rational const &length
-	      ) ;
+              ) ;
 
   void cleanup();
 

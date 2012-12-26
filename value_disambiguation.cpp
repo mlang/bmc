@@ -568,9 +568,9 @@ proxied_measure::harmonic_mean()
     rational::int_type n=0, d=1, count=0;
     for (const_reference voice: *this)
       for (proxied_voice::const_reference part: *voice)
-	for (proxied_partial_measure::const_reference partial_voice: *part)
-	  for (rational const &value: *partial_voice)
-	    n = n*value.numerator() + d*value.denominator(),
+        for (proxied_partial_measure::const_reference partial_voice: *part)
+          for (rational const &value: *partial_voice)
+            n = n*value.numerator() + d*value.denominator(),
             d *= value.numerator(),
             ++count;
     mean.assign(count*d, n);
@@ -600,14 +600,14 @@ measure_interpretations::recurse
   if (begin == end) {
     if (stack_begin != stack_end) {
       if (not exact_match_found or length == time_signature) {
-	if (not exact_match_found and length == time_signature) {
-	  // We found the first intepretation matching the time signature.
-	  // So this is not an anacrusis.  Drop accumulated (incomplete)
-	  // interpretations and continue more efficiently.
-	  clear();
-	  exact_match_found = true;
-	}
-	emplace_back(stack_begin, stack_end);
+        if (not exact_match_found and length == time_signature) {
+          // We found the first intepretation matching the time signature.
+          // So this is not an anacrusis.  Drop accumulated (incomplete)
+          // interpretations and continue more efficiently.
+          clear();
+          exact_match_found = true;
+        }
+        emplace_back(stack_begin, stack_end);
       }
     }
   } else {
@@ -639,9 +639,9 @@ measure_interpretations::cleanup()
     for (reference possibility: *this) {
       rational const score(possibility.harmonic_mean());
       if (score > best_score) {
-	best_score = score, single_best_score = true;
+        best_score = score, single_best_score = true;
       } else if (score == best_score) {
-	single_best_score = false;
+        single_best_score = false;
       }
     }
     // Do not consider possibilities below a certain margin as valid
@@ -649,7 +649,7 @@ measure_interpretations::cleanup()
       rational const margin(best_score * rational(2, 3));
       base_type good;
       for (reference measure: *this)
-	if (measure.harmonic_mean() > margin) good.push_back(measure);
+        if (measure.harmonic_mean() > margin) good.push_back(measure);
       assign(good.begin(), good.end());
     }
   }

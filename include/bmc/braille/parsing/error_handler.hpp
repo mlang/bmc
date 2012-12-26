@@ -32,9 +32,9 @@ namespace music { namespace braille {
 
     template <typename Message, typename What>
     void operator()( Message const& message
-		   , What const& what
-		   , iterator_type err_pos
-		   ) const
+                   , What const& what
+                   , iterator_type err_pos
+                   ) const
     {
       int line;
       iterator_type line_start = get_pos(err_pos, line);
@@ -44,12 +44,12 @@ namespace music { namespace braille {
                   << L": "
                   << message << L": " << what
                   << std::endl;
-	std::wcerr << get_line(line_start) << std::endl;
-	for (; line_start != err_pos; ++line_start) std::wcerr << L' ';
-	std::wcerr << '^' << std::endl;
+        std::wcerr << get_line(line_start) << std::endl;
+        for (; line_start != err_pos; ++line_start) std::wcerr << L' ';
+        std::wcerr << '^' << std::endl;
       } else {
-	std::wcerr << "Unexpected end of file. ";
-	std::wcerr << message << what << L" line " << line << std::endl;
+        std::wcerr << "Unexpected end of file. ";
+        std::wcerr << message << what << L" line " << line << std::endl;
       }
     }
 
