@@ -98,6 +98,7 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
   BOOST_CHECK(begin == end);
 }
 
+#include "bmc/braille/ast/visitors.hpp"
 #include "bmc/braille/parsing/grammar/measure.hpp"
 
 BOOST_AUTO_TEST_CASE(measure_test1) {

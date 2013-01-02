@@ -5,6 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "bmc/braille/semantic_analysis/value_disambiguation.hpp"
+#include <boost/variant/get.hpp>
 
 namespace music { namespace braille { namespace value_disambiguation {
 

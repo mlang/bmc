@@ -9,7 +9,7 @@
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
-#include "bmc/braille/ast.hpp"
+#include "bmc/braille/ast/ast.hpp"
 #include "bmc/braille/parsing/grammar/numbers.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 

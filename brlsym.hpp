@@ -9,7 +9,7 @@
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_symbols.hpp>
-#include <bmc/braille/ast.hpp>
+#include <bmc/braille/ast/ast.hpp>
 #include <bmc/ttb/ttb.h>
 #include <bmc/ttb/unicode.h>
 
