@@ -7,9 +7,9 @@
 #ifndef BMC_AST_HPP
 #define BMC_AST_HPP
 
-#define "bmc/braille/ast/ast.hpp"
-#define "bmc/braille/ast/visitors.hpp"
-#define "bmc/braille/ast/duration.hpp"
-#define "bmc/braille/ast/fusion_adapt.hpp"
+#include "bmc/braille/ast/ast.hpp"
+#include "bmc/braille/ast/visitors.hpp"
+#include "bmc/braille/ast/duration.hpp"
+#include "bmc/braille/ast/fusion_adapt.hpp"
 
 #endif
