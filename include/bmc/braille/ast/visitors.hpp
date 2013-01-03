@@ -7,8 +7,8 @@
 #ifndef BMC_AST_VISITORS_HPP
 #define BMC_AST_VISITORS_HPP
 
-#define "bmc/braille/ast/ast.hpp"
-#define <boost/variant/static_visitor.hpp>
+#include "bmc/braille/ast/ast.hpp"
+#include <boost/variant/static_visitor.hpp>
 
 namespace music {
   namespace braille {
