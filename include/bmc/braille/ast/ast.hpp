@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <vector>
 
-#include <boost/mpl/remove_if.hpp>
+#include <boost/mpl/remove.hpp>
 #include <boost/optional.hpp>
 #include <boost/variant/variant.hpp>
 
@@ -210,15 +210,11 @@ struct section
  */
 namespace unfolded {
 
-typedef boost::mpl::or_< boost::is_same<boost::mpl::_, value_distinction>
-                       , boost::is_same<boost::mpl::_, simile>
-                       >
-        is_simile_or_value_distinction;
-
 typedef boost::make_variant_over
-        < boost::mpl::remove_if< ast::sign::types
-                               , is_simile_or_value_distinction
-                               >::type
+        < boost::mpl::remove< boost::mpl::remove< ast::sign::types
+                                                , value_distinction
+                                                >::type
+                            , simile>::type
         >::type
         sign;
 
