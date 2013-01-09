@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <vector>
 
+#include <boost/mpl/remove_if.hpp>
 #include <boost/optional.hpp>
 #include <boost/variant/variant.hpp>
 
@@ -137,7 +138,7 @@ struct chord : locatable, rhythmic
 
 /** The moving-note device, although infrequently employed,
  *  is chiefly useful for vocal music and keyboard settings of
- *  hymns. Complications of fingering, phrasing and nuances render it
+ *  hymns.  Complications of fingering, phrasing and nuances render it
  *  unsuitable for instrumental music in general.
  */
 struct moving_note : locatable, rhythmic
@@ -209,10 +210,18 @@ struct section
  */
 namespace unfolded {
 
-typedef boost::variant< note, rest, chord, moving_note
-                      , tie, hand_sign, barline
-                      >
+typedef boost::mpl::or_< boost::is_same<boost::mpl::_, value_distinction>
+                       , boost::is_same<boost::mpl::_, simile>
+                       >
+        is_simile_or_value_distinction;
+
+typedef boost::make_variant_over
+        < boost::mpl::remove_if< ast::sign::types
+                               , is_simile_or_value_distinction
+                               >::type
+        >::type
         sign;
+
 struct partial_voice : locatable, std::vector<sign>
 {
   partial_voice()
