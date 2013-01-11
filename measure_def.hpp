@@ -8,6 +8,7 @@
 #define BMC_MEASURE_DEF_HPP
 
 #include "bmc/braille/parsing/grammar/measure.hpp"
+#include "bmc/braille/ast/fusion_adapt.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
