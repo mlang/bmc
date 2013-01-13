@@ -591,11 +591,11 @@ proxied_measure::accept() const
 
 void
 measure_interpretations::recurse
-( std::vector<ast::voice>::iterator const& begin
-, std::vector<ast::voice>::iterator const& end
+( std::vector<ast::voice>::iterator const &begin
+, std::vector<ast::voice>::iterator const &end
 , value_type::pointer stack_begin
 , value_type::pointer stack_end
-, rational const& length
+, rational const &length
 )
 {
   if (begin == end) {
@@ -650,7 +650,8 @@ measure_interpretations::cleanup()
       rational const margin(best_score * rational(2, 3));
       base_type good;
       for (reference measure: *this)
-        if (measure.harmonic_mean() > margin) good.push_back(measure);
+        if (measure.harmonic_mean() > margin)
+          good.emplace_back(measure);
       assign(good.begin(), good.end());
     }
   }

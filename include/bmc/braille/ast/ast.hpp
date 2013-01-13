@@ -214,7 +214,8 @@ typedef boost::make_variant_over
         < boost::mpl::remove< boost::mpl::remove< ast::sign::types
                                                 , value_distinction
                                                 >::type
-                            , simile>::type
+                            , simile
+                            >::type
         >::type
         sign;
 
