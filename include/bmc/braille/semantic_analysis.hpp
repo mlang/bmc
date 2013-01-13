@@ -21,34 +21,50 @@
 
 namespace music { namespace braille {
 
-class sign_converter: public boost::static_visitor<bool>
+enum class sign_conversion_result
+{
+  ok, full_measure_simile, failed
+};
+
+class sign_converter: public boost::static_visitor<sign_conversion_result>
 {
   ast::unfolded::partial_voice &target;
-  std::size_t const voice_index, voice_count;
+  std::size_t const voice_index, voice_count
+                  , partial_measure_index, partial_measure_count
+                  , partial_voice_index, partial_voice_count
+                  ;
   ast::unfolded::measure *prev_unfolded_measure;
 public:
   sign_converter( ast::unfolded::partial_voice &target
                 , std::size_t voice_index, std::size_t voice_count
+                , std::size_t partial_measure_index, std::size_t partial_measure_count
+                , std::size_t partial_voice_index, std::size_t partial_voice_count
                 , ast::unfolded::measure *prev_unfolded_measure
                 )
   : target(target)
   , voice_index(voice_index)
   , voice_count(voice_count)
+  , partial_measure_index(partial_measure_index)
+  , partial_measure_count(partial_measure_count)
+  , partial_voice_index(partial_voice_index)
+  , partial_voice_count(partial_voice_count)
   , prev_unfolded_measure(prev_unfolded_measure)
   {}
 
   result_type operator() (ast::value_distinction const &) const
   {
-    return true;
+    return sign_conversion_result::ok;
   }
   result_type operator() (ast::simile const &simile) const
   {
     if (not duration(target)) {
       if (prev_unfolded_measure and voice_count == 1) {
         prev_unfolded_measure->count += simile.count - 1;
-        target.insert(target.end(), prev_unfolded_measure->voices[voice_index][0][0].begin(), prev_unfolded_measure->voices[voice_index][0][0].end());
+        return sign_conversion_result::full_measure_simile;
       } else if (prev_unfolded_measure) {
-        target.insert(target.end(), prev_unfolded_measure->voices[voice_index][0][0].begin(), prev_unfolded_measure->voices[voice_index][0][0].end());
+        target.insert( target.end()
+                     , prev_unfolded_measure->voices[voice_index][partial_measure_index][partial_voice_index].begin()
+                     , prev_unfolded_measure->voices[voice_index][partial_measure_index][partial_voice_index].end());
       }
     } else {
       if (duration(target) == (simile.duration / simile.count)) {
@@ -57,14 +73,14 @@ public:
           target.insert(target.end(), repeated.begin(), repeated.end());
       }
     }
-    return true;
+    return sign_conversion_result::ok;
   }
 
   template<typename T>
   result_type operator() (T const &t) const
   {
     target.emplace_back(t);
-    return true;
+    return sign_conversion_result::ok;
   }
 };
 
@@ -82,6 +98,7 @@ public:
   {
     ast::unfolded::measure unfolded_measure;
     unfolded_measure.ending = measure.ending;
+    bool insert = true;
     for (ast::voice const &voice: measure.voices) {
       std::size_t voice_index = unfolded_measure.voices.size();
       unfolded_measure.voices.emplace_back();
@@ -95,18 +112,30 @@ public:
           new_partial_measure.emplace_back();
           sign_converter unfold( new_partial_measure.back()
                                , voice_index, measure.voices.size()
+                               , partial_measure_index, voice.size()
+                               , partial_voice_index, partial_measure.size()
                                , prev_unfolded_measure
                                );
-          if (not std::all_of( partial_voice.begin(), partial_voice.end()
-                             , apply_visitor(unfold)
-                             )
-             )
-            return false;
+          for (ast::partial_voice::const_iterator sign = partial_voice.begin();
+               sign != partial_voice.end(); ++sign) {
+            switch (apply_visitor(unfold, *sign)) {
+            case sign_conversion_result::failed: return false;
+            case sign_conversion_result::full_measure_simile:
+              if (sign+1 == partial_voice.end()) {
+                prev_unfolded_measure->count += 1;
+                insert = false;
+              }
+              break;
+            case sign_conversion_result::ok: break;
+            }
+          }
         }
       }
     }
-    target.emplace_back(unfolded_measure);
-    prev_unfolded_measure = boost::get<ast::unfolded::measure>(&target.back());
+    if (insert) {
+      target.emplace_back(unfolded_measure);
+      prev_unfolded_measure = boost::get<ast::unfolded::measure>(&target.back());
+    }
     return true;
   }
   result_type operator() (ast::key_and_time_signature const &key_and_time_signature) const
