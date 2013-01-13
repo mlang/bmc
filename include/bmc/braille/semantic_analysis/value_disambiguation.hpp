@@ -98,7 +98,7 @@ public:
   : type(ptr_type::chord), chord_ptr(&chord)
   , value_type(chord.base.ambiguous_value), category(category)
   , duration(calculate_duration(chord.base.dots))
-  { BOOST_ASSERT(chord_ptr->type == zero); }
+  { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
   value_proxy( ast::chord &chord, value_category category
              , ast::value value_type
@@ -106,7 +106,7 @@ public:
   : type(ptr_type::chord), chord_ptr(&chord)
   , value_type(value_type), category(category)
   , duration(calculate_duration(chord.base.dots))
-  { BOOST_ASSERT(chord_ptr->type == zero); }
+  { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
   value_proxy(ast::moving_note &chord, value_category category)
   : type(ptr_type::moving_note), moving_note_ptr(&chord)
@@ -401,8 +401,8 @@ public:
 
   bool completes_uniquely(measure_interpretations const &other) const
   {
-    BOOST_ASSERT(not this->complete);
-    BOOST_ASSERT(not other.complete);
+    BOOST_ASSERT(not this->exact_match_found);
+    BOOST_ASSERT(not other.exact_match_found);
     BOOST_ASSERT(this->time_signature == other.time_signature);
     std::size_t matches = 0;
     for (const_reference lhs: *this)

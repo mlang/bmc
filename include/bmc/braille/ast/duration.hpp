@@ -8,6 +8,7 @@
 #define BMC_AST_DURATION_HPP
 
 #include "bmc/braille/ast/ast.hpp"
+#include <boost/variant/apply_visitor.hpp>
 
 namespace music {
   namespace braille {
