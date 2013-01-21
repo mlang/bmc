@@ -8,7 +8,6 @@
 #define BMC_VALUE_DISAMBIGUATION_HPP
 
 #include "bmc/braille/ast.hpp"
-#include <cmath>
 #include <memory>
 #include <sstream>
 #include <boost/smart_ptr/intrusive_ptr.hpp>

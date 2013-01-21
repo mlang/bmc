@@ -25,8 +25,8 @@ value_proxy::undotted_duration() const
 rational
 value_proxy::calculate_duration(unsigned dots) const
 {
-  rational const base(undotted_duration());
-  return dots ? base * rational((1 << (dots + 1)) - 1, 1 << dots) : base;
+  return dots ? undotted_duration() * augmentation_dots_factor(dots)
+              : undotted_duration();
 }
 
 void

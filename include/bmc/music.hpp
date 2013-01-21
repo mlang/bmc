@@ -15,6 +15,9 @@ typedef boost::rational<std::int32_t> rational;
 
 rational const zero = rational();
 
+inline rational augmentation_dots_factor(unsigned dots)
+{ return dots ? rational((1 << (dots + 1)) - 1, 1 << dots) : rational(1); }
+
 typedef rational time_modification;
 
 /**
