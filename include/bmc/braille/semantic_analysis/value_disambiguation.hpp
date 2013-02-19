@@ -27,10 +27,7 @@ namespace value_disambiguation {
  * <code>large</code> spans from whole to eighth note values.
  * <code>small</code> from 16th to 128th note values.
  */
-enum value_category
-{
-  large, small
-};
+enum value_category { large, small };
 
 /**
  * \brief A possible interpretation of a value (note, rest or chord).
@@ -60,9 +57,7 @@ class value_proxy
   rational calculate_duration(unsigned dots) const;
 
 public:
-  value_proxy()
-  : type(ptr_type::uninitialized)
-  {}
+  value_proxy() : type(ptr_type::uninitialized) {}
 
   value_proxy(ast::note &note, value_category category)
   : type(ptr_type::note), note_ptr(&note)
@@ -127,9 +122,6 @@ public:
   { BOOST_ASSERT(simile_ptr->duration == zero); }
 
   operator rational const &() const { return duration; }
-
-  bool operator==(value_proxy const &rhs) const
-  { return type == rhs.type && note_ptr == rhs.note_ptr && duration == rhs.duration; }
 
   /** \brief Fill the infomation gathered about this partiuclar interpretation
     *        into the AST
