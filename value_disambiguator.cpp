@@ -16,11 +16,6 @@ value_disambiguator::value_disambiguator(report_error_type const& report_error)
 , anacrusis(new value_disambiguation::measure_interpretations())
 {}
 
-value_disambiguator::~value_disambiguator()
-{
-  delete anacrusis;
-}
-
 value_disambiguator::result_type
 value_disambiguator::operator()(ast::measure& measure)
 {
@@ -30,12 +25,12 @@ value_disambiguator::operator()(ast::measure& measure)
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (anacrusis->empty()) {
-      *anacrusis = interpretations;
+      *(anacrusis.get()) = interpretations;
       prev_duration = 0;
       return true;
     } else {
       if (anacrusis->completes_uniquely(interpretations)) {
-        for (auto& lhs: *anacrusis) {
+        for (auto& lhs: *(anacrusis.get())) {
           for (auto& rhs: interpretations) {
             if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();

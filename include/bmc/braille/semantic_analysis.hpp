@@ -19,6 +19,8 @@
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
+#include <future>
+
 namespace music { namespace braille {
 
 enum class sign_conversion_result
@@ -145,6 +147,72 @@ public:
   }
 };
 
+template <typename ErrorHandler>
+class annotate_staff : public compiler_pass, public boost::static_visitor<bool>
+{
+  location_calculator<ErrorHandler> calculate_locations;
+  octave_calculator calculate_octaves;
+  value_disambiguator disambiguate_values;
+  alteration_calculator calculate_alterations;
+  music::time_signature global_time_signature;
+  music::key_signature global_key_signature;
+
+public:
+  annotate_staff( ErrorHandler &error_handler
+                , report_error_type const &report_error
+                , music::time_signature const& time_signature = music::time_signature(4, 4)
+                , music::key_signature const& key_signature = music::key_signature(0)
+                )
+  : compiler_pass( report_error )
+  , calculate_locations(report_error, error_handler)
+  , calculate_octaves(report_error)
+  , disambiguate_values(report_error)
+  , calculate_alterations(report_error)
+  , global_time_signature(time_signature)
+  , global_key_signature{key_signature}
+  {
+  }
+
+  result_type operator() (std::size_t staff_index, ast::staff& staff)
+  {
+    music::braille::interval_direction interval_direction =
+      music::braille::interval_direction::down;
+    switch (staff_index) {
+    case 0:
+      interval_direction = music::braille::interval_direction::down;
+      break;
+    case 1:
+      interval_direction = music::braille::interval_direction::up;
+      break;
+    default: BOOST_ASSERT(false);
+    }
+    disambiguate_values.set(global_time_signature);
+    calculate_octaves.set(interval_direction);
+    calculate_alterations.set(global_key_signature);
+
+    if (not all_of(staff, apply_visitor(*this))) return false;
+
+    return disambiguate_values.end_of_staff();
+  }
+
+  result_type operator()(ast::measure& measure)
+  {
+    if (disambiguate_values(measure))
+      if (calculate_octaves(measure)) {
+        calculate_alterations(measure);
+        calculate_locations(measure);
+        return true;
+      }
+    return false;
+  }
+  result_type operator()(ast::key_and_time_signature& key_and_time_sig)
+  {
+    calculate_locations(key_and_time_sig);
+    disambiguate_values.set(key_and_time_sig.time);
+    return true;
+  }
+};
+
 /**
  * \brief The <code>compiler</code> processes the raw parsed syntax tree to fill
  *        in musical information implied by the given input.
@@ -167,6 +235,7 @@ public:
 template <typename ErrorHandler>
 class compiler : public compiler_pass, public boost::static_visitor<bool>
 {
+  ErrorHandler error_handler;
   location_calculator<ErrorHandler> calculate_locations;
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
@@ -184,6 +253,7 @@ public:
                      [boost::phoenix::arg_names::_1]
                    )
                  )
+  , error_handler{error_handler}
   , calculate_locations(report_error, error_handler)
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
@@ -194,31 +264,27 @@ public:
 
   result_type operator()(ast::score& score)
   {
-    if (score.time_sig) {
-      global_time_signature = *score.time_sig;
-    }
+    if (score.time_sig) global_time_signature = *score.time_sig;
 
-    for (ast::part& part: score.parts) {
-      for (std::size_t staff_index = 0;
-           staff_index < part.size();
-           ++staff_index) {
-        music::braille::interval_direction
-        interval_direction = music::braille::interval_direction::down;
-        switch (staff_index) {
-        case 0:
-          interval_direction = music::braille::interval_direction::down;
-          break;
-        case 1:
-          interval_direction = music::braille::interval_direction::up;
-          break;
-        default: BOOST_ASSERT(false);
-        }
-        calculate_octaves.set(interval_direction);
-        calculate_alterations.set(score.key_sig);
-        if (not (*this)(part[staff_index])) return false;
-        calculate_octaves.reset();
+    std::vector<std::future<bool>> staves;
+    for (ast::part &part: score.parts) {
+      for (std::size_t staff_index = 0; staff_index < part.size();
+           ++staff_index)
+      {
+	staves.emplace_back
+	( std::async( std::launch::async
+		    , std::move(annotate_staff<ErrorHandler>( error_handler
+                                                            , report_error
+						            , global_time_signature
+						            , score.key_sig
+							    )
+                               )
+		    , staff_index, std::ref(part[staff_index]))
+	);
       }
     }
+
+    for (auto &result: staves) if (not result.get()) return false;
 
     return unfold(score);
   }
@@ -250,9 +316,6 @@ public:
     staff_converter unfold(target);
     return std::all_of(source.begin(), source.end(), apply_visitor(unfold));
   }
-
-  result_type operator() (ast::staff& staff)
-  { return all_of(staff, boost::apply_visitor(*this)) && disambiguate_values.end_of_staff(); }
 
   result_type operator()(ast::measure& measure)
   {

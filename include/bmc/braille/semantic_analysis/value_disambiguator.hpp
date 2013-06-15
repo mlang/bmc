@@ -8,13 +8,10 @@
 #define BMC_VALUE_DISAMBIGUATOR_HPP
 
 #include "bmc/braille/ast.hpp"
+#include <bmc/braille/semantic_analysis/value_disambiguation.hpp>
 #include "compiler_pass.hpp"
 
 namespace music { namespace braille {
-
-namespace value_disambiguation {
-  class measure_interpretations;
-}
 
 /**
  * \brief Calcualte the duration (value) of all notes and rests in a measure.
@@ -49,12 +46,11 @@ class value_disambiguator: public compiler_pass
 {
   music::time_signature time_signature;
   rational prev_duration;
-  value_disambiguation::measure_interpretations *anacrusis;
+  std::unique_ptr<value_disambiguation::measure_interpretations> anacrusis;
 
 public:
   typedef bool result_type;
   value_disambiguator(report_error_type const& report_error);
-  ~value_disambiguator();
 
   void set(music::time_signature const& time_sig)
   { time_signature = time_sig; }
