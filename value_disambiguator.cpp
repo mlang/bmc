@@ -25,12 +25,12 @@ value_disambiguator::operator()(ast::measure& measure)
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (anacrusis->empty()) {
-      *(anacrusis.get()) = interpretations;
+      *anacrusis = interpretations;
       prev_duration = 0;
       return true;
     } else {
       if (anacrusis->completes_uniquely(interpretations)) {
-        for (auto& lhs: *(anacrusis.get())) {
+        for (auto& lhs: *anacrusis) {
           for (auto& rhs: interpretations) {
             if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();
