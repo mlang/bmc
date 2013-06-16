@@ -347,6 +347,7 @@ public:
   result_type operator()(ast::simile &simile) const
   {
     if (not position) { // full measure simile
+      BOOST_ASSERT(static_cast<bool>(interpreter.last_measure_duration()));
       if (*new(proxy)value_proxy
           (simile, interpreter.last_measure_duration()) > rational(0) and
           static_cast<rational>(*proxy) / simile.count <= max_duration) {
