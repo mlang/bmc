@@ -12,7 +12,6 @@
 #include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
 #include "bmc/braille/semantic_analysis/octave_calculator.hpp"
 #include "bmc/braille/semantic_analysis/alteration_calculator.hpp"
-#include "boost_range/algorithm/all_of.hpp"
 
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -189,7 +188,10 @@ public:
     disambiguate_values.set(global_time_signature);
     calculate_alterations.set(global_key_signature);
 
-    if (not all_of(staff, apply_visitor(*this))) return false;
+    // Visit and annotate all elements of this staff.
+    if (not std::all_of( std::begin(staff), std::end(staff)
+                       , apply_visitor(*this)))
+      return false;
 
     return disambiguate_values.end_of_staff();
   }
@@ -204,6 +206,7 @@ public:
       }
     return false;
   }
+
   result_type operator()(ast::key_and_time_signature &key_and_time_sig)
   {
     calculate_locations(key_and_time_sig);
@@ -271,16 +274,16 @@ public:
       for (std::size_t staff_index = 0; staff_index < part.size();
            ++staff_index)
       {
-	staves.emplace_back
-	( std::async( std::launch::async
-		    , std::move(annotate_staff<ErrorHandler>( error_handler
+        staves.emplace_back
+        ( std::async( std::launch::async
+                    , std::move(annotate_staff<ErrorHandler>( error_handler
                                                             , report_error
-						            , global_time_signature
-						            , score.key_sig
-							    )
+                                                            , global_time_signature
+                                                            , score.key_sig
+                                                            )
                                )
-		    , staff_index, std::ref(part[staff_index]))
-	);
+                    , staff_index, std::ref(part[staff_index]))
+        );
       }
     }
 
