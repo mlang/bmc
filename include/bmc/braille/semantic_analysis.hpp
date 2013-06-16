@@ -287,7 +287,9 @@ public:
       }
     }
 
-    for (auto &result: staves) if (not result.get()) return false;
+    if (not all_of(begin(staves), end(staves),
+                   mem_fun_ref(&std::future<bool>::get)))
+      return false;
 
     return unfold(score);
   }
