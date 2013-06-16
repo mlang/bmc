@@ -8,7 +8,6 @@
 #define BMC_OCTAVE_CALCULATOR_HPP
 
 #include <boost/variant/static_visitor.hpp>
-#include "boost_range/algorithm/all_of.hpp"
 #include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
 
@@ -49,7 +48,8 @@ public:
     for (ast::voice& voice: measure.voices) {
       for (ast::partial_measure& part: voice) {
         for (ast::partial_voice& partial_voice: part) {
-          if (not all_of(partial_voice, boost::apply_visitor(*this)))
+          if (not std::all_of(partial_voice.begin(), partial_voice.end(),
+                              apply_visitor(*this)))
             return false;
         }
       }
