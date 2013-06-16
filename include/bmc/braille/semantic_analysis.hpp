@@ -175,19 +175,18 @@ public:
 
   result_type operator() (std::size_t staff_index, ast::staff& staff)
   {
-    music::braille::interval_direction interval_direction =
-      music::braille::interval_direction::down;
+    interval_direction interval_dir = interval_direction::down;
     switch (staff_index) {
     case 0:
-      interval_direction = music::braille::interval_direction::down;
+      interval_dir = interval_direction::down;
       break;
     case 1:
-      interval_direction = music::braille::interval_direction::up;
+      interval_dir = interval_direction::up;
       break;
     default: BOOST_ASSERT(false);
     }
+    calculate_octaves.set(interval_dir);
     disambiguate_values.set(global_time_signature);
-    calculate_octaves.set(interval_direction);
     calculate_alterations.set(global_key_signature);
 
     if (not all_of(staff, apply_visitor(*this))) return false;
@@ -205,10 +204,11 @@ public:
       }
     return false;
   }
-  result_type operator()(ast::key_and_time_signature& key_and_time_sig)
+  result_type operator()(ast::key_and_time_signature &key_and_time_sig)
   {
     calculate_locations(key_and_time_sig);
     disambiguate_values.set(key_and_time_sig.time);
+    calculate_alterations.set(key_and_time_sig.key);
     return true;
   }
 };
