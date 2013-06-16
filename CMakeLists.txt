@@ -18,7 +18,8 @@ find_package(Boost 1.48.0 REQUIRED)
 include_directories(${bmc_SOURCE_DIR})
 include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
-add_definitions(-std=c++0x)
+add_definitions(-std=c++11)
+add_definitions(-pthread)
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
