@@ -367,6 +367,10 @@ TODO
     is to be prefered internally, always.  Is Unicode Braille supported
     on Windows in the command prompt?  Currently unit test input data is
     all encoded with UTF-(.  Figure out if this is a problem on Windows.
+* Improve error reporting during parsing: Some useful diagnostics
+  are already printed, but in many other cases the parser does not produce
+  helpful error messages.  It can be quite hard to start a braille music piece
+  from scratch if you have no idea why it is not accepted by BMC.
 * Implement Standard MIDI File (SMF) writing: In addition to real-time playback,
   musical scores should also be exportable to MIDI files on disk such that
   they can be played or imported with other programs.  Note that the current
