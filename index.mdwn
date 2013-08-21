@@ -1,8 +1,0 @@
-BMC is the Braille Music Compiler.
-
-* [[News]]
-* [[Documentation|doc]]
-* [[Source]]
-* [[Bugs]]
-* [[Contact]]
-
