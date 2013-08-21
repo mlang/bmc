@@ -1,0 +1,34 @@
+###############################################################################
+# BRLTTY - A background process providing access to the console screen (when in
+#          text mode) for a blind person using a refreshable braille display.
+#
+# Copyright (C) 1995-2012 by The BRLTTY Developers.
+#
+# BRLTTY comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the
+# GNU Lesser General Public License, as published by the Free Software
+# Foundation; either version 2.1 of the License, or (at your option) any
+# later version. Please see the file LICENSE-LGPL for details.
+#
+# Web Page: http://mielke.cc/brltty/
+#
+# This software is maintained by Dave Mielke <dave@mielke.cc>.
+###############################################################################
+
+# This BRLTTY text subtable defines all the space characters to be empty
+# braille cells.
+
+char \x20	(        )  # ⠀   [SPACE]
+glyph \xA0	(        )  # ⠀   [NO-BREAK SPACE]
+glyph \u2002	(        )  # ⠀   [EN SPACE]
+glyph \u2003	(        )  # ⠀   [EM SPACE]
+glyph \u2004	(        )  # ⠀   [THREE-PER-EM SPACE]
+glyph \u2005	(        )  # ⠀   [FOUR-PER-EM SPACE]
+glyph \u2006	(        )  # ⠀   [SIX-PER-EM SPACE]
+glyph \u2007	(        )  # ⠀   [FIGURE SPACE]
+glyph \u2008	(        )  # ⠀   [PUNCTUATION SPACE]
+glyph \u2009	(        )  # ⠀   [THIN SPACE]
+glyph \u200A	(        )  # ⠀   [HAIR SPACE]
+glyph \u202F	(        )  # ⠀   [NARROW NO-BREAK SPACE]
+glyph \u205F	(        )  # ⠀   [MEDIUM MATHEMATICAL SPACE]
