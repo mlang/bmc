@@ -2,4 +2,4 @@ This is where announcements of new releases, features, and other news is
 posted. FooBar users are recommended to subscribe to this page's RSS
 feed.
 
-[[!inline pages="./news/* and !*/Discussion" rootpage="news" show="30"]]
+[[!inline pages="./news/* and !*/Discussion" show="30"]]
