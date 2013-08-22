@@ -14,12 +14,12 @@ endif()
 add_subdirectory(doxygen)
 add_subdirectory(ttb)
 add_subdirectory(ui)
-find_package(Boost 1.48.0 REQUIRED)
+find_package(Boost 1.54.0 REQUIRED)
+find_package(Threads)
 include_directories(${bmc_SOURCE_DIR})
 include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++11)
-add_definitions(-pthread)
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
@@ -32,7 +32,7 @@ set_target_properties(bmc_parse
                       VERSION ${bmc_VERSION}
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
-target_link_libraries(bmc_parse bmc_ttb)
+target_link_libraries(bmc_parse bmc_ttb ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc2ly bmc2ly.cpp)
 target_link_libraries(bmc2ly bmc_parse)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
