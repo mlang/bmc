@@ -4,7 +4,7 @@ In addition to the Standard Library, [http://boost.org/](Boost) is used to make
 a few hard jobs a lot easier, and encourage good coding style.  If in doubt,
 check with the Standard Library and Boost conding standards.
 
-[[!toc]]
+[[!toc levels=2]]
 
 # C++11 (ISO/IEC 14882:2011)
 
