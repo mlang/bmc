@@ -36,7 +36,7 @@ Here is a (possibly incomplete) list of C++11 features used by BMC:
   emplace_back() to increase performance.  If need be, the use of emplace_back
   can simply be replaced by its (slower) equivalent push_back().
 
-* [Range-based for-loop](http://en.wikipedia.org/wiki/C++11#Range-based_for-loop): This is really just syntactic sugar to make code
+* [Range-based for loop](http://en.wikipedia.org/wiki/C++11#Range-based_for_loop): This is really just syntactic sugar to make code
   more concise and readable (very desireable).  It is only sporadically
   used throughout the code.  The macro [BOOST_FOREACH](http://www.boost.org/doc/libs/1_53_0/doc/html/foreach.html) is a good drop-in
   replacement for a native range-based for-loop if it presents any problems.
@@ -78,6 +78,7 @@ project, we'd like to avoid the use of tabs.  Use spaces to indent.
 Given the low amount of manpower we can expect,
 the source code of BMC should be as readable and maintainable as possible.
 This implies a lot, for instance:
+
 * Avoid code duplication at all cost: Whenever there is duplicated code
   and/or functionality, someone editing the code will have to know about all
   the other places which also need updating.  In the case of cross-platform
