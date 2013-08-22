@@ -1,0 +1,131 @@
+
+The primary programming language for BMC is C++.
+Templates and meta programming are allowed and encouraged.
+In addition to the Standard Library, Boost is used to make a few hard jobs a lot
+easier, and encourage good coding style.  If in doubt, check with the Standard
+Library and Boost conding standards.
+
+# C++11 (ISO/IEC 14882:2011)
+
+[[!wikipedia C++11]] is a nice enhancement of the existing language.
+Given the fact that GCC supports alot of the new standard already, and
+Microsofts Visual Studio is apparently also following at least somewhat, it
+was decided to allow some C++11 constructs into the codebase already.
+
+The BMC codebase is totally fresh anyways, and the actual task at hand
+seems so involved that we do not think it likely that we're going to be
+"finished" in the foreseeable future.  It is therefore very much likely that
+C++11 will be well adopted by most noteworthy compilers, by the time BMC is
+reaching any sort of production quality maturity.  Therefore we think we
+should be fine with C++11 already, and we can have a lot of fun learning its
+features along the way, not needing to limit us to the more verbose older ways
+of C++.
+
+That said, if C++11 presents a problem to a porter, C++03 is definitely
+preferable and should just be patched.  rvalue references, range based for
+loops and all the other nice features of C++11 are just that, nice.
+They are syntactic sugar, in a sense.  Portability takes preference.
+
+Here is a (possibly incomplete) list of C++11 features used by BMC:
+
+* [Rvalue references and move constructors](http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors): This is probably the greatest
+  improvement to C++ performance-wise.  Move-semantics are currently used
+  in the FluidSynth wrapper class (to fullfil a requrement of the threading
+  API).
+  Additionally, disambiguate.hpp makes some use of the STL member function
+  emplace_back() to increase performance.  If need be, the use of emplace_back
+  can simply be replaced by its (slower) equivalent push_back().
+
+* [Range-based for-loop](http://en.wikipedia.org/wiki/C++11#Range-based_for-loop): This is really just syntactic sugar to make code
+  more concise and readable (very desireable).  It is only sporadically
+  used throughout the code.  The macro [BOOST_FOREACH](http://www.boost.org/doc/libs/1_53_0/doc/html/foreach.html) is a good drop-in
+  replacement for a native range-based for-loop if it presents any problems.
+  However, tests have shown that BOOST_FOREACH is slower compared to
+  native range-based for-loops.
+
+* [Right angle bracket](http://en.wikipedia.org/wiki/C++11#Right_angle_bracket): Template code tends to look ugly if the programmer
+  needs to put spaces between two consecutive angle brackets.  Fortunately,
+  C++11 solves this ugly gotcha of C++.  Some places of the code might
+  make use of this.  If its a problem, simply insert the dreaded space.
+
+* [Explicitly defaulted and deleted special member functions](http://en.wikipedia.org/wiki/C++11#Explicitly_defaulted_and_deleted_special_member_functions): A useful
+  feature to make it more clear which member functions are actually created
+  by the compiler implicitly.  This is used in the FluidSynth class, since that
+  class is already explicitly designed to be move-aware, which is already
+  a C++11 only functionality.
+
+* [Threading facilities](http://en.wikipedia.org/wiki/C++11#Threading_facilities): The playback code makes use of std::thread and
+  std::chrono.  If the Standard Library of a certain platform lacks these
+  C++11 improvements, you might be able to use [boost::thread](http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html) and
+  [boost::chrono](http://www.boost.org/doc/libs/1_53_0/doc/html/chrono.html) as a (temporary) replacement.
+
+# const qualifier
+
+C++ is ambiguous regarding the placement of const qualifiers.
+const can either be placed before or after the variable or argument type.
+I prefer const being placed after the variable or arguments type, i.e.
+
+    GOOD:   std::vector<int> const v;
+    BAD:    const std::vector<int> v;
+
+# Use spaces, no tabulator
+
+To minimize indentation issues in a multi-developer
+project, we'd like to avoid the use of tabs.  Use spaces to indent.
+
+# Write maintainable code
+
+Given the low amount of manpower we can expect,
+the source code of BMC should be as readable and maintainable as possible.
+This implies a lot, for instance:
+* Avoid code duplication at all cost: Whenever there is duplicated code
+  and/or functionality, someone editing the code will have to know about all
+  the other places which also need updating.  In the case of cross-platform
+  support code, they might not even have access to the particular platform
+  at the moment to research and/or test the change.  Keep laptform specific
+  code separate from the core program logic as much as possible.
+* Keep in mind the code will evolve: In reality, certain changes to a program
+  require quite substantial modifications to the source.  These changes get
+  easier to do if code is decoupled as much as possible.  Forcing yourself to
+  do test-driven development can help in the decoupling.  Someone doing a
+  bigger change in the future will still have to read and understand your code
+  and possibly change/transform it to something else to fit the newly
+  discovered requirement.  Keep this in mind and try to avoid excessive
+  coupling of unrelated things into single functions/classes for instance.
+  Use meaningful member names.  If in doubt, make the name verbose, instead of
+  choosing a cryptic name that might be unclear to someone else.
+* Write test cases: The nature of the problem we are trying to solve with BMC
+  absolutely requires to follow a test-driven development pattern.  Braille
+  music code has so many special cases that we need to secure milestones
+  in development with good test cases to avoid breaking acomplishments
+  we've already achieved by later changes in the development process.
+  This is, however, a good thing, because test-driven development has many
+  positive side-effects on code quality.
+  If realisticly possible, write test cases for new code you develop.  A
+  framework for test cases is present and being used in the build process to
+  indicate regressions as early as possible.  Make use of this safe-guard
+  to avoid your code being accidentally broken in the future.
+* The 'detail' namespace: One pattern commonly used in Boost is to separate
+  the public interface of a feature from its implementation details.
+  We think this a good practice and would like to make use of it in BMC.
+  If you find or write code that clearly looks like an implementation detail,
+  consider putting it into a separate namespace 'detail'.
+* Use the features of C++ to avoid dangerous code: For instance, use enums
+  instead of integer constants.  Help the compiler avoid programming errors.
+  Or, use a safe discriminated union and the visitor pattern instead of
+  dangerous runtime type checking (as we do with Boost.Variant already).
+* Use the STL and Boost: Do not reinvent the wheel.  STL + Boost is an
+  extremely powerful set of libraries which can solve a host of problems in a
+  very well thought-out kind of way.  It is worth it to explore their details
+  and make use of their powerful features.
+* If it makes sense, use C++11: Two examples of this guideline are the use
+  of std::thread to launch playback tasks and std::chrono to handle sleeping in
+  the inner playback loop.  These two new library components from C++11 just
+  perfectly fit the job.  std::thread offers a nice C++ wrapper around the
+  usual OS-level threading primitives, and std::chrono allows for safely typed
+  real-time duration management, something basically every real-time playback
+  code needs.  We could also have invented our own wrappers and helper classes
+  to achieve the same thing, but why bother if a full comittee of people has
+  invested years of discussion and review to come up with a very good API for
+  us?
+
