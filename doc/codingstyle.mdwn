@@ -1,9 +1,8 @@
-
-The primary programming language for BMC is C++.
+The primary programming language for BMC is [[!wikipedia C++]].
 Templates and meta programming are allowed and encouraged.
-In addition to the Standard Library, Boost is used to make a few hard jobs a lot
-easier, and encourage good coding style.  If in doubt, check with the Standard
-Library and Boost conding standards.
+In addition to the Standard Library, [http://boost.org/](Boost) is used to make
+a few hard jobs a lot easier, and encourage good coding style.  If in doubt,
+check with the Standard Library and Boost conding standards.
 
 [[!toc]]
 
@@ -30,36 +29,48 @@ They are syntactic sugar, in a sense.  Portability takes preference.
 
 Here is a (possibly incomplete) list of C++11 features used by BMC:
 
-* [Rvalue references and move constructors](http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors): This is probably the greatest
-  improvement to C++ performance-wise.  Move-semantics are currently used
-  in the FluidSynth wrapper class (to fullfil a requrement of the threading
-  API).
-  Additionally, disambiguate.hpp makes some use of the STL member function
-  emplace_back() to increase performance.  If need be, the use of emplace_back
-  can simply be replaced by its (slower) equivalent push_back().
+## [Rvalue references and move constructors](http://en.wikipedia.org/wiki/C++11#Rvalue_references_and_move_constructors)
 
-* [Range-based for loop](http://en.wikipedia.org/wiki/C++11#Range-based_for_loop): This is really just syntactic sugar to make code
-  more concise and readable (very desireable).  It is only sporadically
-  used throughout the code.  The macro [BOOST_FOREACH](http://www.boost.org/doc/libs/1_53_0/doc/html/foreach.html) is a good drop-in
-  replacement for a native range-based for-loop if it presents any problems.
-  However, tests have shown that BOOST_FOREACH is slower compared to
-  native range-based for-loops.
+This is probably the greatest improvement to C++ performance-wise.
+Move-semantics are currently used in the FluidSynth wrapper class (to fullfil a
+requrement of the threading API).
 
-* [Right angle bracket](http://en.wikipedia.org/wiki/C++11#Right_angle_bracket): Template code tends to look ugly if the programmer
-  needs to put spaces between two consecutive angle brackets.  Fortunately,
-  C++11 solves this ugly gotcha of C++.  Some places of the code might
-  make use of this.  If its a problem, simply insert the dreaded space.
+Additionally, disambiguate.hpp makes some use of the STL member function
+emplace_back() to increase performance.  If need be, the use of emplace_back
+can simply be replaced by its (slower) equivalent push_back().
 
-* [Explicitly defaulted and deleted special member functions](http://en.wikipedia.org/wiki/C++11#Explicitly_defaulted_and_deleted_special_member_functions): A useful
-  feature to make it more clear which member functions are actually created
-  by the compiler implicitly.  This is used in the FluidSynth class, since that
-  class is already explicitly designed to be move-aware, which is already
-  a C++11 only functionality.
+## [Range-based for loop](http://en.wikipedia.org/wiki/C++11#Range-based_for_loop)
 
-* [Threading facilities](http://en.wikipedia.org/wiki/C++11#Threading_facilities): The playback code makes use of std::thread and
-  std::chrono.  If the Standard Library of a certain platform lacks these
-  C++11 improvements, you might be able to use [boost::thread](http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html) and
-  [boost::chrono](http://www.boost.org/doc/libs/1_53_0/doc/html/chrono.html) as a (temporary) replacement.
+This is really just syntactic sugar to make code more concise and readable
+(very desireable).  It is only sporadically used throughout the code.  The macro
+[BOOST_FOREACH](http://www.boost.org/doc/libs/1_53_0/doc/html/foreach.html) is a
+good drop-in replacement for a native range-based for loop if it presents any
+problems.
+However, tests have shown that BOOST_FOREACH is slower compared to
+native range-based for-loops.
+
+## [Right angle bracket](http://en.wikipedia.org/wiki/C++11#Right_angle_bracket)
+
+Template code tends to look ugly if the programmer
+needs to put spaces between two consecutive angle brackets.  Fortunately,
+C++11 solves this ugly gotcha of C++.  Some places of the code might
+make use of this.  If its a problem, simply insert the dreaded space.
+
+## [Explicitly defaulted and deleted special member functions](http://en.wikipedia.org/wiki/C++11#Explicitly_defaulted_and_deleted_special_member_functions)
+
+A useful feature to make it more clear which member functions are actually
+created by the compiler implicitly.  This is used in the FluidSynth class, since
+that class is already explicitly designed to be move-aware, which is already
+a C++11 only functionality.
+
+## [Threading facilities](http://en.wikipedia.org/wiki/C++11#Threading_facilities)
+
+The playback code makes use of std::thread and std::chrono.  If the Standard
+Library of a certain platform lacks these C++11 improvements, you might be able
+to use
+[boost::thread](http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html) and
+[boost::chrono](http://www.boost.org/doc/libs/1_53_0/doc/html/chrono.html) as a
+(temporary) replacement.
 
 # const qualifier
 
