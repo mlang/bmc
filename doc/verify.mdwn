@@ -1,0 +1,2 @@
+[[!brokenlinks pages="* and !recentchanges"]]
+
