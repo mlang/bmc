@@ -6,3 +6,8 @@ This is how to compile BMC from source.
     $ cmake ../../bmc
     $ make
 
+Run the test suite like this:
+
+    $ make check
+
+
