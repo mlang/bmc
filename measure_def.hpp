@@ -32,8 +32,6 @@ template<typename Iterator>
 measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handler)
 : measure_grammar::base_type(start, "measure")
 {
-  typedef boost::phoenix::function< braille::error_handler<Iterator> >
-          error_handler_function;
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 

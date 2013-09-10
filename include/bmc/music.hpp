@@ -7,16 +7,17 @@
 #ifndef BMC_MUSIC_HPP
 #define BMC_MUSIC_HPP
 
+#include <boost/config.hpp>
 #include "bmc/math.hpp"
 
 namespace music {
 
 typedef boost::rational<std::int32_t> rational;
 
-rational const zero = rational();
+rational BOOST_CONSTEXPR_OR_CONST zero = rational{};
 
 inline rational augmentation_dots_factor(unsigned dots)
-{ return dots ? rational((1 << (dots + 1)) - 1, 1 << dots) : rational(1); }
+{ return dots ? rational{(1 << (dots + 1)) - 1, 1 << dots} : rational{1}; }
 
 typedef rational time_modification;
 
@@ -47,7 +48,8 @@ public:
   { return os << signature.numerator() << '/' << signature.denominator(); }
 };
 
-enum diatonic_step { C = 0, D, E, F, G, A, B, steps_per_octave };
+enum diatonic_step { C = 0, D, E, F, G, A, B };
+unsigned BOOST_CONSTEXPR_OR_CONST steps_per_octave = B + 1;
 enum accidental {
   natural, flat, double_flat, triple_flat,
            sharp, double_sharp, triple_sharp

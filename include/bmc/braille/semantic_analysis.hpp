@@ -269,27 +269,27 @@ public:
   {
     if (score.time_sig) global_time_signature = *score.time_sig;
 
-    std::vector<std::future<bool>> staves;
-    for (ast::part &part: score.parts) {
-      for (std::size_t staff_index = 0; staff_index < part.size();
-           ++staff_index)
-      {
-        staves.emplace_back
-        ( std::async( std::launch::async
-                    , std::move(annotate_staff<ErrorHandler>( error_handler
-                                                            , report_error
-                                                            , global_time_signature
-                                                            , score.key_sig
-                                                            )
-                               )
-                    , staff_index, std::ref(part[staff_index]))
-        );
+    {
+      std::vector<std::future<bool>> staves;
+      for (ast::part &part: score.parts) {
+        for (std::size_t staff_index = 0; staff_index < part.size();
+             ++staff_index)
+        {
+          staves.emplace_back
+          ( async( std::launch::async
+                 , std::move(annotate_staff<ErrorHandler>( error_handler
+                                                         , report_error
+                                                         , global_time_signature
+                                                         , score.key_sig
+                                                         ))
+                 , staff_index, std::ref(part[staff_index]))
+          );
+        }
       }
+      if (not all_of( begin(staves), end(staves)
+                    , mem_fun_ref(&std::future<bool>::get)))
+        return false;
     }
-
-    if (not all_of(begin(staves), end(staves),
-                   mem_fun_ref(&std::future<bool>::get)))
-      return false;
 
     return unfold(score);
   }

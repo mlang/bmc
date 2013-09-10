@@ -10,8 +10,8 @@
 namespace music { namespace braille { namespace value_disambiguation {
 
 rational const undotted[8] = {
-  rational(1, 1), rational(1, 2), rational(1, 4), rational(1, 8),
-  rational(1, 16), rational(1, 32), rational(1, 64), rational(1, 128)
+  rational{1, 1},  rational{1, 2},  rational{1, 4},  rational{1, 8},
+  rational{1, 16}, rational{1, 32}, rational{1, 64}, rational{1, 128}
 };
 
 rational const &
@@ -19,7 +19,7 @@ value_proxy::undotted_duration() const
 {
   BOOST_ASSERT(category==large || category==small);
   BOOST_ASSERT(value_type >= 0 and value_type < 4);
-  return undotted[category * 4 + value_type];
+  return undotted[category | value_type];
 }
 
 rational
@@ -62,10 +62,7 @@ namespace {
 struct maybe_whole_measure_rest : boost::static_visitor<bool>
 {
   result_type operator()(ast::rest const &rest) const
-  {
-    return rest.ambiguous_value == ast::whole_or_16th and
-           rest.dots == 0;
-  }
+  { return rest.ambiguous_value == ast::whole_or_16th and not rest.dots; }
   template<typename Sign>
   result_type operator()(Sign const &) const { return false; }
 };
@@ -565,7 +562,7 @@ proxied_voice::foreach( ast::voice &voice
 rational const &
 proxied_measure::harmonic_mean()
 {
-  if (mean == zero) {
+  if (not mean) {
     // Avoid expensive (and unneeded) gcd in rational::operator+=
     rational::int_type n=0, d=1, count=0;
     for (const_reference voice: *this)
@@ -648,11 +645,10 @@ measure_interpretations::cleanup()
     }
     // Do not consider possibilities below a certain margin as valid
     if (single_best_score) {
-      rational const margin(best_score * rational(2, 3));
+      rational const margin{best_score * rational{2, 3}};
       base_type good;
       for (reference measure: *this)
-        if (measure.harmonic_mean() > margin)
-          good.emplace_back(measure);
+        if (measure.harmonic_mean() > margin) good.emplace_back(measure);
       assign(good.begin(), good.end());
     }
   }
