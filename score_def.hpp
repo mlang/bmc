@@ -73,6 +73,38 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   > eom > *eol
   ;
 
+  keyboard_section =
+       -indent
+    >> -section_number >> -section_range
+    >> right_hand_sign >> paragraph >> eol
+    >> indent
+    >> left_hand_sign >> paragraph >> eol
+    ;
+  last_keyboard_section =
+       -indent
+    >> -section_number >> -section_range
+    >> right_hand_sign >> paragraph >> eom >> eol
+    >> indent
+    >> left_hand_sign >> paragraph >> eom >> *eol
+    ;
+  keyboard_p = *keyboard_section >> last_keyboard_section;
+
+  solo_section =
+       -indent
+    >> -section_number >> -section_range
+    >> paragraph >> eol
+    ;
+  last_solo_section =
+       -indent
+    >> -section_number >> -section_range
+    >> paragraph >> eom >> eol
+    ;
+  solo_p = *solo_section >> last_solo_section;
+
+  paragraph = (key_and_time_signature | measure) % (whitespace | eol);
+  section_number = brl(3456) >> upper_number;
+  section_range = -brl(3456) >> lower_number >> brl(36) >> lower_number;
+
   staff = (key_and_time_signature | measure) % (whitespace | eol);
   key_and_time_signature = key_signature >> time_signature;
   //global_key_and_time_signature = key_signature >> time_signature >> *(brl(5) >> brl(2) >> time_signature);
