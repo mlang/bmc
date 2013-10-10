@@ -44,7 +44,8 @@ main(int argc, char const *argv[])
     music::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       music::lilypond_output_format(std::cout);
-      //music::include_locations_for_lilypond(std::cout);
+      if (argc == 2 and argv[1] == std::string("-l"))
+        music::include_locations_for_lilypond(std::cout);
       std::cout << score;
 
       return EXIT_SUCCESS;

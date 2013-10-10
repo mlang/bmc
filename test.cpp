@@ -351,7 +351,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK(attribute.time_sig);
@@ -572,7 +572,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -587,7 +587,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
   ss << attribute;
 
   std::ifstream ly_file(DIR "input/bwv988-v01.ly.expected");
-  BOOST_CHECK(ly_file.good());
+  BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);
@@ -607,7 +607,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly_with_locations) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -615,7 +615,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly_with_locations) {
 //BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
 //BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
+  BOOST_REQUIRE(compile(attribute));
 
   std::stringstream ss;
   music::lilypond_output_format(ss);
@@ -623,7 +623,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01_ly_with_locations) {
   ss << attribute;
 
   std::ifstream ly_file(DIR "input/bwv988-v01.ly.locations.expected");
-  BOOST_CHECK(ly_file.good());
+  BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);

@@ -77,8 +77,8 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   solo_part = *solo_section >> last_solo_section;
 
   paragraph = (key_and_time_signature | measure) % (whitespace | eol);
-  section_number = brl(3456) >> upper_number;
-  section_range = -brl(3456) >> lower_number >> brl(36) >> lower_number;
+  section_number = brl(3456) >> upper_number >> whitespace;
+  section_range = brl(3456) >> lower_number >> brl(36) >> lower_number >> whitespace;
 
   key_and_time_signature = key_signature >> time_signature;
   //global_key_and_time_signature = key_signature >> time_signature >> *(brl(5) >> brl(2) >> time_signature);
