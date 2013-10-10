@@ -108,6 +108,15 @@ add_custom_target(check
 install(TARGETS bmc bmc2ly DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
 install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
+
+find_package(PythonInterp)
+if(PYTHONINTERP_FOUND)
+  execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import music21;"
+                  RESULT_VARIABLE music21_NOTFOUND ERROR_QUIET)
+  if(NOT music21_NOTFOUND)
+    message("-- Found music21")
+  endif()
+endif(PYTHONINTERP_FOUND)
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${bmc_SOURCE_DIR}/LICENSE.txt")
