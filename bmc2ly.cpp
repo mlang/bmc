@@ -50,6 +50,8 @@ main(int argc, char const *argv[])
 
       return EXIT_SUCCESS;
     }
+  } else {
+    std::wcerr << "Failed to Parse:" << std::endl << source;
   }
 
   return EXIT_FAILURE;
