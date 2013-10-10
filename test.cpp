@@ -7,7 +7,11 @@
 #include "config.hpp"
 
 #define BOOST_TEST_MODULE bmc_test
+#if defined(BOOST_TEST_DYN_LINK)
+#include <boost/test/unit_test.hpp>
+#else
 #include <boost/test/included/unit_test.hpp>
+#endif
 
 #ifdef CMAKE_SOURCE_DIR
 #define DIR CMAKE_SOURCE_DIR

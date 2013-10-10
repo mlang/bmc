@@ -49,6 +49,15 @@ set_target_properties(bmc_test
                       COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/"
                      )
 target_link_libraries(bmc_test bmc_parse)
+find_package(Boost QUIET COMPONENTS unit_test_framework)
+if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
+  get_target_property(bmc_test_cflags bmc_test COMPILE_DEFINITIONS)
+  set_target_properties(bmc_test
+                        PROPERTIES COMPILE_DEFINITIONS "${bmc_test_cflags}; BOOST_TEST_DYN_LINK")
+  target_link_libraries(bmc_test ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+else(Boost_UNIT_TEST_FRAMEWORK_FOUND)
+  message(STATUS "Boost unit test framework library not available")
+endif(Boost_UNIT_TEST_FRAMEWORK_FOUND)
 enable_testing()
 set(BMC_TEST_NAMES
     time_signature_grammar_test_1
