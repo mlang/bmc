@@ -249,7 +249,7 @@ struct part : std::vector<staff> {};
 
 struct score {
   key_signature key_sig;
-  boost::optional<time_signature> time_sig;
+  std::vector<time_signature> time_sigs;
   std::vector<part> parts;
   std::vector<unfolded::part> unfolded_part;
 };

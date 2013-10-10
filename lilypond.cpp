@@ -106,14 +106,14 @@ generator::operator() ( braille::ast::unfolded::part const &part
       os << indent << "  "; ly_key(score.key_sig); os << std::endl;
     }
 
-    if (score.time_sig)
-      os << indent << "  " << "\\time" << " " << *score.time_sig << std::endl;
+    if (not score.time_sigs.empty())
+      os << indent << "  " << "\\time" << " " << score.time_sigs.front() << std::endl;
 
     unsigned int measure_number = 1;
     if (not part[staff_index].empty()) {
       rational first_measure_duration(duration(part[staff_index].front()));
-      if ((not score.time_sig and first_measure_duration != 1) or
-          (score.time_sig and *score.time_sig != first_measure_duration)) {
+      if ((score.time_sigs.empty() and first_measure_duration != 1) or
+          (not score.time_sigs.empty() and score.time_sigs.front() != first_measure_duration)) {
         os << indent << "  "; ly_partial(first_measure_duration); os << std::endl;
         measure_number = 0; // count from zero if we are dealing with upbeat
       }

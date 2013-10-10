@@ -90,7 +90,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::score,
   (music::key_signature, key_sig)
-  (boost::optional<music::time_signature>, time_sig)
+  (std::vector<music::time_signature>, time_sigs)
   (std::vector<music::braille::ast::part>, parts)
 )
 

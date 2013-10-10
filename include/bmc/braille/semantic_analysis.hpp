@@ -271,7 +271,7 @@ public:
 
   result_type operator()(ast::score& score)
   {
-    if (score.time_sig) global_time_signature = *score.time_sig;
+    if (not score.time_sigs.empty()) global_time_signature = score.time_sigs.front();
 
     {
       std::vector<std::future<bool>> staves;
