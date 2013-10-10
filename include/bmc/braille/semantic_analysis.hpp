@@ -172,7 +172,7 @@ public:
   {
   }
 
-  result_type operator() (std::size_t staff_index, ast::staff& staff)
+  result_type operator() (std::size_t staff_index, ast::part &part)
   {
     interval_direction interval_dir = interval_direction::down;
     switch (staff_index) {
@@ -182,16 +182,20 @@ public:
     case 1:
       interval_dir = interval_direction::up;
       break;
-    default: BOOST_ASSERT(false);
+    default:
+      //report_error(part.id, L"No support for parts with more then two staves yet");
+      BOOST_ASSERT(false);
     }
     calculate_octaves.set(interval_dir);
     disambiguate_values.set(global_time_signature);
     calculate_alterations.set(global_key_signature);
 
-    // Visit and annotate all elements of this staff.
-    if (not std::all_of( std::begin(staff), std::end(staff)
-                       , apply_visitor(*this)))
-      return false;
+    for (ast::section &section: part) {
+      ast::paragraph &paragraph = section.paragraphs[staff_index];
+      if (not std::all_of( std::begin(paragraph), std::end(paragraph)
+			 , apply_visitor(*this)))
+	return false;
+    }
 
     return disambiguate_values.end_of_staff();
   }
@@ -272,18 +276,20 @@ public:
     {
       std::vector<std::future<bool>> staves;
       for (ast::part &part: score.parts) {
-        for (std::size_t staff_index = 0; staff_index < part.size();
-             ++staff_index)
-        {
-          staves.emplace_back
-          ( async( std::launch::async
-                 , std::move(annotate_staff<ErrorHandler>( error_handler
-                                                         , report_error
-                                                         , global_time_signature
-                                                         , score.key_sig
-                                                         ))
-                 , staff_index, std::ref(part[staff_index]))
-          );
+        if (not part.empty()) {
+          std::size_t const staff_count{part.front().paragraphs.size()};
+          for (std::size_t staff_index = 0; staff_index < staff_count;
+               ++staff_index) {
+            staves.emplace_back
+            ( async( std::launch::async
+                   , std::move(annotate_staff<ErrorHandler>( error_handler
+                                                           , report_error
+                                                           , global_time_signature
+                                                           , score.key_sig
+                                                           ))
+                   , staff_index, std::ref(part))
+            );
+          }
         }
       }
       if (not all_of( begin(staves), end(staves)
@@ -307,9 +313,18 @@ public:
                      , ast::score const &score
                      )
   {
-    for (ast::staff const &staff: source) {
-      target.emplace_back();
-      if (not unfold(staff, target.back(), score)) return false;
+    BOOST_ASSERT(not source.empty());
+    size_t const staves{source.front().paragraphs.size()};
+    BOOST_ASSERT(std::all_of(std::next(source.begin()), source.end(),
+                             [staves](ast::section const &section) -> bool {
+                               return section.paragraphs.size() == staves;
+                             }));
+    for (int i = 0; i < staves; ++i) target.emplace_back();
+    for (ast::section const &section: source) {
+      int i = 0;
+      for (ast::paragraph const &paragraph: section.paragraphs) {
+        if (not unfold(paragraph, target.at(i++), score)) return false;
+      }
     }
     return true;
   }

@@ -191,8 +191,6 @@ struct key_and_time_signature : locatable
 typedef boost::variant<measure, key_and_time_signature> staff_element;
 typedef std::vector<staff_element> staff;
 
-typedef std::vector<staff> part;
-
 typedef boost::variant<measure, key_and_time_signature> paragraph_element;
 typedef std::vector<paragraph_element> paragraph;
 
@@ -205,6 +203,8 @@ struct section
   std::vector<paragraph> paragraphs;
 };
 
+typedef std::vector<section> part;
+
 /** These data structures correspond to an unrolled representation which
  *  replaces partial measure simile with the musical material they represent.
  */
@@ -216,8 +216,7 @@ typedef boost::make_variant_over
                                                 >::type
                             , simile
                             >::type
-        >::type
-        sign;
+        >::type sign;
 
 struct partial_voice : locatable, std::vector<sign>
 {

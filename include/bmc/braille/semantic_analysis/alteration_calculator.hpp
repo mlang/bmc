@@ -114,6 +114,7 @@ private:
               , music::diatonic_step step
               )
   {
+    BOOST_ASSERT(octave < 10);
     if (accidental) memory[octave][step] = *accidental;
 
     switch (memory[octave][step]) {

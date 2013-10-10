@@ -50,10 +50,12 @@ void
 fluidsynth::operator()(braille::ast::score const& score)
 {
   for(braille::ast::part const& part: score.parts) {
-    for(braille::ast::staff const& staff: part)
-    {
+    size_t const staves = part.front().paragraphs.size();
+    for(int i = 0; i < staves; ++i) {
       current_position = zero;
-      std::for_each(staff.begin(), staff.end(), boost::apply_visitor(*this));
+      for(braille::ast::section const& section: part) {
+	std::for_each(section.paragraphs[i].begin(), section.paragraphs[i].end(), boost::apply_visitor(*this));
+      }
     }
   }
   ppq = queue.ppq();

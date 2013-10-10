@@ -11,14 +11,15 @@
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include <boost/spirit/include/qi_core.hpp>
+#include <boost/spirit/include/qi_eoi.hpp>
 #include <boost/spirit/include/qi_eol.hpp>
 #include <boost/spirit/include/qi_eps.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_container.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_statement.hpp>
-#include <boost/spirit/include/phoenix_stl.hpp>
 #include "spirit/detail/info_wchar_t_io.hpp"
 
 namespace music { namespace braille {
@@ -28,14 +29,11 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 : score_grammar::base_type(start, "score")
 , measure(error_handler)
 {
-  using boost::phoenix::back;
-  using boost::phoenix::begin;
-  using boost::phoenix::end;
-  using boost::phoenix::front;
-  using boost::phoenix::insert;
-  using boost::phoenix::resize;
+  using boost::phoenix::at_c;
+  using boost::phoenix::push_back;
   typedef boost::phoenix::function< braille::error_handler<Iterator> >
           error_handler_function;
+  boost::spirit::qi::eoi_type eoi;
   boost::spirit::qi::eol_type eol;
   music::braille::brl_type brl;
   boost::spirit::standard_wide::space_type space;
@@ -49,45 +47,22 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
-  solo_part = eps[resize(_val, 1)]
-           >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
-           > eom > -eol;
-  keyboard_paragraph = eps[resize(_val, 2)]
-  >> indent >> right_hand_sign
-  >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
-  >> eol
-  >> indent >> left_hand_sign
-  > staff[insert(back(_val), end(back(_val)), begin(_1), end(_1))]
-  > eol
-  ;
-  keyboard_part = eps[resize(_val, 2)]
-  >> *keyboard_paragraph[insert(front(_val), end(front(_val)),
-                                begin(front(_1)), end(front(_1))),
-                         insert(back(_val), end(back(_val)),
-                                begin(back(_1)), end(back(_1)))]
-  >> indent >> right_hand_sign
-  >> staff[insert(front(_val), end(front(_val)), begin(_1), end(_1))]
-  > eom > eol
-  > indent > left_hand_sign
-  > staff[insert(back(_val), end(back(_val)), begin(_1), end(_1))]
-  > eom > *eol
-  ;
 
   keyboard_section =
-       -indent
-    >> -section_number >> -section_range
-    >> right_hand_sign >> paragraph >> eol
+       indent
+    >> -section_number[at_c<0>(_val) =_1] >> -section_range[at_c<1>(_val) = _1]
+    >> right_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eol
     >> indent
-    >> left_hand_sign >> paragraph >> eol
+    >> left_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eol
     ;
   last_keyboard_section =
-       -indent
-    >> -section_number >> -section_range
-    >> right_hand_sign >> paragraph >> eom >> eol
+       indent
+    >> -section_number[at_c<0>(_val) =_1] >> -section_range[at_c<1>(_val) = _1]
+    >> right_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eom >> eol
     >> indent
-    >> left_hand_sign >> paragraph >> eom >> *eol
+    >> left_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eom >> (eoi | +eol)
     ;
-  keyboard_p = *keyboard_section >> last_keyboard_section;
+  keyboard_part = *keyboard_section >> last_keyboard_section;
 
   solo_section =
        -indent
@@ -97,15 +72,14 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   last_solo_section =
        -indent
     >> -section_number >> -section_range
-    >> paragraph >> eom >> eol
+    >> paragraph >> eom >> (eoi | eol)
     ;
-  solo_p = *solo_section >> last_solo_section;
+  solo_part = *solo_section >> last_solo_section;
 
   paragraph = (key_and_time_signature | measure) % (whitespace | eol);
   section_number = brl(3456) >> upper_number;
   section_range = -brl(3456) >> lower_number >> brl(36) >> lower_number;
 
-  staff = (key_and_time_signature | measure) % (whitespace | eol);
   key_and_time_signature = key_signature >> time_signature;
   //global_key_and_time_signature = key_signature >> time_signature >> *(brl(5) >> brl(2) >> time_signature);
 

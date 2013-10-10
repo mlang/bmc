@@ -29,15 +29,11 @@ struct score_grammar : boost::spirit::qi::grammar<Iterator, ast::score()>
 
   boost::spirit::qi::rule<Iterator, ast::score()> start;
   boost::spirit::qi::rule<Iterator, ast::part()> solo_part, keyboard_part;
-  boost::spirit::qi::rule<Iterator, ast::part()> keyboard_paragraph;
   boost::spirit::qi::rule<Iterator, ast::section()> keyboard_section, last_keyboard_section;
-  boost::spirit::qi::rule<Iterator, std::vector<ast::section>()> keyboard_p;
   boost::spirit::qi::rule<Iterator, ast::section()> solo_section, last_solo_section;
-  boost::spirit::qi::rule<Iterator, std::vector<ast::section>()> solo_p;
   boost::spirit::qi::rule<Iterator, ast::paragraph()> paragraph;
   boost::spirit::qi::rule<Iterator, ast::section::number_type()> section_number;
   boost::spirit::qi::rule<Iterator, ast::section::range_type()> section_range;
-  boost::spirit::qi::rule<Iterator, ast::staff()> staff;
   measure_grammar<Iterator> measure;
   time_signature_grammar<Iterator> time_signature;
   key_signature_grammar<Iterator> key_signature;
