@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(time_signature_grammar_test_1) {
   typedef music::braille::time_signature_grammar<iterator_type> parser_type;
   parser_type parser;
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, music::time_signature(12, 8));
   BOOST_CHECK_EQUAL(attribute, music::rational(3, 2));
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_1) {
   typedef music::braille::key_signature_grammar<iterator_type> parser_type;
   parser_type parser;
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, 0);
 }
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_2) {
   typedef music::braille::key_signature_grammar<iterator_type> parser_type;
   parser_type parser;
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, 6);
 }
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
   typedef music::braille::key_signature_grammar<iterator_type> parser_type;
   parser_type parser;
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute, -2);
 }
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(brl_parser_test) {
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
   music::braille::brl_type brl;
-  BOOST_CHECK(boost::spirit::qi::parse(begin, end, brl(3456) >> brl(1)));
+  BOOST_REQUIRE(boost::spirit::qi::parse(begin, end, brl(3456) >> brl(1)));
   BOOST_CHECK(begin == end);
 }
 
@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
@@ -136,16 +136,16 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   music::braille::error_handler<iterator_type> errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
-  BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
-  BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.voices.size(), std::size_t(2));
+  BOOST_REQUIRE_EQUAL(attribute.voices[0].size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(1));
-  BOOST_CHECK_EQUAL(attribute.voices[1].size(), std::size_t(2));
-  BOOST_CHECK_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
-  BOOST_CHECK_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
-  BOOST_CHECK_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
+  BOOST_REQUIRE_EQUAL(attribute.voices[1].size(), std::size_t(2));
+  BOOST_REQUIRE_EQUAL(attribute.voices[1][0].size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.voices[1][0][0].size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), std::size_t(2));
   BOOST_CHECK(apply_visitor(music::braille::ast::is_rest(),
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   error_handler_type error_handler(begin, end);
   parser_type parser(error_handler);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(measure_interpretations_test2) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
@@ -235,7 +235,7 @@ BOOST_AUTO_TEST_CASE(notegroup_test1) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.voices.size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
@@ -270,7 +270,7 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK(attribute.voices.size() == 1);
   BOOST_CHECK(attribute.voices[0].size() == 1);
@@ -411,7 +411,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -437,7 +437,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -463,7 +463,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -541,7 +541,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -567,7 +567,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -668,7 +668,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -740,7 +740,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v04_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -775,7 +775,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v05_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -811,7 +811,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v06_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -847,7 +847,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v07_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -883,7 +883,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v08_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -919,7 +919,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v09_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -955,7 +955,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v10_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -991,7 +991,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v11_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -1027,23 +1027,24 @@ BOOST_AUTO_TEST_CASE(bwv988_v12_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
+//BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(2));
 //BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
 //BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
+  BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
   std::stringstream ss;
   music::lilypond_output_format(ss);
   ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
 
   std::ifstream ly_file(DIR "input/bwv988-v12.ly.expected");
-  BOOST_CHECK(ly_file.good());
+  BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);
@@ -1063,7 +1064,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -1098,7 +1099,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v19_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
@@ -1133,7 +1134,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_CHECK(parse(begin, end, parser, attribute));
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
