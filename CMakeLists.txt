@@ -81,6 +81,7 @@ set(BMC_TEST_NAMES
     bwv988_v30
     bwv988_v01_ly
     bwv988_v02_ly
+    bwv988_v03_ly
     bwv988_v04_ly
     bwv988_v05_ly
     bwv988_v06_ly
@@ -114,7 +115,9 @@ if(PYTHONINTERP_FOUND)
   execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import music21;"
                   RESULT_VARIABLE music21_NOTFOUND ERROR_QUIET)
   if(NOT music21_NOTFOUND)
-    message("-- Found music21")
+    message(STATUS "Found music21")
+  else()
+    message(STATUS "music21 not found")
   endif()
 endif(PYTHONINTERP_FOUND)
 # build a CPack driven installer package
