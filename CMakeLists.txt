@@ -103,7 +103,7 @@ endforeach(test_name)
 # A kludge to workaround cmake's inability to add dependencies to the test target
 add_custom_target(check
                   COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-                  DEPENDS bmc_test
+                  DEPENDS bmc_test bmc2ly
                  )
 
 install(TARGETS bmc bmc2ly DESTINATION bin)
@@ -116,7 +116,7 @@ if(PYTHONINTERP_FOUND)
                   RESULT_VARIABLE music21_NOTFOUND ERROR_QUIET)
   if(NOT music21_NOTFOUND)
     message(STATUS "Found music21")
-    add_test(NAME music21 COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/m21.py ${CMAKE_BINARY_DIR}/bmc2ly)
+    add_test(NAME music21 COMMAND ${CMAKE_SOURCE_DIR}/m21.sh ${CMAKE_SOURCE_DIR}/m21.py ${CMAKE_BINARY_DIR}/bmc2ly)
   else()
     message(STATUS "music21 not found")
   endif()
