@@ -7,26 +7,15 @@
 #include <bmc/ttb/ttb.h>
 
 #include "config.hpp"
+#include <fstream>
 #include <boost/spirit/include/qi_parse.hpp>
 #include "bmc/braille/parsing/grammar/score.hpp"
 #include "bmc/braille/semantic_analysis.hpp"
 
 #include "bmc/lilypond.hpp"
 
-int
-main(int argc, char const *argv[])
-{
-  std::locale::global(std::locale(""));
-
-  {
-    char *localeTable = selectTextTable(TABLES_DIRECTORY);
-    if (localeTable) {
-      replaceTextTable(TABLES_DIRECTORY, localeTable);
-      free(localeTable);
-    }
-  }
-
-  std::istreambuf_iterator<wchar_t> wcin_begin(std::wcin.rdbuf()), wcin_end;
+int bmc2ly(std::wistream &wistream, bool include_locations) {
+  std::istreambuf_iterator<wchar_t> wcin_begin(wistream.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
   typedef std::wstring::const_iterator iterator_type;
 
@@ -44,8 +33,7 @@ main(int argc, char const *argv[])
     music::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       music::lilypond_output_format(std::cout);
-      if (argc == 2 and argv[1] == std::string("-l"))
-        music::include_locations_for_lilypond(std::cout);
+      if (include_locations) music::include_locations_for_lilypond(std::cout);
       std::cout << score;
 
       return EXIT_SUCCESS;
@@ -53,6 +41,30 @@ main(int argc, char const *argv[])
   } else {
     std::wcerr << "Failed to Parse:" << std::endl << source;
   }
+
+  return EXIT_FAILURE;
+}
+
+int
+main(int argc, char const *argv[])
+{
+  std::locale::global(std::locale(""));
+
+  {
+    char *localeTable = selectTextTable(TABLES_DIRECTORY);
+    if (localeTable) {
+      replaceTextTable(TABLES_DIRECTORY, localeTable);
+      free(localeTable);
+    }
+  }
+
+  bool include_locations = false;
+  if (argc > 1) {
+    if (argv[1] == std::string("-l")) include_locations = true;
+    if (argv[1] == std::string("-")) return bmc2ly(std::wcin, include_locations);
+    std::wifstream file(argv[1]);
+    if (file.good()) return bmc2ly(file, include_locations);
+  } else return bmc2ly(std::wcin, include_locations);
 
   return EXIT_FAILURE;
 }

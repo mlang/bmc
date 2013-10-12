@@ -40,7 +40,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   whitespace = space | brl(0);
   indent = whitespace >> whitespace >> -whitespace;
 
-  start = key_signature >> -whitespace >> -(time_signature % (brl(5)>>brl(2))) >> -+eol
+  start = *whitespace >> key_signature >> -whitespace >> -(time_signature % (brl(5)>>brl(2))) >> *eol
        >> +(keyboard_part | solo_part);
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;
