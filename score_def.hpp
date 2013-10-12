@@ -35,59 +35,87 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
           error_handler_function;
   boost::spirit::qi::eoi_type eoi;
   boost::spirit::qi::eol_type eol;
-  music::braille::brl_type brl;
-  boost::spirit::standard_wide::space_type space;
-  whitespace = space | brl(0);
-  indent = whitespace >> whitespace >> -whitespace;
-
-  start = *whitespace >> key_signature >> -whitespace >> -(time_signature % (brl(5)>>brl(2))) >> *whitespace >> *eol
-       >> +(keyboard_part | solo_part);
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
+  music::braille::brl_type brl;
+  boost::spirit::standard_wide::blank_type blank;
+  boost::spirit::standard_wide::space_type space;
+
+  whitespace = blank | brl(0);
+  indent = whitespace >> +whitespace;
+
+  start = *whitespace
+       >> key_signature
+       >> -whitespace
+       >> -(time_signature % (brl(5)>>brl(2)))
+       >> *whitespace
+       >> -+eol
+       >> +(keyboard_part | solo_part)
+        ;
 
   keyboard_section =
        indent
-    >> -section_number[at_c<0>(_val) =_1] >> -section_range[at_c<1>(_val) = _1]
-    >> right_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eol
+    >> -section_number[at_c<0>(_val) = _1]
+    >> -section_range[at_c<1>(_val) = _1]
+    >> right_hand_sign
+    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> eol
     >> indent
-    >> left_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eol
-    ;
+    >> left_hand_sign
+    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> eol
+      ;
+
   last_keyboard_section =
        indent
-    >> -section_number[at_c<0>(_val) =_1] >> -section_range[at_c<1>(_val) = _1]
-    >> right_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eom >> eol
+    >> -section_number[at_c<0>(_val) = _1]
+    >> -section_range[at_c<1>(_val) = _1]
+    >> right_hand_sign
+    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> eom
+    >> eol
     >> indent
-    >> left_hand_sign >> paragraph[push_back(at_c<2>(_val), _1)] >> eom >> (eoi | +eol)
-    ;
+    >> left_hand_sign
+    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> eom
+    >> (eoi | +eol)
+     ;
+
   keyboard_part = *keyboard_section >> last_keyboard_section;
 
   solo_section =
        -indent
-    >> -section_number >> -section_range
-    >> paragraph >> eol
-    ;
+    >> -section_number
+    >> -section_range
+    >> paragraph
+    >> eol
+     ;
+
   last_solo_section =
        -indent
-    >> -section_number >> -section_range
-    >> paragraph >> eom >> (eoi | eol)
-    ;
+    >> -section_number
+    >> -section_range
+    >> paragraph
+    >> eom
+    >> (eoi | eol)
+     ;
+
   solo_part = *solo_section >> last_solo_section;
 
   paragraph = (key_and_time_signature | measure) % (whitespace | eol);
+
   section_number = brl(3456) >> upper_number >> whitespace;
   section_range = brl(3456) >> lower_number >> brl(36) >> lower_number >> whitespace;
 
   key_and_time_signature = key_signature >> time_signature;
-  //global_key_and_time_signature = key_signature >> time_signature >> *(brl(5) >> brl(2) >> time_signature);
 
   right_hand_sign = brl(46) >> brl(345) > optional_dot;
   left_hand_sign = brl(456) >> brl(345) > optional_dot;
   eom = brl(126) >> brl(13) >> !brl(3);
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
-
 
   boost::spirit::qi::on_error<boost::spirit::qi::fail>(start,
     error_handler_function(error_handler)
