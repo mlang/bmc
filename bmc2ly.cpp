@@ -39,7 +39,7 @@ int bmc2ly(std::wistream &wistream, bool include_locations) {
       return EXIT_SUCCESS;
     }
   } else {
-    std::wcerr << "Failed to Parse:" << std::endl << source;
+    std::wcerr << "Failed to Parse:" << std::endl << source << std::endl;
   }
 
   return EXIT_FAILURE;
