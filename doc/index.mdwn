@@ -4,18 +4,18 @@ At the moment, it can convert certain braille music code to LilyPond, which
 can later be converted (using LilyPond) to PDF and/or MIDI.
 
 This is a list of braille music code features that BMC already supports:
- * Full and partial measure in-accord.
- * Ambiguity resolution (automatic value deduction including support for value distinction signs).
- * Notegroupings (decoded and emitted as beams in visual notation).
- * Section-by-section solo and keyboard music (parts with one or two staves).
- * Partial support for simile signs (full and partial measure repetition).
+* Full and partial measure in-accord.
+* Ambiguity resolution (automatic value deduction including support for value distinction signs).
+* Notegroupings (decoded and emitted as beams in visual notation).
+* Section-by-section solo and keyboard music (parts with one or two staves).
+* Partial support for simile signs (full and partial measure repetition).
 
 The following is a list of braille music code features which are currently not yet supported by BMC:
- * Tuplets.
- * Doubling.
- * Repeated ranges of measures.
- * Polymetric music (music on staves with different time signatures).
- * Bar-over-bar format.
+* Tuplets.
+* Doubling.
+* Repeated ranges of measures.
+* Polymetric music (music on staves with different time signatures).
+* Bar-over-bar format.
 
 
 * [[News]]
