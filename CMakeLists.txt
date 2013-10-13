@@ -78,18 +78,15 @@ set(BMC_TEST_NAMES
     bwv988_v05
     bwv988_v06
     bwv988_v07
+    bwv988_v08
+    bwv988_v09
+    bwv988_v10
+    bwv988_v11
+    bwv988_v12
     bwv988_v13
     bwv988_v13_de
     bwv988_v19
     bwv988_v30
-    bwv988_v02_ly
-    bwv988_v08_ly
-    bwv988_v09_ly
-    bwv988_v10_ly
-    bwv988_v11_ly
-    bwv988_v12_ly
-    bwv988_v19_ly
-    bwv988_v01_ly_with_locations
    )
 foreach(test_name ${BMC_TEST_NAMES})
   add_test(NAME bmc_${test_name}
