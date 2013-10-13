@@ -380,13 +380,10 @@ public:
 
   bool is_grace(ast::note const &note) const
   {
-    return std::find(note.articulations.begin(), note.articulations.end(),
-                     appoggiatura)
-           != note.articulations.end()
-           ||
-           std::find(note.articulations.begin(), note.articulations.end(),
-                    short_appoggiatura)
-           != note.articulations.end();
+    return std::find_if(note.articulations.begin(), note.articulations.end(),
+                        [](articulation a) {
+                          return a == appoggiatura || a ==  short_appoggiatura;
+                        }) != note.articulations.end();
   }
   bool is_grace(ast::rest const &) const { return false; }
   bool is_grace(ast::chord const &chord) const { return is_grace(chord.base); }
