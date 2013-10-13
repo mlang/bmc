@@ -253,6 +253,17 @@ generator::operator() (braille::ast::rest const &rest)
     os << "r"; ly_rhythm(rest);
   }
 
+  using braille::ast::notegroup_member_type;
+  switch (rest.notegroup_member) {
+    case notegroup_member_type::begin:
+      os << '[';
+      break;
+    case notegroup_member_type::end:
+      os << ']';
+      break;
+    default: break;
+  }
+
   if (include_locations) {
     os << "%{" << rest.line << ":" << rest.column << "%}";
   }
@@ -284,6 +295,18 @@ generator::operator() (braille::ast::note const &note)
     }
   }
   ly_finger(note.fingers);
+
+  using braille::ast::notegroup_member_type;
+  switch (note.notegroup_member) {
+    case notegroup_member_type::begin:
+      os << '[';
+      break;
+    case notegroup_member_type::end:
+      os << ']';
+      break;
+    default: break;
+  }
+
   if (include_locations) {
     os << "%{" << note.line << ":" << note.column << "%}";
   }
@@ -308,6 +331,17 @@ generator::operator() (braille::ast::chord const &chord)
   }
   os << ">";
   ly_rhythm(chord.base);
+
+  using braille::ast::notegroup_member_type;
+  switch (chord.base.notegroup_member) {
+    case notegroup_member_type::begin:
+      os << '[';
+      break;
+    case notegroup_member_type::end:
+      os << ']';
+      break;
+    default: break;
+  }
 }
 
 generator::result_type

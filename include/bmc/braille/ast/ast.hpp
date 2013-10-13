@@ -41,6 +41,10 @@ struct locatable
   int line, column;
 };
 
+enum class notegroup_member_type: uint8_t {
+  none, begin, middle, end
+};
+
 /** \brief Storage for rhythmic values.
  *
  * A rhythmic value consists of an ambiguous value type and the number of
@@ -52,7 +56,14 @@ struct rhythmic_data
   ast::value ambiguous_value;
   unsigned dots;
   rational type; // filled in by value_disambiguation.hpp
-  rhythmic_data(): ambiguous_value(unknown), dots(0), type() {}
+  notegroup_member_type notegroup_member; // filled in by value_disambiguation.hpp
+
+  rhythmic_data()
+  : ambiguous_value{unknown}
+  , dots{0}
+  , type{}
+  , notegroup_member{notegroup_member_type::none}
+  {}
 };
 
 /** \brief Base class for everything that implies a rhythmic value.

@@ -25,10 +25,8 @@ convertible_snippets = [
 , Snippet(time="3/4", melody="C4 E G C E G C'2.")
 
 # music21 transcribes the tie and makes notegroups out of the second and third
-# beat (⠐⠷⠿⠓⠈⠉⠷⠑⠋⠛⠷⠊⠚⠩⠙), which BMC handles correctly.
+# beat (⠐⠷⠿⠓⠈⠉⠷⠑⠋⠛⠷⠊⠚⠩⠙), which BMC handles correctly including beaming output.
 # The key signature is also handled properly on all sides.
-# FIXME: BMC should preserve notegroups such that beaming can be extracted from
-# them.
 , Snippet("G", "3/4", "g16 f# g8~ g16 d e f# g a b c'#", [(0, '4'), (7, '1')])
 ]
 

@@ -44,6 +44,7 @@ class value_proxy
   ptr_type type;  
   ast::value value_type:4;
   value_category category:4;
+  ast::notegroup_member_type beam = ast::notegroup_member_type::none;
   union {
     ast::note *note_ptr;
     ast::rest *rest_ptr;
@@ -120,6 +121,22 @@ public:
   : type(ptr_type::simile), simile_ptr(&simile)
   , duration(duration * simile.count)
   { BOOST_ASSERT(simile_ptr->duration == zero); }
+
+  void make_beam_begin()
+  {
+    BOOST_ASSERT(beam == ast::notegroup_member_type::none);
+    beam = ast::notegroup_member_type::begin;
+  }
+  void make_beam_continue()
+  {
+    BOOST_ASSERT(beam == ast::notegroup_member_type::none);
+    beam = ast::notegroup_member_type::middle;
+  }
+  void make_beam_end()
+  {
+    BOOST_ASSERT(beam == ast::notegroup_member_type::none);
+    beam = ast::notegroup_member_type::end;
+  }
 
   operator rational const &() const { return duration; }
 

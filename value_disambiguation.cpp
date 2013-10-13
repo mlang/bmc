@@ -35,9 +35,13 @@ value_proxy::accept() const
   switch (type) {
   case ptr_type::note:
     note_ptr->type = undotted_duration();
+    if (beam != ast::notegroup_member_type::none)
+      note_ptr->notegroup_member = beam;
     break;
   case ptr_type::rest:
     rest_ptr->type = undotted_duration();
+    if (beam != ast::notegroup_member_type::none)
+      rest_ptr->notegroup_member = beam;
     break;
   case ptr_type::whole_measure_rest:
     rest_ptr->type = duration;
@@ -45,6 +49,8 @@ value_proxy::accept() const
     break;
   case ptr_type::chord:
     chord_ptr->base.type = undotted_duration();
+    if (beam != ast::notegroup_member_type::none)
+      chord_ptr->base.notegroup_member = beam;
     break;
   case ptr_type::moving_note:
     moving_note_ptr->base.type = undotted_duration();
@@ -112,7 +118,15 @@ public:
   result_type operator()(ast::barline &) {}
   result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
 
-  value_proxy *end() const { return stack_end; }
+  value_proxy *end() const
+  {
+    auto iter = stack_begin;
+    (iter++)->make_beam_begin();
+    while (iter < stack_end - 1) (iter++)->make_beam_continue();
+    iter->make_beam_end();
+    BOOST_ASSERT(++iter == stack_end);
+    return stack_end;
+  }
   rational duration() const
   { return std::accumulate(stack_begin, stack_end, zero); }
 };

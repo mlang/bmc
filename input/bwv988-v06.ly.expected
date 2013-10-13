@@ -15,14 +15,14 @@ music =
           << {c''8 b'16-4 a'-5 g' fis'}\\{d'4.~} >> |
           << {e'4.~-"2-5"}\\{d'8 c'16-2 b a-2 g} >> |
           << {e'8 d'16 c'-5 b a-3}\\{a4.~} >> |
-          << {b4.~}\\{a16 g-1 b-5 a g fis} >> |
-          << {b16 a-1 c'-2 b a-2 g}\\{g8-3 g'4~} >> |
+          << {b4.~}\\{a16[ g-1 b-5 a g fis]} >> |
+          << {b16[ a-1 c'-2 b a-2 g]}\\{g8-3 g'4~} >> |
           << {a8-"2-1" a'4~}\\{g'8-"5-4" fis'16 e' d' c'-2} >> |
           << {a'8 g'16-3 fis' e' d'-2}\\{b16 d'-2 g'-3 a' bes'8~} >> |
           << {cis'16 e'-2 a'-3 b' c''8~}\\{bes'8 a'16-3 g' fis' e'-2} >> |
           << {c''8 b'16-4 a'-5 g' fis'}\\{d'4.~} >> |
-          << {e'4.~-5}\\{d'16 cis'-3 b d' cis' b} >> |
-          << {e'16 d' cis' e'-5 d'-5 cis'-4}\\{cis'16 b a g-1 fis-2 e} >> |
+          << {e'4.~-5}\\{d'16[ cis'-3 b d' cis' b]} >> |
+          << {e'16[ d' cis' e'-5 d'-5 cis'-4]}\\{cis'16[ b a g-1 fis-2 e]} >> |
         }
         \alternative {
           {<< {d'16 c' b a g  fis-1}\\{ fis8 r r} >> |  g''4.~-4  | }
@@ -33,16 +33,16 @@ music =
           << {b''8 a''16 g''-5 fis'' e''-5}\\{cis''8 c''4~} >> |
           << {dis''8 d''4~-5}\\{c''8 b'16-2 a' gis'-3 fis'} >> |
           << {d''8 c''16-4 b'-5 a' g'-5}\\{e'4.~} >> |
-          << {fis'4.~-"4-5"}\\{e'16 dis'-3 cis' e' dis' cis'} >> |
+          << {fis'4.~-"4-5"}\\{e'16[ dis'-3 cis' e' dis' cis']} >> |
           <fis' dis'>16 <e' cis'> <dis' b> <fis' a> <e' g> <dis'-3 fis> |
-          << {e'16-5 d' c' b a gis-2}\\{g8-1 r r} >> |
+          << {e'16-5[ d' c' b a gis-2]}\\{g8-1 r r} >> |
           << {a8-1 r r}\\{c'4.~-4} >> |
-          << {d'4.~}\\{c'16 a-2 b g b-2 d'} >> |
-          << {d'16 b c' a c'-2 e'}\\{e'4.~} >> |
-          << {fis'4.~}\\{e'16 cis' d' b d'-2 fis'} >> |
-          << {fis'16 dis' e' c' e'-2 g'}\\{g'4.~} >> |
-          << {a'4.~}\\{g'16 fis' e' g' fis' e'} >> |
-          <a' fis'>16 <g' e'> <fis' d'> <a' c'-2> <g' b> <fis'-3 a> |
+          << {d'4.~}\\{c'16[ a-2 b g b-2 d']} >> |
+          << {d'16[ b c' a c'-2 e']}\\{e'4.~} >> |
+          << {fis'4.~}\\{e'16[ cis' d' b d'-2 fis']} >> |
+          << {fis'16[ dis' e' c' e'-2 g']}\\{g'4.~} >> |
+          << {a'4.~}\\{g'16[ fis' e' g' fis' e']} >> |
+          <a' fis'>16[ <g' e'> <fis' d'> <a' c'-2> <g' b> <fis'-3 a>] |
         }
         \alternative {
           {<< {g'16-5 fis' e' d' c'  b}\\{ g8 r r} >> |  a''4.~-4  | }
@@ -53,36 +53,36 @@ music =
         \clef "bass"
         \key g \major
         \time 3/8
-        g,16-3 fis, g, a, b, g,-5 \bar "|:" % 1
+        g,16-3[ fis, g, a, b, g,-5] \bar "|:" % 1
         \repeat volta 2 {
-           d16-2 c d e fis-2 d |
-          g16 fis e fis g e-4 |
-          a16 g fis g a fis-4 |
-          b16 a g a b g-4 |
-          c'16 b a g-1 fis e |
-          fis16 e fis d e fis |
-          g16 e d-1 c b, a, |
-          g,16 fis-2 e-1 d c b, |
-          cis16 a, d e fis-2 d |
-          g16 fis e fis g e-4 |
-          a16 g fis g a fis-4 |
-          b16 a g a b a |
+           d16-2[ c d e fis-2 d] |
+          g16[ fis e fis g e-4] |
+          a16[ g fis g a fis-4] |
+          b16[ a g a b g-4] |
+          c'16[ b a g-1 fis e] |
+          fis16[ e fis d e fis] |
+          g16[ e d-1 c b, a,] |
+          g,16[ fis-2 e-1 d c b,] |
+          cis16[ a, d e fis-2 d] |
+          g16[ fis e fis g e-4] |
+          a16[ g fis g a fis-4] |
+          b16[ a g a b a] |
           gis8-1 gis, r |
           a,8 a,, r |
         }
         \alternative {
-          {d,8 d16 c b, a,-4 | << {g,16 fis,-4 g, a, b, g,}\\{g8 r r } >> | }
-          {d,8-5 fis, a, | d16 cis-3 d e fis-2 d  | }
+          {d,8 d16 c b, a,-4 | << {g,16[ fis,-4 g, a, b, g,]}\\{g8 r r } >> | }
+          {d,8-5 fis, a, | d16[ cis-3 d e fis-2 d]  | }
         }
         \repeat volta 2 {
-           g16 fis e fis g e-5 |
-          a16 g fis g a fis-4 |
-          b16 a gis a b gis-4 |
-          c'16 b a b c' b |
+           g16[ fis e fis g e-5] |
+          a16[ g fis g a fis-4] |
+          b16[ a gis a b gis-4] |
+          c'16[ b a b c' b] |
           ais8-1 ais, r |
           b,8 b,, r |
           e,8 e16 d c b, |
-          a,16 c e g fis e |
+          a,16[ c e g fis e] |
           fis8 g, r |
           g8 a, r |
           a8 b, r |
@@ -91,7 +91,7 @@ music =
           d8 d, d |
         }
         \alternative {
-          {g,8 g16 fis-3 e g-2 | << {fis16 e d e fis d}\\{a8 r r } >> | }
+          {g,8 g16 fis-3 e g-2 | << {fis16[ e d e fis d]}\\{a8 r r } >> | }
           {g,8 d e | }
         }
       }

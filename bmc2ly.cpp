@@ -60,7 +60,10 @@ main(int argc, char const *argv[])
 
   bool include_locations = false;
   if (argc > 1) {
-    if (argv[1] == std::string("-l")) include_locations = true;
+    if (argv[1] == std::string("-l")) {
+      include_locations = true;
+      if (argc == 2) return bmc2ly(std::wcin, include_locations);
+    }
     if (argv[1] == std::string("-")) return bmc2ly(std::wcin, include_locations);
     std::wifstream file(argv[1]);
     if (file.good()) return bmc2ly(file, include_locations);
