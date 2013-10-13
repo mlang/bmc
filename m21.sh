@@ -2,4 +2,4 @@
 
 set -e
 
-python $@ | lilypond -o music21_snippets -
+python $@ | lilypond -s -o music21_snippets -
