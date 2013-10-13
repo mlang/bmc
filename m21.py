@@ -22,7 +22,7 @@ convertible_snippets = [
 # music21 correctly recognizes the repeated measure and uses a simile sign to
 # indicate it.  This is correctly recognized by BMC and transformed into the
 # equivalent "\repeat unfold" in LilyPond.
-, Snippet(time="3/4", melody="C4 E G C E G C'2.")
+, Snippet(time="3/4", melody="C4 E G C E G c2.")
 
 # music21 transcribes the tie and makes notegroups out of the second and third
 # beat (⠐⠷⠿⠓⠈⠉⠷⠑⠋⠛⠷⠊⠚⠩⠙), which BMC handles correctly including beaming output.

@@ -367,9 +367,10 @@ BOOST_AUTO_TEST_CASE(common_factor) {
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v01.bmc");
-  BOOST_CHECK(file.good());
+  BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
@@ -394,9 +395,21 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
 //BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
 //BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
   music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
+  BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), music::rational(3, 4));
 //BOOST_CHECK_EQUAL(duration(attribute.parts[0][0]), music::rational(3, 4) * 32);
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "input/bwv988-v01.ly.expected");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
@@ -466,7 +479,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
 BOOST_AUTO_TEST_CASE(bwv988_v04) {
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v04.bmc");
-  BOOST_CHECK(file.good());
+  BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
   typedef std::wstring::const_iterator iterator_type;
@@ -480,13 +493,139 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(4));
 //BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(34));
 //BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(34));
   music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
+  BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), music::rational(3, 8));
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+
+  std::ifstream ly_file(DIR "input/bwv988-v04.ly.expected");
+  BOOST_CHECK(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_CHECK_EQUAL(ss.str(), expected);
+}
+
+BOOST_AUTO_TEST_CASE(bwv988_v05) {
+  std::locale::global(std::locale(""));
+  std::wifstream file(DIR "input/bwv988-v05.bmc");
+  BOOST_REQUIRE(file.good());
+  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
+  std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(4));
+//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_REQUIRE(compile(attribute));
+  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "input/bwv988-v05.ly.expected");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
+}
+
+BOOST_AUTO_TEST_CASE(bwv988_v06) {
+  std::locale::global(std::locale(""));
+  std::wifstream file(DIR "input/bwv988-v06.bmc");
+  BOOST_CHECK(file.good());
+  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
+  std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(36));
+//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(36));
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_REQUIRE(compile(attribute));
+  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "input/bwv988-v06.ly.expected");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
+}
+
+BOOST_AUTO_TEST_CASE(bwv988_v07) {
+  std::locale::global(std::locale(""));
+  std::wifstream file(DIR "input/bwv988-v07.bmc");
+  BOOST_CHECK(file.good());
+  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
+  std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
+  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
+//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
+//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_CHECK(compile(attribute));
+  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+
+  std::ifstream ly_file(DIR "input/bwv988-v07.ly.expected");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
@@ -582,9 +721,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
 BOOST_AUTO_TEST_CASE(bwv988_v30) {
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v30.bmc");
-  BOOST_CHECK(file.good());
+  BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
@@ -596,48 +736,25 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   BOOST_REQUIRE(parse(begin, end, parser, attribute));
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
 //BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(?));
 //BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(18));
 //BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(18));
   music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
+  BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), music::rational(1, 8));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][1]), music::rational(4, 4));
-}
-
-BOOST_AUTO_TEST_CASE(bwv988_v01_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v01.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
 
   std::stringstream ss;
   music::lilypond_output_format(ss);
   ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v01.ly.expected");
+  std::ifstream ly_file(DIR "input/bwv988-v30.ly.expected");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
@@ -706,149 +823,6 @@ BOOST_AUTO_TEST_CASE(bwv988_v02_ly) {
   ss << attribute;
 
   std::ifstream ly_file(DIR "input/bwv988-v02.ly.expected");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
-}
-
-BOOST_AUTO_TEST_CASE(bwv988_v04_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v04.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(34));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(34));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
-
-  std::stringstream ss;
-  music::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "input/bwv988-v04.ly.expected");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
-}
-
-BOOST_AUTO_TEST_CASE(bwv988_v05_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v05.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
-
-  std::stringstream ss;
-  music::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "input/bwv988-v05.ly.expected");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
-}
-
-BOOST_AUTO_TEST_CASE(bwv988_v06_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v06.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(36));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(36));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
-
-  std::stringstream ss;
-  music::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "input/bwv988-v06.ly.expected");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
-}
-
-BOOST_AUTO_TEST_CASE(bwv988_v07_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v07.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(32));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(32));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
-  BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
-
-  std::stringstream ss;
-  music::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "input/bwv988-v07.ly.expected");
   BOOST_CHECK(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -1070,39 +1044,3 @@ BOOST_AUTO_TEST_CASE(bwv988_v19_ly) {
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);
 }
-
-BOOST_AUTO_TEST_CASE(bwv988_v30_ly) {
-  std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v30.bmc");
-  BOOST_CHECK(file.good());
-  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
-  std::wstring const input(file_begin, file_end);
-  typedef std::wstring::const_iterator iterator_type;
-  iterator_type begin(input.begin());
-  iterator_type const end(input.end());
-  typedef music::braille::score_grammar<iterator_type> parser_type;
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
-  error_handler_type errors(begin, end);
-  parser_type parser(errors);
-  boost::spirit::traits::attribute_of<parser_type>::type attribute;
-  BOOST_REQUIRE(parse(begin, end, parser, attribute));
-  BOOST_CHECK(begin == end);
-  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
-  BOOST_CHECK_EQUAL(attribute.parts.size(), std::size_t(1));
-//BOOST_CHECK_EQUAL(attribute.parts[0].size(), std::size_t(2));
-//BOOST_CHECK_EQUAL(attribute.parts[0][0].size(), std::size_t(18));
-//BOOST_CHECK_EQUAL(attribute.parts[0][1].size(), std::size_t(18));
-  music::braille::compiler<error_handler_type> compile(errors);
-  BOOST_CHECK(compile(attribute));
-
-  std::stringstream ss;
-  music::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "input/bwv988-v30.ly.expected");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
-}
-
