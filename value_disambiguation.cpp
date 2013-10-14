@@ -656,7 +656,7 @@ measure_interpretations::cleanup()
     }
     // Do not consider possibilities below a certain margin as valid
     if (single_best_score) {
-      rational const margin{best_score * rational{2, 3}};
+      rational const margin{best_score * rational{3, 4}};
       base_type good;
       for (reference measure: *this)
         if (measure.harmonic_mean() > margin) good.emplace_back(measure);
