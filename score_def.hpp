@@ -59,7 +59,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   keyboard_section =
        indent
     >> -section_number[at_c<0>(_val) = _1]
-    >> -section_range[at_c<1>(_val) = _1]
+    >> -measure_range[at_c<1>(_val) = _1]
     >> right_hand_sign
     >> paragraph[push_back(at_c<2>(_val), _1)]
     >> eol
@@ -72,7 +72,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   last_keyboard_section =
        indent
     >> -section_number[at_c<0>(_val) = _1]
-    >> -section_range[at_c<1>(_val) = _1]
+    >> -measure_range[at_c<1>(_val) = _1]
     >> right_hand_sign
     >> paragraph[push_back(at_c<2>(_val), _1)]
     >> eom
@@ -89,7 +89,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   solo_section =
        -indent
     >> -section_number
-    >> -section_range
+    >> -measure_range
     >> paragraph
     >> eol
      ;
@@ -97,7 +97,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   last_solo_section =
        -indent
     >> -section_number
-    >> -section_range
+    >> -measure_range
     >> paragraph
     >> eom
     >> (eoi | eol)
@@ -108,7 +108,14 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   paragraph = (key_and_time_signature | measure) % (whitespace | eol);
 
   section_number = brl(3456) >> upper_number >> whitespace;
-  section_range = brl(3456) >> lower_number >> brl(36) >> lower_number >> whitespace;
+  measure_range =
+       brl(3456)
+    >> lower_number
+    >> brl(36)
+    >> lower_number
+    >> -(brl(3456) >> lower_number)
+    >> whitespace
+     ;
 
   key_and_time_signature = key_signature >> time_signature;
 

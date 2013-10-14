@@ -205,12 +205,19 @@ typedef std::vector<staff_element> staff;
 typedef boost::variant<measure, key_and_time_signature> paragraph_element;
 typedef std::vector<paragraph_element> paragraph;
 
+struct measure_range
+{
+  typedef unsigned number_type;
+  number_type first;
+  number_type last;
+  boost::optional<number_type> last_alternative;
+};
+
 struct section
 {
   typedef unsigned number_type;
-  typedef std::pair<number_type, number_type> range_type;
   boost::optional<number_type> number;
-  boost::optional<range_type> range;
+  boost::optional<measure_range> range;
   std::vector<paragraph> paragraphs;
 };
 

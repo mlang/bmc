@@ -33,7 +33,7 @@ struct score_grammar : boost::spirit::qi::grammar<Iterator, ast::score()>
   boost::spirit::qi::rule<Iterator, ast::section()> solo_section, last_solo_section;
   boost::spirit::qi::rule<Iterator, ast::paragraph()> paragraph;
   boost::spirit::qi::rule<Iterator, ast::section::number_type()> section_number;
-  boost::spirit::qi::rule<Iterator, ast::section::range_type()> section_range;
+  boost::spirit::qi::rule<Iterator, ast::measure_range()> measure_range;
   measure_grammar<Iterator> measure;
   time_signature_grammar<Iterator> time_signature;
   key_signature_grammar<Iterator> key_signature;
