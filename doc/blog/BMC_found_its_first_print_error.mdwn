@@ -1,0 +1,22 @@
+Today, BMC found its first real error in a book of braille music.
+I am anticipating this event since at least a year, when I first started to realize the potential of automated validation of braille music code.
+However, its something different when you finally see it really happening!
+
+Consider the following measure of music, in 4/4 time (in G, one sharp):
+
+    ((>h_eaflg{gh(il<+w"cj"ctsarq
+
+At first, when BMC refused to accept this, I was already searching for a programming error.
+Until I realized that the measure given is really invalid.
+
+In print, the first two beats are beamed 16th notes.  The transcriber
+used a notegroup for the 16th notes on the second beat.  But they apparently
+forgot to put dots 3 and 6 on the first 16th G.
+
+The correct measure is:
+
+    ((>{_eaflg{gh(il<+w"cj"ctsarq
+
+Now that the first notegroup is correct, BMC can infer that all note durations
+match up with a time signature of 4/4.
+

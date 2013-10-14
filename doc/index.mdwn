@@ -26,3 +26,8 @@ The following is a list of braille music code features which are currently not y
 * [[CodingStyle]]
 * [[Contact]]
 
+# Development blog
+
+[[!inline pages="./blog/* and !*/Discussion"
+  actions=yes show=5]]
+
