@@ -1,5 +1,5 @@
 This weekend ended up being quite productive. It actually already started during
-the past week by an exercise in learning about [music21](http://mit.edu/music21).
+the past week by an exercise in learning about [music21](http://web.mit.edu/music21/).
 After I found (and filed) a few bugs related to music21's braille transcription
 abilities, I began work on enabling BMC to parse at least a bit of what
 music21 can generate.  There is still work to do regarding the section
