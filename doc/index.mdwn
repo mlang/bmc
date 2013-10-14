@@ -1,13 +1,17 @@
 BMC stands for Braille Music Compiler.  It aims to become an universal
 translator between various visual music notation formats and braille music code.
+A sort of bridge between visual and tactile music notation.
 At the moment, it can convert certain braille music code to LilyPond, which
 can later be converted (using LilyPond) to PDF and/or MIDI.
+BMC is currently being developed as a spare-time project by Mario Lang.
 
 This is a list of braille music code features that BMC already supports:
 
 * Full and partial measure in-accord.
 * Ambiguity resolution (automatic value deduction including support for value distinction signs).
-* Notegroupings (decoded and emitted as beams in visual notation).
+* Notegrouping (decoded and emitted as beams in visual notation).
+* Anacrusis.
+* Repeat barlines and alternative endings.
 * Section-by-section solo and keyboard music (parts with one or two staves).
 * Partial support for simile signs (full and partial measure repetition).
 
@@ -28,6 +32,4 @@ The following is a list of braille music code features which are currently not y
 
 # Development blog
 
-[[!inline pages="./blog/* and !*/Discussion"
-  actions=yes show=5]]
-
+[[!inline pages="./blog/* and !*/Discussion" actions=yes show=5]]
