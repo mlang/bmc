@@ -29,5 +29,5 @@ The following is a list of braille music code features which are currently not y
 # Development blog
 
 [[!inline pages="./blog/* and !*/Discussion"
-  actions=yes show=5 rootpage="blog"]]
+  actions=yes show=5]]
 
