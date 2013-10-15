@@ -53,17 +53,10 @@ enum class notegroup_member_type: uint8_t {
  */
 struct rhythmic_data
 {
-  ast::value ambiguous_value;
-  unsigned dots;
-  rational type; // filled in by value_disambiguation.hpp
-  notegroup_member_type notegroup_member; // filled in by value_disambiguation.hpp
-
-  rhythmic_data()
-  : ambiguous_value{unknown}
-  , dots{0}
-  , type{}
-  , notegroup_member{notegroup_member_type::none}
-  {}
+  ast::value ambiguous_value = unknown;
+  unsigned dots = 0;
+  rational type = {}; // filled in by value_disambiguation.hpp
+  notegroup_member_type notegroup_member = notegroup_member_type::none; // filled in by value_disambiguation.hpp
 };
 
 /** \brief Base class for everything that implies a rhythmic value.
