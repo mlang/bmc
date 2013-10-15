@@ -26,7 +26,7 @@ music =
          r8 d'16-4 e' d'8 c'16 b a[ b c' d'] | % 17
         r8 g'16-3 fis' g'8-1 a'16 b' c''[ b' a' g'] | % 18
         g''4~ g''16[ fis''-3 a'' g''] fis'' g'' e''8 | % 19
-        \appoggiatura e'' fis''8~ fis''32 eis'' fis'' g'' fis''8 a' r fis''-3 | % 20
+        \appoggiatura e''16 fis''8~ fis''32 eis'' fis'' g'' fis''8 a' r fis''-3 | % 20
         g''16[ fis'' g'' a''] g''[ fis'' e'' d''] c''-4[ b' a' g'] | % 21
         << {fis'2.~-4}\\{ e'8  e'16 dis' e'8 e' e' dis'16 cis'} >> | % 22
         << {fis'8 fis'16 g' fis'8 fis' fis'-3 g'16 a'}\\{dis'4 r fis'~-3} >> | % 23
@@ -62,7 +62,7 @@ music =
         d16 e d cis d8-1 a, d, r  \bar ":|:" % 16
          d4-3 d c | % 17
         << {b,8 c b, a,-4 g, a,16 b,-5}\\{d4~ d16[ e-1 c-3 d] e d f8} >> | % 18
-        << {c8 b, c e-2 a, c-3}\\{\appoggiatura f e8~ e32 f e dis e8 c' r e} >> | % 19
+        << {c8 b, c e-2 a, c-3}\\{\appoggiatura f16 e8~ e32 f e dis e8 c' r e} >> | % 19
         << {b,4 r r}\\{dis16[ e dis cis] dis[ e fis-4 g] a[ b cis'-3 dis']} >> | % 20
         << {r8 e fis g-5 a b-"3-4"}\\{e'2.~-4} >> | % 21
         c'16[ d' c' b] c'-1[ b a g] a-1[ fis-4 g a] | % 22

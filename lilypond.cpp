@@ -166,7 +166,11 @@ generator::operator() ( braille::ast::unfolded::part const &part
 generator::result_type
 generator::operator() (braille::ast::key_and_time_signature const &key_and_time_sig)
 {
-  // @todo Implement.
+  os << " \\time "
+     << key_and_time_sig.time.numerator()
+     << '/'
+     << key_and_time_sig.time.denominator()
+     << ' ';
 }
 
 generator::result_type
@@ -272,16 +276,25 @@ generator::operator() (braille::ast::rest const &rest)
 generator::result_type
 generator::operator() (braille::ast::note const &note)
 {
+  bool grace = false;
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
-    case appoggiatura:             os << "\\appoggiatura "; break;
-    case short_appoggiatura:       os << "\\acciaccatura "; break;
+    case appoggiatura:             os << "\\appoggiatura "; grace = true; break;
+    case short_appoggiatura:       os << "\\acciaccatura "; grace = true; break;
     }
   }
   ly_pitch_step(note.step);
   ly_accidental(note.alter);
   ly_octave(note.octave);
-  ly_rhythm(note);
+  if (grace and note.type == zero) {
+    switch (note.ambiguous_value) {
+    case braille::ast::whole_or_16th: os << "16"; break;
+    case braille::ast::half_or_32th: os << "32"; break;
+    case braille::ast::quarter_or_64th: os << "4"; break;
+    case braille::ast::eighth_or_128th: os << "8"; break;
+    }
+    last_type = 0, last_dots = 0;
+  } else ly_rhythm(note);
   if (note.tie) os << "~";
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
@@ -458,6 +471,14 @@ struct is_alternative : boost::static_visitor<bool>
   { return false; }
 };
 
+struct is_measure : boost::static_visitor<bool>
+{
+  result_type operator() (braille::ast::unfolded::measure const &measure) const
+  { return true; }
+  result_type operator() (braille::ast::key_and_time_signature const&) const
+  { return false; }
+};
+
 class has_barline: public boost::static_visitor<bool>
 {
   braille::ast::barline type;
@@ -495,13 +516,25 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
                                            )
 {
   std::vector<std::vector<std::size_t>> alternatives;
-  std::vector<std::size_t> *indices = nullptr;;
+  std::vector<std::size_t> *indices = nullptr;
   std::size_t i;
   for (i = index; i < staff.size(); ++i) {
+    // If this is a time sig followed by a alternative begin, make the time sig part of the alternative
+    if (i+1 < staff.size() and
+        not apply_visitor(is_measure(), staff[i]) and
+        apply_visitor(is_alternative(), staff[i+1])) {
+      alternatives.emplace_back();
+      indices = &alternatives.back();
+      indices->push_back(i++);
+      indices->push_back(i);
+      continue;
+    }
+    // Does this element begin an alternative?
     if (apply_visitor(is_alternative(), staff[i])) {
       alternatives.emplace_back();
       indices = &alternatives.back();
     }
+    // Is this the start of *another* repeated section?
     if (i > index and apply_visitor(has_barline(braille::ast::begin_repeat), staff[i])) {
       break;
     }
@@ -549,7 +582,8 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
       for (std::size_t measure_index: indices) {
         braille::ast::unfolded::staff_element const& this_measure = staff[measure_index];
 
-        apply_visitor(*this, this_measure); os << " | ";
+        apply_visitor(*this, this_measure);
+        if (apply_visitor(is_measure(), this_measure)) os << " | ";
       }
       os << "}" << std::endl;
     }

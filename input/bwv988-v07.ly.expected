@@ -14,15 +14,15 @@ music =
         d''4 e''32-1 fis'' g'' a'' b''8. g''16 d''8 | % 5
         e''4 fis''32 g''-1 a'' b'' c'''8. a''16 e''8 | % 6
         fis''8.-4 d''16 g''8 a'8. b'16 c''8 | % 7
-        \appoggiatura c''-4 b'4.~ b'8. a'16 g' fis'-2 | % 8
+        \appoggiatura c''8-4 b'4.~ b'8. a'16 g' fis'-2 | % 8
         g'4-3 d''8-1 g''4.~\mordent  | % 9
         g''8 a''16 g'' fis'' e'' fis''4.~\mordent  | % 10
         fis''8. g''16 fis''8 e''8.-1 cis''16-2 d''8 | % 11
         cis''8. d''16 e''8 a'4.~ | % 12
         a'4 b'32-1 cis'' d'' e'' fis''8. d''16 a'8 | % 13
         b'4 cis''32 d''-1 e'' fis'' g''8. e''16 b'8 | % 14
-        \appoggiatura b'-2 cis''8. a'16 a''8 d''8.-1 e''16-4 cis''8 | % 15
-        \appoggiatura cis'' d''4.~ d''  \bar ":|:" % 16
+        \appoggiatura b'8-2 cis''8. a'16 a''8 d''8.-1 e''16-4 cis''8 | % 15
+        \appoggiatura cis''8 d''4.~ d''  \bar ":|:" % 16
          fis''8.-4 e''16 fis''8 a'8. d''16 fis''8 | % 17
         g''8. fis''16-2 g''8 b''4. | % 18
         e''4 fis''32 g''-1 a'' b'' c'''16[ b'' a'' g'' fis''-2 e''] | % 19

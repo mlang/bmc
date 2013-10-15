@@ -908,6 +908,18 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   BOOST_CHECK_EQUAL(*attribute.parts[0][0].number, 1);
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_REQUIRE(compile(attribute));
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "input/bwv988-v16.ly.expected");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
