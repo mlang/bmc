@@ -398,7 +398,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
     ss << attribute;
     BOOST_REQUIRE(not ss.str().empty());
 
-    std::ifstream ly_file(DIR "input/bwv988-v01.ly.expected");
+    std::ifstream ly_file(DIR "output/bwv988-v01.ly");
     BOOST_REQUIRE(ly_file.good());
     std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
     std::string expected(in_begin, in_end);
@@ -453,7 +453,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v02.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v02.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -492,7 +492,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v03.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v03.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -528,7 +528,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file(DIR "input/bwv988-v04.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v04.ly");
   BOOST_CHECK(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -566,7 +566,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v05) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v05.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v05.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -605,7 +605,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v06) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v06.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v06.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -643,7 +643,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v07) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file(DIR "input/bwv988-v07.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v07.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -682,7 +682,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v08) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v08.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v08.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -721,7 +721,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v09) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v09.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v09.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -760,7 +760,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v10) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v10.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v10.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -799,7 +799,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v11) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v11.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v11.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -838,7 +838,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v12) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v12.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v12.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -876,7 +876,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   music::lilypond_output_format(ss);
   ss << attribute;
 
-  std::ifstream ly_file(DIR "input/bwv988-v13.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v13.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -914,7 +914,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v16.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v16.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -978,7 +978,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v17) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v17.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v17.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -1017,7 +1017,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v19.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v19.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
@@ -1057,7 +1057,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   ss << attribute;
   BOOST_REQUIRE(not ss.str().empty());
 
-  std::ifstream ly_file(DIR "input/bwv988-v30.ly.expected");
+  std::ifstream ly_file(DIR "output/bwv988-v30.ly");
   BOOST_REQUIRE(ly_file.good());
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
