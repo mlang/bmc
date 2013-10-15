@@ -903,7 +903,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   BOOST_CHECK(begin == end);
   BOOST_CHECK_EQUAL(attribute.key_sig, 1);
   BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
-  BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(5));
+  BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(8));
   BOOST_REQUIRE(attribute.parts[0][0].number);
   BOOST_CHECK_EQUAL(*attribute.parts[0][0].number, 1);
   music::braille::compiler<error_handler_type> compile(errors);
