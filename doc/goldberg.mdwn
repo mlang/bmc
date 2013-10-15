@@ -1,11 +1,28 @@
-As a test for and demonstration of BMC's features, here are a few pieces from JS Bach's goldberg variations.
+As a test for and demonstration of BMC's capabilities, here are a few pieces from JS Bach's goldberg variations.
 
-The Braillehas been fully automatically converted to LilyPond music notation format by BMC.
+The Braille has been fully automatically converted to LilyPond music notation format by BMC.
 The MIDI and PDF files are generated with LilyPond.
 
 Notice that all of the engraved music is a result of automatic transcription from braille music code to visual music notation concepts, finished of by the great work from the LilyPond music engraving package.
 
+Blind users can write music using braille music code, and translate it automatically for engraving or playback
 
 
 * Variatio 1 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v01.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v01.ly), [MIDI](../output/bwv988-v01.midi), [PDF](../output/bwv988-v01.pdf)
+* Variatio 2 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v02.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v02.ly), [MIDI](../output/bwv988-v02.midi), [PDF](../output/bwv988-v02.pdf)
+* Variatio 3 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v03.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v03.ly), [MIDI](../output/bwv988-v03.midi), [PDF](../output/bwv988-v03.pdf)
+* Variatio 4 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v04.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v04.ly), [MIDI](../output/bwv988-v04.midi), [PDF](../output/bwv988-v04.pdf)
+* Variatio 5 a 1 ovvero 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v05.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v05.ly), [MIDI](../output/bwv988-v05.midi), [PDF](../output/bwv988-v05.pdf)
+* Variatio 6 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v06.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v06.ly), [MIDI](../output/bwv988-v06.midi), [PDF](../output/bwv988-v06.pdf)
+* Variatio 7 a 1 ovvero 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v07.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v07.ly), [MIDI](../output/bwv988-v07.midi), [PDF](../output/bwv988-v07.pdf)
+* Variatio 8 a 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v08.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v08.ly), [MIDI](../output/bwv988-v08.midi), [PDF](../output/bwv988-v08.pdf)
+* Variatio 9 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v09.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v09.ly), [MIDI](../output/bwv988-v09.midi), [PDF](../output/bwv988-v09.pdf)
+* Variatio 10 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v10.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v10.ly), [MIDI](../output/bwv988-v10.midi), [PDF](../output/bwv988-v10.pdf)
+* Variatio 11 a 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v11.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v11.ly), [MIDI](../output/bwv988-v11.midi), [PDF](../output/bwv988-v11.pdf)
+* Variatio 12: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v12.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v12.ly), [MIDI](../output/bwv988-v12.midi), [PDF](../output/bwv988-v12.pdf)
+* Variatio 13 a 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v13.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v13.ly), [MIDI](../output/bwv988-v13.midi), [PDF](../output/bwv988-v13.pdf)
+* Variatio 16 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v16.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v16.ly), [MIDI](../output/bwv988-v16.midi), [PDF](../output/bwv988-v16.pdf)
+* Variatio 17 a 2 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v17.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v17.ly), [MIDI](../output/bwv988-v17.midi), [PDF](../output/bwv988-v17.pdf)
+* Variatio 19 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v19.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v19.ly), [MIDI](../output/bwv988-v19.midi), [PDF](../output/bwv988-v19.pdf)
+* Variatio 30 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v30.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v30.ly), [MIDI](../output/bwv988-v30.midi), [PDF](../output/bwv988-v30.pdf)
 
