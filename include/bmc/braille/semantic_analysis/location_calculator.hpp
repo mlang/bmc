@@ -53,9 +53,12 @@ public:
   result_type operator()(ast::locatable& lexeme) const
   {
     typedef typename ErrorHandler::iterator_type iterator_type;
-    iterator_type const error_position(handler.iters[lexeme.id]);
-    iterator_type const line_start(handler.get_pos(error_position, lexeme.line));
-    lexeme.column = std::distance(line_start, error_position) + 1;
+    if (lexeme.id >= 0) {
+      BOOST_ASSERT(lexeme.id < handler.iters.size());
+      iterator_type const error_position(handler.iters[lexeme.id]);
+      iterator_type const line_start(handler.get_pos(error_position, lexeme.line));
+      lexeme.column = std::distance(line_start, error_position) + 1;
+    }
   }
 
   result_type operator()(ast::barline&) const { }

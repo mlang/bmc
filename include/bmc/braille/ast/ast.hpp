@@ -37,7 +37,7 @@ enum value
 
 struct locatable
 {
-  std::size_t id;
+  ssize_t id = -1;
   int line, column;
 };
 
