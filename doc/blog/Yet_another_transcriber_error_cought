@@ -1,0 +1,21 @@
+While working with bwv988 variation 16, BMC just found yet another error
+in the original transcription to braille.  Consider the following measure, in 3/8 time (G, one sharp):
+
+    ⠨⠺⠄⠈⠉⠣⠜⠐⠺⠩⠙⠩⠑⠋⠁⠛⠇⠑⠃
+
+Once alerted to it by BMC's value disambiguation algorithm, this one is actually
+easy to spot and fix.  There is just one dot missing.  Can you see which one it is?
+
+The first voice is rather clear, it consists of a dotted quarter note, which means it matches 3/8 time signature.
+If we follow whats written in braille, the second voice consists of either 6 32th notes, or a 32th note followed by 5 8th notes.  Both possibilities make no sense, and do not match the length of the other voice.
+So BMC rightly barfs and reports this as a measure with no possible interpretations.
+
+The fix is, as already said, rather simple:
+
+    ⠨⠺⠄⠈⠉⠣⠜⠐⠾⠩⠙⠩⠑⠋⠁⠛⠇⠑⠃
+
+Now the second voice is a notegroup of 6 16th notes, which makes sense, and parses fine as unambiguous.
+
+BMC found actually *two* outright errors in the original transcription of this variation already.
+This is a rather nice demonstration that BMC can be very helpful as a proof-reading tool for transcribers, humans and computers, alike.
+

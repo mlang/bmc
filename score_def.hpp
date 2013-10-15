@@ -61,29 +61,31 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
         ;
 
   keyboard_section =
-       indent
-    >> -section_number[at_c<0>(_val) = _1]
-    >> -measure_range[at_c<1>(_val) = _1]
+       (-(*whitespace >> key_and_time_signature >> *whitespace >> eol))[at_c<0>(_val) = _1]
+    >> indent
+    >> -section_number[at_c<1>(_val) = _1]
+    >> -measure_range[at_c<2>(_val) = _1]
     >> right_hand_sign
-    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> paragraph[push_back(at_c<3>(_val), _1)]
     >> eol
     >> indent
     >> left_hand_sign
-    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> paragraph[push_back(at_c<3>(_val), _1)]
     >> eol
       ;
 
   last_keyboard_section =
-       indent
-    >> -section_number[at_c<0>(_val) = _1]
-    >> -measure_range[at_c<1>(_val) = _1]
+       (-(*whitespace >> key_and_time_signature >> *whitespace >> eol))[at_c<0>(_val) = _1]
+    >> indent
+    >> -section_number[at_c<1>(_val) = _1]
+    >> -measure_range[at_c<2>(_val) = _1]
     >> right_hand_sign
-    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> paragraph[push_back(at_c<3>(_val), _1)]
     >> eom
     >> eol
     >> indent
     >> left_hand_sign
-    >> paragraph[push_back(at_c<2>(_val), _1)]
+    >> paragraph[push_back(at_c<3>(_val), _1)]
     >> eom
     >> (eoi | +eol)
      ;
@@ -91,7 +93,8 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   keyboard_part = *keyboard_section >> last_keyboard_section;
 
   solo_section =
-       -indent
+       -(*whitespace >> key_and_time_signature >> *whitespace >> eol)
+    >> -indent
     >> -section_number
     >> -measure_range
     >> paragraph
@@ -99,7 +102,8 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
      ;
 
   last_solo_section =
-       -indent
+       -(*whitespace >> key_and_time_signature >> *whitespace >> eol)
+    >> -indent
     >> -section_number
     >> -measure_range
     >> paragraph

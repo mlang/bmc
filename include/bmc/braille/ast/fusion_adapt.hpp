@@ -94,6 +94,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::section,
+  (boost::optional<music::braille::ast::key_and_time_signature>, key_and_time_sig)
   (boost::optional<music::braille::ast::section::number_type>, number)
   (boost::optional<music::braille::ast::measure_range>, range)
   (std::vector<music::braille::ast::paragraph>, paragraphs)

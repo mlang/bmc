@@ -221,6 +221,7 @@ struct measure_range : locatable
 struct section : locatable
 {
   typedef unsigned number_type;
+  boost::optional<key_and_time_signature> key_and_time_sig;
   boost::optional<number_type> number;
   boost::optional<measure_range> range;
   std::vector<paragraph> paragraphs;
