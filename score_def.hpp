@@ -8,6 +8,7 @@
 #define BMC_SCORE_DEF_HPP
 #include "bmc/braille/parsing/grammar/score.hpp"
 #include "bmc/braille/ast/fusion_adapt.hpp"
+#include "bmc/braille/parsing/annotation.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 #include "brlsym.hpp"
 #include <boost/spirit/include/qi_core.hpp>
@@ -31,12 +32,15 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 {
   using boost::phoenix::at_c;
   using boost::phoenix::push_back;
+  typedef boost::phoenix::function< annotation<Iterator> >
+          annotation_function;
   typedef boost::phoenix::function< braille::error_handler<Iterator> >
           error_handler_function;
   boost::spirit::qi::eoi_type eoi;
   boost::spirit::qi::eol_type eol;
   boost::spirit::qi::eps_type eps;
   boost::spirit::qi::_1_type _1;
+  boost::spirit::qi::_2_type _2;
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
@@ -110,12 +114,11 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   section_number = brl(3456) >> upper_number >> whitespace;
   measure_range =
        brl(3456)
-    >> lower_number
-    >> brl(36)
-    >> lower_number
-    >> -(brl(3456) >> lower_number)
+    >> measure_specification >> brl(36) > measure_specification
     >> whitespace
      ;
+
+  measure_specification = lower_number >> -(brl(3456) > lower_number);
 
   key_and_time_signature = key_signature >> time_signature;
 
@@ -123,6 +126,17 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   left_hand_sign = brl(456) >> brl(345) > optional_dot;
   eom = brl(126) >> brl(13) >> !brl(3);
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
+
+#define BMC_LOCATABLE_SET_ID(rule) \
+  boost::spirit::qi::on_success(rule,\
+                                annotation_function(error_handler.iters)\
+                                (_val, _1, _2))
+  BMC_LOCATABLE_SET_ID(measure_specification);
+  BMC_LOCATABLE_SET_ID(measure_range);
+  BMC_LOCATABLE_SET_ID(keyboard_section);
+  BMC_LOCATABLE_SET_ID(last_keyboard_section);
+  BMC_LOCATABLE_SET_ID(solo_section);
+  BMC_LOCATABLE_SET_ID(last_solo_section);
 
   boost::spirit::qi::on_error<boost::spirit::qi::fail>(start,
     error_handler_function(error_handler)

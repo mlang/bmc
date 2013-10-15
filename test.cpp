@@ -884,6 +884,32 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
+BOOST_AUTO_TEST_CASE(bwv988_v16) {
+  std::locale::global(std::locale(""));
+  std::wifstream file(DIR "input/bwv988-v16.bmc");
+  BOOST_REQUIRE(file.good());
+  std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
+  std::wstring const input(file_begin, file_end);
+  BOOST_REQUIRE(not input.empty());
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_CHECK_EQUAL(attribute.key_sig, 1);
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(4));
+  BOOST_REQUIRE(attribute.parts[0][0].number);
+  BOOST_CHECK_EQUAL(*attribute.parts[0][0].number, 1);
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_REQUIRE(compile(attribute));
+}
+
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v13.de.bmc");

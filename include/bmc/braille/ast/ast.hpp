@@ -205,15 +205,20 @@ typedef std::vector<staff_element> staff;
 typedef boost::variant<measure, key_and_time_signature> paragraph_element;
 typedef std::vector<paragraph_element> paragraph;
 
-struct measure_range
+struct measure_specification : locatable
 {
   typedef unsigned number_type;
-  number_type first;
-  number_type last;
-  boost::optional<number_type> last_alternative;
+  number_type number;
+  boost::optional<number_type> alternative;
 };
 
-struct section
+struct measure_range : locatable
+{
+  measure_specification first;
+  measure_specification last;
+};
+
+struct section : locatable
 {
   typedef unsigned number_type;
   boost::optional<number_type> number;

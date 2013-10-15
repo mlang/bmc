@@ -102,7 +102,6 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
         >> -(brl(3456) >> upper_number[_a = _1])
         >> eps[at_c<1>(_val) = _a];
 
-  whitespace = space | brl(0);
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 
   full_measure_in_accord = brl(126) >> brl(345) >> -+eol;

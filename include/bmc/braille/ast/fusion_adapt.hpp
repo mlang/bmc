@@ -81,10 +81,15 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+  music::braille::ast::measure_specification,
+  (music::braille::ast::measure_specification::number_type, number)
+  (boost::optional<music::braille::ast::measure_specification::number_type>, alternative)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::measure_range,
-  (music::braille::ast::measure_range::number_type, first)
-  (music::braille::ast::measure_range::number_type, last)
-  (boost::optional<music::braille::ast::measure_range::number_type>, last_alternative)
+  (music::braille::ast::measure_specification, first)
+  (music::braille::ast::measure_specification, last)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
