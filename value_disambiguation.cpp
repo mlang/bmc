@@ -198,7 +198,8 @@ class partial_voice_interpreter
       if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
         auto iter = begin + 1;
         while (iter != end and
-               apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th)
+               apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
+               not apply_visitor(ast::is_rest(), *iter))
           ++iter;
         // A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
