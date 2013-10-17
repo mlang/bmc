@@ -4,6 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include <sstream>
 #include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
 #include "bmc/braille/semantic_analysis/value_disambiguation.hpp"
 
@@ -67,8 +68,11 @@ value_disambiguator::operator()(ast::measure& measure)
 
 bool
 value_disambiguator::end_of_staff() const {
-  if (not anacrusis->empty())
-    report_error(anacrusis->get_measure_id(), L"Unterminated anacrusis");
+  if (not anacrusis->empty()) {
+    std::wstringstream msg;
+    msg << "Unterminated anacrusis";
+    report_error(anacrusis->get_measure_id(), msg.str());
+  }
   return anacrusis->empty();
 }
 

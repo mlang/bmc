@@ -12,6 +12,7 @@
 #include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
 #include "bmc/braille/semantic_analysis/octave_calculator.hpp"
 #include "bmc/braille/semantic_analysis/alteration_calculator.hpp"
+#include "bmc/braille/semantic_analysis/doubling_decoder.hpp"
 
 #include <boost/function.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -326,6 +327,15 @@ public:
         if (not unfold(paragraph, target.at(i++), score)) return false;
       }
     }
+
+    std::size_t staff_nr = 0;
+    for (ast::unfolded::staff &staff: target) {
+      doubling_decoder undouble(report_error, staff_nr);
+      if (not std::all_of(staff.begin(), staff.end(), apply_visitor(undouble)))
+        return false;
+      staff_nr += 1;
+    }
+
     return true;
   }
   result_type unfold ( ast::staff const &source
