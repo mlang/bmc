@@ -25,6 +25,7 @@
 #include <boost/phoenix/operator/self.hpp>
 #include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 
 namespace music { namespace braille {
 
@@ -32,6 +33,10 @@ template<typename Iterator>
 measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handler)
 : measure_grammar::base_type(start, "measure")
 {
+  using boost::phoenix::begin;
+  using boost::phoenix::end;
+  using boost::phoenix::insert;
+
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
@@ -62,9 +67,9 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
       >> step_and_value_sign    [at_c<3>(_val) = at_c<0>(_1),
                                  at_c<4>(_val) = at_c<1>(_1)]
       >> dots                   [at_c<5>(_val) = _1]
-      >> repeat(0, 2)[slur]     [at_c<6>(_val) = _1]
+      >> (repeat(0, 2)[slur])   [at_c<6>(_val) = _1]
       >> fingering              [at_c<7>(_val) = _1]
-      >> repeat(0, 2)[slur]     [at_c<6>(_val) = _1]
+      >> repeat(0, 2)[slur]     [insert(at_c<6>(_val), end(at_c<6>(_val)), begin(_1), end(_1))]
       >> (-simple_tie)          [at_c<8>(_val) = _1]
       >> (*stem)                [at_c<9>(_val) = _1]
        ;

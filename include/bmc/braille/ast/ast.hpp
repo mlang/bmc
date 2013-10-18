@@ -45,6 +45,10 @@ enum class notegroup_member_type: uint8_t {
   none, begin, middle, end
 };
 
+enum class slur_member_type: uint8_t {
+  none, begin, middle, end
+};
+
 /** \brief Storage for rhythmic values.
  *
  * A rhythmic value consists of an ambiguous value type and the number of
@@ -57,6 +61,7 @@ struct rhythmic_data
   unsigned dots = 0;
   rational type = {}; // filled in by value_disambiguation.hpp
   notegroup_member_type notegroup_member = notegroup_member_type::none; // filled in by value_disambiguation.hpp
+  slur_member_type slur_member = slur_member_type::none;
 };
 
 /** \brief Base class for everything that implies a rhythmic value.

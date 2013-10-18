@@ -64,9 +64,38 @@ public:
 
   result_type operator()(ast::note &note)
   {
-    if (note.slurs.size() == 2) {
+    if (note.slurs.size() > 2) {
+      report_error(note.id, L"Too many slur signs");
+      return false;
     }
-    if (std::count(note.articulations.begin(), note.articulations.end(), articulation::staccato) > 2) {
+    if (note.slurs.size() == 2) {
+      if (current->slur != info::none) {
+        report_error(note.id, L"Starting doubled slur while already active");
+        return false;
+      }
+      note.slur_member = ast::slur_member_type::begin;
+      current->slur = info::active;
+      report_error(note.id, L"Slur begin");
+    } else {
+      if (current->slur == info::active) {
+        if (note.slurs.empty()) {
+          note.slur_member = ast::slur_member_type::middle;
+          report_error(note.id, L"Slur middle");
+        } else {
+          note.slur_member = ast::slur_member_type::middle;
+          current->slur = info::final;
+          report_error(note.id, L"slur almost done");
+        }
+      } else if (current->slur == info::final) {
+        note.slur_member = ast::slur_member_type::end;
+        current->slur = info::none;
+        report_error(note.id, L"Final slur!");
+      }
+    }
+
+    if (std::count( note.articulations.begin()
+                  , note.articulations.end()
+                  , articulation::staccato) > 2) {
       report_error(note.id, L"Too many staccati.");
       return false;
     }
@@ -84,7 +113,9 @@ public:
       current->staccato = info::active;
     } else {
       if (current->staccato != info::none) {
-        if (std::count(note.articulations.begin(), note.articulations.end(), articulation::staccato) == 0) {
+        if (std::count( note.articulations.begin()
+                      , note.articulations.end()
+                      , articulation::staccato) == 0) {
           note.articulations.push_back(articulation::staccato);
         } else {
           current->staccato = info::none;

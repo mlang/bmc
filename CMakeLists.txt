@@ -69,6 +69,7 @@ set(BMC_TEST_NAMES
     notegroup_test1
     compiler_test1
     score_solo_test1 score_solo_test2
+    slur_test1
     score_multiple_time_sigs
     common_factor
     bwv988_v01
