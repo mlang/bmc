@@ -19,6 +19,7 @@ class generator: public boost::static_visitor<void>
 {
   std::ostream& os;
   bool const layout, midi, include_locations;
+  std::string default_instrument;
   std::string indent;
   rational last_type;
   unsigned last_dots;
@@ -35,6 +36,9 @@ public:
            , bool layout = true
            , bool midi = true
            , bool include_locations = false);
+
+  std::string instrument() const { return default_instrument; }
+  void instrument(std::string const &i) { default_instrument = i; }
 
   /**
    * \brief Generate LilyPond source code for the given braille score.

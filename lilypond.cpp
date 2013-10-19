@@ -90,11 +90,17 @@ generator::operator() ( braille::ast::unfolded::part const &part
 {
   indent = "    ";
   if (part.size() == 2) {
-    os << indent << "\\new PianoStaff <<" << std::endl;
+    os << indent << "\\new PianoStaff ";
+    if (not default_instrument.empty())
+      os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
+    os << "<<" << std::endl;
     indent += "  ";
   }
   for (size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
-    os << indent << "\\new Staff {" << std::endl;
+    os << indent << "\\new Staff ";
+    if (part.size() != 2 and not default_instrument.empty())
+      os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
+    os << "{" << std::endl;
 
     switch (staff_index) {
     case 0: os << indent << "  "; ly_clef("treble"); break;
