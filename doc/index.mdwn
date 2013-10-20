@@ -1,4 +1,4 @@
-BMC stands for Braille Music Compiler.  It aims to become an universal
+BMC stands for Braille Music Compiler.  It aims to become a universal
 translator between various visual music notation formats and braille music code.
 A sort of bridge between visual and tactile music notation.
 At the moment, it can convert certain braille music code to LilyPond, which
