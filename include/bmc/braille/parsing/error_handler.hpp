@@ -27,8 +27,7 @@ namespace music { namespace braille {
 
     error_handler(iterator_type first, iterator_type last)
     : first(first), last(last)
-    {
-    }
+    {}
 
     template <typename Message, typename What>
     void operator()( Message const& message

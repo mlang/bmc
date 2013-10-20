@@ -197,9 +197,6 @@ struct key_and_time_signature : locatable
   time_signature time;
 };
 
-typedef boost::variant<measure, key_and_time_signature> staff_element;
-typedef std::vector<staff_element> staff;
-
 typedef boost::variant<measure, key_and_time_signature> paragraph_element;
 typedef std::vector<paragraph_element> paragraph;
 

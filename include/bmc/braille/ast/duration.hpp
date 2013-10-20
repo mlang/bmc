@@ -170,9 +170,9 @@ namespace music {
 
       inline
       rational
-      duration(staff::const_reference staff_element)
+      duration(paragraph::const_reference paragraph_element)
       {
-        return boost::apply_visitor(get_duration(), staff_element);
+        return boost::apply_visitor(get_duration(), paragraph_element);
       }
       inline
       rational
@@ -189,10 +189,10 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::staff::const_reference staff_element
+            , music::braille::ast::paragraph::const_reference paragraph_element
             )
   {
-    return r + duration(staff_element);
+    return r + duration(paragraph_element);
   }
   template <typename IntType>
   inline
@@ -210,9 +210,9 @@ namespace music {
     namespace ast {
       inline
       rational
-      duration(staff const& staff)
+      duration(paragraph const& paragraph)
       {
-        return boost::accumulate(staff, rational());
+        return boost::accumulate(paragraph, rational());
       }
       inline
       rational
