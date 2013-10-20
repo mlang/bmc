@@ -25,6 +25,8 @@ The following is a list of braille music code features which are currently not y
 
 BMC can already be used to read braille music code of substantial complexity.  Have a look at the [goldberg variations](goldberg) to see a few examples of BMC in action.
 
+For braille music beginners, we are developing a small [[tutorial]].
+
 ## See also
 * [[News]]
 * [[Source]]

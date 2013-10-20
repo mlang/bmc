@@ -2,11 +2,21 @@
 
 The signs used for notes follow a certain system.  The note name
 is encoded in the upper 4 braille dots.  Braille letter d through j are
-used to indicate the note name.  Dots 3 and 6 can be optionally added
-to indicate the note value.  If none of dot 3 and 6 is present, a 8th or
+used to indicate the note name.  Dots 3 and 6 can be added
+to indicate the note value.  If none of dot 3 or 6 are present, a 8th or
 128th note is given.  If dot 3 is added, we are dealing with either
 a half or 32th note.  If dot 6 is added, we are dealing with a quarter
-or 64th note.  Finally, if both dot 3 and dot 6 are added, we have a whole or 16th note.
+or 64th note.  Finally, if both dot 3 and dot 6 are added, we have a
+whole or 16th note.
+
+For people coming from a cultural background where notes are named like
+C, D, E, F, G, A and B (english speaking countries) or C, D, E, F, G, A, H (german
+speaking countries) you might have a hard time at first to read note names.
+However, there is a trick for memorizing.  Observe that the braille letters
+used to indicate note names are shifted up by one letter.  So the note C
+is written with the braille letter d, the note D is written with the braille letter e and so on.
+The two exceptions here are the note names A and B (or H).  An A is written
+with the braille letter i, and a B (or H) is written with the braille letter j.
 
 | Sign |    Description    |
 |:----:|:----------------- |
