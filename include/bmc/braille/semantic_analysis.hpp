@@ -338,7 +338,7 @@ public:
 
     return true;
   }
-  result_type unfold ( ast::staff const &source
+  result_type unfold ( ast::paragraph const &source
                      , ast::unfolded::staff &target
                      , ast::score const &score
                      )
