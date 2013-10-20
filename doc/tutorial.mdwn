@@ -1,3 +1,41 @@
-| Sign | Meaning |
-|:----:| ------- |
-| y    | whole or 16th C |
+# Notes
+
+The signs used for notes follow a certain system.  The note name
+is encoded in the upper 4 braille dots.  Braille letter d through j are
+used to indicate the note name.  Dots 3 and 6 can be optionally added
+to indicate the note value.  If none of dot 3 and 6 is present, a 8th or
+128th note is given.  If dot 3 is added, we are dealing with either
+a half or 32th note.  If dot 6 is added, we are dealing with a quarter
+or 64th note.  Finally, if both dot 3 and dot 6 are added, we have a whole or 16th note.
+
+| Sign |    Description    |
+|:----:|:----------------- |
+| ⠙    | 8th or 128th C    |
+| ⠑    | 8th or 128th D    |
+| ⠋    | 8th or 128th E    |
+| ⠛    | 8th or 128th F    |
+| ⠓    | 8th or 128th G    |
+| ⠊    | 8th or 128th A    |
+| ⠚    | 8th or 128th B    |
+| ⠝    | half or 32th C    |
+| ⠕    | half or 32th D    |
+| ⠏    | half or 32th E    |
+| ⠟    | half or 32th F    |
+| ⠗    | half or 32th G    |
+| ⠎    | half or 32th A    |
+| ⠞    | half or 32th B    |
+| ⠹    | quarter or 64th C |
+| ⠱    | quarter or 64th D |
+| ⠫    | quarter or 64th E |
+| ⠻    | quarter or 64th F |
+| ⠳    | quarter or 64th G |
+| ⠪    | quarter or 64th A |
+| ⠺    | quarter or 64th B |
+| ⠽    | whole or 16th C   |
+| ⠵    | whole or 16th D   |
+| ⠯    | whole or 16th E   |
+| ⠿    | whole or 16th F   |
+| ⠷    | whole or 16th G   |
+| ⠮    | whole or 16th A   |
+| ⠾    | whole or 16th B   |
+
