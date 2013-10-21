@@ -20,9 +20,9 @@ music =
         a'8 a''16 g'' fis''[ e'' d'' cis''-3] b'[ d'' cis'' d''] | % 10
         g'8 g''16 fis'' e''[ d''-1 cis''-3 b'] a'[ cis'' b' d''] | % 11
         cis''16[ e'' a' b'-3] cis''[ a' e' fis'-4] g'[ e' cis' e'] | % 12
-        d'8-1 fis' a' d'' r16[ c''-5 a' fis'-2] | % 13
-        g'8-3 b'-5 d''-2 g'' r16[ g'' fis'' g''] | % 14
-        a'8 cis'' e'' g'' r16[ g''-4 a'' cis''] | % 15
+        d'8-1 fis' a' d'' r16 c''-5 a' fis'-2 | % 13
+        g'8-3 b'-5 d''-2 g'' r16 g'' fis'' g'' | % 14
+        a'8 cis'' e'' g'' r16 g''-4 a'' cis'' | % 15
         d''16-1[ fis'' a''-3 cis'''] d''' cis'''32 b'' a'' g'' fis'' e'' d''4  \bar ":|:" % 16
          a'16[ d'' fis'' e''] d''-1[ fis'' a'' g''] fis'' a'' c''' r | % 17
         d'16[ g' b' a'] g'-1[ b' d'' c''] b'-1 d''-3 f'' r | % 18
@@ -30,8 +30,8 @@ music =
         fis'16[ dis' b cis'-4] dis'[ b fis-1 g-3] a[ fis dis fis] | % 20
         g16-1[ b-2 e' dis'] e'-1[ g' b' a'] g'-1 b' e'' r | % 21
         e'16[ a'-2 c'' b'] a'[ c'' e'' d''] c'' e'' a'' r | % 22
-        r16[ c'' b' fis''-4] g''[ dis'' e'' g'] fis'-2[ e'' dis''-2 a''] | % 23
-        g''16 fis'' e''8 r16[ a'-4 g' fis'] \appoggiatura fis'8 e'4~ | % 24
+        r16 c'' b' fis''-4 g''[ dis'' e'' g'] fis'-2[ e'' dis''-2 a''] | % 23
+        g''16 fis'' e''8 r16 a'-4 g' fis' \appoggiatura fis'8 e'4~ | % 24
          e'8 e''16 d'' c''[ b' a' g'-2] fis'[ ais' cis'' e''] | % 25
         d''16[ fis'-1 d''-4 c''] b'[ a' gis'-3 fis'] e'[ gis' b' d''] | % 26
         c''16[ e' c'' b'] a'-1[ c'' e'' d''] c''-1[ e'' a'' g''-3] | % 27
@@ -45,13 +45,13 @@ music =
         \clef "bass"
         \key g \major
         \time 3/4
-        g8 d b, g, r16[ g fis e] | % 1
-        fis8 d-1 a, fis, r16[ fis-2 e d] | % 2
-        e8-1 b, g, e, r16[ e d cis] | % 3
-        d8 a, fis, d, r16[ c-3 b, a,] | % 4
+        g8 d b, g, r16 g fis e | % 1
+        fis8 d-1 a, fis, r16 fis-2 e d | % 2
+        e8-1 b, g, e, r16 e d cis | % 3
+        d8 a, fis, d, r16 c-3 b, a, | % 4
         b,8 d g b-2 r16 g-1 f-3 g-2 | % 5
-        c8-5 e a-1 c'-2 r16[ a g a] | % 6
-        d8 fis a d' r16[ d c d] | % 7
+        c8-5 e a-1 c'-2 r16 a g a | % 6
+        d8 fis a d' r16 d c d | % 7
         g,8 g b, d g, r | % 8
         g16-5[ b d' c'-3] b[ d' g' fis'-3] e' g' b' r | % 9
         fis16-5[ a cis'-2 b] a[ cis' fis'-1 e'-3] d' fis' a' r | % 10
@@ -61,21 +61,21 @@ music =
         b'16[ d'' g' a'] b'-1[ g'-2 e' fis'] g'-1[ e' b d'] | % 14
         cis'16[ e'-1 a-4 b] cis'[ a-1 e-3 fis] g[ e cis-5 e] | % 15
         fis16[ a d-4 e] fis[ d-5 fis a] d'4  \bar ":|:" % 16
-         d'8 a fis d r16[ c'-1 b a] | % 17
-        g8-1 d b, g, r16[ f-2 e d] | % 18
+         d'8 a fis d r16 c'-1 b a | % 17
+        g8-1 d b, g, r16 f-2 e d | % 18
         c16[ e a g-3] fis[ a c' b-3] a[ c' dis'-1 cis'-3] | % 19
         b16[ dis' fis'-1 e'-3] dis'[ fis' a' g'-3] fis'[ a' c'' a'-2] | % 20
         b'16[ g'-2 e' fis'] g'-2[ e'-3 b dis'] e'-1[ b g b] | % 21
         c'16-1[ a e gis] a-1[ e-2 c d] e-1[ c-2 a, c] | % 22
         dis,8 dis-2 e c-2 a,-3 b, | % 23
-        e,8 g, b, e r16[ d-3 c b,] | % 24
+        e,8 g, b, e r16 d-3 c b, | % 24
         c16[ e g f-3] e[ g c' b-3] ais cis' fis' r | % 25
         b,16-5[ d fis-2 e] d[ fis b a-3] gis b e' r | % 26
         a,16[ c e d] c[ a, c e] a-2[ c' fis g] | % 27
         a16[ fis d e-3] fis[ d-1 a,-3 b,] c[ a, fis, d,] | % 28
-        g,8 b,-1 d-2 f r16[ f-2 e d] | % 29
-        c8 e g-1 c'-2 r16[ c'-1 b c'] | % 30
-        d8 fis a c' r16[ c' d' fis-4] | % 31
+        g,8 b,-1 d-2 f r16 f-2 e d | % 29
+        c8 e g-1 c'-2 r16 c'-1 b c' | % 30
+        d8 fis a c' r16 c' d' fis-4 | % 31
         g16-5[ b-4 d'-3 fis'-2] g' fis'32 e' d'-1 c' b a g4  \bar ":|" % 32
       }
     >>

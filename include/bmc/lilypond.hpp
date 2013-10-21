@@ -23,6 +23,7 @@ class generator: public boost::static_visitor<void>
   std::string indent;
   rational last_type;
   unsigned last_dots;
+  bool ignore_next_beam_end;
 
 public:
   /**

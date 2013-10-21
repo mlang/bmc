@@ -30,7 +30,7 @@ music =
           {<d' d'>4 r | }
         }
         \repeat volta 2 {
-          << { a'4 a''~}\\{r16[ fis''-3 e'' g''] fis''[ e'' d'' cis''-2]} >> |
+          << { a'4 a''~}\\{r16 fis''-3 e'' g'' fis''[ e'' d'' cis''-2]} >> |
           << {a''16[ g'' fis'' a''] g''[ fis'' e''-5 dis'']}\\{d''4 r8 b'-1} >> |
           << {e''4-5 r8 fis''}\\{g'8-2 e' a'4~-2} >> |
           << {dis''8-4 b'-5 r4}\\{a'16[ g' fis'-2 a'] g'[ fis' e' dis']} >> |
