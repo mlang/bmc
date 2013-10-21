@@ -5,7 +5,7 @@ The MIDI and PDF files are generated with LilyPond.
 
 Notice that all of the engraved music is a result of automatic transcription from braille music code to visual music notation concepts, finished of by the great work from the LilyPond music engraving package.
 
-Blind users can write music using braille music code, and translate it automatically for engraving or playback
+Blind users can write music using braille music code, and translate it automatically for engraving or playback.
 
 
 * Variatio 1 a 1 clav.: [Braille](https://raw.github.com/mlang/bmc/master/input/bwv988-v01.bmc), [LilyPond](https://raw.github.com/mlang/bmc/master/output/bwv988-v01.ly), [MIDI](../output/bwv988-v01.midi), [PDF](../output/bwv988-v01.pdf)
