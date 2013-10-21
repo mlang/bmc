@@ -67,9 +67,14 @@ main(int argc, char const *argv[])
   positional_desc.add("input-file", -1);
 
   variables_map vm;
-  store(command_line_parser(argc, argv)
-        .options(desc).positional(positional_desc).run(), vm);
-  notify(vm);
+  try {
+    store(command_line_parser(argc, argv)
+          .options(desc).positional(positional_desc).run(), vm);
+    notify(vm);
+  } catch (unknown_option) {
+    std::cerr << "Unknown option" << std::endl << desc << std::endl;
+    return EXIT_FAILURE;
+  }
   if (vm.count("help")) {
     std::cout << desc << std::endl;
     return 0;
@@ -83,7 +88,7 @@ main(int argc, char const *argv[])
     }
   }
 
-  for (auto file: input_files) {
+  for (auto const &file: input_files) {
     if (file == "-") bmc2ly(std::wcin, locations, instrument);
     else {
       std::wifstream f(file);
