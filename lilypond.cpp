@@ -89,8 +89,9 @@ generator::operator() ( braille::ast::unfolded::part const &part
                       , braille::ast::score const &score
                       )
 {
+  bool const keyboard = part.size() == 2;
   indent = "    ";
-  if (part.size() == 2) {
+  if (keyboard) {
     os << indent << "\\new PianoStaff ";
     if (not default_instrument.empty())
       os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
@@ -99,7 +100,13 @@ generator::operator() ( braille::ast::unfolded::part const &part
   }
   for (size_t staff_index = 0; staff_index < part.size(); ++staff_index) {
     os << indent << "\\new Staff ";
-    if (part.size() != 2 and not default_instrument.empty())
+    if (keyboard) {
+      switch (staff_index) {
+      case 0: os << "= \"RH\" "; break;
+      case 1: os << "= \"LH\" "; break;
+      }
+    }
+    if (not keyboard and not default_instrument.empty())
       os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
     os << "{" << std::endl;
 

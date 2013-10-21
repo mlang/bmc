@@ -4,7 +4,7 @@
 music =
   <<
     \new PianoStaff <<
-      \new Staff {
+      \new Staff = "RH" {
         \clef "treble"
         \key g \major
         \time 6/8
@@ -41,7 +41,7 @@ music =
         fis''8. d''16 d'''8 g''8.-1 a''16-4 fis''8 | % 31
         g''4.~ g''  \bar ":|" % 32
       }
-      \new Staff {
+      \new Staff = "LH" {
         \clef "bass"
         \key g \major
         \time 6/8
