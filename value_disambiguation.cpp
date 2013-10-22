@@ -75,42 +75,40 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
 
 class notegroup: public boost::static_visitor<void>
 {
-  value_category const category;
   ast::value type;
   value_proxy *const stack_begin, *stack_end;
 public:
   notegroup( ast::partial_voice::iterator const &begin
            , ast::partial_voice::iterator const &end
-           , value_category const &category
            , value_proxy *stack_end
            )
-  : category(category), type(ast::unknown)
-  , stack_begin(stack_end), stack_end(stack_end)
+  : type{ast::unknown}
+  , stack_begin{stack_end}, stack_end{stack_end}
   { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note &note)
   {
     BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = note.ambiguous_value;
-    new (stack_end++) value_proxy(note, category, type);
+    new (stack_end++) value_proxy(note, small, type);
   }
   result_type operator()(ast::rest &rest)
   {
     BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
-    new (stack_end++) value_proxy(rest, category, type);
+    new (stack_end++) value_proxy(rest, small, type);
   }
   result_type operator()(ast::chord &chord)
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, category, type);
+    new (stack_end++) value_proxy(chord, small, type);
   }
   result_type operator()(ast::moving_note &chord)
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, category, type);
+    new (stack_end++) value_proxy(chord, small, type);
   }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
@@ -120,15 +118,22 @@ public:
 
   value_proxy *end() const
   {
+    // Make value_proxies aware of the fact that they are part of a notegroup.
     auto iter = stack_begin;
     (iter++)->make_beam_begin();
     while (iter < stack_end - 1) (iter++)->make_beam_continue();
     iter->make_beam_end();
     BOOST_ASSERT(++iter == stack_end);
+
     return stack_end;
   }
+
   rational duration() const
-  { return std::accumulate(stack_begin, stack_end, zero); }
+  {
+    BOOST_ASSERT(stack_begin != stack_end);
+    return std::accumulate(std::next(stack_begin), stack_end,
+                           static_cast<rational>(*stack_begin));
+  }
 };
 
 class same_category
@@ -245,7 +250,7 @@ public:
           (tail = notegroup_end(iterator, voice_end)) > iterator) {
         // Try all possible notegroups, starting with the longest
         while (std::distance(iterator, tail) >= 3) {
-          notegroup const group(iterator, tail, small, stack_end);
+          notegroup const group(iterator, tail, stack_end);
           rational const group_duration(group.duration());
           if (group_duration <= max_duration) {
             rational const next_position(position + group_duration);
