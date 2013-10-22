@@ -32,6 +32,18 @@ public:
   , staff_number{staff_number}, states{}, current{nullptr}
   {}
 
+  result_type end_of_staff() const {
+    for (auto const &pair: states) {
+      if (pair.second.slur != info::none) {
+        return false;
+      }
+      if (pair.second.staccato != info::none) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   result_type operator()(ast::unfolded::measure &measure) {
     unsigned full_voice_nr = 0;
     for (ast::unfolded::voice &voice: measure.voices) {
@@ -75,21 +87,17 @@ public:
       }
       note.slur_member = ast::slur_member_type::begin;
       current->slur = info::active;
-      report_error(note.id, L"Slur begin");
     } else {
       if (current->slur == info::active) {
         if (note.slurs.empty()) {
           note.slur_member = ast::slur_member_type::middle;
-          report_error(note.id, L"Slur middle");
         } else {
           note.slur_member = ast::slur_member_type::middle;
           current->slur = info::final;
-          report_error(note.id, L"slur almost done");
         }
       } else if (current->slur == info::final) {
         note.slur_member = ast::slur_member_type::end;
         current->slur = info::none;
-        report_error(note.id, L"Final slur!");
       }
     }
 
