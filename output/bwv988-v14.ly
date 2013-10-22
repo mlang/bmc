@@ -20,7 +20,7 @@ music =
         fis'16-. a''32 g'' a''16-. fis''32 e'' fis''16-. d''32 cis'' d''16-. b'32 a' b'16-. g'32 fis' g'16-. e'32-2 d' | % 10
         e'16-. g''32 fis'' g''16-. e''32 d'' e''16-. b'32 a' b'16-. g'32 fis' g'16-. e'32 d' e'16-. cis'32 b | % 11
         cis'16-. g32 fis g16-. e32 d e16-. cis32 b, cis16-. a,32 g, a,16-. g,32 fis, g,16-. fis,32-2 e, | % 12
-        r32 d' e' fis' a' fis' e' d' r d' e' fis' a' fis' e' d' r d' e' fis' a' fis' e' d' | % 13
+        r32[ d' e' fis' a' fis' e' d'] r[ d' e' fis' a' fis' e' d'] r[ d' e' fis' a' fis' e' d'] | % 13
         b'8-. r f-.-3 r e-. r | % 14
         r16 e'32-2 d' e'16-. a'32 g' a'16-. d'32-1 cis' d'16-.-1 g'32-5 fis' g'16-. cis'32-2 b cis'16-. fis'32-3 e' | % 15
         fis'16-.[ d' cis' d'-1] fis'32 e' d'16 a'32-4 g' fis'16 d''8 r  \bar ":|:" % 16
@@ -37,7 +37,7 @@ music =
         g'16-. a,32 g, a,16-. c32 b, c16-. e32 d e16-. a32 g a16-. c'32 b c'16-. fis'32 e' | % 27
         fis'16-. a'32 g' a'16-. d''32 c'' d''16-. fis''32 e'' fis''16-. g''32 fis'' g''16-. a''32 g'' a''16-. b''32 a'' | % 28
         b''8-. r d'-.-2 r f'-. r | % 29
-        r32 e' f' g' c'' g' f' e' r fis'-2 g'-3 a' c'' a' g' fis' r g'-1 a' bes' cis'' bes' a' g' | % 30
+        r32[ e' f' g' c'' g' f' e'] r[ fis'-2 g'-3 a' c'' a' g' fis'] r[ g'-1 a' bes' cis'' bes' a' g'] | % 30
         d''16-. c''32-4 b' c''16-. b'32 a' b'16-. bes'32-2 a' bes'16-.-3 a'32 g' a'16-. d''32 c'' d''16-. g'32-1 fis' | % 31
         g'32-1[ a' b' c'' d'' c'' b' a'] g'16 b' d' g'-5 g8-2 r  \bar ":|" % 32
       }
@@ -58,7 +58,7 @@ music =
         R1*3/4 | % 11
         R1*3/4 | % 12
         fis,8-. r d''-.-2 r c''-. r | % 13
-        r32 g a b d' b a g r g a bes d' bes a g r gis a b d' b a gis | % 14
+        r32[ g a b d' b a g] r[ g a bes d' bes a g] r[ gis a b d' b a gis] | % 14
         a16 cis'32-2 b cis'16-. fis32-3 e fis16-. b32 a b16-. e32-4 d e16-. a32 g a16-. d32-2 cis | % 15
         d32[ e fis-3 g a g fis e-1] d16-3 fis-2 a, d-1 d,8 r  \bar ":|:" % 16
          d8 r c'''4.~ c'''16 b''32 c''' | % 17
@@ -73,7 +73,7 @@ music =
         R1*3/4 | % 26
         R1*3/4 | % 27
         R1*3/4 | % 28
-        r32 g' a' b' d'' b' a' g' r g' a' b' d'' b' a' g' r g' a' b' d'' b' a' g' | % 29
+        r32[ g' a' b' d'' b' a' g'] r[ g' a' b' d'' b' a' g'] r[ g' a' b' d'' b' a' g'] | % 29
         c''8-. r a-.-1 r e-. r | % 30
         fis16-. a32 g-4 a16-.-3 d'32 c' d'16-. g32-3 fis g16-. c'32 b c'16-. fis32-3 e fis16-. b32 a | % 31
         b16-.[ g fis g] b32 a-4 g16 d'32-2 c' b16 g'8 r  \bar ":|" % 32

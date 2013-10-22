@@ -8,7 +8,7 @@ music =
         \clef "treble"
         \key g \major
         \time 3/4
-        r16 d'-1 e' fis' g'[ fis' g'-1 a'] b'[ a' g' b'] | % 1
+        r16[ d'-1 e' fis'] g'[ fis' g'-1 a'] b'[ a' g' b'] | % 1
         a'16[ g' fis'-3 e'] d'[ e' fis' g'] a'[ fis' e' d'] | % 2
         g'16[ fis' e' d'] cis'[ d'-1 e' fis'] g'-1[ b' a' g'] | % 3
         fis'16-3[ e' d' cis'-2] d'[ a d'-2 e'] fis'[ d'-1 fis' a'] | % 4
@@ -61,7 +61,7 @@ music =
         g'16-5[ e'' d'' cis''] d''-1[ b' e' d''] fis'[ d'' g'-5 d''] | % 14
         a'16[ d'' cis'' b'] cis''[ e'' a'-3 cis''] e'[ g'-2 fis' e'] | % 15
         fis'16[ a' d' fis'-2] a[ d'-1 fis a] d4  \bar ":|:" % 16
-         r16 d'' c'' b' a'-1[ g' fis' e'] d'[ c'' b' a'] | % 17
+         r16[ d'' c'' b'] a'-1[ g' fis' e'] d'[ c'' b' a'] | % 17
         b'16-1[ g'-2 fis' e'] d'-1[ c' b a] g[ g' a'-3 b'] | % 18
         c''16[ d''-3 e'' d''] c''-1[ b' a' g'] a'[ b' c'' a'] | % 19
         b'16-1[ a' b' fis'-2] b[ cis' dis' e'-1] fis'-3[ g' a' fis'-4] | % 20
