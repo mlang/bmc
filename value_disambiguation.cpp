@@ -432,6 +432,8 @@ proxied_partial_voice::foreach( ast::partial_voice &voice
   (max_duration);
 }
 
+namespace {
+
 inline
 void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
@@ -498,6 +500,8 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
   }
 }
 
+}
+
 void
 proxied_partial_measure::foreach( ast::partial_measure &partial_measure
                                 , rational const &max_length
@@ -518,6 +522,8 @@ proxied_partial_measure::foreach( ast::partial_measure &partial_measure
                                  , callback
                                  ) ;
 }
+
+namespace {
 
 inline
 void
@@ -557,6 +563,8 @@ voice_interpretations( ast::voice::iterator const &begin
       }
     );
   }
+}
+
 }
 
 void
