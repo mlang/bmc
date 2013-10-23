@@ -213,7 +213,7 @@ class partial_voice_interpreter
     return begin;
   }
 
-  bool last_partial_measure;
+  bool const last_partial_measure;
   global_state const &state;
   rational const &start_position;
   proxied_partial_voice::function const &yield;
