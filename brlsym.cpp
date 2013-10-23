@@ -209,6 +209,9 @@ stem_symbols::stem_symbols()
   add(L"⠸⠄", rational(1, 1))
      (L"⠸⠅", rational(1, 2))
      (L"⠸⠁", rational(1, 4))
+     (L"⠸⠃", rational(1, 8))
+     (L"⠸⠇", rational(1, 16))
+     (L"⠸⠂", rational(1, 32))
      ;
 }
 
