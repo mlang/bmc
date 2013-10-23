@@ -75,7 +75,7 @@ namespace music {
         { return not check? true: distinction.value == expected; }
 
         template <class Sign>
-        result_type operator()(Sign const&) const
+        result_type operator()(Sign const &) const
         { return false; }
       };
     }

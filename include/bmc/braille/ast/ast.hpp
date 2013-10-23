@@ -175,8 +175,24 @@ struct simile : locatable
 
 enum barline { begin_repeat, end_repeat, end_part };
 
+class tuplet_start : public locatable
+{
+  bool simple_triplet_;
+  bool doubled_;
+  unsigned number_;
+public:
+  tuplet_start(bool doubled = false)
+  : simple_triplet_{true}, doubled_{doubled} {}
+  tuplet_start(unsigned number, bool doubled)
+  : simple_triplet_{false}, doubled_{doubled}, number_{number} {}
+
+  unsigned number() const { return simple_triplet_? 3: number_; }
+  bool simple_triplet() const { return simple_triplet_; }
+  bool doubled() const { return doubled_; }
+};
+
 typedef boost::variant< note, rest, chord, moving_note
-                      , value_distinction, tie
+		      , value_distinction, tie, tuplet_start
                       , hand_sign, simile, barline
                       >
         sign;

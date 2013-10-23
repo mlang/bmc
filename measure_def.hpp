@@ -19,13 +19,13 @@
 #include <boost/spirit/include/qi_eps.hpp>
 #include <boost/spirit/include/qi_optional.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/phoenix/function/function.hpp>
+#include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/spirit/include/phoenix_object.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
-#include <boost/phoenix/operator/arithmetic.hpp>
-#include <boost/phoenix/operator/self.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
-#include <boost/spirit/include/phoenix_stl.hpp>
 
 namespace music { namespace braille {
 
@@ -112,6 +112,17 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   full_measure_in_accord = brl(126) >> brl(345) >> -+eol;
   partial_measure_sign = brl(46) >> brl(13) >> -+eol;
   partial_measure_in_accord = brl(5) >> brl(2) >> -+eol;
+  boost::spirit::qi::_pass_type _pass;
+  using boost::phoenix::construct;
+  tuplet = brl(23) >> brl(23)[_val = construct<ast::tuplet_start>(true)]
+         | brl(23)[_val = construct<ast::tuplet_start>(false)]
+         | brl(456) >> lower_number[_a = _1]
+        >> brl(456) >> lower_number[_pass = _a == _1]
+        >> brl(3)[_val = construct<ast::tuplet_start>(_a, true)]
+         | brl(456) >> lower_number[_a = _1]
+        >> brl(3)[_val = construct<ast::tuplet_start>(_a, false)]
+         ;
+
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(braille::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(braille::left_hand));
@@ -133,6 +144,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(value_distinction);
   BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie);
+  BMC_LOCATABLE_SET_ID(tuplet);
 #undef BMC_LOCATABLE_SET_ID
   
   note.name("note");

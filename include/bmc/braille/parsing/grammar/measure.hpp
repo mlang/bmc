@@ -38,6 +38,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, ast::interval()> interval;
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
+  boost::spirit::qi::rule<Iterator, ast::tuplet_start(), boost::spirit::qi::locals<unsigned>> tuplet;
   boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
   boost::spirit::qi::rule<Iterator, ast::simile(), boost::spirit::qi::locals<unsigned>> simile;
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
@@ -49,6 +50,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   full_measure_in_accord, partial_measure_sign, partial_measure_in_accord,
   optional_dot, newline;
   upper_number_grammar<Iterator> upper_number;
+  lower_number_grammar<Iterator> lower_number;
   boost::spirit::qi::rule<Iterator, unsigned()> ending;
 };
 
