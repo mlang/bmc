@@ -1,0 +1,10 @@
+A number of BMC improvements have been developed since the last post.
+
+* Measure range specifications (used to state what measure nubmers are part of a particular section) can now include alternative endings.
+* A few more test cases based on goldberg variations (var. 14 through 18) have been entered.
+* The goldberg variations currently parsed successfully by BMC are now available [here](/goldberg/).
+* Doubled slurs and staccato signs are now correctly translated to LilyPond.
+* bmc2ly has gained a true command-line option parser and now supports setting the default MIDI instrument for LilyPond exports.
+
+Plus the usual array of occasional cleanups.
+
