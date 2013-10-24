@@ -51,7 +51,9 @@ public:
           if (not std::all_of(partial_voice.begin(), partial_voice.end(),
                               apply_visitor(*this)))
             return false;
+          if (part.size() > 1) prev = nullptr;
         }
+        if (voice.size() > 1) prev = nullptr;
       }
     }
     return true;
