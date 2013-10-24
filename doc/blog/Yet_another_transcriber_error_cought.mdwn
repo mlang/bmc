@@ -7,7 +7,9 @@ Once alerted to it by BMC's value disambiguation algorithm, this one is actually
 easy to spot and fix.  There is just one dot missing.  Can you see which one it is?
 
 The first voice is rather clear, it consists of a dotted quarter note, which means it matches 3/8 time signature.
-If we follow whats written in braille, the second voice consists of either 6 32th notes, or a 32th note followed by 5 8th notes.  Both possibilities make no sense, and do not match the length of the other voice.
+If we follow whats written in braille, the second voice consists of either
+6 64th notes, or a 64th note followed by 5 8th notes.  Both possibilities make
+no sense, and do not match the length of the other voice.
 So BMC rightly barfs and reports this as a measure with no possible interpretations.
 
 The fix is, as already said, rather simple:
