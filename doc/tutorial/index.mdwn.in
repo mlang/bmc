@@ -193,3 +193,9 @@ begin{bmc}
 ⠐⠳⠓⠨⠙⠨⠅⠨⠟⠐⠂⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
 end{bmc}
 
+A measure can contain full measure in-accord and partial measure in-accord signs at the same time.
+
+begin{bmc}
+⠐⠓⠋⠨⠅⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑⠐⠂⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾⠣⠜⠸⠷⠣⠅
+end{bmc}
+

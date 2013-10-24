@@ -294,3 +294,18 @@ In this example the first measure splits into two voices at the third beat.
  </span>
 </div>
 
+A measure can contain full measure in-accord and partial measure in-accord signs at the same time.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠐⠓⠋⠨⠅⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑⠐⠂⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾⠣⠜⠸⠷⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.ly">
+    <img src="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.mp3">MP3</a>
+ </span>
+</div>
+
