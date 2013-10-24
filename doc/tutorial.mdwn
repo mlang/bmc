@@ -193,29 +193,31 @@ signs, ordered upward.
 
 <div class="snippet-div">
  <span class="snippet-span">
-  <div class="brailled"><pre>⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
-⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+  <div class="brailled"><pre>⠀⠀⠀⠀⠼⠙⠲
+⠀⠀⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+⠀⠀⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
 </pre></div>
   <div class="engraved">
-   <a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.ly">
-    <img src="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.ly">
+    <img src="snippet_db593fd6120808f1ad00aeef540c460ba2710513.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
-  <a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.mp3">MP3</a>
+  <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.mp3">MP3</a>
  </span>
 </div>
 
 <div class="snippet-div">
  <span class="snippet-span">
-  <div class="brailled"><pre>⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
-⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+  <div class="brailled"><pre>⠀⠀⠀⠀⠼⠙⠲
+⠀⠀⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+⠀⠀⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
 </pre></div>
   <div class="engraved">
-   <a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.ly">
-    <img src="snippet_77f5bb540762126a55b90146490e250bc2980c6a.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   <a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.ly">
+    <img src="snippet_da06795ce64673da4bb1171f13e119bb271763e5.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
-  <a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.mp3">MP3</a>
+  <a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.mp3">MP3</a>
  </span>
 </div>
 

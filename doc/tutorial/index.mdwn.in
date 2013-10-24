@@ -145,13 +145,15 @@ note is wirtten as a normal note and all others are expressed with interval
 signs, ordered upward.
 
 begin{bmc}
-⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
-⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+⠀⠀⠀⠀⠼⠙⠲
+⠀⠀⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+⠀⠀⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
 end{bmc}
 
 begin{bmc}
-⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
-⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+⠀⠀⠀⠀⠼⠙⠲
+⠀⠀⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+⠀⠀⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
 end{bmc}
 
 If there are several interval signs following a note sign there is no need to
