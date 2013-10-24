@@ -237,3 +237,44 @@ place octave signs in between except the intervals are separated by an octave or
  </span>
 </div>
 
+The pitches of the written notes determine if a chord needs to be prefixed with an octave sign or not.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠀⠀⠀⠀⠩⠩⠀⠼⠙⠲
+⠀⠀⠨⠜⠄⠍⠣⠅
+⠀⠀⠸⠜⠸⠱⠬⠔⠤⠘⠑⠄⠤⠵⠤⠱⠤⠧⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.ly">
+    <img src="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.mp3">MP3</a>
+ </span>
+</div>
+
+## in-accord
+
+If not all simultaneously played notes of a part of a measure do have the same
+rhythm they are written in as separate voices with same duration.
+If the voices span a coplete measure, the full measure in-accord sign is used.
+
+An octave sign needs to be placed in front of the first note of a part
+separated by in-accord signs, and the following measure needs to have an
+octave sign on the first note no matter if it is in-accord or not.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.ly">
+    <img src="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.mp3">MP3</a>
+ </span>
+</div>
+
+

@@ -163,3 +163,26 @@ begin{bmc}
 ⠼⠉⠲⠀⠨⠳⠤⠼⠴⠳⠔⠬⠒⠻⠬⠒⠔⠀⠏⠄⠬⠴⠬⠣⠅
 end{bmc}
 
+The pitches of the written notes determine if a chord needs to be prefixed with an octave sign or not.
+
+begin{bmc}
+⠀⠀⠀⠀⠩⠩⠀⠼⠙⠲
+⠀⠀⠨⠜⠄⠍⠣⠅
+⠀⠀⠸⠜⠸⠱⠬⠔⠤⠘⠑⠄⠤⠵⠤⠱⠤⠧⠣⠅
+end{bmc}
+
+## in-accord
+
+If not all simultaneously played notes of a part of a measure do have the same
+rhythm they are written in as separate voices with same duration.
+If the voices span a coplete measure, the full measure in-accord sign is used.
+
+An octave sign needs to be placed in front of the first note of a part
+separated by in-accord signs, and the following measure needs to have an
+octave sign on the first note no matter if it is in-accord or not.
+
+begin{bmc}
+⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
+end{bmc}
+
+
