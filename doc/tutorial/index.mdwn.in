@@ -65,10 +65,25 @@ each sign can have two meanings.
 
 ## Octave signs
 
+Contrary to engraved music where clef signs determine the pitch of a note, braille music uses octave signs to indicate the exact pitch of a note.
+
 An octave sign is placed directly in front of a note sign, without any other signs in between.
 The following example shows octave signs 1 through 7 placed in front of a quarter C.
 
 begin{bmc}
 ⠼⠁⠲⠀⠈⠹⠀⠘⠹⠀⠸⠹⠀⠐⠹⠀⠨⠹⠀⠰⠹⠀⠠⠹⠣⠅
+end{bmc}
+
+There has to be an octave sign in front of the first note of a piece.
+For all following notes the these rules apply:
+
+* If the following note goes a second or third up or down it does not need an octave sign.
+* If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
+* With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+
+These rules are shown in the following example.
+
+begin{bmc}
+⠨⠏⠱⠹⠀⠪⠨⠕⠹⠀⠺⠨⠏⠱⠀⠝⠻⠫⠀⠱⠗⠻⠀⠫⠹⠨⠪⠨⠹⠀⠚⠙⠑⠋⠛⠓⠊⠚⠀⠝⠥⠣⠅
 end{bmc}
 
