@@ -15,7 +15,7 @@
 
 #include "bmc/lilypond.hpp"
 
-int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrument) {
+int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrument, bool no_tagline) {
   std::istreambuf_iterator<wchar_t> wcin_begin(wistream.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
   typedef std::wstring::const_iterator iterator_type;
@@ -35,6 +35,7 @@ int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrume
     if (compile(score)) {
       music::lilypond::generator generate(std::cout, true, true, include_locations);
       if (not instrument.empty()) generate.instrument(instrument);
+      if (no_tagline) generate.remove_tagline();
       generate(score);
 
       return EXIT_SUCCESS;
@@ -54,6 +55,7 @@ main(int argc, char const *argv[])
   using namespace boost::program_options;
   std::string instrument;
   bool locations;
+  bool no_tagline = false;
   std::vector<std::string> input_files;
 
   options_description desc("Allowed options");
@@ -62,6 +64,7 @@ main(int argc, char const *argv[])
   ("input-file", value(&input_files), "input file")
   ("instrument,i", value(&instrument), "default MIDI instrument")
   ("locations,l", bool_switch(&locations), "Include braille locations in LilyPond output")
+  ("no-tagline", bool_switch(&no_tagline)->default_value(false), "Supress LilyPond default tagline")
   ;
   positional_options_description positional_desc;
   positional_desc.add("input-file", -1);
@@ -88,14 +91,15 @@ main(int argc, char const *argv[])
     }
   }
 
+  int status = EXIT_SUCCESS;
   for (auto const &file: input_files) {
-    if (file == "-") bmc2ly(std::wcin, locations, instrument);
+    if (file == "-") status = bmc2ly(std::wcin, locations, instrument, no_tagline);
     else {
       std::wifstream f(file);
-      if (f.good()) bmc2ly(f, locations, instrument);
+      if (f.good()) status = bmc2ly(f, locations, instrument, no_tagline);
     }
   }
 
-  return EXIT_FAILURE;
+  return status;
 }
 

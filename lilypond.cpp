@@ -29,6 +29,10 @@ generator::generator( std::ostream &os
 void
 generator::operator() (braille::ast::score const &score)
 {
+  if (no_tagline)
+    os << "\\header {" << std::endl
+       << "  tagline = \"\"" << std::endl
+       << "}" << std::endl;
   os << "music =" << std::endl;
   os << "  " << "<<" << std::endl;
   for (auto const& part: score.unfolded_part) (*this)(part, score);
