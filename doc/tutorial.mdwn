@@ -9,6 +9,10 @@
   padding: 10px;
 }
 </style>
+A basic introduction to braille music code with examples in braille, engraved and as sound files.
+
+[[!toc levels=2]]
+
 # Notes and rests
 
 ## Notes
@@ -16,20 +20,9 @@
 The signs used for notes follow a certain system.  The note name
 is encoded in the upper 4 braille dots.  Braille letter d through j are
 used to indicate the note name.  Dots 3 and 6 can be added
-to indicate the note value.  If none of dot 3 or 6 are present, a 8th or
-128th note is given.  If dot 3 is added, we are dealing with either
-a half or 32th note.  If dot 6 is added, we are dealing with a quarter
-or 64th note.  Finally, if both dot 3 and dot 6 are added, we have a
-whole or 16th note.
+to indicate the note value.
 
-For people coming from a cultural background where notes are named like
-C, D, E, F, G, A and B (english speaking countries) or C, D, E, F, G, A, H (german
-speaking countries) you might have a hard time at first to read note names.
-However, there is a trick for memorizing.  Observe that the braille letters
-used to indicate note names are shifted up by one letter.  So the note C
-is written with the braille letter d, the note D is written with the braille letter e and so on.
-The two exceptions here are the note names A and B (or H).  A is written
-with the braille letter i, and B (or H) is written with the braille letter j.
+If none of dot 3 or 6 are present, a 8th or 128th note is given.
 
 | Sign |    Description    |
 |:----:|:----------------- |
@@ -40,6 +33,11 @@ with the braille letter i, and B (or H) is written with the braille letter j.
 | ⠓    | 8th or 128th G    |
 | ⠊    | 8th or 128th A    |
 | ⠚    | 8th or 128th B    |
+
+If dot 3 is added, we are dealing with either a half or 32th note.
+
+| Sign |    Description    |
+|:----:|:----------------- |
 | ⠝    | half or 32th C    |
 | ⠕    | half or 32th D    |
 | ⠏    | half or 32th E    |
@@ -47,6 +45,11 @@ with the braille letter i, and B (or H) is written with the braille letter j.
 | ⠗    | half or 32th G    |
 | ⠎    | half or 32th A    |
 | ⠞    | half or 32th B    |
+
+If dot 6 is added, we are dealing with a quarter or 64th note.
+
+| Sign |    Description    |
+|:----:|:----------------- |
 | ⠹    | quarter or 64th C |
 | ⠱    | quarter or 64th D |
 | ⠫    | quarter or 64th E |
@@ -54,6 +57,11 @@ with the braille letter i, and B (or H) is written with the braille letter j.
 | ⠳    | quarter or 64th G |
 | ⠪    | quarter or 64th A |
 | ⠺    | quarter or 64th B |
+
+Finally, if both dot 3 and dot 6 are added, we have a whole or 16th note.
+
+| Sign |    Description    |
+|:----:|:----------------- |
 | ⠽    | whole or 16th C   |
 | ⠵    | whole or 16th D   |
 | ⠯    | whole or 16th E   |
@@ -61,6 +69,16 @@ with the braille letter i, and B (or H) is written with the braille letter j.
 | ⠷    | whole or 16th G   |
 | ⠮    | whole or 16th A   |
 | ⠾    | whole or 16th B   |
+
+For people coming from a cultural background where notes are named like
+C, D, E, F, G, A and B (english speaking countries) or C, D, E, F, G, A, H
+(german speaking countries) you might have a hard time at first to read note
+names.  However, there is a trick for memorizing.  Observe that the braille
+letters used to indicate note names are shifted up by one letter.  So the note
+C is written with the braille letter d, the note D is written with the braille
+letter e and so on.
+The two exceptions here are the note names A and B (or H).  A is written
+with the braille letter i, and B (or H) is written with the braille letter j.
 
 ## Rests
 
@@ -76,10 +94,13 @@ each sign can have two meanings.
 
 ## Octave signs
 
-Contrary to engraved music where clef signs determine the pitch of a note, braille music uses octave signs to indicate the exact pitch of a note.
+Contrary to engraved music where clefs determine the pitch of a note, braille
+music uses octave signs to indicate the exact pitch of a note.
 
-An octave sign is placed directly in front of a note sign, without any other signs in between.
-The following example shows octave signs 1 through 7 placed in front of a quarter C.
+An octave sign is placed directly in front of a note sign, without any other
+signs in between.
+The following example shows octave signs 1 through 7 placed in front of a
+quarter C.
 
 <div class="snippet-div">
  <span class="snippet-span">
@@ -87,8 +108,7 @@ The following example shows octave signs 1 through 7 placed in front of a quarte
 </pre></div>
   <div class="engraved">
    <a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.ly">
-    <img src="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.png" alt="LilyPond"
-         title="Click to see LilyPond source"/>
+    <img src="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.mp3">MP3</a>
@@ -102,7 +122,7 @@ For all following notes these rules apply:
 * If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
 * With an interval of a sixth or greater to the previous note, it always receives an octave sign.
 
-These rules are shown in the following example.
+These rules are demonstrated in the following example.
 
 <div class="snippet-div">
  <span class="snippet-span">
@@ -110,8 +130,7 @@ These rules are shown in the following example.
 </pre></div>
   <div class="engraved">
    <a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.ly">
-    <img src="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.png" alt="LilyPond"
-         title="Click to see LilyPond source"/>
+    <img src="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.mp3">MP3</a>
@@ -136,8 +155,7 @@ notes are written as 8th notes.
 </pre></div>
   <div class="engraved">
    <a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.ly">
-    <img src="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.png" alt="LilyPond"
-         title="Click to see LilyPond source"/>
+    <img src="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.mp3">MP3</a>
@@ -154,8 +172,7 @@ However, rests are not allowed to appear anywhere else in a notegroup.
 </pre></div>
   <div class="engraved">
    <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.ly">
-    <img src="snippet_a534c14987afc4508effaccb7f8588071299d286.png" alt="LilyPond"
-         title="Click to see LilyPond source"/>
+    <img src="snippet_a534c14987afc4508effaccb7f8588071299d286.png" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a534c14987afc4508effaccb7f8588071299d286.mp3">MP3</a>
