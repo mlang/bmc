@@ -179,3 +179,59 @@ However, rests are not allowed to appear anywhere else in a notegroup.
  </span>
 </div>
 
+# Polyphony
+
+## Intervals
+
+If two or more notes sound at the same time and have the same value (duration)
+intervals are used.  In upper registers, or in the right hand of a keyboard piece,
+only the highest note is written as a normal note sign, all following notes
+of the chord are written with interval signs downward.
+In lower registers or in the left hand of a keyboard piece, the lowest
+note is wirtten as a normal note and all others are expressed with interval
+signs, ordered upward.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.ly">
+    <img src="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_397ae409cbf6c93ff655ce1cc7d8a8ddd357ceb1.mp3">MP3</a>
+ </span>
+</div>
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.ly">
+    <img src="snippet_77f5bb540762126a55b90146490e250bc2980c6a.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_77f5bb540762126a55b90146490e250bc2980c6a.mp3">MP3</a>
+ </span>
+</div>
+
+If there are several interval signs following a note sign there is no need to
+place octave signs in between except the intervals are separated by an octave or more.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠉⠲⠀⠨⠳⠤⠼⠴⠳⠔⠬⠒⠻⠬⠒⠔⠀⠏⠄⠬⠴⠬⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.ly">
+    <img src="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.mp3">MP3</a>
+ </span>
+</div>
+

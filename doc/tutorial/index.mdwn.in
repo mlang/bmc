@@ -132,3 +132,32 @@ begin{bmc}
 ⠼⠉⠲⠀⠍⠐⠋⠛⠓⠍⠛⠓⠊⠍⠓⠊⠚⠣⠅
 end{bmc}
 
+# Polyphony
+
+## Intervals
+
+If two or more notes sound at the same time and have the same value (duration)
+intervals are used.  In upper registers, or in the right hand of a keyboard piece,
+only the highest note is written as a normal note sign, all following notes
+of the chord are written with interval signs downward.
+In lower registers or in the left hand of a keyboard piece, the lowest
+note is wirtten as a normal note and all others are expressed with interval
+signs, ordered upward.
+
+begin{bmc}
+⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+end{bmc}
+
+begin{bmc}
+⠨⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
+⠸⠜⠸⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
+end{bmc}
+
+If there are several interval signs following a note sign there is no need to
+place octave signs in between except the intervals are separated by an octave or more.
+
+begin{bmc}
+⠼⠉⠲⠀⠨⠳⠤⠼⠴⠳⠔⠬⠒⠻⠬⠒⠔⠀⠏⠄⠬⠴⠬⠣⠅
+end{bmc}
+
