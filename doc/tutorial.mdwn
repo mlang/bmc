@@ -277,4 +277,20 @@ octave sign on the first note no matter if it is in-accord or not.
  </span>
 </div>
 
+If only one part of a measure requires an in-accord sign, a partial measure sign is used in combination with a partial measure in-accord sign.
+
+In this example the first measure splits into two voices at the third beat.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠐⠳⠓⠨⠙⠨⠅⠨⠟⠐⠂⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.ly">
+    <img src="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.png" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.mp3">MP3</a>
+ </span>
+</div>
 

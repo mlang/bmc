@@ -185,4 +185,11 @@ begin{bmc}
 ⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
 end{bmc}
 
+If only one part of a measure requires an in-accord sign, a partial measure sign is used in combination with a partial measure in-accord sign.
+
+In this example the first measure splits into two voices at the third beat.
+
+begin{bmc}
+⠐⠳⠓⠨⠙⠨⠅⠨⠟⠐⠂⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
+end{bmc}
 
