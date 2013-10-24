@@ -1,0 +1,72 @@
+#!/usr/bin/perl
+###############################################################################
+# BMC MarkDown PreProcessor                                                   #
+###############################################################################
+
+use strict;
+use warnings;
+use Digest::SHA qw(sha1_hex);
+use Image::Magick;
+
+sub munge($);
+
+print <<EOF;
+<style>
+.snippet-div {
+  text-align: center;
+}
+.snippet-span {
+  border: solid 1px;
+  text-align: center;
+  display: inline-block;
+  padding: 10px;
+}
+</style>
+EOF
+
+# Read MarkDown from STDIN
+my $in_group = 0;
+my $text = '';
+while (<>) {
+  if (/^begin{(.*)}$/) { $in_group = 1; next; }
+  if (/^end{(.*)}$/) { munge($text); $in_group = 0; $text = ''; next; }
+  $text = $text . $_ if $in_group eq 1;
+  print $_ if $in_group eq 0;
+}
+
+exit 0;
+
+sub munge($) {
+  my $text = shift;
+  my $out = sha1_hex($text);
+  unlink "$out.png", "$out.midi", "$out.mp3";
+  open FILE, "|/usr/src/bmc/bmc2ly --no-tagline - >$out.ly"
+  or die "Unable to run bmc2ly";
+  print FILE $text;
+  close(FILE) or die "Error running bmc2ly: $!";
+  system("lilypond", "-o", "$out", "-lWARNING", "--png", "$out.ly") == 0
+  or die "LilyPond failed";
+  die "No output from LilyPond" if ! -r "$out.png" and ! -r "$out.midi";
+  my $image=new Image::Magick;
+  $image->Read("$out.png");
+  $image->Trim();
+  $image->Write("$out.png");
+  system("timidity", "-idqq", "-Ow", "$out.midi") == 0
+  or die "Timidity++ failed";
+  system("lame", "-S", "-b", "64", "$out.wav", "$out.mp3") == 0
+  or die "Lame failed";
+  unlink "$out.wav" or warn "Could not unlink $out.wav: $!"; 
+  print "<div class=\"snippet-div\"><span class=\"snippet-span\">\n";
+  print "<div class=\"brailled\"><pre>";
+  open FILE, "|brltty-trtxt -6 -i de -o unicode -";
+  print FILE $text;
+  close(FILE) or die "Error during brltty-trtxt execution: $!";
+  print "</pre></div>"."\n";
+  print "<div class=\"engraved\">";
+  print "<a href=\"$out.ly\">";
+  print "<img src=\"$out.png\" alt=\"LilyPond\" title=\"Click to see LilyPond source\"/>";
+  print "</a></div>\n";
+  print "<a href=\"$out.midi\">MIDI</a>&nbsp;|&nbsp;<a href=\"$out.mp3\">MP3</a>";
+  print "</span></div>\n";
+}
+
