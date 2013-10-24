@@ -87,3 +87,16 @@ begin{bmc}
 ⠨⠏⠱⠹⠀⠪⠨⠕⠹⠀⠺⠨⠏⠱⠀⠝⠻⠫⠀⠱⠗⠻⠀⠫⠹⠨⠪⠨⠹⠀⠚⠙⠑⠋⠛⠓⠊⠚⠀⠝⠥⠣⠅
 end{bmc}
 
+# Rhythmic notegroups
+
+In engraved music one or several beams are often used to connect smaller note values across or as part of a beat.  One beam is used for 8th notes, two beams for 16th notes, and so on.
+This kind of grouping is also done, to a certain extend, in braille music code.
+
+Three or more 16h notes (but also smaller values) can be grouped in braille music.
+One group of notes should not be part of two different beats.
+The first note is written with the real value or the group, while the remaining notes are written as 8th notes.
+
+begin{bmc}
+⠼⠙⠲⠀⠐⠽⠑⠋⠛⠷⠊⠚⠙⠵⠙⠚⠊⠷⠛⠋⠑⠣⠅
+end{bmc}
+
