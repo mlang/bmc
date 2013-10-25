@@ -118,7 +118,7 @@ quarter C.
 </pre></div>
   <div class="engraved">
    <a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.ly">
-    <img src="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.mp3">MP3</a>
@@ -140,7 +140,7 @@ These rules are demonstrated in the following example.
 </pre></div>
   <div class="engraved">
    <a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.ly">
-    <img src="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.mp3">MP3</a>
@@ -165,7 +165,7 @@ notes are written as 8th notes.
 </pre></div>
   <div class="engraved">
    <a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.ly">
-    <img src="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.mp3">MP3</a>
@@ -182,7 +182,7 @@ However, rests are not allowed to appear anywhere else in a notegroup.
 </pre></div>
   <div class="engraved">
    <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.ly">
-    <img src="snippet_a534c14987afc4508effaccb7f8588071299d286.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_a534c14987afc4508effaccb7f8588071299d286.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a534c14987afc4508effaccb7f8588071299d286.mp3">MP3</a>
@@ -208,7 +208,7 @@ of the chord are written with interval signs downward.
 </pre></div>
   <div class="engraved">
    <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.ly">
-    <img src="snippet_db593fd6120808f1ad00aeef540c460ba2710513.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_db593fd6120808f1ad00aeef540c460ba2710513.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.mp3">MP3</a>
@@ -227,7 +227,7 @@ signs, ordered upward.
 </pre></div>
   <div class="engraved">
    <a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.ly">
-    <img src="snippet_da06795ce64673da4bb1171f13e119bb271763e5.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_da06795ce64673da4bb1171f13e119bb271763e5.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.mp3">MP3</a>
@@ -243,7 +243,7 @@ place octave signs in between except the intervals are separated by an octave or
 </pre></div>
   <div class="engraved">
    <a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.ly">
-    <img src="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.mp3">MP3</a>
@@ -261,7 +261,7 @@ an octave sign or not.
 </pre></div>
   <div class="engraved">
    <a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.ly">
-    <img src="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.mp3">MP3</a>
@@ -284,7 +284,7 @@ octave sign on the first note no matter if it is in-accord or not.
 </pre></div>
   <div class="engraved">
    <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.ly">
-    <img src="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.mp3">MP3</a>
@@ -302,7 +302,7 @@ In this example the first measure splits into two voices at the third beat.
 </pre></div>
   <div class="engraved">
    <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.ly">
-    <img src="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.mp3">MP3</a>
@@ -318,7 +318,7 @@ at the same time.
 </pre></div>
   <div class="engraved">
    <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.ly">
-    <img src="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.png" alt="LilyPond" title="Click to see LilyPond source"/>
+    <img src="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.svg" alt="LilyPond" title="Click to see LilyPond source"/>
    </a>
   </div>
   <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.mp3">MP3</a>
