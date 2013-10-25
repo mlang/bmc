@@ -28,47 +28,47 @@ If none of dot 3 or 6 are present, a 8th or 128th note is given.
 |:----:|:----------------- |:-:|
 | ⠙    | 8th or 128th C    |![C](c8.svg)|
 | ⠑    | 8th or 128th D    |![D](d8.svg)|
-| ⠋    | 8th or 128th E    |
-| ⠛    | 8th or 128th F    |
-| ⠓    | 8th or 128th G    |
-| ⠊    | 8th or 128th A    |
-| ⠚    | 8th or 128th B    |
+| ⠋    | 8th or 128th E    |![E](e8.svg)|
+| ⠛    | 8th or 128th F    |![F](f8.svg)|
+| ⠓    | 8th or 128th G    |![G](g8.svg)|
+| ⠊    | 8th or 128th A    |![A](a8.svg)|
+| ⠚    | 8th or 128th B    |![B](b8.svg)|
 
 If dot 3 is added, we are dealing with either a half or 32th note.
 
-| Sign |    Description    |
-|:----:|:----------------- |
-| ⠝    | half or 32th C    |
-| ⠕    | half or 32th D    |
-| ⠏    | half or 32th E    |
-| ⠟    | half or 32th F    |
-| ⠗    | half or 32th G    |
-| ⠎    | half or 32th A    |
-| ⠞    | half or 32th B    |
+| Sign |    Description    |   |
+|:----:|:----------------- |:-:|
+| ⠝    | half or 32th C    |![C](c2.svg)|
+| ⠕    | half or 32th D    |![D](d2.svg)|
+| ⠏    | half or 32th E    |![E](e2.svg)|
+| ⠟    | half or 32th F    |![F](f2.svg)|
+| ⠗    | half or 32th G    |![G](g2.svg)|
+| ⠎    | half or 32th A    |![A](a2.svg)|
+| ⠞    | half or 32th B    |![B](b2.svg)|
 
 If dot 6 is added, we are dealing with a quarter or 64th note.
 
-| Sign |    Description    |
-|:----:|:----------------- |
-| ⠹    | quarter or 64th C |
-| ⠱    | quarter or 64th D |
-| ⠫    | quarter or 64th E |
-| ⠻    | quarter or 64th F |
-| ⠳    | quarter or 64th G |
-| ⠪    | quarter or 64th A |
-| ⠺    | quarter or 64th B |
+| Sign |    Description    |   |
+|:----:|:----------------- |:-:|
+| ⠹    | quarter or 64th C |![C](c4.svg)|
+| ⠱    | quarter or 64th D |![D](d4.svg)|
+| ⠫    | quarter or 64th E |![E](e4.svg)|
+| ⠻    | quarter or 64th F |![F](f4.svg)|
+| ⠳    | quarter or 64th G |![G](g4.svg)|
+| ⠪    | quarter or 64th A |![A](a4.svg)|
+| ⠺    | quarter or 64th B |![B](b4.svg)|
 
 Finally, if both dot 3 and dot 6 are added, we have a whole or 16th note.
 
-| Sign |    Description    |
-|:----:|:----------------- |
-| ⠽    | whole or 16th C   |
-| ⠵    | whole or 16th D   |
-| ⠯    | whole or 16th E   |
-| ⠿    | whole or 16th F   |
-| ⠷    | whole or 16th G   |
-| ⠮    | whole or 16th A   |
-| ⠾    | whole or 16th B   |
+| Sign |    Description    |   |
+|:----:|:----------------- |:-:|
+| ⠽    | whole or 16th C   |![C](c1.svg)|
+| ⠵    | whole or 16th D   |![D](d1.svg)|
+| ⠯    | whole or 16th E   |![E](e1.svg)|
+| ⠿    | whole or 16th F   |![F](f1.svg)|
+| ⠷    | whole or 16th G   |![G](g1.svg)|
+| ⠮    | whole or 16th A   |![A](a1.svg)|
+| ⠾    | whole or 16th B   |![B](b1.svg)|
 
 For people coming from a cultural background where notes are named like
 C, D, E, F, G, A and B (english speaking countries) or C, D, E, F, G, A, H
