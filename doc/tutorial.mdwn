@@ -139,7 +139,7 @@ These rules are demonstrated in the following example.
 
 # Note grouping (beams)
 
-In engraved music one or several [beams](http://en.wikipedia.org/wiki/Beam_(music)) are often used to connect smaller notes
+In engraved music one or several [beams](http://en.wikipedia.org/wiki/Beam_%28music%29) are often used to connect smaller notes
 across or as part of a beat.  One beam is used for 8th notes, two beams for
 16th notes, and so on.
 This kind of grouping is also done, to a certain extend, in braille music code.
