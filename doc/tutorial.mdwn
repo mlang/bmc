@@ -24,10 +24,10 @@ to indicate the note value.
 
 If none of dot 3 or 6 are present, a 8th or 128th note is given.
 
-| Sign |    Description    |
-|:----:|:----------------- |
-| ⠙    | 8th or 128th C    |
-| ⠑    | 8th or 128th D    |
+| Sign |    Description    |   |
+|:----:|:----------------- |:-:|
+| ⠙    | 8th or 128th C    |![C](c8.svg)|
+| ⠑    | 8th or 128th D    |![D](d8.svg)|
 | ⠋    | 8th or 128th E    |
 | ⠛    | 8th or 128th F    |
 | ⠓    | 8th or 128th G    |
