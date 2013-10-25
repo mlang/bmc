@@ -24,51 +24,51 @@ to indicate the note value.
 
 If none of dot 3 or 6 are present, a 8th or 128th note is given.
 
-| Sign |    Description    |   |
-|:----:|:----------------- |:-:|
-| ⠙    | 8th or 128th C    |![C](c8.svg "8th or 128th C")|
-| ⠑    | 8th or 128th D    |![D](d8.svg)|
-| ⠋    | 8th or 128th E    |![E](e8.svg)|
-| ⠛    | 8th or 128th F    |![F](f8.svg)|
-| ⠓    | 8th or 128th G    |![G](g8.svg)|
-| ⠊    | 8th or 128th A    |![A](a8.svg)|
-| ⠚    | 8th or 128th B    |![B](b8.svg)|
+|Sign| Dots  |Note name| 8th or 128th                             |
+|:--:|:----- |:-------:|:---------------------------------------- |
+| ⠙  |1 4 5  | C       |![1/8 or 1/128 C](c8.svg "8th or 128th C")|
+| ⠑  |1 5    | D       |![1/8 or 1/128 D](d8.svg "8th or 128th D")|
+| ⠋  |1 2 4  | E       |![1/8 or 1/128 E](e8.svg "8th or 128th E")|
+| ⠛  |1 2 4 5| F       |![1/8 or 1/128 F](f8.svg "8th or 128th F")|
+| ⠓  |1 2 5  | G       |![1/8 or 1/128 G](g8.svg "8th or 128th G")|
+| ⠊  |2 4    | A       |![1/8 or 1/128 A](a8.svg "8th or 128th A")|
+| ⠚  |2 4 5  | B       |![1/8 or 1/128 B](b8.svg "8th or 128th B")|
 
 If dot 3 is added, we are dealing with either a half or 32th note.
 
-| Sign |    Description    |   |
-|:----:|:----------------- |:-:|
-| ⠝    | half or 32th C    |![C](c2.svg)|
-| ⠕    | half or 32th D    |![D](d2.svg)|
-| ⠏    | half or 32th E    |![E](e2.svg)|
-| ⠟    | half or 32th F    |![F](f2.svg)|
-| ⠗    | half or 32th G    |![G](g2.svg)|
-| ⠎    | half or 32th A    |![A](a2.svg)|
-| ⠞    | half or 32th B    |![B](b2.svg)|
+| Sign |    Description    |
+|:----:|:----------------- |
+| ⠝    | half or 32th C    |
+| ⠕    | half or 32th D    |
+| ⠏    | half or 32th E    |
+| ⠟    | half or 32th F    |
+| ⠗    | half or 32th G    |
+| ⠎    | half or 32th A    |
+| ⠞    | half or 32th B    |
 
 If dot 6 is added, we are dealing with a quarter or 64th note.
 
-| Sign |    Description    |   |
-|:----:|:----------------- |:-:|
-| ⠹    | quarter or 64th C |![C](c4.svg)|
-| ⠱    | quarter or 64th D |![D](d4.svg)|
-| ⠫    | quarter or 64th E |![E](e4.svg)|
-| ⠻    | quarter or 64th F |![F](f4.svg)|
-| ⠳    | quarter or 64th G |![G](g4.svg)|
-| ⠪    | quarter or 64th A |![A](a4.svg)|
-| ⠺    | quarter or 64th B |![B](b4.svg)|
+| Sign |    Description    |
+|:----:|:----------------- |
+| ⠹    | quarter or 64th C |
+| ⠱    | quarter or 64th D |
+| ⠫    | quarter or 64th E |
+| ⠻    | quarter or 64th F |
+| ⠳    | quarter or 64th G |
+| ⠪    | quarter or 64th A |
+| ⠺    | quarter or 64th B |
 
 Finally, if both dot 3 and dot 6 are added, we have a whole or 16th note.
 
-| Sign |    Description    |   |
-|:----:|:----------------- |:-:|
-| ⠽    | whole or 16th C   |![C](c1.svg)|
-| ⠵    | whole or 16th D   |![D](d1.svg)|
-| ⠯    | whole or 16th E   |![E](e1.svg)|
-| ⠿    | whole or 16th F   |![F](f1.svg)|
-| ⠷    | whole or 16th G   |![G](g1.svg)|
-| ⠮    | whole or 16th A   |![A](a1.svg)|
-| ⠾    | whole or 16th B   |![B](b1.svg)|
+| Sign |    Description    |
+|:----:|:----------------- |
+| ⠽    | whole or 16th C   |
+| ⠵    | whole or 16th D   |
+| ⠯    | whole or 16th E   |
+| ⠿    | whole or 16th F   |
+| ⠷    | whole or 16th G   |
+| ⠮    | whole or 16th A   |
+| ⠾    | whole or 16th B   |
 
 For people coming from a cultural background where notes are named like
 C, D, E, F, G, A and B (english speaking countries) or C, D, E, F, G, A, H
@@ -137,7 +137,7 @@ These rules are demonstrated in the following example.
  </span>
 </div>
 
-# Note grouping (beams)
+# Rhythmic notegroups
 
 In engraved music one or several [beams](http://en.wikipedia.org/wiki/Beam_%28music%29) are often used to connect smaller notes
 across or as part of a beat.  One beam is used for 8th notes, two beams for
@@ -205,7 +205,6 @@ signs, ordered upward.
   <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.mp3">MP3</a>
  </span>
 </div>
-
 
 <div class="snippet-div">
  <span class="snippet-span">

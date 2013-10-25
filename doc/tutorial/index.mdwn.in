@@ -13,15 +13,15 @@ to indicate the note value.
 
 If none of dot 3 or 6 are present, a 8th or 128th note is given.
 
-| Sign |    Description    |
-|:----:|:----------------- |
-| ⠙    | 8th or 128th C    |
-| ⠑    | 8th or 128th D    |
-| ⠋    | 8th or 128th E    |
-| ⠛    | 8th or 128th F    |
-| ⠓    | 8th or 128th G    |
-| ⠊    | 8th or 128th A    |
-| ⠚    | 8th or 128th B    |
+|Sign| Dots  |Note name| 8th or 128th                             |
+|:--:|:----- |:-------:|:---------------------------------------- |
+| ⠙  |1 4 5  | C       |![1/8 or 1/128 C](c8.svg "8th or 128th C")|
+| ⠑  |1 5    | D       |![1/8 or 1/128 D](d8.svg "8th or 128th D")|
+| ⠋  |1 2 4  | E       |![1/8 or 1/128 E](e8.svg "8th or 128th E")|
+| ⠛  |1 2 4 5| F       |![1/8 or 1/128 F](f8.svg "8th or 128th F")|
+| ⠓  |1 2 5  | G       |![1/8 or 1/128 G](g8.svg "8th or 128th G")|
+| ⠊  |2 4    | A       |![1/8 or 1/128 A](a8.svg "8th or 128th A")|
+| ⠚  |2 4 5  | B       |![1/8 or 1/128 B](b8.svg "8th or 128th B")|
 
 If dot 3 is added, we are dealing with either a half or 32th note.
 
@@ -110,7 +110,7 @@ end{bmc}
 
 # Rhythmic notegroups
 
-In engraved music one or several beams are often used to connect smaller notes
+In engraved music one or several [beams](http://en.wikipedia.org/wiki/Beam_%28music%29) are often used to connect smaller notes
 across or as part of a beat.  One beam is used for 8th notes, two beams for
 16th notes, and so on.
 This kind of grouping is also done, to a certain extend, in braille music code.
