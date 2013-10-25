@@ -18,8 +18,6 @@
 <rect transform="translate(55.7061, -0.0000)" x="0.0000" y="5.8500" width="0.1900" height="4.9000" ry="0.0000" fill="currentColor"/>
 <rect transform="translate(31.9219, 12.8000)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
 <rect transform="translate(71.5622, -0.0000)" x="0.0000" y="5.8500" width="0.1900" height="4.9000" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(47.7780, 3.8000)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(47.7780, -0.0000)" x="0.0000" y="5.8500" width="0.1900" height="4.9000" ry="0.0000" fill="currentColor"/>
 <line transform="translate(8.5358, 14.8000)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="63.1663" y2="-0.0000"/>
 <line transform="translate(8.5358, 13.8000)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="63.1663" y2="-0.0000"/>
 <line transform="translate(8.5358, 12.8000)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="63.1663" y2="-0.0000"/>
@@ -31,13 +29,15 @@
 <line transform="translate(8.5358, 2.8000)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="63.1663" y2="-0.0000"/>
 <line transform="translate(8.5358, 1.8000)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="63.1663" y2="-0.0000"/>
 <rect transform="translate(0.0000, 6.8000)" x="65.2291" y="-0.1000" width="2.9700" height="0.2000" ry="0.1000" fill="currentColor"/>
-<path transform="translate(49.8680, 3.3000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41
-c38 -21 73 -54 73 -97z" fill="currentColor"/>
+<rect transform="translate(47.7780, 3.8000)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(47.7780, -0.0000)" x="0.0000" y="5.8500" width="0.1900" height="4.9000" ry="0.0000" fill="currentColor"/>
 <path transform="translate(65.7241, 3.3000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41
 c38 -21 73 -54 73 -97z" fill="currentColor"/>
 <path transform="translate(65.7241, 6.8000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41
 c38 -21 73 -54 73 -97z" fill="currentColor"/>
 <path transform="translate(65.7241, 11.8000) scale(0.0040, -0.0040)" d="M365 -156h-355c-6 0 -10 4 -10 10v136c0 6 4 10 10 10h355c6 0 10 -4 10 -10v-136c0 -6 -4 -10 -10 -10z" fill="currentColor"/>
+<path transform="translate(49.8680, 3.3000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41
+c38 -21 73 -54 73 -97z" fill="currentColor"/>
 <path transform="translate(57.7961, 3.3000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41
 c38 -21 73 -54 73 -97z" fill="currentColor"/>
 <path transform="translate(57.7961, 6.3000) scale(0.0040, -0.0040)" d="M215 112c-50 0 -69 -43 -69 -88c0 -77 57 -136 134 -136c50 0 69 43 69 88c0 77 -57 136 -134 136zM495 0c0 -43 -35 -76 -73 -97c-53 -30 -113 -41 -174 -41s-122 11 -175 41c-38 21 -73 54 -73 97s35 76 73 97c53 30 114 41 175 41s121 -11 174 -41

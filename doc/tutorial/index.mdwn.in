@@ -79,6 +79,16 @@ letter e and so on.
 The two exceptions here are the note names A and B (or H).  A is written
 with the braille letter i, and B (or H) is written with the braille letter j.
 
+Value ambiguity is usually not a problem, because knowledge of the current
+time signature will make it easy in most cases to determine to which of the two
+values a note (or rest) belongs.
+Where confusion is likely to arise (e.g. in the case of the half followed
+immediately by a 32th), one of the value signs must be placed between them.
+
+begin{bmc}
+⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
+end{bmc}
+
 ## Rests
 
 There are four signs used to show rest values.  As with note values,
@@ -108,9 +118,32 @@ end{bmc}
 There has to be an octave sign in front of the first note of a piece.
 For all following notes these rules apply:
 
-* If the following note goes a second or third up or down it does not need an octave sign.
-* If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
-* With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+If the following note goes a second or third up or down it does not need an octave sign.
+
+
+begin{bmc}
+⠼⠋⠦ ⠐⠙⠋⠓⠪⠙⠀⠑⠛⠊⠚⠑⠛⠀⠋⠓⠚⠙⠊⠛⠀⠑⠚⠓⠛⠑⠚⠀⠐⠳⠛⠱⠋⠀⠝⠄⠣⠅
+end{bmc}
+
+If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
+
+Compare the following two examples.
+
+begin{bmc}
+⠼⠉⠲ ⠐⠓⠊⠚⠓⠨⠙⠐⠓⠀⠨⠑⠐⠓⠨⠏⠣⠅
+end{bmc}
+
+----
+
+begin{bmc}
+⠼⠉⠲ ⠐⠙⠑⠋⠙⠛⠙⠀⠓⠙⠐⠎⠣⠅
+end{bmc}
+
+With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+
+begin{bmc}
+⠼⠋⠦ ⠐⠙⠋⠓⠊⠐⠙⠐⠊⠀⠐⠙⠣⠐⠚⠐⠙⠐⠊⠐⠙⠐⠊⠀⠗⠄⠣⠅
+end{bmc}
 
 These rules are demonstrated in the following example.
 

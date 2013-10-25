@@ -90,6 +90,25 @@ letter e and so on.
 The two exceptions here are the note names A and B (or H).  A is written
 with the braille letter i, and B (or H) is written with the braille letter j.
 
+Value ambiguity is usually not a problem, because knowledge of the current
+time signature will make it easy in most cases to determine to which of the two
+values a note (or rest) belongs.
+Where confusion is likely to arise (e.g. in the case of the half followed
+immediately by a 32th), one of the value signs must be placed between them.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.ly">
+    <img src="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.mp3">MP3</a>
+ </span>
+</div>
+
 ## Rests
 
 There are four signs used to show rest values.  As with note values,
@@ -128,9 +147,68 @@ quarter C.
 There has to be an octave sign in front of the first note of a piece.
 For all following notes these rules apply:
 
-* If the following note goes a second or third up or down it does not need an octave sign.
-* If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
-* With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+If the following note goes a second or third up or down it does not need an octave sign.
+
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠋⠦⠀⠐⠙⠋⠓⠪⠙⠀⠑⠛⠊⠚⠑⠛⠀⠋⠓⠚⠙⠊⠛⠀⠑⠚⠓⠛⠑⠚⠀⠐⠳⠛⠱⠋⠀⠝⠄⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.ly">
+    <img src="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.mp3">MP3</a>
+ </span>
+</div>
+
+If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
+
+Compare the following two examples.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠉⠲⠀⠐⠓⠊⠚⠓⠨⠙⠐⠓⠀⠨⠑⠐⠓⠨⠏⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.ly">
+    <img src="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.mp3">MP3</a>
+ </span>
+</div>
+
+----
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠉⠲⠀⠐⠙⠑⠋⠙⠛⠙⠀⠓⠙⠐⠎⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.ly">
+    <img src="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.mp3">MP3</a>
+ </span>
+</div>
+
+With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠋⠦⠀⠐⠙⠋⠓⠊⠐⠙⠐⠊⠀⠐⠙⠣⠐⠚⠐⠙⠐⠊⠐⠙⠐⠊⠀⠗⠄⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.ly">
+    <img src="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.mp3">MP3</a>
+ </span>
+</div>
 
 These rules are demonstrated in the following example.
 
