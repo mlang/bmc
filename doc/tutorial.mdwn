@@ -172,7 +172,7 @@ notes are written as 8th notes.
  </span>
 </div>
 
-Notegrouping is also legal if it is started with a rest of the same value as the
+Note grouping is also legal if it is started with a rest of the same value as the
 other notes in the group.
 However, rests are not allowed to appear anywhere else in a notegroup.
 
@@ -194,12 +194,11 @@ However, rests are not allowed to appear anywhere else in a notegroup.
 ## Intervals
 
 If two or more notes sound at the same time and have the same value (duration)
-intervals are used.  In upper registers, or in the right hand of a keyboard piece,
+intervals are used.
+
+In upper registers, or in the right hand of a keyboard piece,
 only the highest note is written as a normal note sign, all following notes
 of the chord are written with interval signs downward.
-In lower registers or in the left hand of a keyboard piece, the lowest
-note is wirtten as a normal note and all others are expressed with interval
-signs, ordered upward.
 
 <div class="snippet-div">
  <span class="snippet-span">
@@ -215,6 +214,10 @@ signs, ordered upward.
   <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.mp3">MP3</a>
  </span>
 </div>
+
+In lower registers or in the left hand of a keyboard piece, the lowest
+note is wirtten as a normal note and all others are expressed with interval
+signs, ordered upward.
 
 <div class="snippet-div">
  <span class="snippet-span">
@@ -247,7 +250,8 @@ place octave signs in between except the intervals are separated by an octave or
  </span>
 </div>
 
-The pitches of the written notes determine if a chord needs to be prefixed with an octave sign or not.
+The pitches of the written notes determine if a chord needs to be prefixed with
+an octave sign or not.
 
 <div class="snippet-div">
  <span class="snippet-span">
@@ -287,7 +291,8 @@ octave sign on the first note no matter if it is in-accord or not.
  </span>
 </div>
 
-If only one part of a measure requires an in-accord sign, a partial measure sign is used in combination with a partial measure in-accord sign.
+If only one part of a measure requires an in-accord sign, a partial measure sign
+is used in combination with a partial measure in-accord sign.
 
 In this example the first measure splits into two voices at the third beat.
 
@@ -304,7 +309,8 @@ In this example the first measure splits into two voices at the third beat.
  </span>
 </div>
 
-A measure can contain full measure in-accord and partial measure in-accord signs at the same time.
+A measure can contain full measure in-accord and partial measure in-accord signs
+at the same time.
 
 <div class="snippet-div">
  <span class="snippet-span">

@@ -134,7 +134,7 @@ begin{bmc}
 ⠼⠙⠲⠀⠐⠽⠑⠋⠛⠷⠊⠚⠙⠵⠙⠚⠊⠷⠛⠋⠑⠣⠅
 end{bmc}
 
-Notegrouping is also legal if it is started with a rest of the same value as the
+Note grouping is also legal if it is started with a rest of the same value as the
 other notes in the group.
 However, rests are not allowed to appear anywhere else in a notegroup.
 
@@ -147,18 +147,21 @@ end{bmc}
 ## Intervals
 
 If two or more notes sound at the same time and have the same value (duration)
-intervals are used.  In upper registers, or in the right hand of a keyboard piece,
+intervals are used.
+
+In upper registers, or in the right hand of a keyboard piece,
 only the highest note is written as a normal note sign, all following notes
 of the chord are written with interval signs downward.
-In lower registers or in the left hand of a keyboard piece, the lowest
-note is wirtten as a normal note and all others are expressed with interval
-signs, ordered upward.
 
 begin{bmc}
 ⠀⠀⠀⠀⠼⠙⠲
 ⠀⠀⠨⠜⠨⠽⠌⠀⠽⠬⠀⠽⠼⠀⠽⠔⠀⠽⠴⠀⠽⠒⠀⠽⠤⠣⠅
 ⠀⠀⠸⠜⠄⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠀⠍⠣⠅
 end{bmc}
+
+In lower registers or in the left hand of a keyboard piece, the lowest
+note is wirtten as a normal note and all others are expressed with interval
+signs, ordered upward.
 
 begin{bmc}
 ⠀⠀⠀⠀⠼⠙⠲
@@ -173,7 +176,8 @@ begin{bmc}
 ⠼⠉⠲⠀⠨⠳⠤⠼⠴⠳⠔⠬⠒⠻⠬⠒⠔⠀⠏⠄⠬⠴⠬⠣⠅
 end{bmc}
 
-The pitches of the written notes determine if a chord needs to be prefixed with an octave sign or not.
+The pitches of the written notes determine if a chord needs to be prefixed with
+an octave sign or not.
 
 begin{bmc}
 ⠀⠀⠀⠀⠩⠩⠀⠼⠙⠲
@@ -195,7 +199,8 @@ begin{bmc}
 ⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
 end{bmc}
 
-If only one part of a measure requires an in-accord sign, a partial measure sign is used in combination with a partial measure in-accord sign.
+If only one part of a measure requires an in-accord sign, a partial measure sign
+is used in combination with a partial measure in-accord sign.
 
 In this example the first measure splits into two voices at the third beat.
 
@@ -203,7 +208,8 @@ begin{bmc}
 ⠐⠳⠓⠨⠙⠨⠅⠨⠟⠐⠂⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
 end{bmc}
 
-A measure can contain full measure in-accord and partial measure in-accord signs at the same time.
+A measure can contain full measure in-accord and partial measure in-accord signs
+at the same time.
 
 begin{bmc}
 ⠐⠓⠋⠨⠅⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑⠐⠂⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾⠣⠜⠸⠷⠣⠅
