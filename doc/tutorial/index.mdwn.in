@@ -89,6 +89,15 @@ begin{bmc}
 ⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
 end{bmc}
 
+When a piece begins with an incomplete measure (pickup or
+[anacrusis](http://en.wikipedia.org/wiki/Anacrusis)) and there is any
+doubt as to the value of the first note or rest, the sign ⠠⠣⠂ is used if the
+note or rest belongs to the smaller of the two values.
+
+begin{bmc}
+⠠⠣⠂⠸⠷⠀⠐⠙⠭⠚⠭⠙⠭⠑⠭⠀⠋⠭⠛⠭⠕⠣⠅
+end{bmc}
+
 ## Rests
 
 There are four signs used to show rest values.  As with note values,

@@ -68,12 +68,14 @@ value_disambiguator::operator()(ast::measure& measure)
 
 bool
 value_disambiguator::end_of_staff() const {
-  if (not anacrusis->empty()) {
+  if (anacrusis->size() > 1) {
     std::wstringstream msg;
     msg << "Unterminated anacrusis";
     report_error(anacrusis->get_measure_id(), msg.str());
+    return false;
   }
-  return anacrusis->empty();
+  if (not anacrusis->empty()) anacrusis->front().accept();
+  return true;
 }
 
 }}
