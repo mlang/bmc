@@ -382,7 +382,7 @@ octave sign on the first note no matter if it is in-accord or not.
 
 <div class="snippet-div">
  <span class="snippet-span">
-  <div class="brailled"><pre>⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
+  <div class="brailled"><pre>⠨⠽<em>⠣⠜</em>⠐⠫⠱⠫⠻⠀⠐⠾<em>⠣⠜</em>⠐⠳⠻⠫⠱⠣⠅
 </pre></div>
   <div class="engraved">
    <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.ly">
@@ -400,7 +400,7 @@ In this example the first measure splits into two voices at the third beat.
 
 <div class="snippet-div">
  <span class="snippet-span">
-  <div class="brailled"><pre>⠐⠳⠓⠨⠙⠨⠅⠨⠟⠐⠂⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
+  <div class="brailled"><pre>⠐⠳⠓⠨⠙<em>⠨⠅</em>⠨⠟<em>⠐⠂</em>⠨⠹⠚⠊⠀⠨⠏⠄⠴⠧⠣⠅
 </pre></div>
   <div class="engraved">
    <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.ly">
@@ -416,7 +416,7 @@ at the same time.
 
 <div class="snippet-div">
  <span class="snippet-span">
-  <div class="brailled"><pre>⠐⠓⠋⠨⠅⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑⠐⠂⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾⠣⠜⠸⠷⠣⠅
+  <div class="brailled"><pre>⠐⠓⠋<em>⠨⠅</em>⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑<em>⠐⠂</em>⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾<em>⠣⠜</em>⠸⠷⠣⠅
 </pre></div>
   <div class="engraved">
    <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.ly">
