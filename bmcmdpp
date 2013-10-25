@@ -44,18 +44,16 @@ exit 0;
 sub munge($) {
   my $text = shift;
   my $out = "snippet_".sha1_hex($text);
-  unlink "$out.png", "$out.midi", "$out.mp3";
+  unlink "$out.svg", "$out.midi", "$out.mp3";
   open FILE, "|$args->{'--bmc2ly'} --no-tagline - >$out.ly"
   or die "Unable to run bmc2ly";
   print FILE $text;
   close(FILE) or die "Error running bmc2ly: $!";
-  system("lilypond", "-o", "$out", "-lWARNING", "--png", "$out.ly") == 0
+  system("lilypond", "-d", "backend=svg", "-d", "preview", "-d", "no-print-pages", "-lWARNING", "$out.ly") == 0
   or die "LilyPond failed";
-  die "No output from LilyPond" if ! -r "$out.png" or ! -r "$out.midi";
-  my $image=new Image::Magick;
-  $image->Read("$out.png");
-  $image->Trim();
-  $image->Write("$out.png");
+  die "No output from LilyPond" if ! -r "$out.preview.svg" or ! -r "$out.midi";
+  system("mv", "$out.preview.svg", "$out.svg") == 0
+  or die "Failed to rename SVG";
   system("timidity", "-idqq", "-Ow", "$out.midi") == 0
   or die "Timidity++ failed";
   system("lame", "--silent", "-b", "64", "$out.wav", "$out.mp3") == 0
@@ -64,18 +62,20 @@ sub munge($) {
   print "<div class=\"snippet-div\">\n";
   print " <span class=\"snippet-span\">\n";
   print "  <div class=\"brailled\"><pre>";
+  my $brl;
   open FILE, "|brltty-trtxt -6 -i de -o unicode -";
   print FILE $text;
   close(FILE) or die "Error during brltty-trtxt execution: $!";
   print "</pre></div>\n";
-  print "  <div class=\"engraved\">\n";
-  print "   <a href=\"$out.ly\">\n";
-  print "    <img src=\"$out.png\" alt=\"LilyPond\"\n";
-  print "         title=\"Click to see LilyPond source\"/>\n";
-  print "   </a>\n";
-  print "  </div>\n";
-  print "  <a href=\"$out.midi\">MIDI</a>&nbsp;|&nbsp;<a href=\"$out.mp3\">MP3</a>\n";
-  print " </span>\n";
-  print "</div>\n";
+  print <<EOHTML;
+  <div class="engraved">
+   <a href="$out.ly\">
+    <img src="$out.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="$out.midi">MIDI</a>&nbsp;|&nbsp;<a href="$out.mp3">MP3</a>
+ </span>
+</div>
+EOHTML
 }
 
