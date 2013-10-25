@@ -79,41 +79,22 @@ letter e and so on.
 The two exceptions here are the note names A and B (or H).  A is written
 with the braille letter i, and B (or H) is written with the braille letter j.
 
-Value ambiguity is usually not a problem, because knowledge of the current
-time signature will make it easy in most cases to determine to which of the two
-values a note (or rest) belongs.
-Where confusion is likely to arise (e.g. in the case of the half followed
-immediately by a 32th), one of the value signs must be placed between them.
-
-begin{bmc}
-⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
-end{bmc}
-
-When a piece begins with an incomplete measure (pickup or
-[anacrusis](http://en.wikipedia.org/wiki/Anacrusis)) and there is any
-doubt as to the value of the first note or rest, the sign ⠠⠣⠂ is used if the
-note or rest belongs to the smaller of the two values.
-
-begin{bmc}
-⠠⠣⠂⠸⠷⠀⠐⠙⠭⠚⠭⠙⠭⠑⠭⠀⠋⠭⠛⠭⠕⠣⠅
-end{bmc}
-
 ## Rests
 
 There are four signs used to show rest values.  As with note values,
 each sign can have two meanings.
 
-| Sign |     Description      |
-|:----:|:-------------------- |
-| ⠍    | whole or 16th rest   |
-| ⠥    | half or 32th rest    |
-| ⠧    | quarter or 64th rest |
-| ⠭    | 8th or 128th rest    |
+|Sign| Dots  | Rest value    |                                                   |
+|:--:|:----- |:-------------:|:-------------------------------------------------  |
+| ⠍  |1 3 4  |whole or 16th  |![1 or 1/16 rest](r1.svg "whole or 16th rest")     |
+| ⠥  |1 3 6  |half or 32th   |![1/2 or 1/32 rest](r2.svg "half or 32th rest")    |
+| ⠧  |1 2 3 6|quarter or 64th|![1/4 or 1/64 rest](r4.svg "quarter or 64th rest") |
+| ⠭  |1 3 4 6|eighth or 128th|![1/8 or 1/128 rest](r8.svg "eighth or 128th rest")|
 
 ## Octave signs
 
-Contrary to engraved music where clefs determine the pitch of a note, braille
-music uses octave signs to indicate the exact pitch of a note.
+Contrary to visual music notation where clefs determine the pitch of a note,
+braille music uses octave signs to indicate the exact pitch of a note.
 
 An octave sign is placed directly in front of a note sign, without any other
 signs in between.
@@ -158,6 +139,27 @@ These rules are demonstrated in the following example.
 
 begin{bmc}
 ⠨⠏⠱⠹⠀⠪⠨⠕⠹⠀⠺⠨⠏⠱⠀⠝⠻⠫⠀⠱⠗⠻⠀⠫⠹⠨⠪⠨⠹⠀⠚⠙⠑⠋⠛⠓⠊⠚⠀⠝⠥⠣⠅
+end{bmc}
+
+## Value distinction
+
+Value ambiguity is usually not a problem, because knowledge of the current
+time signature will make it easy in most cases to determine to which of the two
+values a note (or rest) belongs.
+Where confusion is likely to arise (e.g. in the case of the half followed
+immediately by a 32th), one of the value signs must be placed between them.
+
+begin{bmc}
+⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
+end{bmc}
+
+When a piece begins with an incomplete measure (pickup or
+[anacrusis](http://en.wikipedia.org/wiki/Anacrusis)) and there is any
+doubt as to the value of the first note or rest, the sign ⠠⠣⠂ is used if the
+note or rest belongs to the smaller of the two values.
+
+begin{bmc}
+⠠⠣⠂⠸⠷⠀⠐⠙⠭⠚⠭⠙⠭⠑⠭⠀⠋⠭⠛⠭⠕⠣⠅
 end{bmc}
 
 # Rhythmic note groups (beaming)
