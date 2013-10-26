@@ -198,9 +198,39 @@ the stave may be determined.
 
 There are three types of clef used in modern music notation: F, C, and G.  Each
 type of clef assigns a different reference note to the line on which it is
-placed.  The treble or G clef identifies the second line up on the five line
-stave as the note G above middle C.  The bass or F clef shows the position of
-the note F below middle C. 
+placed.
+
+The treble or G clef identifies the second line up on the five line
+stave as the note G above middle C.
+
+The bass or F clef identifies the fourth line up on the five line stave
+as the note F below middle C. 
+
+Finally, the C clef identifies the third line up on the five line stave
+as middle C.
+
+|Sign|                    Symbol                                             | Name   |Note|Line|
+|:--:|:---------------------------------------------------------------------:|:------ |:--:|:--:|
+|⠜⠌⠇ |![G-clef](http://upload.wikimedia.org/wikipedia/commons/f/ff/GClef.svg)| treble | G4 | 2  |
+|⠜⠬⠇ |![C-clef](http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg)| alto   | C4 | 3  |
+|⠜⠼⠇ |![F-clef](http://upload.wikimedia.org/wikipedia/commons/c/c5/FClef.svg)| bass   | F3 | 4  |
+
+Observe that the second cell of a clef sign is an interval sign which matches
+the line a particular clef symbol is usually place on.
+
+If a clef symbol is placed on an unusual stave line this can be indicated
+with an additional octave sign directly after the second cell in a clef sign.
+In this case, the octave sign is used to indicate a stave line.
+
+|Sign|                    Symbol                                             | Name       |Note|Line|
+|:--:|:---------------------------------------------------------------------:|:----------:|:--:|:--:|
+|⠜⠌⠈⠇|![G-clef](http://upload.wikimedia.org/wikipedia/commons/f/ff/GClef.svg)|french      | G4 | 1  |
+|⠜⠬⠈⠇|![C-clef](http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg)|soprano     | C4 | 1  |
+|⠜⠬⠘⠇|![C-clef](http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg)|mezzosoprano| C4 | 2  |
+|⠜⠬⠐⠇|![C-clef](http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg)|tenor       | C4 | 4  |
+|⠜⠬⠨⠇|![C-clef](http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg)|baritone    | C4 | 5  |
+|⠜⠼⠸⠇|![F-clef](http://upload.wikimedia.org/wikipedia/commons/c/c5/FClef.svg)|baritone    | F3 | 3  |
+|⠜⠼⠨⠇|![F-clef](http://upload.wikimedia.org/wikipedia/commons/c/c5/FClef.svg)|subbass     | F3 | 5  |
 
 Notes representing a pitch outside of the scope of
 the five line stave can be represented using ledger lines, which
@@ -218,7 +248,9 @@ to be written comfortably on the stave with a minimum of ledger lines.  To this
 end, the G-clef is used for high parts, the C-clef for middle parts, and the
 F-clef for low parts.
 
-Consider the followin example which does not include any clef signs in braille.
+Consider the followin example which does not use any clef signs in braille.
+As a result, a treble (G) clef is used in both measures in visual music
+notation.
 
 begin{bmc}
 ⠣⠼⠋⠦⠀⠐⠛⠛⠊⠙⠄⠮⠙⠀⠘⠛⠓⠊⠺⠄⠣⠅
@@ -228,8 +260,8 @@ Since the treble clef is default, the first measure fits nicely on the five-line
 staff.  However, the second measure requires up to 7 ledger lines below the
 stave to denote the low pitches in visual music notation.
 
-If we add a bass (F) clef sign in braille the visual transcription of the second
-measure now also fits on the stave without ledger lines.
+If we add a bass (F) clef sign in braille at the beginning of the second measure
+the visual transcription now fits on the stave without ledger lines.
 
 begin{bmc}
 ⠣⠼⠋⠦⠀⠐⠛⠛⠊⠙⠄⠮⠙⠀⠜⠼⠇⠘⠛⠓⠊⠺⠄⠣⠅
