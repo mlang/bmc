@@ -194,7 +194,7 @@ public:
 class clef : public locatable
 {
 public:
-  enum class type { C, F, G };
+  enum class type { G, C, F };
 private:
   type sign_;
   boost::optional<unsigned> line_;

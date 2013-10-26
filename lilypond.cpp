@@ -267,55 +267,17 @@ generator::operator() (braille::ast::tuplet_start const &) const
 generator::result_type
 generator::operator() (braille::ast::clef const &clef) const
 {
-  switch (clef.sign()) {
-  case braille::ast::clef::type::G:
-    switch (clef.line()) {
-    case 1:
-      os << "\\clef french";
-      break;
-    case 2:
-      os << "\\clef G";
-      break;
-    default:
-      BOOST_ASSERT(false);
-    }
-    break;
-  case braille::ast::clef::type::F:
-    switch (clef.line()) {
-    case 3:
-      os << "\\clef varbaritone";
-      break;
-    case 4:
-      os << "\\clef F";
-      break;
-    case 5:
-      os << "\\clef subbass";
-      break;
-    default:
-      BOOST_ASSERT(false);
-    }
-    break;
-  case braille::ast::clef::type::C:
-    switch (clef.line()) {
-    case 1:
-      os << "\\clef soprano";
-      break;
-    case 2:
-      os << "\\clef mezzosoprano";
-      break;
-    case 3:
-      os << "\\clef C";
-      break;
-    case 4:
-      os << "\\clef tenor";
-      break;
-    case 5:
-      os << "\\clef baritone";
-      break;
-    default:
-      BOOST_ASSERT(false);
-    }
-    break;
+  static char const *lily_clef[3][5] = {
+    { "french", "G", nullptr, nullptr, nullptr },                  // G-clef
+    { "soprano", "mezzosoprano", "C", "tenor", "baritone" },       // C-clef
+    { nullptr, nullptr, "varbaritone", "F", "subbass" }            // F-clef
+  };
+  BOOST_ASSERT(clef.line() > 0);
+  if (char const *name = lily_clef[std::size_t(clef.sign())][clef.line() - 1])
+    std::cout << "\\clef" << ' ' << name;
+  else {
+    std::cerr << "Unable to transcribe clef to LilyPond" << std::endl;
+    BOOST_ASSERT(false);
   }
 }
 
