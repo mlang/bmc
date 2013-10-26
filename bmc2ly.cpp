@@ -39,6 +39,8 @@ int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrume
       generate(score);
 
       return EXIT_SUCCESS;
+    } else {
+      std::wcerr << "Failed to compile:" << std::endl << source << std::endl;
     }
   } else {
     std::wcerr << "Failed to Parse:" << std::endl << source << std::endl;
