@@ -7,8 +7,10 @@
 music =
   <<
     \new Staff {
+      \key f \major
       \time 6/8
-      b'8 b' b' b' b' b' | % 1
+      f'8 f' a' c''8. a'16 c''8 | % 1
+      \clef F f,8 g, a, bes,4. | % 2
     }
   >>
 

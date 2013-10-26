@@ -129,6 +129,13 @@ public:
     return false;
   }
 
+  // The note following a clef sign must always have its proper octave mark.
+  result_type operator()(ast::clef &clef)
+  {
+    prev = nullptr;
+    return true;
+  }
+
   template <typename Sign>
   result_type operator()(Sign&) const
   { return true; }

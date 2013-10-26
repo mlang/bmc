@@ -19,6 +19,7 @@ namespace music {
         { return note.as_rational(); }
         result_type operator() (barline const&) const { return result_type(); }
         result_type operator() (hand_sign const&) const { return result_type(); }
+        result_type operator() (clef const&) const { return result_type(); }
         result_type operator() (simile const&) const { return result_type(); }
         result_type operator() (value_distinction const&) const { return result_type(); }
         result_type operator() (tie const &) const { return result_type(); }

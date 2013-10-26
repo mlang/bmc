@@ -218,6 +218,23 @@ to be written comfortably on the stave with a minimum of ledger lines.  To this
 end, the G-clef is used for high parts, the C-clef for middle parts, and the
 F-clef for low parts.
 
+Consider the followin example which does not include any clef signs in braille.
+
+begin{bmc}
+⠣⠼⠋⠦⠀⠐⠛⠛⠊⠙⠄⠮⠙⠀⠘⠛⠓⠊⠺⠄⠣⠅
+end{bmc}
+
+Since the treble clef is default, the first measure fits nicely on the five-line
+staff.  However, the second measure requires up to 7 ledger lines below the
+stave to denote the low pitches in visual music notation.
+
+If we add a bass (F) clef sign in braille the visual transcription of the second
+measure now also fits on the stave without ledger lines.
+
+begin{bmc}
+⠣⠼⠋⠦⠀⠐⠛⠛⠊⠙⠄⠮⠙⠀⠜⠼⠇⠘⠛⠓⠊⠺⠄⠣⠅
+end{bmc}
+
 ## Accidentals
 
 Just like lines and spaces in five-line stave notation, the pitches of

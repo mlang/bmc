@@ -7,7 +7,6 @@
 music =
   <<
     \new Staff {
-      \clef "treble"
       << {c''1}\\{e'4 d' e' f'} >> | % 1
       << {b'1}\\{g'4 f' e' d'} >> | % 2
     }

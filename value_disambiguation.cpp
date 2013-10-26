@@ -114,6 +114,7 @@ public:
   result_type operator()(braille::ast::tie &) {}
   result_type operator()(braille::ast::tuplet_start &) {}
   result_type operator()(braille::hand_sign &) {}
+  result_type operator()(ast::clef &) {}
   result_type operator()(ast::barline &) {}
   result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
 

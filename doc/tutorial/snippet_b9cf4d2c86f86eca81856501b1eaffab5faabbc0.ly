@@ -7,7 +7,6 @@
 music =
   <<
     \new Staff {
-      \clef "treble"
       e''2 d''4 c'' | % 1
       a'4 d''2 c''4 | % 2
       b'4 e''2 d''4 | % 3

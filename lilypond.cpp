@@ -110,12 +110,14 @@ generator::operator() ( braille::ast::unfolded::part const &part
       os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
     os << "{" << std::endl;
 
-    switch (staff_index) {
-    case 0: os << indent << "  "; ly_clef("treble"); break;
-    case 1: os << indent << "  "; ly_clef("bass"); break;
-    default: BOOST_ASSERT(false);
+    if (keyboard) {
+      switch (staff_index) {
+      case 0: os << indent << "  "; ly_clef("treble"); break;
+      case 1: os << indent << "  "; ly_clef("bass"); break;
+      default: BOOST_ASSERT(false);
+      }
+      os << std::endl;
     }
-    os << std::endl;
 
     if (score.key_sig != 0) {
       os << indent << "  "; ly_key(score.key_sig); os << std::endl;
@@ -260,6 +262,61 @@ generator::operator() (braille::ast::tie const &) const
 generator::result_type
 generator::operator() (braille::ast::tuplet_start const &) const
 {
+}
+
+generator::result_type
+generator::operator() (braille::ast::clef const &clef) const
+{
+  switch (clef.sign()) {
+  case braille::ast::clef::type::G:
+    switch (clef.line()) {
+    case 1:
+      os << "\\clef french";
+      break;
+    case 2:
+      os << "\\clef G";
+      break;
+    default:
+      BOOST_ASSERT(false);
+    }
+    break;
+  case braille::ast::clef::type::F:
+    switch (clef.line()) {
+    case 3:
+      os << "\\clef varbaritone";
+      break;
+    case 4:
+      os << "\\clef F";
+      break;
+    case 5:
+      os << "\\clef subbass";
+      break;
+    default:
+      BOOST_ASSERT(false);
+    }
+    break;
+  case braille::ast::clef::type::C:
+    switch (clef.line()) {
+    case 1:
+      os << "\\clef soprano";
+      break;
+    case 2:
+      os << "\\clef mezzosoprano";
+      break;
+    case 3:
+      os << "\\clef C";
+      break;
+    case 4:
+      os << "\\clef tenor";
+      break;
+    case 5:
+      os << "\\clef baritone";
+      break;
+    default:
+      BOOST_ASSERT(false);
+    }
+    break;
+  }
 }
 
 generator::result_type

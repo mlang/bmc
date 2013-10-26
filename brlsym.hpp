@@ -53,6 +53,7 @@ BMC_DEFINE_SYMBOL_TABLE(ast::tie::type, tie_symbols, tie_sign)
 BMC_DEFINE_SYMBOL_TABLE(music::articulation, articulation_symbols, articulation_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::barline, barline_symbols, barline_sign)
 BMC_DEFINE_SYMBOL_TABLE(music::rational, stem_symbols, stem_sign)
+BMC_DEFINE_SYMBOL_TABLE(ast::clef, clef_symbols, clef_sign)
 
 #undef BMC_DEFINE_SYMBOL_TABLE
 }}

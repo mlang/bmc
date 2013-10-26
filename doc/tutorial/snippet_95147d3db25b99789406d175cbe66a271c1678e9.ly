@@ -7,7 +7,6 @@
 music =
   <<
     \new Staff {
-      \clef "treble"
       \partial 16 
       g16 | % 0
       c'8 r b r c' r d' r | % 1

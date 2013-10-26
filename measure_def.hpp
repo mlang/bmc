@@ -49,8 +49,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   partial_measure = partial_voice % partial_measure_in_accord;
   partial_voice = +( newline
                    | moving_note | chord | note | rest
-                   | value_distinction | tie
-                   | hand_sign
+                   | value_distinction | tie | tuplet
+                   | clef | hand_sign
                    | simile
                    | barline_sign
                    )
@@ -123,6 +123,8 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
         >> brl(3)[_val = construct<ast::tuplet_start>(_a, false)]
          ;
 
+  clef = clef_sign >> optional_dot;
+
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(braille::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(braille::left_hand));
@@ -145,8 +147,10 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie);
   BMC_LOCATABLE_SET_ID(tuplet);
+  BMC_LOCATABLE_SET_ID(clef);
 #undef BMC_LOCATABLE_SET_ID
   
+  clef.name("clef");
   note.name("note");
   interval.name("interval");
   fingering.name("fingering");

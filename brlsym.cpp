@@ -217,5 +217,25 @@ stem_symbols::stem_symbols()
 
 stem_symbols stem_sign;
 
+clef_symbols::clef_symbols()
+{
+  using ast::clef;
+  add(L"⠜⠌⠇", clef(clef::type::G))
+     (L"⠜⠌⠅", clef(clef::type::G).staff(1))
+     (L"⠜⠌⠈⠇", clef(clef::type::G, 1))
+     (L"⠜⠬⠇", clef(clef::type::C))
+     (L"⠜⠬⠈⠇", clef(clef::type::C, 1))
+     (L"⠜⠬⠘⠇", clef(clef::type::C, 2))
+     (L"⠜⠬⠐⠇", clef(clef::type::C, 4))
+     (L"⠜⠬⠨⠇", clef(clef::type::C, 5))
+     (L"⠜⠼⠇", clef(clef::type::F))
+     (L"⠜⠼⠸⠇", clef(clef::type::F, 3))
+     (L"⠜⠼⠨⠇", clef(clef::type::F, 5))
+     (L"⠜⠼⠅", clef(clef::type::F).staff(0U))
+     ;
+}
+
+clef_symbols clef_sign;
+
 }}
 
