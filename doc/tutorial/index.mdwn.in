@@ -5,6 +5,9 @@ visual notation and as sound files.  You can touch, view, and hear them.
 
 # Basic signs
 
+Before we can dive into braille music notation we will have to learn a few
+basic signs and rules.
+
 ## Notes
 
 The signs used for notes follow a certain system.  The note name
@@ -92,6 +95,31 @@ each sign can have two meanings.
 | ⠧  |1 2 3 6|quarter or 64th|![1/4 or 1/64 rest](r4.svg "quarter or 64th rest") |
 | ⠭  |1 3 4 6|eighth or 128th|![1/8 or 1/128 rest](r8.svg "eighth or 128th rest")|
 
+## Meter and barlines
+
+Measures (bars) divide a piece into groups of beats, and the time signatures
+specify those groupings.
+
+In braille music code, measures of music are separated with a space or newline.
+
+Each part of a piece of music needs to end with the final barline sign (⠣⠅).
+
+The time signature is often expressed as a fraction.  In braille we write
+a number sign (⠼) followed by digits in the upper and lower position.
+If no time signature is specified, 4/4 is assumed.
+
+The following example specifies a time signature of 6/8 and puts 6 eighth
+notes on the third line of the five line stave.
+
+begin{bmc}
+⠼⠋⠦⠀⠐⠚⠚⠚⠚⠚⠚⠣⠅
+end{bmc}
+
+The time signature is essential for value ambiguity resolution.  Since all note
+and rest values in braille music code do have two potential meanings, the
+time signature which specifies the duration of a measure is required to
+determine the exact values of all notes and rests inside a measure.
+
 ## Octave signs
 
 Contrary to visual music notation where clefs determine the pitch of a note,
@@ -110,7 +138,6 @@ There has to be an octave sign in front of the first note of a piece.
 For all following notes these rules apply:
 
 If the following note goes a second or third up or down it does not need an octave sign.
-
 
 begin{bmc}
 ⠼⠋⠦ ⠐⠙⠋⠓⠪⠙⠀⠑⠛⠊⠚⠑⠛⠀⠋⠓⠚⠙⠊⠛⠀⠑⠚⠓⠛⠑⠚⠀⠐⠳⠛⠱⠋⠀⠝⠄⠣⠅
@@ -163,7 +190,7 @@ begin{bmc}
 ⠠⠣⠂⠸⠷⠀⠐⠙⠭⠚⠭⠙⠭⠑⠭⠀⠋⠭⠛⠭⠕⠣⠅
 end{bmc}
 
-# Clef, Meter and Accidentals
+# The clef
 
 Since braille music code uses octave signs instead of clefs to indicate the
 exact pitch of a note, clef signs are optional.
@@ -188,7 +215,7 @@ lines are placed behind the note heads, and extend a small distance to each
 side.  Multiple ledger lines can be used when necessary to notate pitches even
 farther above or below the staff.
 
-## Clef
+## Clef sign
 
 A clef (French: clef; “key”) is a musical symbol used to indicate the pitch of
 written notes.  Placed on one of the lines at the beginning of the stave, it
@@ -267,7 +294,27 @@ begin{bmc}
 ⠣⠼⠋⠦⠀⠐⠛⠛⠊⠙⠄⠮⠙⠀⠜⠼⠇⠘⠛⠓⠊⠺⠄⠣⠅
 end{bmc}
 
-## Accidentals
+## Differences between braille and visual notation
+
+Braille music code has no equivalent for stave lines and ledger lines, nor
+does it has a need for clefs.  This is because the diatonic pitch of a note
+is encoded into the note sign and octave signs are used to indicate the actual
+pitch of notes.  Clef signs are usually omitted in braille music code since
+they are not relevant to braille music readers most of the time.
+
+However, if a braille music reader needs to get a clear understanding on how
+music is visually presented, they need to know which clef is currently in
+effect.  For instance, a very low pitch played while a treble (G) clef is active
+might be unsuspicious to a braille music reader, while it will generate many
+ledger lines below the stave in visual music notation.
+
+It is common practice to use a treble clef in the right hand stave of a keyboard
+part and a bass clef in the left hand stave.  If a passage of music differs
+significantly in pitch from what is common for a particular clef, braille music
+code writers should consider adding clef signs as appropriate to ensure that
+automatic conversion to visual notation can produce a pleasant result.
+
+# Accidentals
 
 Just like lines and spaces in five-line stave notation, the pitches of
 braille music notes correspond to the
@@ -288,49 +335,6 @@ that are a half step away from the diatonic pitches, accidentals are used.
 Following the clef, the key signature on a stave indicates the key of the piece
 by specifying that certain notes are flat or sharp throughout the piece, unless
 otherwise indicated.
-
-## Time signature and barlines
-
-Following the key signature is the time signature.  Measures (bars) divide the
-piece into groups of beats, and the time signatures specify those groupings.
-In braille music code, measures of music are separated with a space or newline.
-Each part of a piece of music needs to end with the final barline sign (⠣⠅).
-
-The time signature is often expressed as a fraction.  In braille we write
-a number sign (⠼) followed by digits in the upper and lower position.
-If no time signature is specified, 4/4 is assumed.
-
-The following example specifies a time signature of 6/8 and puts 6 eighth
-notes on the third line of the five line stave.
-
-begin{bmc}
-⠼⠋⠦⠀⠐⠚⠚⠚⠚⠚⠚⠣⠅
-end{bmc}
-
-The time signature is essential for value ambiguity resolution.  Since all note
-and rest values in braille music code do have two potential meanings, the
-time signature which specifies the duration of a measure, is required to
-determine the exact values of all notes and rests inside a measure.
-
-## Differences between braille and visual notation
-
-Braille music code has no equivalent for stave lines and ledger lines, nor
-does it has a need for clefs.  This is because the diatonic pitch of a note
-is encoded into the note sign and octave signs are used to indicate the actual
-pitch of notes.  Clef signs are usually omitted in braille music code since
-they are not relevant to braille music readers most of the time.
-
-However, if a braille music reader needs to get a clear understanding on how
-music is visually presented, they need to know where clefs change.  For
-instance, a very low pitch played while a treble (G) clef is active might be
-totally unsuspicious to a braille music reader, while it will generate many
-ledger lines below the stave in visual music notation.
-
-It is common practice to use a treble clef in the right hand stave of a keyboard
-part and a bass clef in the left hand stave.  If a passage of music differs
-significantly in pitch from what is common for a particular clef, braille music
-code writers should consider adding clef signs as appropriate to ensure that
-automatic conversion to visual notation can produce a pleasant result.
 
 # Rhythmic note groups (beaming)
 
