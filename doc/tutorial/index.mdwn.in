@@ -162,6 +162,93 @@ begin{bmc}
 ⠠⠣⠂⠸⠷⠀⠐⠙⠭⠚⠭⠙⠭⠑⠭⠀⠋⠭⠛⠭⠕⠣⠅
 end{bmc}
 
+# Clef, Meter and Accidentals
+
+Since braille music code uses octave signs instead of clefs to indicate the
+exact pitch of a note, clef signs are optional.
+
+When a blind user communicates with a visual music notation reader about a piece
+which is available in braille and visual notation, it can be important to
+understand the implications of clefs.  To make it clear why placement of clefs
+can be important, we need to take a small detour and explain how visual
+music notation actually works.
+
+## The five-line staff
+
+The staff (or stave, in British English) is the fundamental latticework of
+modern visual music notation, upon which symbols are placed.  The five stave
+lines and four intervening spaces correspond to pitches of the diatonic
+scale - which pitch is meant by a given line or space is defined by the clef.
+
+### Ledger lines
+
+Used to extend the stave to pitches that fall above or below it. Such ledger
+lines are placed behind the note heads, and extend a small distance to each
+side.  Multiple ledger lines can be used when necessary to notate pitches even
+farther above or below the staff.
+
+## Clef
+
+A clef (French: clef; “key”) is a musical symbol used to indicate the pitch of
+written notes.  Placed on one of the lines at the beginning of the stave, it
+indicates the name and pitch of the notes on that line.  This line serves as a
+reference point by which the names of the notes on any other line or space of
+the stave may be determined.
+
+There are three types of clef used in modern music notation: F, C, and G.  Each
+type of clef assigns a different reference note to the line on which it is
+placed.  The treble or G clef identifies the second line up on the five line
+stave as the note G above middle C.  The bass or F clef shows the position of
+the note F below middle C. 
+
+Notes representing a pitch outside of the scope of
+the five line stave can be represented using ledger lines, which
+provide a single note with additional lines and spaces.
+
+The use of three different clefs makes it possible to write music for all
+instruments and voices, even though some sound much higher or lower than others.
+This would be difficult to do with only one clef, since the modern stave has
+only five lines, and the number of pitches that can be represented on the stave,
+even with ledger lines, is not nearly equal to the number of notes the orchestra
+can produce.
+
+The use of different clefs for different instruments and voices allows each part
+to be written comfortably on the stave with a minimum of ledger lines.  To this
+end, the G-clef is used for high parts, the C-clef for middle parts, and the
+F-clef for low parts.
+
+## Key signature
+
+Following the clef, the key signature on a stave indicates the key of the piece
+by specifying that certain notes are flat or sharp throughout the piece, unless
+otherwise indicated.
+
+## Time signature
+
+Following the key signature is the time signature.  Measures (bars) divide the
+piece into groups of beats, and the time signatures specify those groupings.
+In braille music code, measures of music are separated with spaces or newlines.
+
+## Differences between braille and visual notation
+
+Braille music code has no equivalent for stave lines and ledger lines, nor
+does it has a need for clefs.  This is because the diatonic pitch of a note
+is encoded into the note sign and octave signs are used to indicate the actual
+pitch of notes.  Clef signs are usually omitted in braille music code since
+they are not relevant to braille music readers most of the time.
+
+However, if a braille music reader needs to get a clear understanding on how
+music is visually presented, they need to know where clefs change.  For
+instance, a very low pitch played while a treble (G) clef is active might be
+totally unsuspicious to a braille music reader, while it will generate many
+ledger lines below the stave in visual music notation.
+
+It is common practice to use a treble clef in the right hand stave of a keyboard
+part and a bass clef in the left hand stave.  If a passage of music differs
+significantly in pitch from what is common for a particular clef, braille music
+code writers should consider adding clef signs as appropriate to ensure that
+automatic conversion to visual notation can produce a pleasant result.
+
 # Rhythmic note groups (beaming)
 
 A [beam](http://en.wikipedia.org/wiki/Beam_%28music%29) in visual musical
