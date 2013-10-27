@@ -21,9 +21,9 @@ music =
           << {\appoggiatura d''8-3 cis''8~ cis''32 e''-4 fis''-3 g'' a''8. a''16 a''4~ a''8~ a''32 a'' g'' fis''}\\{a'4 r8 r16 a'' dis''8. fis''16 b'4~} >> |
           << {g''8~-5 g''32 fis'' e'' dis'' e''8. b''16 d''4. cis''16 b'}\\{b'4 r b'2} >> |
           << {cis''8~-4 cis''32 d'' cis''-2 d'' d''8. cis''32 d'' e''4~-"4-5" e''32[ d'' cis'' b' a' g'-4 fis' e']}\\{a'4-"2-1" b' cis'' r} >> |
-          d'8. fis'16 a'8.\mordent -3 b'16 <c''~ a' d'>4 c''8~ c''32 c''-3 b' a' |
-          b'8~ b'32 cis'' d'' e'' d''8~ d''32 cis'' d'' e'' a'8~ a'32 e''-2 fis'' g'' a''8. cis''16-2 |
-          d''4.-4-1 e''8-3 << {e''4. d''8}\\{cis''2-1} >> |
+          d'8. fis'16 a'8.\mordent -3 b'16( <c''~ a' d'>4 c''8~) c''32 c''-3 b' a' |
+          b'8~ b'32 cis'' d'' e'' d''8~ d''32 cis'' d'' e'' a'8~ a'32 e''-2 fis'' g'' a''8. cis''16-2( |
+          d''4.-4-1) e''8-3 << {e''4. d''8}\\{cis''2-1} >> |
         }
         \alternative {
           {<d'' a' c'>1  | }

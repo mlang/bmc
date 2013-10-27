@@ -21,7 +21,7 @@ music =
         b'16[ g'' a' fis''] g'[ e'' fis'-2 d''] e'[ cis'' d' b'] | % 11
         cis'16-2[ b' a' gis'] a'-1 cis'' e''8 e''4~\mordent -3 | % 12
          e''16[ d''-1 e''-4 cis''] d''[ b' c''-4 a'] b'[ g' a'-4 fis'] | % 13
-        g'16-1[ e'' fis' d''] e' cis''-3 \appoggiatura d''32 cis''16 b' \appoggiatura cis''32 b'16[ a' b' g''] | % 14
+        g'16-1[ e'' fis' d''] e' cis''-3 \appoggiatura d''32 cis''16( b') \appoggiatura cis''32 b'16[ a' b' g''] | % 14
         g''8.-4 fis''32 e'' fis''16[ d'' b'-2 g'] a'-3[ fis'-2 g'-1 e''] | % 15
         fis'16-2[ e' fis' e'] fis'[ a' d'' cis''] d''8 r  \bar ":|:" % 16
          a''16-5[ fis'' g'' e''] fis''[ d'' e''-4 c''] d''[ b' c''-4 a'] | % 17

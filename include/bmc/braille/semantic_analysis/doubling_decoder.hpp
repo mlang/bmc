@@ -19,7 +19,8 @@ class doubling_decoder : public compiler_pass, public boost::static_visitor<bool
   struct info
   {
     enum state { active, final, none };
-    enum state slur = none;
+    bool slur_doubled = false;
+    std::vector<ast::note*> slur_notes;
     enum state staccato = none;
   }; 
   std::map<std::size_t, info> states;
@@ -34,7 +35,7 @@ public:
 
   result_type end_of_staff() const {
     for (auto const &pair: states) {
-      if (pair.second.slur != info::none) {
+      if (pair.second.slur_doubled) {
         return false;
       }
       if (pair.second.staccato != info::none) {
@@ -80,25 +81,44 @@ public:
       report_error(note.id, L"Too many slur signs");
       return false;
     }
-    if (note.slurs.size() == 2) {
-      if (current->slur != info::none) {
+    bool const doubled_slur =
+      std::count_if(note.slurs.begin(), note.slurs.end(),
+                    [](ast::slur const &slur) {
+                      return slur.value == ast::slur::type::single;
+                    }) == 2;
+    bool const basic_single_slur =
+      std::count_if(note.slurs.begin(), note.slurs.end(),
+                    [](ast::slur const &slur) {
+                      return slur.value == ast::slur::type::single;
+                    }) == 1;
+    bool const cross_staff_single_slur =
+      std::count_if(note.slurs.begin(), note.slurs.end(),
+                    [](ast::slur const &slur) {
+                      return slur.value == ast::slur::type::cross_staff;
+                    }) == 1;
+    if (note.slurs.empty()) {
+      if (current->slur_doubled) {
+        current->slur_notes.push_back(&note);
+      } else if (not current->slur_notes.empty()) {
+        current->slur_notes.front()->slur_member = ast::slur_member_type::begin;
+        for (auto i = std::next(current->slur_notes.begin());
+             i != current->slur_notes.end(); ++i)
+          (*i)->slur_member = ast::slur_member_type::middle;
+        note.slur_member = ast::slur_member_type::end;
+        current->slur_notes.clear();
+      }
+    } else if (basic_single_slur) {
+      current->slur_notes.push_back(&note);
+      if (current->slur_doubled) current->slur_doubled = false;
+    } else if (doubled_slur) {
+      if (not current->slur_notes.empty()) {
         report_error(note.id, L"Starting doubled slur while already active");
         return false;
       }
-      note.slur_member = ast::slur_member_type::begin;
-      current->slur = info::active;
-    } else {
-      if (current->slur == info::active) {
-        if (note.slurs.empty()) {
-          note.slur_member = ast::slur_member_type::middle;
-        } else {
-          note.slur_member = ast::slur_member_type::middle;
-          current->slur = info::final;
-        }
-      } else if (current->slur == info::final) {
-        note.slur_member = ast::slur_member_type::end;
-        current->slur = info::none;
-      }
+      current->slur_notes.push_back(&note);
+      current->slur_doubled = true;
+    } else if (cross_staff_single_slur) {
+      report_error(note.id, L"No support for cross-staff slurs yet");
     }
 
     if (std::count( note.articulations.begin()
