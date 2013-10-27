@@ -627,3 +627,68 @@ at the same time.
  </span>
 </div>
 
+# Slurs and ties
+
+Ties and slurs are curved lines connecting notes in visual music notation.
+While they are visually quite similar they represent difference concepts.
+
+## Tie
+
+A tie is a curved line connecting the heads of two notes of the same pitch and
+name, indicating that they are to be played as a single note with a duration
+equal to the sum of the individual notes' note values.
+
+If notes of a chord are tied the tie sign is placed directly after the
+corresponding note or interval sign.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠜⠌⠇⠐⠺⠬⠈⠉⠙⠼⠑⠈⠉⠴⠱⠒⠈⠉⠙⠴⠭⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.ly">
+    <img src="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.mp3">MP3</a>
+ </span>
+</div>
+
+## Slur
+
+A slur in visual notation connects several notes to indicate that they should
+be played as close together as possible.
+
+The single slur sign (⠉) is used if at most four notes are slurred together.
+It is placed after every note except the last.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠉⠲⠀⠭⠐⠓⠉⠋⠭⠭⠨⠙⠉⠀⠣⠚⠉⠊⠭⠨⠛⠉⠑⠉⠡⠚⠉⠀⠹⠥⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.ly">
+    <img src="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.mp3">MP3</a>
+ </span>
+</div>
+
+If more then four notes are slurred together, doubling can be used.
+The first note of a phrase receives a doubled slur sign, and the note before
+the last note in the phrase receives a single slur sign.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠼⠃⠲⠀⠐⠳⠉⠉⠊⠚⠀⠹⠑⠋⠀⠻⠋⠑⠀⠫⠉⠙⠭⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.ly">
+    <img src="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.mp3">MP3</a>
+ </span>
+</div>
+

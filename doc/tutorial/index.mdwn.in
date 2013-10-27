@@ -436,3 +436,41 @@ begin{bmc}
 ⠐⠓⠋⠨⠅⠐⠊⠄⠷⠛⠯⠿⠷⠛⠋⠑⠐⠂⠐⠙⠊⠐⠑⠄⠽⠚⠮⠾⠣⠜⠸⠷⠣⠅
 end{bmc}
 
+# Slurs and ties
+
+Ties and slurs are curved lines connecting notes in visual music notation.
+While they are visually quite similar they represent difference concepts.
+
+## Tie
+
+A tie is a curved line connecting the heads of two notes of the same pitch and
+name, indicating that they are to be played as a single note with a duration
+equal to the sum of the individual notes' note values.
+
+If notes of a chord are tied the tie sign is placed directly after the
+corresponding note or interval sign.
+
+begin{bmc}
+⠜⠌⠇⠐⠺⠬⠈⠉⠙⠼⠑⠈⠉⠴⠱⠒⠈⠉⠙⠴⠭⠣⠅
+end{bmc}
+
+## Slur
+
+A slur in visual notation connects several notes to indicate that they should
+be played as close together as possible.
+
+The single slur sign (⠉) is used if at most four notes are slurred together.
+It is placed after every note except the last.
+
+begin{bmc}
+⠼⠉⠲ ⠭⠐⠓⠉⠋⠭⠭⠨⠙⠉⠀⠣⠚⠉⠊⠭⠨⠛⠉⠑⠉⠡⠚⠉⠀⠹⠥⠣⠅
+end{bmc}
+
+If more then four notes are slurred together, doubling can be used.
+The first note of a phrase receives a doubled slur sign, and the note before
+the last note in the phrase receives a single slur sign.
+
+begin{bmc}
+⠼⠃⠲⠀⠐⠳⠉⠉⠊⠚⠀⠹⠑⠋⠀⠻⠋⠑⠀⠫⠉⠙⠭⠣⠅
+end{bmc}
+

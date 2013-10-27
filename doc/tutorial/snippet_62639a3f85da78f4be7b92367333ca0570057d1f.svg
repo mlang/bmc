@@ -1,10 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2" width="163.91mm" height="20.38mm" viewBox="8.5358 0.0000 93.2719 11.6000">
 <rect transform="translate(48.5790, 8.0500)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
-<line transform="translate(8.5358, 10.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
-<line transform="translate(8.5358, 9.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
-<line transform="translate(8.5358, 8.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
-<line transform="translate(8.5358, 7.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
-<line transform="translate(8.5358, 6.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
 <rect transform="translate(0.0000, 11.0500)" x="16.6749" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
 <rect transform="translate(0.0000, 5.0500)" x="37.8281" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
 <rect transform="translate(0.0000, 5.0500)" x="40.3443" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
@@ -41,6 +36,11 @@
 <rect transform="translate(0.0000, 4.0500)" x="65.6699" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
 <rect transform="translate(0.0000, 5.0500)" x="67.9360" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
 <rect transform="translate(0.0000, 11.0500)" x="95.3998" y="-0.1000" width="2.0850" height="0.2000" ry="0.1000" fill="currentColor"/>
+<line transform="translate(8.5358, 10.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
+<line transform="translate(8.5358, 9.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
+<line transform="translate(8.5358, 8.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
+<line transform="translate(8.5358, 7.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
+<line transform="translate(8.5358, 6.0500)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="93.2219" y2="-0.0000"/>
 <rect transform="translate(64.7375, 8.0500)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
 <rect transform="translate(93.6573, 8.0500)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
 <rect transform="translate(79.9665, 8.0500)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
