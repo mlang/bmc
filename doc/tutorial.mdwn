@@ -43,7 +43,7 @@ If none of dot 3 or 6 are present, a
 
 If dot 3 is added, we are dealing with either a
 [half note](http://en.wikipedia.org/wiki/Half_note) (minim) or
-[third-second note](http://en.wikipedia.org/wiki/Thirty-second_note) (demisemiquaver).
+[thirty-second note](http://en.wikipedia.org/wiki/Thirty-second_note) (demisemiquaver).
 
 |Sign|  Dots   |Note name| half or 32th                            |
 |:--:|:------- |:-------:|:--------------------------------------- |
@@ -181,7 +181,7 @@ If the following note goes a second or third up or down it does not need an octa
  </span>
 </div>
 
-If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
+If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave than the previous note.
 
 Compare the following two examples.
 
