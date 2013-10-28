@@ -367,7 +367,7 @@ to be written comfortably on the stave with a minimum of ledger lines.  To this
 end, the G-clef is used for high parts, the C-clef for middle parts, and the
 F-clef for low parts.
 
-Consider the followin example which does not use any clef signs in braille.
+Consider the following example which does not use any clef signs in braille.
 As a result, a treble (G) clef is used in both measures in visual music
 notation.
 
