@@ -1,0 +1,33 @@
+Fortunately I happened to have enough free time on my hand to make this weekend
+yet another BMC hackaton.
+
+It all started on last saturday when I finally worked on a rather old idea.
+I wanted to have the ability to write braille music code inline in some sort of
+document format (in our current case, that is MarkDown).  This opens a few
+abilities: The braille music code can be verified using BMC.  It can
+automatically be transcribed to visual notation using LilyPond.  And
+as a by-product, we even get a aural rendition via LilyPond's MIDI output.
+After a bit of reactivating my Perl-Fu, I wrote
+[bmcmdpp](https://github.com/mlang/bmc/blob/master/bmcmdpp) which allows
+preprocessing of a MarkDown file to insert images and links to the aural
+rendition into the actual MarkDown file.  This is definitely not
+ideal since it requires manual preprocessing.  It would be nice
+to transform this functionality into an ikiwiki plugin compatible with
+branchable.com hosting.
+But that is a project for later on.  Much more importan for now is the fact
+that we can now generate multi-modal examples for the web.
+
+As a result of this tool working as expected, I started to expand the
+[tutorial](../tutorial/) started last weekend.  Have a look, it is already
+quite extensive and described and demonstrates many braille music code features
+already supported.
+
+As a side effect of working on the tutorial, I ended up implementing
+support for clef signs and proper handling of single and doubled slurs
+in BMC.  The slur handling code is basically just a refactoring of work
+begun a few days ago.  Turns out that we can do more with less code...
+Support for clefs is something that wasn't particularily hard, but also
+important since it was missing completely for really no good reason.
+There is still work to be done regarding interval direction detection, but
+that is something left for later on.
+
