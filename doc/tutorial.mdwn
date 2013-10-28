@@ -181,7 +181,8 @@ If the following note goes a second or third up or down it does not need an octa
  </span>
 </div>
 
-If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave than the previous note.
+If it goes a fourth or fifth up or down it receives an octave sign only if it is
+in a different octave than the previous note.
 
 Compare the following two examples.
 

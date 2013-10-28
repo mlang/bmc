@@ -32,7 +32,7 @@ If none of dot 3 or 6 are present, a
 
 If dot 3 is added, we are dealing with either a
 [half note](http://en.wikipedia.org/wiki/Half_note) (minim) or
-[third-second note](http://en.wikipedia.org/wiki/Thirty-second_note) (demisemiquaver).
+[thirty-second note](http://en.wikipedia.org/wiki/Thirty-second_note) (demisemiquaver).
 
 |Sign|  Dots   |Note name| half or 32th                            |
 |:--:|:------- |:-------:|:--------------------------------------- |
@@ -143,7 +143,8 @@ begin{bmc}
 ⠼⠋⠦ ⠐⠙⠋⠓⠪⠙⠀⠑⠛⠊⠚⠑⠛⠀⠋⠓⠚⠙⠊⠛⠀⠑⠚⠓⠛⠑⠚⠀⠐⠳⠛⠱⠋⠀⠝⠄⠣⠅
 end{bmc}
 
-If it goes a fourth or fifth up or down it receives an octave sign only if it is in a different octave then the previous note.
+If it goes a fourth or fifth up or down it receives an octave sign only if it is
+in a different octave than the previous note.
 
 Compare the following two examples.
 
@@ -275,7 +276,7 @@ to be written comfortably on the stave with a minimum of ledger lines.  To this
 end, the G-clef is used for high parts, the C-clef for middle parts, and the
 F-clef for low parts.
 
-Consider the followin example which does not use any clef signs in braille.
+Consider the following example which does not use any clef signs in braille.
 As a result, a treble (G) clef is used in both measures in visual music
 notation.
 
@@ -284,7 +285,7 @@ begin{bmc}
 end{bmc}
 
 Since the treble clef is default, the first measure fits nicely on the five-line
-staff.  However, the second measure requires up to 7 ledger lines below the
+staff.  However, the second measure requires up to 6 ledger lines below the
 stave to denote the low pitches in visual music notation.
 
 If we add a bass (F) clef sign in braille at the beginning of the second measure
