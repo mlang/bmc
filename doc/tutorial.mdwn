@@ -385,7 +385,7 @@ notation.
 </div>
 
 Since the treble clef is default, the first measure fits nicely on the five-line
-staff.  However, the second measure requires up to 7 ledger lines below the
+staff.  However, the second measure requires up to 6 ledger lines below the
 stave to denote the low pitches in visual music notation.
 
 If we add a bass (F) clef sign in braille at the beginning of the second measure
