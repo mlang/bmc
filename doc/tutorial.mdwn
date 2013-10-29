@@ -9,7 +9,7 @@
   padding: 10px;
 }
 .brailled pre {
-    font-family: serif;
+  font-family: serif;
 }
 </style>
 A basic introduction to braille music code with examples in braille,
