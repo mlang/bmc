@@ -53,10 +53,12 @@ public:
   , prev_unfolded_measure(prev_unfolded_measure)
   {}
 
+  // Value distinction signs and music hyphens are irrelevant from here on.
   result_type operator() (ast::value_distinction const &) const
-  {
-    return sign_conversion_result::ok;
-  }
+  { return sign_conversion_result::ok; }
+  result_type operator() (ast::hyphen const &) const
+  { return sign_conversion_result::ok; }
+
   result_type operator() (ast::simile const &simile) const
   {
     if (not duration(target)) {

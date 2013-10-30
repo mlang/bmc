@@ -136,9 +136,7 @@ public:
     return true;
   }
 
-  template <typename Sign>
-  result_type operator()(Sign&) const
-  { return true; }
+  template<typename Sign> result_type operator()(Sign &) const { return true; }
 };
 
 }}

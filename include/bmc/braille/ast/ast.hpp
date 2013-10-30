@@ -165,6 +165,9 @@ struct value_distinction : locatable
   type value;
 };
 
+struct hyphen : locatable
+{};
+
 struct simile : locatable
 {
   boost::optional<unsigned> octave_spec;
@@ -221,7 +224,7 @@ public:
 };
 
 typedef boost::variant< note, rest, chord, moving_note
-		      , value_distinction, tie, tuplet_start
+		      , value_distinction, hyphen, tie, tuplet_start
                       , hand_sign, clef, simile, barline
                       >
         sign;
@@ -275,11 +278,13 @@ typedef std::vector<section> part;
 namespace unfolded {
 
 typedef boost::make_variant_over
-        < boost::mpl::remove< boost::mpl::remove< ast::sign::types
-                                                , value_distinction
-                                                >::type
-                            , simile
-                            >::type
+        < boost::mpl::remove
+        < boost::mpl::remove
+        < boost::mpl::remove
+        < ast::sign::types
+        , value_distinction>::type
+        , hyphen>::type
+        , simile>::type
         >::type sign;
 
 struct partial_voice : locatable, std::vector<sign>

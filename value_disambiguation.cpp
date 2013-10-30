@@ -111,6 +111,8 @@ public:
     new (stack_end++) value_proxy(chord, small, type);
   }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
+  // A note group must never contain a music hyphen.
+  result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
   result_type operator()(braille::ast::tuplet_start &) {}
   result_type operator()(braille::hand_sign &) {}
@@ -206,7 +208,8 @@ class partial_voice_interpreter
         auto iter = begin + 1;
         while (iter != end and
                apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
-               not apply_visitor(ast::is_rest(), *iter))
+               not apply_visitor(ast::is_rest(), *iter) and
+               not apply_visitor(ast::is_hyphen(), *iter))
           ++iter;
         // A note group is only valid if it consists of at least 3 rhythmic signs
         if (std::distance(begin, iter) > 2) return iter;
@@ -360,10 +363,11 @@ public:
     return false;
   }
   result_type operator()(ast::value_distinction &) const { return false; }
+  result_type operator()(ast::hyphen &) const { return false; }
   result_type operator()(braille::hand_sign &) const { return false; }
   result_type operator()(ast::clef &) const { return false; }
-  result_type operator()(braille::ast::tie &) const { return false; }
-  result_type operator()(braille::ast::tuplet_start &) const { return false; }
+  result_type operator()(ast::tie &) const { return false; }
+  result_type operator()(ast::tuplet_start &) const { return false; }
   result_type operator()(ast::barline &) const { return false; }
   result_type operator()(ast::simile &simile) const
   {

@@ -47,7 +47,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   voice = partial_measure % partial_measure_sign;
   partial_measure = partial_voice % partial_measure_in_accord;
-  partial_voice = +( newline
+  partial_voice = +( hyphen
                    | moving_note | chord | note | rest
                    | value_distinction | tie | tuplet
                    | clef | hand_sign
@@ -123,14 +123,14 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
         >> brl(3)[_val = construct<ast::tuplet_start>(_a, false)]
          ;
 
-  clef = clef_sign >> optional_dot;
+  clef = clef_sign > optional_dot;
 
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
   hand_sign = (brl(46) >> brl(345) > optional_dot > attr(braille::right_hand))
             | (brl(456) >> brl(345) > optional_dot > attr(braille::left_hand));
   ending = brl(3456) >> lower_digit_sign > optional_dot;
 
-  newline = brl(5) >> eol;
+  hyphen = brl(5) >> eol;
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
                                 annotation_function(error_handler.iters)\
@@ -144,6 +144,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   BMC_LOCATABLE_SET_ID(interval);
   BMC_LOCATABLE_SET_ID(chord);
   BMC_LOCATABLE_SET_ID(value_distinction);
+  BMC_LOCATABLE_SET_ID(hyphen);
   BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie);
   BMC_LOCATABLE_SET_ID(tuplet);
@@ -154,6 +155,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   note.name("note");
   interval.name("interval");
   fingering.name("fingering");
+  optional_dot.name(".");
 }
 
 }}

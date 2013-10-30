@@ -22,6 +22,7 @@ namespace music {
         result_type operator() (clef const&) const { return result_type(); }
         result_type operator() (simile const&) const { return result_type(); }
         result_type operator() (value_distinction const&) const { return result_type(); }
+        result_type operator() (hyphen const&) const { return result_type(); }
         result_type operator() (tie const &) const { return result_type(); }
         result_type operator() (tuplet_start const &) const { return result_type(); }
 

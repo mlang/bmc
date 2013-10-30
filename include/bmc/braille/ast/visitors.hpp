@@ -78,6 +78,12 @@ namespace music {
         result_type operator()(Sign const &) const
         { return false; }
       };
+      struct is_hyphen : boost::static_visitor<bool>
+      {
+        template <typename T>
+        result_type operator()(T const&) const
+        { return std::is_same<hyphen, T>::value; }
+      };
     }
   }
 }
