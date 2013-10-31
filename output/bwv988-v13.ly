@@ -31,7 +31,7 @@ music =
         g'32-.[ e''-3( dis'' e'' f'' e'' dis'' e''-1]) fis''[ e'' g'' e'' a'' e'' b'' e''] c'''-4[ e'' d''' e'' c''' e'' b'' e''] | % 21
         c'''32-.[ e''( dis''-2 e'' f'' e'' dis'' e''-1]) c'''[ e'' b'' e'' a'' e'' g'' e''] fis''[ e'' g'' e'' a'' e'' dis''-2 cis''] | % 22
         dis''32-.[ a''-4( g'' a'' b'' a'' g'' a'']) b'-.[ g''-4( fis'' g'' a'' g'' fis'' g'']) a'-.[ fis''-3( e'' fis'' g'' a'' g'' fis'']) | % 23
-        << {g''16[( dis'') dis''-3( e'']) e''-5[( a') a'-5( g']) g'8~\mordent -4-2-3 g'32 b'-1 c'' d''}\\{r4 r8 dis' e'-1 r} >> | % 24
+        << {g''16[( dis'') dis''-3( e'']) e''-5( a') a'-5( g') g'8~\mordent -4-2-3 g'32 b'-1 c'' d''}\\{r4 r8 dis' e'-1 r} >> | % 24
         e''32 f'' e'' dis'' e''8~ e''16 a' \appoggiatura b'32-3 a'16 g' \appoggiatura a'32-4 g'16[ fis' fis'-1 e''] | % 25
         d''32-3 e'' d'' cis'' d''8~ d''16 g' \appoggiatura a'32-3 g'16 f' \appoggiatura g'32-4 f'16[ e' e'-1 d''] | % 26
         c''32 b' a'16~ a'32 g' fis'16~-3 fis'32 e' d'16~ d'32 e' fis'16~ fis'32 g'-1 a'16~ a'32 b'-1 c''16~ | % 27

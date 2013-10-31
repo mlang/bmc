@@ -45,6 +45,19 @@ namespace music {
         { return unknown; }
       };
 
+      struct get_augmentation_dots : boost::static_visitor<unsigned>
+      {
+        result_type operator()(rhythmic const& rhythm) const { return rhythm.get_dots(); }
+        result_type operator()(barline const&) const { return 0; }
+        result_type operator()(hand_sign const&) const { return 0; }
+        result_type operator()(hyphen const&) const { return 0; }
+        result_type operator()(clef const&) const { return 0; }
+        result_type operator()(simile const&) const { return 0; }
+        result_type operator()(tie const&) const { return 0; }
+        result_type operator()(tuplet_start const&) const { return 0; }
+        result_type operator()(value_distinction const&) const { return 0; }
+      };
+
       struct is_rest : boost::static_visitor<bool>
       {
         template <typename T>

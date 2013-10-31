@@ -209,6 +209,7 @@ class partial_voice_interpreter
         while (iter != end and
                apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
                not apply_visitor(ast::is_rest(), *iter) and
+               not (apply_visitor(ast::get_augmentation_dots(), *iter) > 0) and
                not apply_visitor(ast::is_hyphen(), *iter))
           ++iter;
         // A note group is only valid if it consists of at least 3 rhythmic signs
@@ -253,17 +254,13 @@ public:
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
           (tail = notegroup_end(iterator, voice_end)) > iterator) {
-        // Try all possible notegroups, starting with the longest
-        while (std::distance(iterator, tail) >= 3) {
-          notegroup const group(iterator, tail, stack_end);
-          rational const group_duration(group.duration());
-          if (group_duration <= max_duration) {
-            rational const next_position(position + group_duration);
-            if (on_beat(next_position)) {
-              recurse(tail, group.end(), max_duration - group_duration, next_position);
-            }
+        notegroup const group(iterator, tail, stack_end);
+        rational const group_duration(group.duration());
+        if (group_duration <= max_duration) {
+          rational const next_position(position + group_duration);
+          if (on_beat(next_position)) {
+            recurse(tail, group.end(), max_duration - group_duration, next_position);
           }
-          --tail;
         }
 
         large_and_small(iterator, stack_end, max_duration, position);

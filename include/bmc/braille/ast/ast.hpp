@@ -73,6 +73,7 @@ protected:
   virtual ~rhythmic() {}
 public:
   virtual rational as_rational() const = 0;
+  virtual unsigned get_dots() const = 0;
 };
 
 struct slur : locatable
@@ -105,6 +106,8 @@ struct stem : rhythmic
 
   rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
+  virtual unsigned get_dots() const
+  { return dots; }
 };
 
 struct note : locatable, rhythmic_data, rhythmic, pitched
@@ -117,6 +120,8 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
   note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
+  virtual unsigned get_dots() const
+  { return dots; }
 };
 
 struct rest : locatable, rhythmic_data, rhythmic
@@ -125,6 +130,8 @@ struct rest : locatable, rhythmic_data, rhythmic
   bool whole_measure; // filled in by disambiguate.hpp
   virtual rational as_rational() const
   { return type * 2 - type / pow(2, dots); }
+  virtual unsigned get_dots() const
+  { return dots; }
 };
 
 struct interval : locatable, pitched
@@ -143,6 +150,8 @@ struct chord : locatable, rhythmic
 
   virtual rational as_rational() const
   { return base.as_rational(); }
+  virtual unsigned get_dots() const
+  { return base.get_dots(); }
 };
 
 /** The moving-note device, although infrequently employed,
@@ -157,6 +166,8 @@ struct moving_note : locatable, rhythmic
 
   virtual rational as_rational() const
   { return base.as_rational(); }
+  virtual unsigned get_dots() const
+  { return base.get_dots(); }
 };
 
 struct value_distinction : locatable
