@@ -74,7 +74,7 @@ cgicc::option table_option(std::string const &id, cgicc::Cgicc const &cgi) {
 }
 
 std::ostream &table_select(std::ostream &os, cgicc::Cgicc const &cgi) {
-  os << cgicc::select().set("name", "table")
+  os << cgicc::select().set("name", "table").set("id", "table")
      << table_option("brf", cgi)
      << table_option("ar", cgi)
      << cgicc::option("as").set("value", "as")
@@ -177,7 +177,7 @@ main(int argc, char const *argv[])
   cgicc::textarea music_input(cgi("music"));
   music_input.set("id", "music");
   music_input.set("cols", "32");
-  music_input.set("rows", "28");
+  music_input.set("rows", "10");
   music_input.set("name", "music");
   cgicc::const_form_iterator braille(cgi.getElement("music"));
   std::string prefix;
@@ -207,7 +207,7 @@ main(int argc, char const *argv[])
         generate.remove_tagline();
         generate(score);
         ly.close();        
-        std::string cmd("lilypond -lNONE --png -dpaper-size='\"a5landscape\"' -o " + dir + prefix + " " + dir + prefix + ".ly" + " 2>&1 >/tmp/bmc.cgi/log");
+        std::string cmd("lilypond -lNONE --png -dpaper-size='\"a5landscape\"' -o " + dir + prefix + " " + dir + prefix + ".ly");
         if (system(cmd.c_str()) != 0) {
           prefix = "";
         }
@@ -241,21 +241,38 @@ main(int argc, char const *argv[])
             << cgicc::title("Braille Music Compiler")
             << cgicc::head()
             << cgicc::body();
+  if (not cgi("music").empty() and prefix.empty()) {
+    std::cout << cgicc::p("Unable to translate braille music, try again.").set("class", "error") << std::endl;
+  }
   std::cout << cgicc::p() << "See a "
                           << cgicc::a("braille music code tutorial")
                             .set("href", "https://bmc.branchable.com/tutorial/")
                           << " for details."
                           << cgicc::p() << std::endl;
   std::cout << cgicc::form();
+  std::cout << cgicc::label("Select braille table: ").set("for", "table");
   table_select(std::cout, cgi);
-  std::cout << music_input << cgicc::input().set("type", "submit").set("value", "translate");
+  std::cout << cgicc::div()
+            << cgicc::label("Enter braille music: ").set("for", "music");
+  std::cout << music_input << cgicc::div();
+  std::cout << cgicc::input().set("type", "submit").set("value", "translate");
   if (not prefix.empty()) {
     std::cout << cgicc::input().set("type", "submit").set("name", "type").set("value", "play");
   }
   std::cout << cgicc::form();
-  if (not prefix.empty())
-    std::cout << cgicc::img().set("src", cgi.getEnvironment().getScriptName() + "?hash=" + prefix + "&type=png");
-
+  if (not prefix.empty()) {
+    std::string alt;
+    std::ifstream ly("/tmp/bmc.cgi/" + prefix + ".ly");
+    if (ly.good()) {
+      std::istreambuf_iterator<char> ly_begin(ly.rdbuf()), ly_end;
+      alt = std::string(ly_begin, ly_end);
+      std::string::size_type i = 0;
+      while ((i = alt.find("\"", i)) != std::string::npos) {
+        alt.replace(i, 1, "&quot;");
+      }
+    }
+    std::cout << cgicc::img().set("src", cgi.getEnvironment().getScriptName() + "?hash=" + prefix + "&type=png").set("alt", alt);
+  }
   std::cout << cgicc::body()
             << cgicc::html();
   return EXIT_SUCCESS;
