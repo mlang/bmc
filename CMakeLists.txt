@@ -108,6 +108,14 @@ install(TARGETS bmc bmc2ly DESTINATION bin)
 install(TARGETS bmc_parse DESTINATION lib)
 install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
 
+find_package(PkgConfig)
+  pkg_search_module(CGICC cgicc)
+  if(CGICC_FOUND)
+    include_directories(${CGICC_INCLUDE_DIRS})
+    add_executable(bmc.cgi cgi.cpp)
+    target_link_libraries(bmc.cgi bmc_parse ${CGICC_LIBRARIES})
+  endif(CGICC_FOUND)
+
 find_package(PythonInterp)
 if(PYTHONINTERP_FOUND)
   execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import music21;"
