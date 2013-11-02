@@ -130,6 +130,24 @@ std::ostream &table_select(std::ostream &os, cgicc::Cgicc const &cgi) {
   return os;
 }
 
+cgicc::option instrument_option(std::string const &instrument, cgicc::Cgicc const &cgi) {
+  cgicc::option o(instrument);
+  o.set("value", instrument);
+  if (cgi.getElement("instrument") != cgi.getElements().end() and
+      cgi.getElement("instrument")->getValue() == instrument)
+    o.set("selected", "selected");
+  return o;
+}
+
+std::ostream &instrument_select(std::ostream &os, cgicc::Cgicc const &cgi) {
+  os << cgicc::select().set("name", "instrument").set("id", "instrument");
+  for (auto instrument: music::lilypond::instruments) {
+    os << instrument_option(instrument, cgi);
+  }
+  os << cgicc::select();
+  return os;
+}
+
 int
 main(int argc, char const *argv[])
 {
@@ -171,6 +189,8 @@ main(int argc, char const *argv[])
         std::ofstream ly(dir + prefix + ".ly");
         music::lilypond::generator generate(ly, true, true, false);
         generate.remove_tagline();
+        if (not cgi("instrument").empty())
+          generate.instrument(cgi("instrument"));
         generate(score);
         ly.close();        
         std::string cmd("lilypond -lNONE --png -dpaper-size='\"a5landscape\"' -o " + dir + prefix + " " + dir + prefix + ".ly");
@@ -236,6 +256,7 @@ main(int argc, char const *argv[])
   std::cout << music_input << cgicc::div();
   std::cout << cgicc::input().set("type", "submit").set("value", "Transcribe to print");
   if (not prefix.empty()) {
+    instrument_select(std::cout, cgi);
     std::cout << cgicc::input().set("type", "submit").set("name", "type").set("value", "play");
   }
   std::cout << cgicc::form();

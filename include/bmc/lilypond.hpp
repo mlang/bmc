@@ -12,6 +12,8 @@
 
 namespace music { namespace lilypond {
 
+extern std::string instruments[128];
+
 /**
  * \brief Generate LilyPond input from (compiled) braille music.
  */
