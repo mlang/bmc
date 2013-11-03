@@ -4,13 +4,14 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#ifndef MEASURE_HPP
-#define MEASURE_HPP
+#ifndef BMC_MEASURE_HPP
+#define BMC_MEASURE_HPP
 
 #include "config.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 #include "bmc/braille/ast/ast.hpp"
 #include "bmc/braille/parsing/grammar/numbers.hpp"
+#include "bmc/braille/parsing/grammar/partial_voice_sign.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
 namespace music { namespace braille {
@@ -29,25 +30,7 @@ struct measure_grammar : boost::spirit::qi::grammar<Iterator, ast::measure()>
   boost::spirit::qi::rule<Iterator, ast::voice()> voice;
   boost::spirit::qi::rule<Iterator, ast::partial_measure()> partial_measure;
   boost::spirit::qi::rule<Iterator, ast::partial_voice()> partial_voice;
-  boost::spirit::qi::rule<Iterator, ast::note()> note;
-  boost::spirit::qi::rule<Iterator, ast::stem()> stem;
-  boost::spirit::qi::rule<Iterator, ast::rest()> rest;
-  boost::spirit::qi::rule<Iterator, ast::chord()> chord;
-  boost::spirit::qi::rule<Iterator, ast::moving_note()> moving_note;
-  boost::spirit::qi::rule<Iterator, std::vector<ast::interval>()> moving_intervals;
-  boost::spirit::qi::rule<Iterator, ast::interval()> interval;
-  boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
-  boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
-  boost::spirit::qi::rule<Iterator, ast::tuplet_start(), boost::spirit::qi::locals<unsigned>> tuplet;
-  boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
-  boost::spirit::qi::rule<Iterator, ast::clef()> clef;
-  boost::spirit::qi::rule<Iterator, ast::simile(), boost::spirit::qi::locals<unsigned>> simile;
-  boost::spirit::qi::rule<Iterator, unsigned()> dots;
-  boost::spirit::qi::rule<Iterator, ast::slur()> slur;
-  boost::spirit::qi::rule<Iterator, ast::tie()> tie, simple_tie;
-  boost::spirit::qi::rule<Iterator, ast::chord_tied()> chord_tied_sign;
-  boost::spirit::qi::rule<Iterator, ast::value_distinction()> value_distinction;
-  boost::spirit::qi::rule<Iterator, ast::hyphen()> hyphen;
+  partial_voice_sign_grammar<Iterator> partial_voice_sign;
   boost::spirit::qi::rule<Iterator>
   full_measure_in_accord, partial_measure_sign, partial_measure_in_accord,
   optional_dot;
