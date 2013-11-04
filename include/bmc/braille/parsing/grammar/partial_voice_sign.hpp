@@ -11,6 +11,7 @@
 #include <boost/spirit/include/qi_grammar.hpp>
 #include "bmc/braille/ast/ast.hpp"
 #include "bmc/braille/parsing/grammar/numbers.hpp"
+#include "bmc/braille/parsing/grammar/simile.hpp"
 #include "bmc/braille/parsing/grammar/tuplet_start.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
@@ -39,7 +40,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   tuplet_start_grammar<Iterator> tuplet_start;
   boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
   boost::spirit::qi::rule<Iterator, ast::clef()> clef;
-  boost::spirit::qi::rule<Iterator, ast::simile(), boost::spirit::qi::locals<unsigned>> simile;
+  simile_grammar<Iterator> simile;
   boost::spirit::qi::rule<Iterator, unsigned()> dots;
   boost::spirit::qi::rule<Iterator, ast::slur()> slur;
   boost::spirit::qi::rule<Iterator, ast::tie()> tie, simple_tie;
@@ -47,7 +48,6 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::value_distinction()> value_distinction;
   boost::spirit::qi::rule<Iterator, ast::hyphen()> hyphen;
   boost::spirit::qi::rule<Iterator> optional_dot;
-  upper_number_grammar<Iterator> upper_number;
 };
 
 }}

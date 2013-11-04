@@ -31,6 +31,7 @@ namespace music { namespace braille {
 template<typename Iterator>
 partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<Iterator>& error_handler)
 : partial_voice_sign_grammar::base_type(start, "partial_voice_sign")
+, simile(error_handler)
 , tuplet_start(error_handler)
 {
   using boost::phoenix::begin;
@@ -41,7 +42,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
           annotation_function;
 
   music::braille::brl_type brl;
-  boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
   boost::spirit::_val_type _val;
@@ -95,11 +95,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   boost::spirit::eps_type eps;
   boost::spirit::attr_type attr;
   simple_tie = brl(4) >> brl(14) >> attr(ast::tie::single);
-  simile = eps[_a = 0]
-        >> (-octave_sign)[at_c<0>(_val) = _1]
-        >> +(brl(2356)[_a += 1])
-        >> -(brl(3456) >> upper_number[_a = _1])
-        >> eps[at_c<1>(_val) = _a];
 
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 
@@ -120,7 +115,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   BMC_LOCATABLE_SET_ID(chord);
   BMC_LOCATABLE_SET_ID(value_distinction);
   BMC_LOCATABLE_SET_ID(hyphen);
-  BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie);
   BMC_LOCATABLE_SET_ID(clef);
 #undef BMC_LOCATABLE_SET_ID
