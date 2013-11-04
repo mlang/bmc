@@ -48,7 +48,6 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::hyphen()> hyphen;
   boost::spirit::qi::rule<Iterator> optional_dot;
   upper_number_grammar<Iterator> upper_number;
-  lower_number_grammar<Iterator> lower_number;
 };
 
 }}

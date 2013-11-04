@@ -20,7 +20,6 @@
 #include <boost/spirit/include/qi_optional.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
@@ -92,7 +91,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   finger_change = finger_sign >> brl(14) >> finger_sign;
   fingering = *(finger_change | finger_sign);
 
-  boost::spirit::standard_wide::space_type space;
   boost::spirit::eol_type eol;
   boost::spirit::eps_type eps;
   boost::spirit::attr_type attr;
