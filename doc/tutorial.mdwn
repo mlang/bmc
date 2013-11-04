@@ -135,6 +135,7 @@ notes on the third line of the five line stave.
    </a>
   </div>
   <a href="snippet_206d45bafb0b7299536ba1d0873ef47d041178ab.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_206d45bafb0b7299536ba1d0873ef47d041178ab.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%8B%E2%A0%A6%E2%A0%80%E2%A0%90%E2%A0%9A%E2%A0%9A%E2%A0%9A%E2%A0%9A%E2%A0%9A%E2%A0%9A%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -163,6 +164,7 @@ quarter C.
    </a>
   </div>
   <a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a51a86e58e705729afeff9bcb6ccfc8f04691ec6.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%81%E2%A0%B2%E2%A0%80%E2%A0%88%E2%A0%B9%E2%A0%80%E2%A0%98%E2%A0%B9%E2%A0%80%E2%A0%B8%E2%A0%B9%E2%A0%80%E2%A0%90%E2%A0%B9%E2%A0%80%E2%A0%A8%E2%A0%B9%E2%A0%80%E2%A0%B0%E2%A0%B9%E2%A0%80%E2%A0%A0%E2%A0%B9%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -181,6 +183,7 @@ If the following note goes a second or third up or down it does not need an octa
    </a>
   </div>
   <a href="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_62639a3f85da78f4be7b92367333ca0570057d1f.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%8B%E2%A0%A6%20%E2%A0%90%E2%A0%99%E2%A0%8B%E2%A0%93%E2%A0%AA%E2%A0%99%E2%A0%80%E2%A0%91%E2%A0%9B%E2%A0%8A%E2%A0%9A%E2%A0%91%E2%A0%9B%E2%A0%80%E2%A0%8B%E2%A0%93%E2%A0%9A%E2%A0%99%E2%A0%8A%E2%A0%9B%E2%A0%80%E2%A0%91%E2%A0%9A%E2%A0%93%E2%A0%9B%E2%A0%91%E2%A0%9A%E2%A0%80%E2%A0%90%E2%A0%B3%E2%A0%9B%E2%A0%B1%E2%A0%8B%E2%A0%80%E2%A0%9D%E2%A0%84%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -199,6 +202,7 @@ Compare the following two examples.
    </a>
   </div>
   <a href="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_ee1c1d5a7eca5a3dcee24a61ae3812993e32fefe.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%20%E2%A0%90%E2%A0%93%E2%A0%8A%E2%A0%9A%E2%A0%93%E2%A0%A8%E2%A0%99%E2%A0%90%E2%A0%93%E2%A0%80%E2%A0%A8%E2%A0%91%E2%A0%90%E2%A0%93%E2%A0%A8%E2%A0%8F%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -214,6 +218,7 @@ Compare the following two examples.
    </a>
   </div>
   <a href="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_dafedf9c6fb3ad06d5df1abbabf9f89c4502ee68.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%20%E2%A0%90%E2%A0%99%E2%A0%91%E2%A0%8B%E2%A0%99%E2%A0%9B%E2%A0%99%E2%A0%80%E2%A0%93%E2%A0%99%E2%A0%90%E2%A0%8E%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -229,6 +234,7 @@ With an interval of a sixth or greater to the previous note, it always receives 
    </a>
   </div>
   <a href="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_dd8a73cbd5e4fe4b8aed61f902afdf653aecac45.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%8B%E2%A0%A6%20%E2%A0%90%E2%A0%99%E2%A0%8B%E2%A0%93%E2%A0%8A%E2%A0%90%E2%A0%99%E2%A0%90%E2%A0%8A%E2%A0%80%E2%A0%90%E2%A0%99%E2%A0%A3%E2%A0%90%E2%A0%9A%E2%A0%90%E2%A0%99%E2%A0%90%E2%A0%8A%E2%A0%90%E2%A0%99%E2%A0%90%E2%A0%8A%E2%A0%80%E2%A0%97%E2%A0%84%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -244,6 +250,7 @@ These rules are demonstrated in the following example.
    </a>
   </div>
   <a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b9cf4d2c86f86eca81856501b1eaffab5faabbc0.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A8%E2%A0%8F%E2%A0%B1%E2%A0%B9%E2%A0%80%E2%A0%AA%E2%A0%A8%E2%A0%95%E2%A0%B9%E2%A0%80%E2%A0%BA%E2%A0%A8%E2%A0%8F%E2%A0%B1%E2%A0%80%E2%A0%9D%E2%A0%BB%E2%A0%AB%E2%A0%80%E2%A0%B1%E2%A0%97%E2%A0%BB%E2%A0%80%E2%A0%AB%E2%A0%B9%E2%A0%A8%E2%A0%AA%E2%A0%A8%E2%A0%B9%E2%A0%80%E2%A0%9A%E2%A0%99%E2%A0%91%E2%A0%8B%E2%A0%9B%E2%A0%93%E2%A0%8A%E2%A0%9A%E2%A0%80%E2%A0%9D%E2%A0%A5%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -265,6 +272,7 @@ immediately by a 32th), one of the value signs must be placed between them.
    </a>
   </div>
   <a href="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_f68f805f8aa758a5c6ac4090adbc5855a1124f7a.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%E2%A0%80%E2%A0%A8%E2%A0%9D%E2%A0%A0%E2%A0%A3%E2%A0%82%E2%A0%9D%E2%A0%95%E2%A0%8F%E2%A0%9F%E2%A0%93%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -283,6 +291,7 @@ note or rest belongs to the smaller of the two values.
    </a>
   </div>
   <a href="snippet_95147d3db25b99789406d175cbe66a271c1678e9.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_95147d3db25b99789406d175cbe66a271c1678e9.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A0%E2%A0%A3%E2%A0%82%E2%A0%B8%E2%A0%B7%E2%A0%80%E2%A0%90%E2%A0%99%E2%A0%AD%E2%A0%9A%E2%A0%AD%E2%A0%99%E2%A0%AD%E2%A0%91%E2%A0%AD%E2%A0%80%E2%A0%8B%E2%A0%AD%E2%A0%9B%E2%A0%AD%E2%A0%95%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -385,6 +394,7 @@ notation.
    </a>
   </div>
   <a href="snippet_1197f47ddb2f34c591fc67d863f129fdd1650d61.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_1197f47ddb2f34c591fc67d863f129fdd1650d61.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A3%E2%A0%BC%E2%A0%8B%E2%A0%A6%E2%A0%80%E2%A0%90%E2%A0%9B%E2%A0%9B%E2%A0%8A%E2%A0%99%E2%A0%84%E2%A0%AE%E2%A0%99%E2%A0%80%E2%A0%98%E2%A0%9B%E2%A0%93%E2%A0%8A%E2%A0%BA%E2%A0%84%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -405,6 +415,7 @@ the visual transcription now fits on the stave without ledger lines.
    </a>
   </div>
   <a href="snippet_d3f57fa0ada3287616707b7b6788de68d9f4fc89.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_d3f57fa0ada3287616707b7b6788de68d9f4fc89.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A3%E2%A0%BC%E2%A0%8B%E2%A0%A6%E2%A0%80%E2%A0%90%E2%A0%9B%E2%A0%9B%E2%A0%8A%E2%A0%99%E2%A0%84%E2%A0%AE%E2%A0%99%E2%A0%80%E2%A0%9C%E2%A0%BC%E2%A0%87%E2%A0%98%E2%A0%9B%E2%A0%93%E2%A0%8A%E2%A0%BA%E2%A0%84%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -474,6 +485,7 @@ notes are written as 8th notes.
    </a>
   </div>
   <a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_c66de7c4c7212e188bc110c8a1f6213150bcc4d5.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%99%E2%A0%B2%E2%A0%80%E2%A0%90%E2%A0%BD%E2%A0%91%E2%A0%8B%E2%A0%9B%E2%A0%B7%E2%A0%8A%E2%A0%9A%E2%A0%99%E2%A0%B5%E2%A0%99%E2%A0%9A%E2%A0%8A%E2%A0%B7%E2%A0%9B%E2%A0%8B%E2%A0%91%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -492,6 +504,7 @@ braille music code.
    </a>
   </div>
   <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a534c14987afc4508effaccb7f8588071299d286.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%E2%A0%80%E2%A0%8D%E2%A0%90%E2%A0%8B%E2%A0%9B%E2%A0%93%E2%A0%8D%E2%A0%9B%E2%A0%93%E2%A0%8A%E2%A0%8D%E2%A0%93%E2%A0%8A%E2%A0%9A%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -518,6 +531,7 @@ of the chord are written with interval signs downward.
    </a>
   </div>
   <a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_db593fd6120808f1ad00aeef540c460ba2710513.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%BC%E2%A0%99%E2%A0%B2%0A%E2%A0%80%E2%A0%80%E2%A0%A8%E2%A0%9C%E2%A0%A8%E2%A0%BD%E2%A0%8C%E2%A0%80%E2%A0%BD%E2%A0%AC%E2%A0%80%E2%A0%BD%E2%A0%BC%E2%A0%80%E2%A0%BD%E2%A0%94%E2%A0%80%E2%A0%BD%E2%A0%B4%E2%A0%80%E2%A0%BD%E2%A0%92%E2%A0%80%E2%A0%BD%E2%A0%A4%E2%A0%A3%E2%A0%85%0A%E2%A0%80%E2%A0%80%E2%A0%B8%E2%A0%9C%E2%A0%84%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -537,6 +551,7 @@ signs, ordered upward.
    </a>
   </div>
   <a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_da06795ce64673da4bb1171f13e119bb271763e5.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%BC%E2%A0%99%E2%A0%B2%0A%E2%A0%80%E2%A0%80%E2%A0%A8%E2%A0%9C%E2%A0%84%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%80%E2%A0%8D%E2%A0%A3%E2%A0%85%0A%E2%A0%80%E2%A0%80%E2%A0%B8%E2%A0%9C%E2%A0%B8%E2%A0%BD%E2%A0%8C%E2%A0%80%E2%A0%BD%E2%A0%AC%E2%A0%80%E2%A0%BD%E2%A0%BC%E2%A0%80%E2%A0%BD%E2%A0%94%E2%A0%80%E2%A0%BD%E2%A0%B4%E2%A0%80%E2%A0%BD%E2%A0%92%E2%A0%80%E2%A0%BD%E2%A0%A4%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -553,6 +568,7 @@ place octave signs in between except the intervals are separated by an octave or
    </a>
   </div>
   <a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_3f68e0222f816f35c97900b69f9b1b081540788e.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%E2%A0%80%E2%A0%A8%E2%A0%B3%E2%A0%A4%E2%A0%BC%E2%A0%B4%E2%A0%B3%E2%A0%94%E2%A0%AC%E2%A0%92%E2%A0%BB%E2%A0%AC%E2%A0%92%E2%A0%94%E2%A0%80%E2%A0%8F%E2%A0%84%E2%A0%AC%E2%A0%B4%E2%A0%AC%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -571,6 +587,7 @@ an octave sign or not.
    </a>
   </div>
   <a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_f8f302c38d883acc4f69bd6256755e03769c1c25.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%80%E2%A0%A9%E2%A0%A9%E2%A0%80%E2%A0%BC%E2%A0%99%E2%A0%B2%0A%E2%A0%80%E2%A0%80%E2%A0%A8%E2%A0%9C%E2%A0%84%E2%A0%8D%E2%A0%A3%E2%A0%85%0A%E2%A0%80%E2%A0%80%E2%A0%B8%E2%A0%9C%E2%A0%B8%E2%A0%B1%E2%A0%AC%E2%A0%94%E2%A0%A4%E2%A0%98%E2%A0%91%E2%A0%84%E2%A0%A4%E2%A0%B5%E2%A0%A4%E2%A0%B1%E2%A0%A4%E2%A0%A7%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -594,6 +611,7 @@ octave sign on the first note no matter if it is in-accord or not.
    </a>
   </div>
   <a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b8028b0a870cafb04fb2160ddf4eaf7e5f859d2f.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A8%E2%A0%BD%E2%A0%A3%E2%A0%9C%E2%A0%90%E2%A0%AB%E2%A0%B1%E2%A0%AB%E2%A0%BB%E2%A0%80%E2%A0%90%E2%A0%BE%E2%A0%A3%E2%A0%9C%E2%A0%90%E2%A0%B3%E2%A0%BB%E2%A0%AB%E2%A0%B1%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -612,6 +630,7 @@ In this example the first measure splits into two voices at the third beat.
    </a>
   </div>
   <a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_ae2a42ef8b85f66338667a864d9a5997a68256d0.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%90%E2%A0%B3%E2%A0%93%E2%A0%A8%E2%A0%99%E2%A0%A8%E2%A0%85%E2%A0%A8%E2%A0%9F%E2%A0%90%E2%A0%82%E2%A0%A8%E2%A0%B9%E2%A0%9A%E2%A0%8A%E2%A0%80%E2%A0%A8%E2%A0%8F%E2%A0%84%E2%A0%B4%E2%A0%A7%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -628,6 +647,7 @@ at the same time.
    </a>
   </div>
   <a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_e30483dd2d16f8ba7ac0e92caa5206f4e692889b.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%90%E2%A0%93%E2%A0%8B%E2%A0%A8%E2%A0%85%E2%A0%90%E2%A0%8A%E2%A0%84%E2%A0%B7%E2%A0%9B%E2%A0%AF%E2%A0%BF%E2%A0%B7%E2%A0%9B%E2%A0%8B%E2%A0%91%E2%A0%90%E2%A0%82%E2%A0%90%E2%A0%99%E2%A0%8A%E2%A0%90%E2%A0%91%E2%A0%84%E2%A0%BD%E2%A0%9A%E2%A0%AE%E2%A0%BE%E2%A0%A3%E2%A0%9C%E2%A0%B8%E2%A0%B7%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -655,6 +675,7 @@ corresponding note or interval sign.
    </a>
   </div>
   <a href="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_1ace53b3a95407d4abd234a7b6c17ece47c2651c.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%9C%E2%A0%8C%E2%A0%87%E2%A0%90%E2%A0%BA%E2%A0%AC%E2%A0%88%E2%A0%89%E2%A0%99%E2%A0%BC%E2%A0%91%E2%A0%88%E2%A0%89%E2%A0%B4%E2%A0%B1%E2%A0%92%E2%A0%88%E2%A0%89%E2%A0%99%E2%A0%B4%E2%A0%AD%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -676,6 +697,7 @@ It is placed after every note except the last.
    </a>
   </div>
   <a href="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_4f88d827469b646785a22e91d4fd3e8981101fad.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%20%E2%A0%AD%E2%A0%90%E2%A0%93%E2%A0%89%E2%A0%8B%E2%A0%AD%E2%A0%AD%E2%A0%A8%E2%A0%99%E2%A0%89%E2%A0%80%E2%A0%A3%E2%A0%9A%E2%A0%89%E2%A0%8A%E2%A0%AD%E2%A0%A8%E2%A0%9B%E2%A0%89%E2%A0%91%E2%A0%89%E2%A0%A1%E2%A0%9A%E2%A0%89%E2%A0%80%E2%A0%B9%E2%A0%A5%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
@@ -693,6 +715,7 @@ the last note in the phrase receives a single slur sign.
    </a>
   </div>
   <a href="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_b77e1bce61b64430cd0ef0ab5357862ab368b797.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%83%E2%A0%B2%E2%A0%80%E2%A0%90%E2%A0%B3%E2%A0%89%E2%A0%89%E2%A0%8A%E2%A0%9A%E2%A0%80%E2%A0%B9%E2%A0%91%E2%A0%8B%E2%A0%80%E2%A0%BB%E2%A0%8B%E2%A0%91%E2%A0%80%E2%A0%AB%E2%A0%89%E2%A0%99%E2%A0%AD%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
