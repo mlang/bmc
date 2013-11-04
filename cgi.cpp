@@ -193,7 +193,7 @@ main(int argc, char const *argv[])
           generate.instrument(cgi("instrument"));
         generate(score);
         ly.close();        
-        std::string cmd("lilypond -lNONE --png -dpaper-size='\"a5landscape\"' -o " + dir + prefix + " " + dir + prefix + ".ly");
+        std::string cmd("lilypond --png -dpaper-size='\"a5\"' -o " + dir + prefix + " " + dir + prefix + ".ly" + " >/tmp/bmc.cgi/log 2>&1");
         if (system(cmd.c_str()) != 0) {
           prefix = "";
         }
@@ -220,7 +220,7 @@ main(int argc, char const *argv[])
         exit(EXIT_SUCCESS);
       }
     } else if (cgi.getElement("type")->getValue() == "pdf") {
-      std::string cmd("lilypond -lNONE --pdf -o /tmp/bmc.cgi/" + cgi("hash") + " /tmp/bmc.cgi/" + cgi("hash") + ".ly");
+      std::string cmd("lilypond --pdf -o /tmp/bmc.cgi/" + cgi("hash") + " /tmp/bmc.cgi/" + cgi("hash") + ".ly");
       if (system(cmd.c_str()) == 0) {
         std::ifstream pdf_file("/tmp/bmc.cgi/" + cgi("hash") + ".pdf");
         if (pdf_file.good()) {
@@ -240,14 +240,21 @@ main(int argc, char const *argv[])
             << cgicc::title("Braille Music Compiler")
             << cgicc::head()
             << cgicc::body();
+  std::cout << cgicc::h1("Automatic transcription of braille music code to print and sound") << std::endl;
+  if (cgi("music").empty()) {
+    std::cout << cgicc::p() << "See this "
+                            << cgicc::a("braille music code tutorial")
+                              .set("href", "https://bmc.branchable.com/tutorial/")
+                            << " for details and inspiration."
+                            << cgicc::p() << std::endl;
+    std::cout << cgicc::p("To allow for several parts in a single score, music always needs to end with a final bar sign.") << std::endl;
+  }
   if (not cgi("music").empty() and prefix.empty()) {
     std::cout << cgicc::p("Unable to translate braille music, try again.").set("class", "error") << std::endl;
+    std::cout << cgicc::p() << "The "
+                            << cgicc::a("tutorial").set("href", "https://bmc.branchable.com/tutorial/")
+                            << " contains working examples which can be used as a starting point.  Just invoke the Edit link below each example to load it back in here." << cgicc::p() << std::endl;
   }
-  std::cout << cgicc::p() << "See a "
-                          << cgicc::a("braille music code tutorial")
-                            .set("href", "https://bmc.branchable.com/tutorial/")
-                          << " for details."
-                          << cgicc::p() << std::endl;
   std::cout << cgicc::form();
   std::cout << cgicc::label("Select braille table: ").set("for", "table");
   table_select(std::cout, cgi);
