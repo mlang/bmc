@@ -31,7 +31,8 @@ namespace music { namespace braille {
 
 template<typename Iterator>
 partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<Iterator>& error_handler)
-: partial_voice_sign_grammar::base_type(start, "measure")
+: partial_voice_sign_grammar::base_type(start, "partial_voice_sign")
+, tuplet_start(error_handler)
 {
   using boost::phoenix::begin;
   using boost::phoenix::end;
@@ -50,7 +51,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   start = hyphen
         | moving_note | chord | note | rest
-        | value_distinction | tie | tuplet
+        | value_distinction | tie | tuplet_start
         | clef | hand_sign
         | simile
         | barline_sign
@@ -104,17 +105,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 
-  boost::spirit::qi::_pass_type _pass;
-  using boost::phoenix::construct;
-  tuplet = brl(23) >> brl(23)[_val = construct<ast::tuplet_start>(true)]
-         | brl(23)[_val = construct<ast::tuplet_start>(false)]
-         | brl(456) >> lower_number[_a = _1]
-        >> brl(456) >> lower_number[_pass = _a == _1]
-        >> brl(3)[_val = construct<ast::tuplet_start>(_a, true)]
-         | brl(456) >> lower_number[_a = _1]
-        >> brl(3)[_val = construct<ast::tuplet_start>(_a, false)]
-         ;
-
   clef = clef_sign > optional_dot;
 
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
@@ -134,7 +124,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   BMC_LOCATABLE_SET_ID(hyphen);
   BMC_LOCATABLE_SET_ID(simile);
   BMC_LOCATABLE_SET_ID(tie);
-  BMC_LOCATABLE_SET_ID(tuplet);
   BMC_LOCATABLE_SET_ID(clef);
 #undef BMC_LOCATABLE_SET_ID
   

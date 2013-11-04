@@ -11,6 +11,7 @@
 #include <boost/spirit/include/qi_grammar.hpp>
 #include "bmc/braille/ast/ast.hpp"
 #include "bmc/braille/parsing/grammar/numbers.hpp"
+#include "bmc/braille/parsing/grammar/tuplet_start.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
 namespace music { namespace braille {
@@ -35,7 +36,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::interval()> interval;
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
-  boost::spirit::qi::rule<Iterator, ast::tuplet_start(), boost::spirit::qi::locals<unsigned>> tuplet;
+  tuplet_start_grammar<Iterator> tuplet_start;
   boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
   boost::spirit::qi::rule<Iterator, ast::clef()> clef;
   boost::spirit::qi::rule<Iterator, ast::simile(), boost::spirit::qi::locals<unsigned>> simile;
