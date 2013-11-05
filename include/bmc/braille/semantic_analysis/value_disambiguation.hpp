@@ -148,7 +148,12 @@ public:
 
 inline rational
 duration(std::vector<value_proxy> const &values)
-{ return boost::accumulate(values, zero); }
+{
+  return values.empty()
+         ? zero
+         : std::accumulate(std::next(std::begin(values)), std::end(values),
+                           static_cast<rational>(values.front()));
+}
 
 struct global_state
 {
