@@ -108,7 +108,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
     >> -measure_range
     >> paragraph
     >> eom
-    >> (eoi | eol)
+    >> (eoi | +eol)
      ;
 
   solo_part = *solo_section >> last_solo_section;
