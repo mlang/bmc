@@ -1,0 +1,22 @@
+We have a very rudimentary, but probably quite useful, web interface to BMC now.
+That means, you can enter braille music code in your web browser and have it processed
+by BMC to produce visual and aural renditions of your braille music.
+
+This is a first step to get the features we support already out to users.
+While BMC is quite easy to compile and install on Linux and probably Mac OS X,
+we haven't really amanged to make any progress on a Windows or iOS/Android port
+recently.  So while I actually envisage even more fine-grained interactive
+features in the future, a web service is actually a useful start to bridge
+the cross-platform divide.
+
+You can find the current version of bmc.cgi [here](http://bmc.delysid.org/).
+
+Additionally, links have been placed in the [tutorial](../tutorial/) which allow to
+expand on the provided examples using this new web service.
+
+Concerning the backend, I have made BMC compliant with another braille
+music rule.  A note group can never span across a music hyphen.  Since music
+hyphens were previously parsed, but ignored in the AST, this had to be changed.
+A Music hyphen is now saved in the internal AST, and can be queried to
+stop note group search.
+
