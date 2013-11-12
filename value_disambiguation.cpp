@@ -25,8 +25,10 @@ value_proxy::undotted_duration() const
 rational
 value_proxy::calculate_duration(unsigned dots) const
 {
-  return dots ? undotted_duration() * augmentation_dots_factor(dots)
-              : undotted_duration();
+  rational result{undotted_duration()};
+  if (dots) result *= augmentation_dots_factor(dots);
+  if (tuplet_factor != rational{1}) result *= tuplet_factor;
+  return result;
 }
 
 void
@@ -114,7 +116,7 @@ public:
   // A note group must never contain a music hyphen.
   result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
-  result_type operator()(braille::ast::tuplet_start &) {}
+  result_type operator()(braille::ast::tuplet_start &) { BOOST_ASSERT(false); }
   result_type operator()(braille::hand_sign &) {}
   result_type operator()(ast::clef &) {}
   result_type operator()(ast::barline &) {}
@@ -140,6 +142,35 @@ public:
   }
 };
 
+/**
+ * \brief Find end of note group.
+ *
+ * \param begin The beginning of the range of signs to examine
+ * \param end   The end of the range of signs to examine
+ * \return If note group was found the returned iterator points one element
+ *         beyond its last element.  Otherwise, begin is returned.
+ */
+ast::partial_voice::iterator
+notegroup_end( ast::partial_voice::iterator const &begin
+             , ast::partial_voice::iterator const &end
+             )
+{
+  if (apply_visitor(ast::is_rhythmic(), *begin)) {
+    if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
+      auto iter = begin + 1;
+      while (iter != end and
+             apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
+             not apply_visitor(ast::is_rest(), *iter) and
+             not (apply_visitor(ast::get_augmentation_dots(), *iter) > 0) and
+             not apply_visitor(ast::is_hyphen(), *iter))
+        ++iter;
+      // A note group is only valid if it consists of at least 3 rhythmic signs
+      if (std::distance(begin, iter) > 2) return iter;
+    }
+  }
+  return begin;
+}
+
 class same_category
 : public std::vector<value_proxy>
 , public boost::static_visitor<void>
@@ -154,71 +185,69 @@ public:
   { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note &note)
-  { emplace_back(note, category); }
+  { emplace_back(note, category, rational(1)); }
   result_type operator()(ast::rest &rest)
   { emplace_back(rest, category); }
   result_type operator()(ast::chord &chord)
-  { emplace_back(chord, category); }
+  { emplace_back(chord, category, rational(1)); }
   result_type operator()(ast::moving_note &chord)
-  { emplace_back(chord, category); }
+  { emplace_back(chord, category, rational(1)); }
   result_type operator()(ast::value_distinction const &) {}
   template<typename Sign> result_type operator()(Sign const &)
   { BOOST_ASSERT(false); }
 };
 
+ast::partial_voice::iterator
+same_category_end( ast::partial_voice::iterator const &begin
+                 , ast::partial_voice::iterator const &end
+                 , ast::value_distinction::type distinction
+                 )
+{
+  if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
+    ast::partial_voice::iterator iter(begin + 1);
+    if (iter != end and apply_visitor(ast::is_rhythmic(), *iter)) {
+      for (ast::value
+           initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
+           iter != end and
+           apply_visitor(ast::is_rhythmic(), *iter) and
+           apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
+           ++iter);
+      return iter;
+    }
+  }
+  return begin;
+}
+
+struct tuplet_info
+{
+  unsigned number;
+  unsigned ttl = 0;
+};
+
+bool
+is_tuplet_begin( ast::partial_voice::iterator const &iterator
+               , unsigned &number
+               )
+{
+  bool doubled;
+  return apply_visitor(ast::is_tuplet_start(number, doubled), *iterator);
+}
+
+ast::partial_voice::iterator
+tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end)
+{
+  unsigned number;
+  bool doubled;
+  while (begin != end) {
+    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin))
+      break;
+    ++begin;
+  }
+  return begin;
+}
+
 class partial_voice_interpreter
 {
-  static
-  ast::partial_voice::iterator
-  same_category_end( ast::partial_voice::iterator const &begin
-                   , ast::partial_voice::iterator const &end
-                   , ast::value_distinction::type distinction
-                   )
-  {
-    if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
-      ast::partial_voice::iterator iter(begin + 1);
-      if (iter != end and apply_visitor(ast::is_rhythmic(), *iter)) {
-        for (ast::value
-             initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
-             iter != end and
-             apply_visitor(ast::is_rhythmic(), *iter) and
-             apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
-             ++iter);
-        return iter;
-      }
-    }
-    return begin;
-  }
-  /**
-   * \brief Find end of note group.
-   *
-   * \param begin The beginning of the range of signs to examine
-   * \param end   The end of the range of signs to examine
-   * \return If note group was found the returned iterator points one element
-   *         beyond its last element.  Otherwise, begin is returned.
-   */
-  static
-  ast::partial_voice::iterator
-  notegroup_end( ast::partial_voice::iterator const &begin
-               , ast::partial_voice::iterator const &end
-               )
-  {
-    if (apply_visitor(ast::is_rhythmic(), *begin)) {
-      if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
-        auto iter = begin + 1;
-        while (iter != end and
-               apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
-               not apply_visitor(ast::is_rest(), *iter) and
-               not (apply_visitor(ast::get_augmentation_dots(), *iter) > 0) and
-               not apply_visitor(ast::is_hyphen(), *iter))
-          ++iter;
-        // A note group is only valid if it consists of at least 3 rhythmic signs
-        if (std::distance(begin, iter) > 2) return iter;
-      }
-    }
-    return begin;
-  }
-
   bool const last_partial_measure;
   global_state const &state;
   rational const &start_position;
@@ -234,15 +263,18 @@ class partial_voice_interpreter
                       , value_proxy *stack_end
                       , rational const &max_duration
                       , rational const &position
+                      , tuplet_info const &tuplet
                       ) const;
 
 public:
   bool on_beat(rational const &position) const
   { return no_remainder(position, state.beat); }
+
   void recurse( ast::partial_voice::iterator const &iterator
               , value_proxy *stack_end
               , rational const &max_duration
               , rational const &position
+              , tuplet_info tuplet
               ) const
   {
     if (iterator == voice_end) {
@@ -259,11 +291,11 @@ public:
         if (group_duration <= max_duration) {
           rational const next_position(position + group_duration);
           if (on_beat(next_position)) {
-            recurse(tail, group.end(), max_duration - group_duration, next_position);
+            recurse(tail, group.end(), max_duration - group_duration, next_position, tuplet);
           }
         }
 
-        large_and_small(iterator, stack_end, max_duration, position);
+        large_and_small(iterator, stack_end, max_duration, position, tuplet);
       } else if ((tail = same_category_end
                          ( iterator, voice_end
                          , ast::value_distinction::large_follows
@@ -273,7 +305,7 @@ public:
         if (duration(group) <= max_duration) {
           recurse(tail, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
-                  position + duration(group));
+                  position + duration(group), tuplet);
         }
       } else if ((tail = same_category_end
                          ( iterator, voice_end
@@ -284,17 +316,24 @@ public:
         if (duration(group) <= max_duration) {
           recurse(tail, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
-                  position + duration(group));
+                  position + duration(group), tuplet);
+        }
+      } else if (is_tuplet_begin(iterator, tuplet.number)) {
+        tail = iterator + 1;
+        for (tuplet.ttl = std::distance(tail, tuplet_end(tail, voice_end));
+             tuplet.ttl > 0; --tuplet.ttl) {
+          recurse(tail, stack_end,
+                  max_duration, position, tuplet);
         }
       } else {
-        large_and_small(iterator, stack_end, max_duration, position);
+        large_and_small(iterator, stack_end, max_duration, position, tuplet);
 
         if (stack_begin.get() == stack_end and position == 0 and
             state.time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
           recurse(iterator + 1, stack_end + 1,
-                  zero, position + state.time_signature);
+                  zero, position + state.time_signature, tuplet);
         }
       }
     }
@@ -316,7 +355,10 @@ public:
   {}
 
   void operator()(rational const &max_duration) const
-  { recurse(voice.begin(), stack_begin.get(), max_duration, start_position); }
+  {
+    tuplet_info tuplet;
+    recurse(voice.begin(), stack_begin.get(), max_duration, start_position, tuplet);
+  }
   rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
 
@@ -325,48 +367,55 @@ class large_and_small_visitor : public boost::static_visitor<bool>
   ast::partial_voice::iterator const &rest;
   value_proxy *const proxy;
   rational const &max_duration
-               , &position
-               ;
+               , &position;
+  tuplet_info tuplet;               ;
   partial_voice_interpreter const &interpreter;
 public:
   large_and_small_visitor( ast::partial_voice::iterator const &rest
                          , value_proxy *stack_end
                          , rational const &max_duration
                          , rational const &position
+                         , tuplet_info const &tuplet
                          , partial_voice_interpreter const &interpreter
                          )
   : rest(rest)
   , proxy(stack_end)
   , max_duration(max_duration)
   , position(position)
+  , tuplet(tuplet)
   , interpreter(interpreter)
   {}
 
   template <class Value>
-  result_type operator()(Value &value) const
+  result_type operator()(Value &value)
   {
+    rational factor{1};
+    if (tuplet.ttl) {
+      --tuplet.ttl;
+      if (tuplet.number == 3) factor = rational(2, 3);
+    }
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
-      if (*new(proxy)value_proxy(value, large) <= max_duration)
+      if (*new(proxy)value_proxy(value, large, factor) <= max_duration)
         interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy
+                           , max_duration - *proxy, position + *proxy, tuplet
                            );
-      if (*new(proxy)value_proxy(value, small) <= max_duration)
+      if (*new(proxy)value_proxy(value, small, factor) <= max_duration)
         interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy
+                           , max_duration - *proxy, position + *proxy, tuplet
                            );
       return true;
     }
     return false;
   }
-  result_type operator()(ast::value_distinction &) const { return false; }
-  result_type operator()(ast::hyphen &) const { return false; }
-  result_type operator()(braille::hand_sign &) const { return false; }
-  result_type operator()(ast::clef &) const { return false; }
-  result_type operator()(ast::tie &) const { return false; }
-  result_type operator()(ast::tuplet_start &) const { return false; }
-  result_type operator()(ast::barline &) const { return false; }
-  result_type operator()(ast::simile &simile) const
+  result_type operator()(ast::value_distinction &) { return false; }
+  result_type operator()(ast::hyphen &) { return false; }
+  result_type operator()(braille::hand_sign &) { return false; }
+  result_type operator()(ast::clef &) { return false; }
+  result_type operator()(ast::tie &) { return false; }
+  result_type operator()(ast::tuplet_start &) { return false; }
+  result_type operator()(ast::barline &) { return false; }
+  result_type operator()(ast::simile &simile)
   {
     if (not position) { // full measure simile
       BOOST_ASSERT(static_cast<bool>(interpreter.last_measure_duration()));
@@ -375,30 +424,30 @@ public:
           static_cast<rational>(*proxy) / simile.count <= max_duration) {
         rational const duration(static_cast<rational>(*proxy) / simile.count);
         interpreter.recurse( rest, proxy + 1
-                           , max_duration - duration, position + duration
+                           , max_duration - duration, position + duration, tuplet
                            );
       }
     } else { // partial measure simile
       if (interpreter.on_beat(position)) {
         if (*new(proxy)value_proxy(simile, position) <= max_duration)
           interpreter.recurse( rest, proxy + 1
-                             , max_duration - *proxy, position + *proxy
+                             , max_duration - *proxy, position + *proxy, tuplet
                              );
       }
     }
     return true;
   }
 
-  bool is_grace(ast::note const &note) const
+  bool is_grace(ast::note const &note)
   {
     return std::find_if(note.articulations.begin(), note.articulations.end(),
                         [](articulation a) {
                           return a == appoggiatura || a ==  short_appoggiatura;
                         }) != note.articulations.end();
   }
-  bool is_grace(ast::rest const &) const { return false; }
-  bool is_grace(ast::chord const &chord) const { return is_grace(chord.base); }
-  bool is_grace(ast::moving_note const &chord) const { return is_grace(chord.base); }
+  bool is_grace(ast::rest const &) { return false; }
+  bool is_grace(ast::chord const &chord) { return is_grace(chord.base); }
+  bool is_grace(ast::moving_note &chord) { return is_grace(chord.base); }
 };
 
 inline
@@ -409,16 +458,14 @@ large_and_small( ast::partial_voice::iterator const &iterator
                , value_proxy *stack_end
                , rational const &max_duration
                , rational const &position
+               , tuplet_info const &tuplet
                ) const
 {
   // Skip this sign if it does not result in at least one possible proxy
   auto rest = iterator; ++rest;
-  if (not apply_visitor( large_and_small_visitor
-                         (rest, stack_end, max_duration, position, *this)
-                       , *iterator
-                       )
-     )
-    recurse(rest, stack_end, max_duration, position);
+  large_and_small_visitor l_and_s(rest, stack_end, max_duration, position, tuplet, *this);
+  if (not apply_visitor(l_and_s, *iterator))
+    recurse(rest, stack_end, max_duration, position, tuplet);
 }
 
 }

@@ -91,6 +91,29 @@ namespace music {
         result_type operator()(Sign const &) const
         { return false; }
       };
+
+      class is_tuplet_start : public boost::static_visitor<bool>
+      {
+        unsigned &number;
+        bool &doubled;
+      public:
+        is_tuplet_start(unsigned &number, bool &doubled)
+        : number{number}
+        , doubled{doubled}
+        {}
+
+        result_type operator() (tuplet_start const& tuplet) const
+        {
+          number = tuplet.number();
+          doubled = tuplet.doubled();
+          return true;
+        }
+
+        template <class T>
+        result_type operator()(T const &) const
+        { return false; }
+      };
+
       struct is_hyphen : boost::static_visitor<bool>
       {
         template <typename T>

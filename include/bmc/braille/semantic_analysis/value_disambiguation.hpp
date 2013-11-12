@@ -52,6 +52,7 @@ class value_proxy
     ast::moving_note *moving_note_ptr;
     ast::simile *simile_ptr;
   };
+  rational tuplet_factor = rational(1);
   rational duration;
 
   rational const &undotted_duration() const;
@@ -60,9 +61,10 @@ class value_proxy
 public:
   value_proxy() : type(ptr_type::uninitialized) {}
 
-  value_proxy(ast::note &note, value_category category)
+  value_proxy(ast::note &note, value_category category, rational const &factor)
   : type(ptr_type::note), note_ptr(&note)
   , value_type(note.ambiguous_value), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
@@ -72,9 +74,10 @@ public:
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, value_category category)
+  value_proxy(ast::rest &rest, value_category category, rational const &factor)
   : type(ptr_type::rest), rest_ptr(&rest)
   , value_type(rest.ambiguous_value), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
@@ -89,9 +92,10 @@ public:
   , duration(duration)
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::chord &chord, value_category category)
+  value_proxy(ast::chord &chord, value_category category, rational const &factor)
   : type(ptr_type::chord), chord_ptr(&chord)
   , value_type(chord.base.ambiguous_value), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
@@ -103,9 +107,10 @@ public:
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
-  value_proxy(ast::moving_note &chord, value_category category)
+  value_proxy(ast::moving_note &chord, value_category category, rational const &factor)
   : type(ptr_type::moving_note), moving_note_ptr(&chord)
   , value_type(chord.base.ambiguous_value), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
