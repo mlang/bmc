@@ -463,16 +463,18 @@ public:
       if (*new(proxy)value_proxy(value, large, factor) <= max_duration) {
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
-        interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy, tuplet
-                           );
+        if (not last_tuplet or interpreter.on_beat(position + *proxy))
+          interpreter.recurse( rest, next
+                             , max_duration - *proxy, position + *proxy, tuplet
+                             );
       }
       if (*new(proxy)value_proxy(value, small, factor) <= max_duration) {
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
-        interpreter.recurse( rest, next
-                           , max_duration - *proxy, position + *proxy, tuplet
-                           );
+        if (not last_tuplet or interpreter.on_beat(position + *proxy))
+          interpreter.recurse( rest, next
+                             , max_duration - *proxy, position + *proxy, tuplet
+                             );
       }
       return true;
     }
