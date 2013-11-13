@@ -315,6 +315,7 @@ generator::operator() (braille::ast::rest const &rest)
 generator::result_type
 generator::operator() (braille::ast::note const &note)
 {
+  if (note.first_of_tuplet) os << "\\times " << note.factor << " { ";
   bool grace = false;
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
@@ -367,6 +368,7 @@ generator::operator() (braille::ast::note const &note)
   if (include_locations) {
     os << "%{" << note.line << ":" << note.column << "%}";
   }
+  if (note.last_of_tuplet) os << " }";
 }
 
 generator::result_type

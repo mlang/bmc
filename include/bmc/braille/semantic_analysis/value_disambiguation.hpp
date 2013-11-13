@@ -45,6 +45,8 @@ class value_proxy
   ast::value value_type:4;
   value_category category:4;
   ast::notegroup_member_type beam = ast::notegroup_member_type::none;
+  bool first_tuplet = false;
+  bool last_tuplet = false;
   union {
     ast::note *note_ptr;
     ast::rest *rest_ptr;
@@ -146,6 +148,8 @@ public:
     BOOST_ASSERT(beam == ast::notegroup_member_type::none);
     beam = ast::notegroup_member_type::end;
   }
+  void make_first_tuplet() { first_tuplet = true; }
+  void make_last_tuplet() { last_tuplet = true; }
 
   operator rational const &() const { return duration; }
 

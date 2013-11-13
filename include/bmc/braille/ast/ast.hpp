@@ -60,8 +60,11 @@ struct rhythmic_data
   ast::value ambiguous_value = unknown;
   unsigned dots = 0;
   rational type = {}; // filled in by value_disambiguation.hpp
+  rational factor = rational{1};
   notegroup_member_type notegroup_member = notegroup_member_type::none; // filled in by value_disambiguation.hpp
   slur_member_type slur_member = slur_member_type::none;
+  bool first_of_tuplet = false;
+  bool last_of_tuplet = false;
 };
 
 /** \brief Base class for everything that implies a rhythmic value.
@@ -119,7 +122,7 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
 
   note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
-  { return type * 2 - type / pow(2, dots); }
+  { return type * augmentation_dots_factor(dots) * factor; }
   virtual unsigned get_dots() const
   { return dots; }
 };
