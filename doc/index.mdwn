@@ -9,7 +9,8 @@ This is a list of braille music code features that BMC already supports:
 
 * Full and partial measure in-accord.
 * Ambiguity resolution (automatic value deduction including support for value distinction signs).
-* Notegrouping (decoded and emitted as beams in visual notation).
+* Note grouping (decoded and emitted as beams in visual notation).
+* Tuplets.
 * Anacrusis.
 * Repeat barlines and alternative endings.
 * Section-by-section solo and keyboard music (parts with one or two staves).
@@ -17,7 +18,6 @@ This is a list of braille music code features that BMC already supports:
 
 The following is a list of braille music code features which are currently not yet supported by BMC:
 
-* Tuplets.
 * Doubling.
 * Repeated ranges of measures.
 * Polymetric music (music on staves with different time signatures).
