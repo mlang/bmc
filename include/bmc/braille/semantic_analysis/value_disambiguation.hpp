@@ -68,9 +68,10 @@ public:
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy(ast::note &note, value_category category, ast::value value_type)
+  value_proxy(ast::note &note, value_category category, ast::value value_type, rational const &factor)
   : type(ptr_type::note), note_ptr(&note)
   , value_type(value_type), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
@@ -81,9 +82,10 @@ public:
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, value_category category, ast::value value_type)
+  value_proxy(ast::rest &rest, value_category category, ast::value value_type, rational const &factor)
   : type(ptr_type::rest), rest_ptr(&rest)
   , value_type(value_type), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
@@ -100,10 +102,11 @@ public:
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
   value_proxy( ast::chord &chord, value_category category
-             , ast::value value_type
+             , ast::value value_type, rational const &factor
              )
   : type(ptr_type::chord), chord_ptr(&chord)
   , value_type(value_type), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
@@ -115,10 +118,11 @@ public:
   { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
   value_proxy( ast::moving_note &chord, value_category category
-             , ast::value value_type
+             , ast::value value_type, rational const &factor
              )
   : type(ptr_type::moving_note), moving_note_ptr(&chord)
   , value_type(value_type), category(category)
+  , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 

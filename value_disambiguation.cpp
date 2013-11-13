@@ -75,42 +75,93 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
   result_type operator()(Sign const &) const { return false; }
 };
 
+struct tuplet_info
+{
+  unsigned number;
+  unsigned ttl = 0;
+};
+
+bool
+is_tuplet_begin( ast::partial_voice::iterator const &iterator
+               , unsigned &number
+               )
+{
+  bool doubled;
+  return apply_visitor(ast::is_tuplet_start(number, doubled), *iterator);
+}
+
+ast::partial_voice::iterator
+tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end)
+{
+  unsigned number;
+  bool doubled;
+  while (begin != end) {
+    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin))
+      break;
+    ++begin;
+  }
+  return begin;
+}
+
 class notegroup: public boost::static_visitor<void>
 {
   ast::value type;
   value_proxy *const stack_begin, *stack_end;
+  tuplet_info tuplet;
 public:
   notegroup( ast::partial_voice::iterator const &begin
            , ast::partial_voice::iterator const &end
            , value_proxy *stack_end
+           , tuplet_info const &tuplet
            )
   : type{ast::unknown}
   , stack_begin{stack_end}, stack_end{stack_end}
+  , tuplet{tuplet}
   { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note &note)
   {
     BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = note.ambiguous_value;
-    new (stack_end++) value_proxy(note, small, type);
+    rational factor{1};
+    if (tuplet.ttl) {
+      --tuplet.ttl;
+      if (tuplet.number == 3) factor = rational{2, 3};
+    }
+    new (stack_end++) value_proxy(note, small, type, factor);
   }
   result_type operator()(ast::rest &rest)
   {
     BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
-    new (stack_end++) value_proxy(rest, small, type);
+    rational factor{1};
+    if (tuplet.ttl) {
+      --tuplet.ttl;
+      if (tuplet.number == 3) factor = rational{2, 3};
+    }
+    new (stack_end++) value_proxy(rest, small, type, factor);
   }
   result_type operator()(ast::chord &chord)
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, small, type);
+    rational factor{1};
+    if (tuplet.ttl) {
+      --tuplet.ttl;
+      if (tuplet.number == 3) factor = rational{2, 3};
+    }
+    new (stack_end++) value_proxy(chord, small, type, factor);
   }
   result_type operator()(ast::moving_note &chord)
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    new (stack_end++) value_proxy(chord, small, type);
+    rational factor{1};
+    if (tuplet.ttl) {
+      --tuplet.ttl;
+      if (tuplet.number == 3) factor = rational{2, 3};
+    }
+    new (stack_end++) value_proxy(chord, small, type, factor);
   }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
   // A note group must never contain a music hyphen.
@@ -140,6 +191,8 @@ public:
     return std::accumulate(std::next(stack_begin), stack_end,
                            static_cast<rational>(*stack_begin));
   }
+
+  tuplet_info tuplet_state() const { return tuplet; }
 };
 
 /**
@@ -218,34 +271,6 @@ same_category_end( ast::partial_voice::iterator const &begin
   return begin;
 }
 
-struct tuplet_info
-{
-  unsigned number;
-  unsigned ttl = 0;
-};
-
-bool
-is_tuplet_begin( ast::partial_voice::iterator const &iterator
-               , unsigned &number
-               )
-{
-  bool doubled;
-  return apply_visitor(ast::is_tuplet_start(number, doubled), *iterator);
-}
-
-ast::partial_voice::iterator
-tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end)
-{
-  unsigned number;
-  bool doubled;
-  while (begin != end) {
-    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin))
-      break;
-    ++begin;
-  }
-  return begin;
-}
-
 class partial_voice_interpreter
 {
   bool const last_partial_measure;
@@ -286,12 +311,12 @@ public:
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
           (tail = notegroup_end(iterator, voice_end)) > iterator) {
-        notegroup const group(iterator, tail, stack_end);
+        notegroup const group(iterator, tail, stack_end, tuplet);
         rational const group_duration(group.duration());
         if (group_duration <= max_duration) {
           rational const next_position(position + group_duration);
           if (on_beat(next_position)) {
-            recurse(tail, group.end(), max_duration - group_duration, next_position, tuplet);
+            recurse(tail, group.end(), max_duration - group_duration, next_position, group.tuplet_state());
           }
         }
 
