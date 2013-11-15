@@ -372,6 +372,26 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test2) {
   BOOST_CHECK(compile(attribute));
 }
 
+BOOST_AUTO_TEST_CASE(score_tuplet_test3) {
+  std::locale::global(std::locale(""));
+  std::wstring const input(L"⠸⠶⠄⠐⠙⠑⠋⠛⠓⠊⠚⠹⠣⠅");
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].paragraphs.size(), std::size_t(1));
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_CHECK(compile(attribute));
+}
+
 struct slur_count_of_first_note : boost::static_visitor<std::size_t> {
   result_type operator()(music::braille::ast::measure const &measure) const {
     for (auto const &voice: measure.voices) {
