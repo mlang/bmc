@@ -108,7 +108,8 @@ tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator cons
   unsigned number;
   bool doubled;
   while (begin != end) {
-    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin))
+    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin) or
+        apply_visitor(ast::is_simile(), *begin))
       break;
     ++begin;
   }
@@ -140,10 +141,7 @@ public:
     if (tuplet.current < tuplet.end) {
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
-      if (tuplet.number > 2)
-        factor.assign(tuplet.number - 1, tuplet.number);
-      else if (tuplet.number == 2)
-        factor.assign(3, 2);
+      factor = tuplet_number_to_ratio(tuplet.number);
     }
     new (stack_end) value_proxy(note, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -159,10 +157,7 @@ public:
     if (tuplet.current < tuplet.end) {
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
-      if (tuplet.number > 2)
-        factor.assign(tuplet.number - 1, tuplet.number);
-      else if (tuplet.number == 2)
-        factor.assign(3, 2);
+      factor = tuplet_number_to_ratio(tuplet.number);
     }
     new (stack_end) value_proxy(rest, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -178,10 +173,7 @@ public:
     if (tuplet.current < tuplet.end) {
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
-      if (tuplet.number > 2)
-        factor.assign(tuplet.number - 1, tuplet.number);
-      else if (tuplet.number == 2)
-        factor.assign(3, 2);
+      factor = tuplet_number_to_ratio(tuplet.number);
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -197,10 +189,7 @@ public:
     if (tuplet.current < tuplet.end) {
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
-      if (tuplet.number > 2)
-        factor.assign(tuplet.number - 1, tuplet.number);
-      else if (tuplet.number == 2)
-        factor.assign(3, 2);
+      factor = tuplet_number_to_ratio(tuplet.number);
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -463,10 +452,7 @@ public:
     if (tuplet.current < tuplet.end) {
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
-      if (tuplet.number > 2)
-        factor.assign(tuplet.number - 1, tuplet.number);
-      else if (tuplet.number == 2)
-        factor.assign(3, 2);
+      factor = tuplet_number_to_ratio(tuplet.number);
     }
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;

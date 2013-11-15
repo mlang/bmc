@@ -72,6 +72,13 @@ namespace music {
         { return std::is_base_of<rhythmic, T>::value; }
       };
 
+      struct is_simile : boost::static_visitor<bool>
+      {
+        template <typename T>
+        result_type operator()(T const&) const
+        { return std::is_same<simile, T>::value; }
+      };
+
       class is_value_distinction : public boost::static_visitor<bool>
       {
         bool check;

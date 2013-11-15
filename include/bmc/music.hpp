@@ -19,7 +19,16 @@ rational const zero = rational();
 inline rational augmentation_dots_factor(unsigned dots)
 { return dots ? rational{(1 << (dots + 1)) - 1, 1 << dots} : rational{1}; }
 
-typedef rational time_modification;
+inline rational tuplet_number_to_ratio(unsigned number)
+{
+  BOOST_ASSERT(number > 0);
+  rational factor{1};
+  if (number > 2)
+    factor.assign(number - 1, number);
+  else if (number == 2) // duplet
+    factor.assign(number + 1, number);
+  return factor;
+}
 
 /**
  * \brief Represents a time signature with numerator and denominator.
