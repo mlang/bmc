@@ -141,7 +141,9 @@ public:
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
       if (tuplet.number > 2)
-        factor = rational(tuplet.number - 1, tuplet.number);
+        factor.assign(tuplet.number - 1, tuplet.number);
+      else if (tuplet.number == 2)
+        factor.assign(3, 2);
     }
     new (stack_end) value_proxy(note, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -158,7 +160,9 @@ public:
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
       if (tuplet.number > 2)
-        factor = rational(tuplet.number - 1, tuplet.number);
+        factor.assign(tuplet.number - 1, tuplet.number);
+      else if (tuplet.number == 2)
+        factor.assign(3, 2);
     }
     new (stack_end) value_proxy(rest, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -175,7 +179,9 @@ public:
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
       if (tuplet.number > 2)
-        factor = rational(tuplet.number - 1, tuplet.number);
+        factor.assign(tuplet.number - 1, tuplet.number);
+      else if (tuplet.number == 2)
+        factor.assign(3, 2);
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -192,7 +198,9 @@ public:
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
       if (tuplet.number > 2)
-        factor = rational(tuplet.number - 1, tuplet.number);
+        factor.assign(tuplet.number - 1, tuplet.number);
+      else if (tuplet.number == 2)
+        factor.assign(3, 2);
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -456,24 +464,32 @@ public:
       if (tuplet.current == tuplet.begin) first_tuplet = true;
       if (++tuplet.current == tuplet.end) last_tuplet = true;
       if (tuplet.number > 2)
-        factor = rational(tuplet.number - 1, tuplet.number);
+        factor.assign(tuplet.number - 1, tuplet.number);
+      else if (tuplet.number == 2)
+        factor.assign(3, 2);
     }
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (*new(proxy)value_proxy(value, large, factor) <= max_duration) {
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
-        if (not last_tuplet or interpreter.on_beat(position + *proxy))
+        rational const next_position(position + *proxy);
+        bool const maybe_tuplet_end = (next_position.denominator() & -next_position.denominator())
+                                      == next_position.denominator();
+        if (not last_tuplet or maybe_tuplet_end)
           interpreter.recurse( rest, next
-                             , max_duration - *proxy, position + *proxy, tuplet
+                             , max_duration - *proxy, next_position, tuplet
                              );
       }
       if (*new(proxy)value_proxy(value, small, factor) <= max_duration) {
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
-        if (not last_tuplet or interpreter.on_beat(position + *proxy))
+        rational const next_position(position + *proxy);
+        bool const maybe_tuplet_end = (next_position.denominator() & -next_position.denominator())
+                                      == next_position.denominator();
+        if (not last_tuplet or maybe_tuplet_end)
           interpreter.recurse( rest, next
-                             , max_duration - *proxy, position + *proxy, tuplet
+                             , max_duration - *proxy, next_position, tuplet
                              );
       }
       return true;
