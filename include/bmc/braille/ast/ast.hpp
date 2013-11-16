@@ -132,7 +132,7 @@ struct rest : locatable, rhythmic_data, rhythmic
   rest(): locatable(), rhythmic_data(), whole_measure(false) {}
   bool whole_measure; // filled in by disambiguate.hpp
   virtual rational as_rational() const
-  { return type * 2 - type / pow(2, dots); }
+  { return type * augmentation_dots_factor(dots) * factor; }
   virtual unsigned get_dots() const
   { return dots; }
 };

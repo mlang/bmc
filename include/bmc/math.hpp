@@ -83,6 +83,11 @@ namespace boost {
       }
     };
   }
+
+  // http://en.wikipedia.org/wiki/Dyadic_rational
+  template <typename IntType>
+  inline bool is_dyadic(rational<IntType> const &r)
+  { return (r.denominator() & -r.denominator()) == r.denominator(); }
 }
 
 #endif

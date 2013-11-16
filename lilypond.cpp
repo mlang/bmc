@@ -289,6 +289,7 @@ generator::operator() (braille::hand_sign const &) const
 generator::result_type
 generator::operator() (braille::ast::rest const &rest)
 {
+  if (rest.first_of_tuplet) os << "\\times " << rest.factor << " { ";
   if (rest.whole_measure) {
     os << "R"; if (rest.type) os << "1" << "*" << rest.type;
     last_type = 0, last_dots = 0;
@@ -310,6 +311,7 @@ generator::operator() (braille::ast::rest const &rest)
   if (include_locations) {
     os << "%{" << rest.line << ":" << rest.column << "%}";
   }
+  if (rest.last_of_tuplet) os << " }";
 }
 
 generator::result_type

@@ -45,6 +45,7 @@ value_proxy::accept() const
     break;
   case ptr_type::rest:
     rest_ptr->type = undotted_duration();
+    rest_ptr->factor = tuplet_factor;
     if (beam != ast::notegroup_member_type::none)
       rest_ptr->notegroup_member = beam;
     rest_ptr->first_of_tuplet = first_tuplet;
@@ -88,9 +89,9 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
 struct tuplet_info
 {
   unsigned number = 1;
-  ast::partial_voice::iterator begin;
-  ast::partial_voice::iterator current;
-  ast::partial_voice::iterator end;
+  rational factor = rational{1};
+  bool first_tuplet = true;
+  unsigned ttl = 0;
 };
 
 bool
@@ -103,7 +104,7 @@ is_tuplet_begin( ast::partial_voice::iterator const &iterator
 }
 
 ast::partial_voice::iterator
-tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end)
+tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end, bool simple)
 {
   unsigned number;
   bool doubled;
@@ -138,10 +139,12 @@ public:
     if (type == ast::unknown) type = note.ambiguous_value;
     rational factor{1};
     bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.current < tuplet.end) {
-      if (tuplet.current == tuplet.begin) first_tuplet = true;
-      if (++tuplet.current == tuplet.end) last_tuplet = true;
-      factor = tuplet_number_to_ratio(tuplet.number);
+    if (tuplet.ttl) {
+      if (tuplet.first_tuplet) first_tuplet = true;
+      tuplet.first_tuplet = false;
+      if (tuplet.ttl == 1) last_tuplet = true;
+      --tuplet.ttl;
+      factor = tuplet.factor;
     }
     new (stack_end) value_proxy(note, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -154,10 +157,12 @@ public:
     if (type == ast::unknown) type = rest.ambiguous_value;
     rational factor{1};
     bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.current < tuplet.end) {
-      if (tuplet.current == tuplet.begin) first_tuplet = true;
-      if (++tuplet.current == tuplet.end) last_tuplet = true;
-      factor = tuplet_number_to_ratio(tuplet.number);
+    if (tuplet.ttl) {
+      if (tuplet.first_tuplet) first_tuplet = true;
+      tuplet.first_tuplet = false;
+      if (tuplet.ttl == 1) last_tuplet = true;
+      --tuplet.ttl;
+      factor = tuplet.factor;
     }
     new (stack_end) value_proxy(rest, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -170,10 +175,12 @@ public:
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     rational factor{1};
     bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.current < tuplet.end) {
-      if (tuplet.current == tuplet.begin) first_tuplet = true;
-      if (++tuplet.current == tuplet.end) last_tuplet = true;
-      factor = tuplet_number_to_ratio(tuplet.number);
+    if (tuplet.ttl) {
+      if (tuplet.first_tuplet) first_tuplet = true;
+      tuplet.first_tuplet = false;
+      if (tuplet.ttl == 1) last_tuplet = true;
+      --tuplet.ttl;
+      factor = tuplet.factor;
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -186,10 +193,12 @@ public:
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     rational factor{1};
     bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.current < tuplet.end) {
-      if (tuplet.current == tuplet.begin) first_tuplet = true;
-      if (++tuplet.current == tuplet.end) last_tuplet = true;
-      factor = tuplet_number_to_ratio(tuplet.number);
+    if (tuplet.ttl) {
+      if (tuplet.first_tuplet) first_tuplet = true;
+      tuplet.first_tuplet = false;
+      if (tuplet.ttl == 1) last_tuplet = true;
+      --tuplet.ttl;
+      factor = tuplet.factor;
     }
     new (stack_end) value_proxy(chord, small, type, factor);
     if (first_tuplet) stack_end->make_first_tuplet();
@@ -225,7 +234,7 @@ public:
                            static_cast<rational>(*stack_begin));
   }
 
-  tuplet_info tuplet_state() const { return tuplet; }
+  tuplet_info const &tuplet_state() const { return tuplet; }
 };
 
 /**
@@ -378,10 +387,9 @@ public:
         }
       } else if (is_tuplet_begin(iterator, tuplet.number)) {
         tail = iterator + 1;
-        tuplet.begin = tuplet.current = tail;
-        tuplet.end = tuplet_end(tail, voice_end);
-        for (tuplet.end = tuplet_end(tail, voice_end);
-             tuplet.end > tuplet.begin; --tuplet.end)
+        tuplet.factor = tuplet_number_to_ratio(tuplet.number);
+        tuplet.first_tuplet = true;
+        for (tuplet.ttl = std::distance(tail, tuplet_end(tail, voice_end, true)); tuplet.ttl; --tuplet.ttl)
           recurse(tail, stack_end, max_duration, position, tuplet);
       } else {
         large_and_small(iterator, stack_end, max_duration, position, tuplet);
@@ -449,10 +457,12 @@ public:
   {
     rational factor{1};
     bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.current < tuplet.end) {
-      if (tuplet.current == tuplet.begin) first_tuplet = true;
-      if (++tuplet.current == tuplet.end) last_tuplet = true;
-      factor = tuplet_number_to_ratio(tuplet.number);
+    if (tuplet.ttl) {
+      if (tuplet.first_tuplet) first_tuplet = true;
+      tuplet.first_tuplet = false;
+      if (tuplet.ttl == 1) last_tuplet = true;
+      --tuplet.ttl;
+      factor = tuplet.factor;
     }
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
@@ -460,23 +470,22 @@ public:
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
         rational const next_position(position + *proxy);
-        bool const maybe_tuplet_end = (next_position.denominator() & -next_position.denominator())
-                                      == next_position.denominator();
-        if (not last_tuplet or maybe_tuplet_end)
+        // If this is a tuplet end, only accept it if its position makes sense.
+        if (not last_tuplet or is_dyadic(next_position)) {
           interpreter.recurse( rest, next
                              , max_duration - *proxy, next_position, tuplet
                              );
+        }
       }
       if (*new(proxy)value_proxy(value, small, factor) <= max_duration) {
         if (first_tuplet) proxy->make_first_tuplet();
         if (last_tuplet) proxy->make_last_tuplet();
         rational const next_position(position + *proxy);
-        bool const maybe_tuplet_end = (next_position.denominator() & -next_position.denominator())
-                                      == next_position.denominator();
-        if (not last_tuplet or maybe_tuplet_end)
+        if (not last_tuplet or is_dyadic(next_position)) {
           interpreter.recurse( rest, next
                              , max_duration - *proxy, next_position, tuplet
                              );
+        }
       }
       return true;
     }
