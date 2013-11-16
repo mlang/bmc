@@ -6,6 +6,7 @@
 
 #include "bmc/braille/semantic_analysis/value_disambiguation.hpp"
 #include <boost/variant/get.hpp>
+#include <map>
 
 namespace music { namespace braille { namespace value_disambiguation {
 
@@ -313,6 +314,17 @@ same_category_end( ast::partial_voice::iterator const &begin
   return begin;
 }
 
+std::map<unsigned, std::vector<rational>> tuplet_number_factors =
+{{2, {{3, 2}}}
+,{3, {{2, 3}}}
+,{4, {{3, 4}}}
+,{5, {{2, 5}
+     ,{4, 5}}}
+,{6, {{4, 6}}}
+,{7, {{4, 7}
+     ,{8, 7}}}
+};
+
 class partial_voice_interpreter
 {
   bool const last_partial_measure;
@@ -387,10 +399,13 @@ public:
         }
       } else if (is_tuplet_begin(iterator, tuplet.number)) {
         tail = iterator + 1;
-        tuplet.factor = tuplet_number_to_ratio(tuplet.number);
         tuplet.first_tuplet = true;
+        // Check all possible combinations of lengths and factors
         for (tuplet.ttl = std::distance(tail, tuplet_end(tail, voice_end, true)); tuplet.ttl; --tuplet.ttl)
-          recurse(tail, stack_end, max_duration, position, tuplet);
+          for (rational const &factor: tuplet_number_factors.at(tuplet.number)) {
+            tuplet.factor = factor;
+            recurse(tail, stack_end, max_duration, position, tuplet);
+          }
       } else {
         large_and_small(iterator, stack_end, max_duration, position, tuplet);
 
