@@ -387,12 +387,14 @@ public:
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
           (tail = notegroup_end(iterator, voice_end)) > iterator) {
-        notegroup const group(iterator, tail, stack_end, tuplet);
-        rational const group_duration(group.duration());
-        if (group_duration <= max_duration) {
-          rational const next_position(position + group_duration);
-          if (on_beat(next_position)) {
-            recurse(tail, group.end(), max_duration - group_duration, next_position, group.tuplet_state());
+        {
+          notegroup const group(iterator, tail, stack_end, tuplet);
+          rational const group_duration(group.duration());
+          if (group_duration <= max_duration) {
+            rational const next_position(position + group_duration);
+            if (on_beat(next_position)) {
+              recurse(tail, group.end(), max_duration - group_duration, next_position, group.tuplet_state());
+            }
           }
         }
 
@@ -431,8 +433,8 @@ public:
         // A nested tuplet can not be longer then the tuplet it is contained in.
         if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
         // Try all possible note counts and ratios.
-        for (t.levels.back().ttl = 1; t.levels.back().ttl <= ttl;
-             ++t.levels.back().ttl)
+        for (t.levels.back().ttl = ttl; t.levels.back().ttl;
+             --t.levels.back().ttl)
           for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
             t.levels.back().factor = factor;
             recurse(tail, stack_end, max_duration, position, t);
