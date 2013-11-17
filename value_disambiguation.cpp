@@ -97,6 +97,31 @@ struct tuplet_info
     unsigned ttl = 0;
   };
   std::vector<level> levels;
+  void
+  visit( rational &factor,
+    std::vector<rational> &tuplet_begin,
+    unsigned &tuplet_end,
+    bool &dyadic_next_position
+  ) {
+    factor = rational{1};
+    tuplet_begin.clear();
+    tuplet_end = 0;
+    dyadic_next_position = true;
+    for (tuplet_info::level &level: levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1)
+          ++tuplet_end;
+        else
+          dyadic_next_position = false;
+        --level.ttl;
+        factor *= level.factor;
+      }
+    }
+  }
 };
 
 bool
@@ -141,20 +166,11 @@ public:
   {
     BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = note.ambiguous_value;
-    rational factor{1};
+    rational factor;
     std::vector<rational> tuplet_begin;
-    unsigned tuplet_end = 0;
-    for (tuplet_info::level &level: tuplet.levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1) ++tuplet_end;
-        --level.ttl;
-        factor *= level.factor;
-      }
-    }
+    unsigned tuplet_end;
+    bool dyadic_next_position;
+    tuplet.visit(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(note, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -163,20 +179,11 @@ public:
   {
     BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
-    rational factor{1};
+    rational factor;
     std::vector<rational> tuplet_begin;
-    unsigned tuplet_end = 0;
-    for (tuplet_info::level &level: tuplet.levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1) ++tuplet_end;
-        --level.ttl;
-        factor *= level.factor;
-      }
-    }
+    unsigned tuplet_end;
+    bool dyadic_next_position;
+    tuplet.visit(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(rest, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -185,20 +192,11 @@ public:
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    rational factor{1};
+    rational factor;
     std::vector<rational> tuplet_begin;
-    unsigned tuplet_end = 0;
-    for (tuplet_info::level &level: tuplet.levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1) ++tuplet_end;
-        --level.ttl;
-        factor *= level.factor;
-      }
-    }
+    unsigned tuplet_end;
+    bool dyadic_next_position;
+    tuplet.visit(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(chord, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -207,20 +205,11 @@ public:
   {
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
-    rational factor{1};
+    rational factor;
     std::vector<rational> tuplet_begin;
-    unsigned tuplet_end = 0;
-    for (tuplet_info::level &level: tuplet.levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1) ++tuplet_end;
-        --level.ttl;
-        factor *= level.factor;
-      }
-    }
+    unsigned tuplet_end;
+    bool dyadic_next_position;
+    tuplet.visit(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(chord, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -345,7 +334,7 @@ std::map<unsigned, std::vector<rational>> tuplet_number_factors =
 };
 
 unsigned
-rhythmic_count( ast::partial_voice::iterator const &begin
+count_rhythmic( ast::partial_voice::iterator const &begin
               , ast::partial_voice::iterator const &end
               )
 {
@@ -429,11 +418,14 @@ public:
       } else if (is_tuplet_begin(iterator, tuplet_number)) {
         tail = iterator + 1;
         unsigned parent_ttl = tuplet.levels.empty()? 0: tuplet.levels.back().ttl;
-        tuplet.levels.emplace_back();
+        if (tuplet.levels.empty() or tuplet.levels.back().ttl > 0)
+          tuplet.levels.emplace_back();
         tuplet.levels.back().number = tuplet_number;
-        unsigned ttl = rhythmic_count(tail, tuplet_end(tail, voice_end, true));
+        tuplet.levels.back().first_tuplet = true;
+        unsigned ttl = count_rhythmic(tail, tuplet_end(tail, voice_end, true));
         // A nested tuplet can not be longer then the tuplet it is contained in.
         if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
+        // Try all possible note counts and ratios.
         for (tuplet.levels.back().ttl = ttl; tuplet.levels.back().ttl;
              --tuplet.levels.back().ttl)
           for (rational const &factor: tuplet_number_factors.at(tuplet.levels.back().number)) {
@@ -504,24 +496,11 @@ public:
   template <class Value>
   result_type operator()(Value &value)
   {
-    rational factor{1};
+    rational factor;
     std::vector<rational> tuplet_begin;
-    unsigned tuplet_end = 0;
-    bool dyadic_next_position = true;
-    for (tuplet_info::level &level: tuplet.levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1)
-          ++tuplet_end;
-        else
-          dyadic_next_position = false;
-        --level.ttl;
-        factor *= level.factor;
-      }
-    }
+    unsigned tuplet_end;
+    bool dyadic_next_position;
+    tuplet.visit(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (*new(proxy)value_proxy(value, large, factor) <= max_duration) {
