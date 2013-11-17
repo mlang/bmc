@@ -337,7 +337,9 @@ Following the clef, the key signature on a stave indicates the key of the piece
 by specifying that certain notes are flat or sharp throughout the piece, unless
 otherwise indicated.
 
-# Rhythmic note groups (beaming)
+# Rhythmic note groups
+
+## Beaming
 
 A [beam](http://en.wikipedia.org/wiki/Beam_%28music%29) in visual music notation
 is a thick line frequently used to connect multiple consecutive eighth notes
@@ -362,6 +364,19 @@ braille music code.
 
 begin{bmc}
 ⠼⠉⠲⠀⠍⠐⠋⠛⠓⠍⠛⠓⠊⠍⠓⠊⠚⠣⠅
+end{bmc}
+
+## Tuplets
+
+A [tuplet](http://en.wikipedia.org/wiki/Tuplet) is a grouping of notes
+with irregular time.
+
+The simplest of tuplets, the triplet, has two possible signs in braille.
+THe shorter version is used in combination with the 3-character sign if
+triplets are nested.
+
+begin{bmc}
+⠨⠹⠆⠋⠛⠓⠆⠛⠸⠒⠄⠯⠿⠯⠑⠹⠣⠅
 end{bmc}
 
 # Polyphony

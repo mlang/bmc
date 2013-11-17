@@ -461,7 +461,9 @@ Following the clef, the key signature on a stave indicates the key of the piece
 by specifying that certain notes are flat or sharp throughout the piece, unless
 otherwise indicated.
 
-# Rhythmic note groups (beaming)
+# Rhythmic note groups
+
+## Beaming
 
 A [beam](http://en.wikipedia.org/wiki/Beam_%28music%29) in visual music notation
 is a thick line frequently used to connect multiple consecutive eighth notes
@@ -505,6 +507,29 @@ braille music code.
   </div>
   <a href="snippet_a534c14987afc4508effaccb7f8588071299d286.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_a534c14987afc4508effaccb7f8588071299d286.mp3">MP3</a>
   | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%BC%E2%A0%89%E2%A0%B2%E2%A0%80%E2%A0%8D%E2%A0%90%E2%A0%8B%E2%A0%9B%E2%A0%93%E2%A0%8D%E2%A0%9B%E2%A0%93%E2%A0%8A%E2%A0%8D%E2%A0%93%E2%A0%8A%E2%A0%9A%E2%A0%A3%E2%A0%85%0A">Edit</a>
+ </span>
+</div>
+
+## Tuplets
+
+A [tuplet](http://en.wikipedia.org/wiki/Tuplet) is a grouping of notes
+with irregular time.
+
+The simplest of tuplets, the triplet, has two possible signs in braille.
+THe shorter version is used in combination with the 3-character sign if
+triplets are nested.
+
+<div class="snippet-div">
+ <span class="snippet-span">
+  <div class="brailled"><pre>⠨⠹⠆⠋⠛⠓⠆⠛⠸⠒⠄⠯⠿⠯⠑⠹⠣⠅
+</pre></div>
+  <div class="engraved">
+   <a href="snippet_1246eb55d4edcfd00bd9caeee58e9b994c4b3421.ly">
+    <img src="snippet_1246eb55d4edcfd00bd9caeee58e9b994c4b3421.svg" alt="LilyPond" title="Click to see LilyPond source"/>
+   </a>
+  </div>
+  <a href="snippet_1246eb55d4edcfd00bd9caeee58e9b994c4b3421.midi">MIDI</a>&nbsp;|&nbsp;<a href="snippet_1246eb55d4edcfd00bd9caeee58e9b994c4b3421.mp3">MP3</a>
+  | <a href="http://bmc.delysid.org/?table=de&music=%E2%A0%A8%E2%A0%B9%E2%A0%86%E2%A0%8B%E2%A0%9B%E2%A0%93%E2%A0%86%E2%A0%9B%E2%A0%B8%E2%A0%92%E2%A0%84%E2%A0%AF%E2%A0%BF%E2%A0%AF%E2%A0%91%E2%A0%B9%E2%A0%A3%E2%A0%85%0A">Edit</a>
  </span>
 </div>
 
