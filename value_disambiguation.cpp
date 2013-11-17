@@ -38,19 +38,19 @@ value_proxy::accept() const
   switch (type) {
   case ptr_type::note:
     note_ptr->type = undotted_duration();
-    note_ptr->factor = tuplet_factor;
     if (beam != ast::notegroup_member_type::none)
       note_ptr->notegroup_member = beam;
-    note_ptr->first_of_tuplet = first_tuplet;
-    note_ptr->last_of_tuplet = last_tuplet;
+    note_ptr->factor = tuplet_factor;
+    note_ptr->tuplet_begin = tuplet_begin;
+    note_ptr->tuplet_end = tuplet_end;
     break;
   case ptr_type::rest:
     rest_ptr->type = undotted_duration();
-    rest_ptr->factor = tuplet_factor;
     if (beam != ast::notegroup_member_type::none)
       rest_ptr->notegroup_member = beam;
-    rest_ptr->first_of_tuplet = first_tuplet;
-    rest_ptr->last_of_tuplet = last_tuplet;
+    rest_ptr->factor = tuplet_factor;
+    rest_ptr->tuplet_begin = tuplet_begin;
+    rest_ptr->tuplet_end = tuplet_end;
     break;
   case ptr_type::whole_measure_rest:
     rest_ptr->type = duration;
@@ -60,14 +60,15 @@ value_proxy::accept() const
     chord_ptr->base.type = undotted_duration();
     if (beam != ast::notegroup_member_type::none)
       chord_ptr->base.notegroup_member = beam;
-    chord_ptr->base.first_of_tuplet = first_tuplet;
-    chord_ptr->base.last_of_tuplet = last_tuplet;
+    chord_ptr->base.factor = tuplet_factor;
+    chord_ptr->base.tuplet_begin = tuplet_begin;
+    chord_ptr->base.tuplet_end = tuplet_end;
     break;
   case ptr_type::moving_note:
     moving_note_ptr->base.type = undotted_duration();
     moving_note_ptr->base.factor = tuplet_factor;
-    moving_note_ptr->base.first_of_tuplet = first_tuplet;
-    moving_note_ptr->base.last_of_tuplet = last_tuplet;
+    moving_note_ptr->base.tuplet_begin = tuplet_begin;
+    moving_note_ptr->base.tuplet_end = tuplet_end;
     break;
   case ptr_type::simile:
     simile_ptr->duration = duration;
@@ -89,10 +90,13 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
 
 struct tuplet_info
 {
-  unsigned number = 1;
-  rational factor = rational{1};
-  bool first_tuplet = true;
-  unsigned ttl = 0;
+  struct level {
+    unsigned number = 1;
+    rational factor = rational{1};
+    bool first_tuplet = true;
+    unsigned ttl = 0;
+  };
+  std::vector<level> levels;
 };
 
 bool
@@ -100,18 +104,17 @@ is_tuplet_begin( ast::partial_voice::iterator const &iterator
                , unsigned &number
                )
 {
-  bool doubled;
-  return apply_visitor(ast::is_tuplet_start(number, doubled), *iterator);
+  bool doubled, simple;
+  return apply_visitor(ast::is_tuplet_start(number, doubled, simple), *iterator);
 }
 
 ast::partial_voice::iterator
-tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end, bool simple)
+tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end, bool in_simple)
 {
   unsigned number;
-  bool doubled;
+  bool doubled, simple;
   while (begin != end) {
-    if (apply_visitor(ast::is_tuplet_start(number, doubled), *begin) or
-        apply_visitor(ast::is_simile(), *begin))
+    if (apply_visitor(ast::is_tuplet_start(number, doubled, simple), *begin) and simple)
       break;
     ++begin;
   }
@@ -131,7 +134,7 @@ public:
            )
   : type{ast::unknown}
   , stack_begin{stack_end}, stack_end{stack_end}
-  , tuplet{tuplet}
+  , tuplet(tuplet)
   { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note &note)
@@ -139,17 +142,21 @@ public:
     BOOST_ASSERT(note.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = note.ambiguous_value;
     rational factor{1};
-    bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.ttl) {
-      if (tuplet.first_tuplet) first_tuplet = true;
-      tuplet.first_tuplet = false;
-      if (tuplet.ttl == 1) last_tuplet = true;
-      --tuplet.ttl;
-      factor = tuplet.factor;
+    std::vector<rational> tuplet_begin;
+    unsigned tuplet_end = 0;
+    for (tuplet_info::level &level: tuplet.levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1) ++tuplet_end;
+        --level.ttl;
+        factor *= level.factor;
+      }
     }
     new (stack_end) value_proxy(note, small, type, factor);
-    if (first_tuplet) stack_end->make_first_tuplet();
-    if (last_tuplet) stack_end->make_last_tuplet();
+    stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
   result_type operator()(ast::rest &rest)
@@ -157,17 +164,21 @@ public:
     BOOST_ASSERT(rest.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = rest.ambiguous_value;
     rational factor{1};
-    bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.ttl) {
-      if (tuplet.first_tuplet) first_tuplet = true;
-      tuplet.first_tuplet = false;
-      if (tuplet.ttl == 1) last_tuplet = true;
-      --tuplet.ttl;
-      factor = tuplet.factor;
+    std::vector<rational> tuplet_begin;
+    unsigned tuplet_end = 0;
+    for (tuplet_info::level &level: tuplet.levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1) ++tuplet_end;
+        --level.ttl;
+        factor *= level.factor;
+      }
     }
     new (stack_end) value_proxy(rest, small, type, factor);
-    if (first_tuplet) stack_end->make_first_tuplet();
-    if (last_tuplet) stack_end->make_last_tuplet();
+    stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
   result_type operator()(ast::chord &chord)
@@ -175,17 +186,21 @@ public:
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     rational factor{1};
-    bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.ttl) {
-      if (tuplet.first_tuplet) first_tuplet = true;
-      tuplet.first_tuplet = false;
-      if (tuplet.ttl == 1) last_tuplet = true;
-      --tuplet.ttl;
-      factor = tuplet.factor;
+    std::vector<rational> tuplet_begin;
+    unsigned tuplet_end = 0;
+    for (tuplet_info::level &level: tuplet.levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1) ++tuplet_end;
+        --level.ttl;
+        factor *= level.factor;
+      }
     }
     new (stack_end) value_proxy(chord, small, type, factor);
-    if (first_tuplet) stack_end->make_first_tuplet();
-    if (last_tuplet) stack_end->make_last_tuplet();
+    stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
   result_type operator()(ast::moving_note &chord)
@@ -193,17 +208,21 @@ public:
     BOOST_ASSERT(chord.base.ambiguous_value != ast::unknown);
     if (type == ast::unknown) type = chord.base.ambiguous_value;
     rational factor{1};
-    bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.ttl) {
-      if (tuplet.first_tuplet) first_tuplet = true;
-      tuplet.first_tuplet = false;
-      if (tuplet.ttl == 1) last_tuplet = true;
-      --tuplet.ttl;
-      factor = tuplet.factor;
+    std::vector<rational> tuplet_begin;
+    unsigned tuplet_end = 0;
+    for (tuplet_info::level &level: tuplet.levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1) ++tuplet_end;
+        --level.ttl;
+        factor *= level.factor;
+      }
     }
     new (stack_end) value_proxy(chord, small, type, factor);
-    if (first_tuplet) stack_end->make_first_tuplet();
-    if (last_tuplet) stack_end->make_last_tuplet();
+    stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
   result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
@@ -325,6 +344,15 @@ std::map<unsigned, std::vector<rational>> tuplet_number_factors =
      ,{8, 7}}}
 };
 
+unsigned
+rhythmic_count( ast::partial_voice::iterator const &begin
+              , ast::partial_voice::iterator const &end
+              )
+{
+  ast::is_rhythmic is_rhythmic;
+  return std::count_if(begin, end, apply_visitor(is_rhythmic));
+}
+
 class partial_voice_interpreter
 {
   bool const last_partial_measure;
@@ -362,6 +390,7 @@ public:
                static_cast<bool>(max_duration)))
         yield(stack_begin.get(), stack_end, position - start_position);
     } else {
+      unsigned tuplet_number = 0;
       ast::partial_voice::iterator tail;
       if (on_beat(position) and
           (tail = notegroup_end(iterator, voice_end)) > iterator) {
@@ -397,13 +426,18 @@ public:
                   max_duration - duration(group),
                   position + duration(group), tuplet);
         }
-      } else if (is_tuplet_begin(iterator, tuplet.number)) {
+      } else if (is_tuplet_begin(iterator, tuplet_number)) {
         tail = iterator + 1;
-        tuplet.first_tuplet = true;
-        // Check all possible combinations of lengths and factors
-        for (tuplet.ttl = std::distance(tail, tuplet_end(tail, voice_end, true)); tuplet.ttl; --tuplet.ttl)
-          for (rational const &factor: tuplet_number_factors.at(tuplet.number)) {
-            tuplet.factor = factor;
+        unsigned parent_ttl = tuplet.levels.empty()? 0: tuplet.levels.back().ttl;
+        tuplet.levels.emplace_back();
+        tuplet.levels.back().number = tuplet_number;
+        unsigned ttl = rhythmic_count(tail, tuplet_end(tail, voice_end, true));
+        // A nested tuplet can not be longer then the tuplet it is contained in.
+        if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
+        for (tuplet.levels.back().ttl = ttl; tuplet.levels.back().ttl;
+             --tuplet.levels.back().ttl)
+          for (rational const &factor: tuplet_number_factors.at(tuplet.levels.back().number)) {
+            tuplet.levels.back().factor = factor;
             recurse(tail, stack_end, max_duration, position, tuplet);
           }
       } else {
@@ -471,32 +505,39 @@ public:
   result_type operator()(Value &value)
   {
     rational factor{1};
-    bool first_tuplet = false, last_tuplet = false;
-    if (tuplet.ttl) {
-      if (tuplet.first_tuplet) first_tuplet = true;
-      tuplet.first_tuplet = false;
-      if (tuplet.ttl == 1) last_tuplet = true;
-      --tuplet.ttl;
-      factor = tuplet.factor;
+    std::vector<rational> tuplet_begin;
+    unsigned tuplet_end = 0;
+    bool dyadic_next_position = true;
+    for (tuplet_info::level &level: tuplet.levels) {
+      if (level.ttl) {
+        if (level.first_tuplet) {
+          tuplet_begin.emplace_back(level.factor);
+          level.first_tuplet = false;
+        }
+        if (level.ttl == 1)
+          ++tuplet_end;
+        else
+          dyadic_next_position = false;
+        --level.ttl;
+        factor *= level.factor;
+      }
     }
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (*new(proxy)value_proxy(value, large, factor) <= max_duration) {
-        if (first_tuplet) proxy->make_first_tuplet();
-        if (last_tuplet) proxy->make_last_tuplet();
         rational const next_position(position + *proxy);
         // If this is a tuplet end, only accept it if its position makes sense.
-        if (not last_tuplet or is_dyadic(next_position)) {
+        if (not dyadic_next_position or is_dyadic(next_position)) {
+          proxy->set_tuplet_info(tuplet_begin, tuplet_end);
           interpreter.recurse( rest, next
                              , max_duration - *proxy, next_position, tuplet
                              );
         }
       }
       if (*new(proxy)value_proxy(value, small, factor) <= max_duration) {
-        if (first_tuplet) proxy->make_first_tuplet();
-        if (last_tuplet) proxy->make_last_tuplet();
         rational const next_position(position + *proxy);
-        if (not last_tuplet or is_dyadic(next_position)) {
+        if (not dyadic_next_position or is_dyadic(next_position)) {
+          proxy->set_tuplet_info(tuplet_begin, tuplet_end);
           interpreter.recurse( rest, next
                              , max_duration - *proxy, next_position, tuplet
                              );

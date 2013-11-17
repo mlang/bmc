@@ -63,8 +63,8 @@ struct rhythmic_data
   rational factor = rational{1};
   notegroup_member_type notegroup_member = notegroup_member_type::none; // filled in by value_disambiguation.hpp
   slur_member_type slur_member = slur_member_type::none;
-  bool first_of_tuplet = false;
-  bool last_of_tuplet = false;
+  std::vector<rational> tuplet_begin;
+  unsigned tuplet_end = 0;
 };
 
 /** \brief Base class for everything that implies a rhythmic value.

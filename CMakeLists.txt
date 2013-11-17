@@ -70,7 +70,7 @@ set(BMC_TEST_NAMES
     notegroup_test1
     compiler_test1
     score_solo_test1 score_solo_test2
-    score_tuplet_test1 score_tuplet_test2 score_tuplet_test3
+    score_tuplet_test1 score_tuplet_test2 score_tuplet_test3 score_tuplet_test4
     slur_test1
     score_multiple_time_sigs
     common_factor

@@ -81,7 +81,9 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
           >> -octave_sign
           >> interval_sign
           >> fingering
-          >> -simple_tie;
+          >> -simple_tie
+          >> !brl(3) // Avoid ambiguity with tuplets 3 and 9.
+           ;
 
   slur = slur_sign;
   tie = tie_sign;

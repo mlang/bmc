@@ -289,7 +289,8 @@ generator::operator() (braille::hand_sign const &) const
 generator::result_type
 generator::operator() (braille::ast::rest const &rest)
 {
-  if (rest.first_of_tuplet) os << "\\times " << rest.factor << " { ";
+  for (rational const &factor: rest.tuplet_begin)
+    os << "\\times " << factor << " { ";
   if (rest.whole_measure) {
     os << "R"; if (rest.type) os << "1" << "*" << rest.type;
     last_type = 0, last_dots = 0;
@@ -311,13 +312,14 @@ generator::operator() (braille::ast::rest const &rest)
   if (include_locations) {
     os << "%{" << rest.line << ":" << rest.column << "%}";
   }
-  if (rest.last_of_tuplet) os << " }";
+  for (int i = 0; i < rest.tuplet_end; ++i) os << " }";
 }
 
 generator::result_type
 generator::operator() (braille::ast::note const &note)
 {
-  if (note.first_of_tuplet) os << "\\times " << note.factor << " { ";
+  for (rational const &factor: note.tuplet_begin)
+    os << "\\times " << factor << " { ";
   bool grace = false;
   for (articulation const& articulation: note.articulations) {
     switch (articulation) {
@@ -370,7 +372,7 @@ generator::operator() (braille::ast::note const &note)
   if (include_locations) {
     os << "%{" << note.line << ":" << note.column << "%}";
   }
-  if (note.last_of_tuplet) os << " }";
+  for (int i = 0; i < note.tuplet_end; ++i) os << " }";
 }
 
 generator::result_type
