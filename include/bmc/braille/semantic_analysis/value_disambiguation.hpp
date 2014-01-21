@@ -220,14 +220,6 @@ public:
 
   typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
-
-  static void foreach( ast::partial_voice &
-                     , rational const &max_duration
-                     , rational const &position
-                     , bool last_partial_measure
-                     , global_state const &
-                     , function const &
-                     ) ;
 };
 
 inline
@@ -244,14 +236,6 @@ struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
   typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
 
   typedef std::function<void(const_pointer, const_pointer)> function;
-
-  static void foreach( ast::partial_measure &
-                     , rational const &max_length
-                     , rational const &position
-                     , bool last_partial_measure
-                     , global_state const &
-                     , function const &
-                     ) ;
 };
 
 inline
@@ -294,12 +278,6 @@ public:
 
   typedef std::function<void(const_pointer, const_pointer, rational const &)>
           function;
-
-  static void foreach( ast::voice &
-                     , rational const &max_length
-                     , global_state const &
-                     , function const &
-                     ) ;
 };
 
 inline

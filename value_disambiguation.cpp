@@ -593,24 +593,7 @@ large_and_small( ast::partial_voice::iterator const &iterator
     recurse(rest, stack_end, max_duration, position, tuplet);
 }
 
-}
-
-void
-proxied_partial_voice::foreach( ast::partial_voice &voice
-                              , rational const &max_duration
-                              , rational const &position
-                              , bool last_partial_measure
-                              , global_state const &state
-                              , proxied_partial_voice::function const &yield
-                              )
-{
-  partial_voice_interpreter
-  (voice, position, last_partial_measure, state, yield)
-  (max_duration);
-}
-
-namespace {
-
+template<typename Function>
 inline
 void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
@@ -621,7 +604,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , rational const &position
                                , bool last_partial_measure
                                , global_state const &state
-                               , proxied_partial_measure::function const &yield
+                               , Function yield
                                )
 {
   if (begin == end) {
@@ -629,8 +612,8 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
   } else {
     auto const tail = begin + 1;
     if (stack_begin == stack_end) {
-      proxied_partial_voice::foreach
-      ( *begin, length, position, last_partial_measure, state
+      partial_voice_interpreter
+      ( *begin, position, last_partial_measure, state
       , [ stack_begin, stack_end
         , &tail, &end
         , &position, last_partial_measure, &state
@@ -649,10 +632,10 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                          , yield
                                          );
         }
-      );
+      )(length);
     } else {
-      proxied_partial_voice::foreach
-      ( *begin, length, position, last_partial_measure, state
+      partial_voice_interpreter
+      ( *begin, position, last_partial_measure, state
       , [ stack_begin, stack_end, &tail, &end
         , &length, &position, last_partial_measure, &state
         , &yield
@@ -672,36 +655,12 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                            );
           }
         }
-      );
+      )(length);
     }
   }
 }
 
-}
-
-void
-proxied_partial_measure::foreach( ast::partial_measure &partial_measure
-                                , rational const &max_length
-                                , rational const &position
-                                , bool last_partial_measure
-                                , global_state const &state
-                                , proxied_partial_measure::function const &callback
-                                )
-{
-  std::unique_ptr<proxied_partial_voice::shared_ptr[]>
-  stack(new proxied_partial_voice::shared_ptr[partial_measure.size()]);
-  partial_measure_interpretations( partial_measure.begin()
-                                 , partial_measure.end()
-                                 , stack.get()
-                                 , stack.get()
-                                 , max_length, position, last_partial_measure
-                                 , state
-                                 , callback
-                                 ) ;
-}
-
-namespace {
-
+template<typename Function>
 inline
 void
 voice_interpretations( ast::voice::iterator const &begin
@@ -711,7 +670,7 @@ voice_interpretations( ast::voice::iterator const &begin
                      , rational const &max_length
                      , rational const &position
                      , global_state const &state
-                     , proxied_voice::function const &yield
+                     , Function yield
                      )
 {
   if (begin == end) {
@@ -720,8 +679,13 @@ voice_interpretations( ast::voice::iterator const &begin
     }
   } else {
     auto const tail = begin + 1;
-    proxied_partial_measure::foreach
-    ( *begin, max_length, position, tail == end, state
+    std::unique_ptr<proxied_partial_voice::shared_ptr[]>
+    stack(new proxied_partial_voice::shared_ptr[begin->size()]);
+
+    partial_measure_interpretations
+    ( begin->begin(), begin->end()
+    , stack.get(), stack.get()
+    , max_length, position, tail == end, state
     , [ stack_begin, stack_end, &tail, &end
       , &max_length, &position, &state
       , &yield
@@ -742,23 +706,6 @@ voice_interpretations( ast::voice::iterator const &begin
   }
 }
 
-}
-
-void
-proxied_voice::foreach( ast::voice &voice
-                      , rational const &max_length
-                      , global_state const &state
-                      , proxied_voice::function const &callback
-                      )
-{
-  std::unique_ptr<proxied_partial_measure::shared_ptr[]>
-  stack(new proxied_partial_measure::shared_ptr[voice.size()]);
-  voice_interpretations( voice.begin(), voice.end()
-                       , stack.get(), stack.get()
-                       , max_length, zero
-                       , state
-                       , callback
-                       ) ;
 }
 
 rational const &
@@ -813,8 +760,14 @@ measure_interpretations::recurse
     }
   } else {
     auto const tail = begin + 1;
-    proxied_voice::foreach
-    ( *begin, length, *this
+    std::unique_ptr<proxied_partial_measure::shared_ptr[]>
+    stack(new proxied_partial_measure::shared_ptr[begin->size()]);
+
+    voice_interpretations
+    ( begin->begin(), begin->end()
+    , stack.get(), stack.get()
+    , length, zero
+    , *this
     , [ stack_begin, stack_end, &tail, &end, &length, this ]
       ( proxied_partial_measure::shared_ptr const *f
       , proxied_partial_measure::shared_ptr const *l
