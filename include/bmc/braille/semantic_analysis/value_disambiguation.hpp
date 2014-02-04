@@ -164,6 +164,7 @@ public:
 inline rational
 duration(std::vector<value_proxy> const &values)
 {
+  // This avoids rational{0} + x, which is always x.
   return values.empty()
          ? zero
          : std::accumulate(std::next(std::begin(values)), std::end(values),
@@ -229,13 +230,12 @@ duration(proxied_partial_voice::shared_ptr const &partial_voice)
 
 struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
 {
+  typedef std::vector<proxied_partial_voice::shared_ptr> base_type;
   proxied_partial_measure(const_pointer begin, const_pointer end)
-  : std::vector<proxied_partial_voice::shared_ptr>(begin, end)
+  : base_type{begin, end}
   {}
 
   typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
-
-  typedef std::function<void(const_pointer, const_pointer)> function;
 };
 
 inline
@@ -275,9 +275,6 @@ public:
   operator rational const &() const { return duration; }
 
   typedef std::shared_ptr<proxied_voice const> shared_ptr;
-
-  typedef std::function<void(const_pointer, const_pointer, rational const &)>
-          function;
 };
 
 inline
@@ -291,9 +288,11 @@ class proxied_measure : public std::vector<proxied_voice::shared_ptr>
 {
   rational mean;
 public:
+  typedef std::vector<proxied_voice::shared_ptr> base_type;
+
   proxied_measure(const_pointer begin, const_pointer end)
-  : std::vector<proxied_voice::shared_ptr>(begin, end)
-  , mean() // Do not precalculate the harmonic mean as it is potentially unused
+  : base_type{begin, end}
+  , mean{} // Do not precalculate the harmonic mean as it is potentially unused
   {}
 
   /** @brief Harmonic mean of all contained rhythmic values.
