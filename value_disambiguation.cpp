@@ -464,7 +464,7 @@ public:
             state.time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
-          recurse(iterator + 1, stack_end + 1,
+          recurse(std::next(iterator), std::next(stack_end),
                   zero, position + state.time_signature, tuplet);
         }
       }

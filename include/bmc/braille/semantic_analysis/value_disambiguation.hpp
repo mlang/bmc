@@ -228,14 +228,23 @@ rational const &
 duration(proxied_partial_voice::shared_ptr const &partial_voice)
 { return *partial_voice; }
 
-struct proxied_partial_measure : std::vector<proxied_partial_voice::shared_ptr>
+class proxied_partial_measure : public std::vector<proxied_partial_voice::shared_ptr>
 {
+  std::size_t use_count;
+public:
   typedef std::vector<proxied_partial_voice::shared_ptr> base_type;
   proxied_partial_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
+  , use_count{0}
   {}
 
-  typedef std::shared_ptr<proxied_partial_measure const> shared_ptr;
+  friend inline void intrusive_ptr_add_ref(proxied_partial_measure *p) BOOST_NOEXCEPT
+  { ++p->use_count; }
+
+  friend inline void intrusive_ptr_release(proxied_partial_measure *p)
+  { if (--p->use_count == 0) delete p; }
+
+  typedef boost::intrusive_ptr<proxied_partial_measure> shared_ptr;
 };
 
 inline
@@ -263,18 +272,26 @@ duration(proxied_partial_measure::shared_ptr const &voices)
 class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
 {
   rational const duration;
+  std::size_t use_count;
 public:
   typedef std::vector<proxied_partial_measure::shared_ptr> base_type;
   proxied_voice( const_pointer begin, const_pointer end
                , rational const &duration
                )
-  : base_type(begin, end)
-  , duration(duration)
+  : base_type{begin, end}
+  , duration{duration}
+  , use_count{0}
   {}
+
+  friend inline void intrusive_ptr_add_ref(proxied_voice *p) BOOST_NOEXCEPT
+  { ++p->use_count; }
+
+  friend inline void intrusive_ptr_release(proxied_voice *p)
+  { if (--p->use_count == 0) delete p; }
 
   operator rational const &() const { return duration; }
 
-  typedef std::shared_ptr<proxied_voice const> shared_ptr;
+  typedef boost::intrusive_ptr<proxied_voice> shared_ptr;
 };
 
 inline
