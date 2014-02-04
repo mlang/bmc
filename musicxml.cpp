@@ -205,7 +205,7 @@ public:
   : dom_document(create_dom_document())
   , score_partwise(dom_document->getDocumentElement())
   , identification(create_identification())
-  , part_list(dom_document->createElement(xml_string("part-list")))
+  , part_list(create_element("part-list"))
   , indent(true)
   { initialize_empty_document(); }
 
@@ -253,6 +253,9 @@ public:
 
   std::vector<part> const& parts() const { return partwise; }
 
+  XERCES_CPP_NAMESPACE::DOMElement *create_element(char const *name) const
+  { return dom_document->createElement(xml_string(name)); }
+
 private:
   static XERCES_CPP_NAMESPACE::DOMDocument *create_dom_document()
   {
@@ -278,14 +281,26 @@ private:
     score_partwise->setAttribute(xml_string("version"), xml_string("3.0"));
     score_partwise->appendChild(identification);
     score_partwise->appendChild(part_list);
+    xml_string id("P1");
+    XERCES_CPP_NAMESPACE::DOMElement *part = create_element("part");
+    part->setAttribute(xml_string("id"), id);
+    XERCES_CPP_NAMESPACE::DOMElement *measure = create_element("measure");
+    measure->setAttribute(xml_string("number"), xml_string("1"));
+    part->appendChild(measure);
+    XERCES_CPP_NAMESPACE::DOMElement *score_part = create_element("score-part");
+    score_part->setAttribute(xml_string("id"), id);
+    score_part->appendChild(create_element("part-name"));
+    part_list->appendChild(score_part);
+    score_partwise->appendChild(part);
+    partwise.emplace_back(musicxml::part(part, part_list));
   }
 
   XERCES_CPP_NAMESPACE::DOMElement *create_identification() const
   {
     XERCES_CPP_NAMESPACE::DOMElement
-    *element(dom_document->createElement(xml_string("identification"))),
-    *encoding(dom_document->createElement(xml_string("encoding"))),
-    *software(dom_document->createElement(xml_string("software")));
+    *element(create_element("identification")),
+    *encoding(create_element("encoding")),
+    *software(create_element("software"));
 
     encoding->appendChild(create_encoding_date());
     software->appendChild(dom_document->createTextNode(xml_string("Braille Music Compiler")));
@@ -297,7 +312,7 @@ private:
   XERCES_CPP_NAMESPACE::DOMElement *create_encoding_date() const
   {
     XERCES_CPP_NAMESPACE::DOMElement
-    *element = dom_document->createElement(xml_string("encoding-date"));
+    *element = create_element("encoding-date");
     char date_string[11];
     std::time_t current_time = std::time(nullptr);
     std::strftime(date_string, sizeof(date_string), "%Y-%m-%d",
