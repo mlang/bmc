@@ -130,22 +130,17 @@ duplicated code.
 Getting the source
 ------------------
 
-Note that the following description includes a simple way of getting a current
-(and tested) version of Boost trunk, for your convenience.  If you already have
-a recent enough (1.48.0) copy of Boost on your system you might be able to skip
-the "svn export".
 
  $ git clone http://github.com/mlang/bmc
- $ svn export http://svn.boost.org/svn/boost/trunk/boost@75166 boost
 
 
 Building (on UNIX)
 ------------------
 
-Compilation has only been tested with GCC 4.6 recently.
+Compilation has only been tested with GCC 4.8 recently.
 
  $ cd bmc
- $ BOOST_INCLUDEDIR=.. cmake .
+ $ cmake .
  $ make
 
 
