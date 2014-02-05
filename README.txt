@@ -139,6 +139,12 @@ Building (on UNIX)
 
 Compilation has only been tested with GCC 4.8 recently.
 
+On Debian GNU/Linux systems, you will need to install the following dependencies:
+
+ $ sudo apt-get install cmake doxygen lib{boost-{program-options,test},fluidsynth,icu}-dev
+
+To build BMC, run the following commands:
+
  $ cd bmc
  $ cmake .
  $ make
