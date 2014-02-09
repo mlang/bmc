@@ -27,6 +27,7 @@ namespace music { namespace braille {
 
     error_handler(iterator_type first, iterator_type last)
     : first(first), last(last)
+    , messages{std::make_shared<std::vector<string_type>>()}
     {}
 
     template <typename Message, typename What>
@@ -38,17 +39,23 @@ namespace music { namespace braille {
       int line;
       iterator_type line_start = get_pos(err_pos, line);
       if (err_pos != last) {
-        std::wcerr << L"<INPUT>:"
-                  << line << L':' << std::distance(line_start, err_pos) + 1
-                  << L": "
-                  << message << L": " << what
-                  << std::endl;
-        std::wcerr << get_line(line_start) << std::endl;
-        for (; line_start != err_pos; ++line_start) std::wcerr << L' ';
-        std::wcerr << '^' << std::endl;
+        std::wstringstream ss;
+        ss << L"<INPUT>:"
+           << line << L':' << std::distance(line_start, err_pos) + 1
+           << L": "
+           << message << L": " << what;
+        messages->push_back(ss.str());
+        ss.str(string_type());
+
+        messages->push_back(get_line(line_start));
+        for (; line_start != err_pos; ++line_start) ss << L' ';
+        ss << '^';
+        messages->push_back(ss.str());
       } else {
-        std::wcerr << "Unexpected end of file. ";
-        std::wcerr << message << what << L" line " << line << std::endl;
+        std::wstringstream ss;
+        ss << "Unexpected end of file. ";
+        ss << message << what << L" line " << line;
+        messages->push_back(ss.str());
       }
     }
 
@@ -78,6 +85,13 @@ namespace music { namespace braille {
       for (; line_end != last and (*line_end != '\r' and *line_end != '\n');
            ++line_end);
       return string_type(line_start, line_end);
+    }
+
+    std::shared_ptr<std::vector<string_type>> messages;
+    friend std::wostream &operator<<(std::wostream &os, error_handler const &eh)
+    {
+      for (auto const &line: *eh.messages) os << line << std::endl;
+      return os;
     }
 
     iterator_type first, last;

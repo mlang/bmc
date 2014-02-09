@@ -33,6 +33,7 @@ int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrume
   if (success and iter == end) {
     music::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
+      std::wcerr << error_handler;
       music::lilypond::generator generate(std::cout, true, true, include_locations);
       if (not instrument.empty()) generate.instrument(instrument);
       if (no_tagline) generate.remove_tagline();
@@ -40,7 +41,7 @@ int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrume
 
       return EXIT_SUCCESS;
     } else {
-      std::wcerr << "Failed to compile:" << std::endl << source << std::endl;
+      std::wcerr << "Failed to compile:" << std::endl << error_handler << std::endl;
     }
   } else {
     std::wcerr << "Failed to Parse:" << std::endl << source << std::endl;
