@@ -5,7 +5,22 @@ from jinja2 import DictLoader, Environment
 from os.path import abspath, dirname, join
 from subprocess import PIPE, Popen
 
-__doc__ = '''reStructuredText directive for entering braille music code'''
+__docformat__ = 'reStructuredText'
+__doc__ = '''\
+reStructuredText directive for entering braille music code
+==========================================================
+
+:Author: Mario Lang
+:Contact: mlang@delysid.org
+
+This module enables a new reStructuredText directive when you import it.
+
+.. braille-music::
+   :slug: music
+
+   !y2k
+
+'''
 
 html5 = u'''\
 <section>
@@ -20,8 +35,9 @@ html5 = u'''\
 </section>
 '''
 
-bmc_path = 'bmc-gcc/bmc2ly'
+bmc_path = '../../bmc-gcc/bmc2ly'
 lilypond_path = '/usr/bin/lilypond'
+output_path = None
 
 class BrailleMusic(Directive):
     option_spec = {'locale': unchanged, 'slug': unchanged}
@@ -32,7 +48,7 @@ class BrailleMusic(Directive):
     def run(self):
         """Generate multiple representations for given braille music."""
         self.assert_has_content()
-        source_dir = dirname(abspath(self.state_machine.input_lines.source(self.lineno - self.state_machine.input_offset - 1)))
+        source_dir = dirname(abspath(self.state_machine.input_lines.source(self.lineno - self.state_machine.input_offset - 1))) if output_path is None else output_path
         if not self.options.get('slug'):
             raise self.error("No slug specified")
         bmc = Popen([bmc_path, '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -54,4 +70,13 @@ class BrailleMusic(Directive):
         return self.options.get('locale', self.default_braille_locale)
 
 register_directive('braille-music', BrailleMusic)
+
+if __name__ == "__main__":
+    from docutils.core import Publisher
+    from docutils.io import StringInput, StringOutput
+    publisher = Publisher(source_class=StringInput, destination_class=StringOutput)
+    publisher.set_components('standalone', 'restructuredtext', 'html')
+    publisher.process_programmatic_settings(None, {}, None)
+    publisher.set_source(source=__doc__)
+    print publisher.publish()
 
