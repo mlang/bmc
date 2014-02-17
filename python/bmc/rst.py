@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from docutils.nodes import raw
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst.directives import register_directive, unchanged
@@ -9,12 +10,13 @@ from os.path import abspath, dirname, join
 from subprocess import PIPE, Popen
 
 __docformat__ = 'reStructuredText'
-__doc__ = u'''\
+__doc__ = '''\
 reStructuredText directive for entering braille music code
 ==========================================================
 
 :Author: Mario Lang
 :Contact: mlang@delysid.org
+:Date: 2014-02-17
 
 This module enables a new reStructuredText directive when you import it.
 
@@ -32,7 +34,7 @@ The syntax for this directive is as follows::
 
 '''
 
-html5 = u'''\
+html5 = '''\
 <section id="{{ arguments[0] }}">
 {% if options['title'] %}
   <header>
@@ -86,7 +88,7 @@ class BrailleMusic(Directive):
 register_directive('braille-music', BrailleMusic)
 
 if __name__ == "__main__":
+    # Publish our own docstring to stdout.
     from docutils.core import publish_string
-    print publish_string(__doc__, writer_name='html',
-                         settings_overrides={'output_encoding': 'utf-8'})
+    print(publish_string(__doc__, writer_name='html').decode('utf-8'))
 
