@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from docutils.nodes import raw
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst.directives import register_directive, unchanged
@@ -6,7 +9,7 @@ from os.path import abspath, dirname, join
 from subprocess import PIPE, Popen
 
 __docformat__ = 'reStructuredText'
-__doc__ = '''\
+__doc__ = u'''\
 reStructuredText directive for entering braille music code
 ==========================================================
 
@@ -15,19 +18,31 @@ reStructuredText directive for entering braille music code
 
 This module enables a new reStructuredText directive when you import it.
 
-.. braille-music::
-   :slug: music
+.. braille-music:: bmc-rst-example-1
+   :title: A minimal example
 
-   !y2k
+   ⠐⠽⠣⠅
+
+The syntax for this directive is as follows::
+
+  .. braille-music:: unique-identifier-used-as-basename-for-generated-files
+     :title: An optional title (caption) for the music
+
+     ⠐⠹⠳⠳⠳⠀⠹⠳⠳⠳⠀⠱⠪⠪⠪⠀⠽⠣⠅
 
 '''
 
 html5 = u'''\
-<section id="{{ options['slug'] }}">
+<section id="{{ arguments[0] }}">
+{% if options['title'] %}
+  <header>
+    <h2>{{ options['title'] | escape }}</h2>
+  </header>
+{% endif %}
   <pre>{{ content | join('\n') }}</pre>
-  <p>View as: <a href="{{ options['slug'] }}.pdf">A4 PDF</a>.</p>
+  <p>View as: <a href="{{ arguments[0] }}.pdf">A4 PDF</a>.</p>
   <audio controls="controls">
-    <p>Listen to: <a href="{{ options['slug'] }}.midi">MIDI</a>.</p>
+    <p>Listen to: <a href="{{ arguments[0] }}.midi">MIDI</a>.</p>
   </audio>
   <!-- LilyPond input:
 {{ lilypond | escape }}
@@ -40,7 +55,8 @@ lilypond_path = '/usr/bin/lilypond'
 output_path = None
 
 class BrailleMusic(Directive):
-    option_spec = {'locale': unchanged, 'slug': unchanged}
+    required_arguments = 1
+    option_spec = {'locale': unchanged, 'title': unchanged}
     has_content = True
 
     default_braille_locale = 'brf'
@@ -49,15 +65,13 @@ class BrailleMusic(Directive):
         """Generate multiple representations for given braille music."""
         self.assert_has_content()
         source_dir = dirname(abspath(self.state_machine.input_lines.source(self.lineno - self.state_machine.input_offset - 1))) if output_path is None else output_path
-        if not self.options.get('slug'):
-            raise self.error("No slug specified")
         bmc = Popen([bmc_path, '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        self.lilypond, self.errors = bmc.communicate(input='\n'.join(self.content))
+        self.lilypond, self.errors = bmc.communicate(input='\n'.join(self.content).encode('utf-8'))
         if bmc.returncode != 0:
             raise self.error('BMC failed: ' + self.errors)
         lilypond = Popen([lilypond_path,
                           '-l', 'ERROR',
-                          '-o', join(source_dir, self.options.get('slug')),
+                          '-o', join(source_dir, self.arguments[0]),
                           '-'],
                          stdin=PIPE, stdout=PIPE, stderr=PIPE)
         _, self.lilypond_errors = lilypond.communicate(input=self.lilypond)
