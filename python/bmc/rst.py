@@ -23,7 +23,7 @@ This module enables a new reStructuredText directive when you import it.
 '''
 
 html5 = u'''\
-<section>
+<section id="{{ options['slug'] }}">
   <pre>{{ content | join('\n') }}</pre>
   <p>View as: <a href="{{ options['slug'] }}.pdf">A4 PDF</a>.</p>
   <audio controls="controls">
@@ -72,11 +72,7 @@ class BrailleMusic(Directive):
 register_directive('braille-music', BrailleMusic)
 
 if __name__ == "__main__":
-    from docutils.core import Publisher
-    from docutils.io import StringInput, StringOutput
-    publisher = Publisher(source_class=StringInput, destination_class=StringOutput)
-    publisher.set_components('standalone', 'restructuredtext', 'html')
-    publisher.process_programmatic_settings(None, {}, None)
-    publisher.set_source(source=__doc__)
-    print publisher.publish()
+    from docutils.core import publish_string
+    print publish_string(__doc__, writer_name='html',
+                         settings_overrides={'output_encoding': 'unicode'})
 
