@@ -88,5 +88,5 @@ register_directive('braille-music', BrailleMusic)
 if __name__ == "__main__":
     from docutils.core import publish_string
     print publish_string(__doc__, writer_name='html',
-                         settings_overrides={'output_encoding': 'unicode'})
+                         settings_overrides={'output_encoding': 'utf-8'})
 
