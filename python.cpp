@@ -49,6 +49,24 @@ BOOST_PYTHON_MODULE(bmc) {
     .def(repr(self))
     ;
 
+  enum_<music::accidental>("accidental", "A musical accidental.")
+    .value("natural", music::natural)
+    .value("flat", music::flat)
+    .value("double_flat", music::double_flat)
+    .value("triple_flat", music::triple_flat)
+    .value("sharp", music::sharp)
+    .value("double_sharp", music::double_sharp)
+    .value("triple_sharp", music::triple_sharp)
+    ;
+  enum_<music::diatonic_step>("diatonic_step", "A diatonic step.")
+    .value("C", music::C)
+    .value("D", music::D)
+    .value("E", music::E)
+    .value("F", music::F)
+    .value("G", music::G)
+    .value("A", music::A)
+    .value("B", music::B)
+    ;
   enum_<music::interval>("interval", "A musical interval.")
     .value("unison", music::unison)
     .value("second", music::second)
