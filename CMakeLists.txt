@@ -102,6 +102,7 @@ set(BMC_TEST_NAMES
     bwv988_v17
     bwv988_v18
     bwv988_v19
+    bwv988_v22
     bwv988_v30
    )
 foreach(test_name ${BMC_TEST_NAMES})
