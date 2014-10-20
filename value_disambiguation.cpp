@@ -808,7 +808,7 @@ measure_interpretations::cleanup()
     rational best_score;
     bool single_best_score = false;
     for (reference possibility: *this) {
-      rational const score(possibility.harmonic_mean());
+      rational const score{possibility.harmonic_mean()};
       if (score > best_score) {
         best_score = score, single_best_score = true;
       } else if (score == best_score) {
@@ -818,10 +818,9 @@ measure_interpretations::cleanup()
     // Do not consider possibilities below a certain margin as valid
     if (single_best_score) {
       rational const margin{best_score * rational{3, 4}};
-      base_type good;
-      for (reference measure: *this)
-        if (measure.harmonic_mean() > margin) good.emplace_back(measure);
-      assign(good.begin(), good.end());
+      erase(partition(begin(), end(), [&margin](reference measure) {
+        return measure.harmonic_mean() > margin;
+      }), end());
     }
   }
 }
