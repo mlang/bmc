@@ -40,8 +40,7 @@ class value_proxy
   enum class ptr_type: uint8_t
   {
     uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
-  };
-  ptr_type type;  
+  } type;
   ast::value value_type:4;
   value_category category:4;
   ast::notegroup_member_type beam = ast::notegroup_member_type::none;
@@ -54,7 +53,7 @@ class value_proxy
     ast::moving_note *moving_note_ptr;
     ast::simile *simile_ptr;
   };
-  rational tuplet_factor = rational(1);
+  rational tuplet_factor = rational{1};
   rational duration;
 
   rational const &undotted_duration() const;
@@ -176,22 +175,17 @@ struct global_state
   music::time_signature time_signature;
   rational last_measure_duration;
   rational beat;
-  bool exact_match_found;
+  bool exact_match_found = false;
 
-  global_state()
-  : time_signature()
-  , beat(1, time_signature.denominator())
-  , exact_match_found(false)
-  {}
-
+  global_state() = default;
   global_state( music::time_signature const &time_signature
               , rational const &last_measure_duration
               , rational const &beat
               )
-  : time_signature(time_signature)
-  , last_measure_duration(last_measure_duration)
-  , beat(beat)
-  , exact_match_found(false)
+  : time_signature{time_signature}
+  , last_measure_duration{last_measure_duration}
+  , beat{beat}
+  , exact_match_found{false}
   {}
 };
 
@@ -200,13 +194,13 @@ class proxied_partial_voice : public std::vector<value_proxy>
   rational const duration;
   std::size_t use_count;
 public:
-  typedef std::vector<value_proxy> base_type;
+  using base_type = std::vector<value_proxy>;
   proxied_partial_voice( const_pointer begin, const_pointer end
                        , rational const &duration
                        )
-  : base_type(begin, end) // copy the given range of value_proxy objects
-  , duration(duration)    // remember the accumulative duration of all elements
-  , use_count(0)          // initialize use count to 0
+  : base_type{begin, end} // copy the given range of value_proxy objects
+  , duration{duration}    // remember the accumulative duration of all elements
+  , use_count{0}          // initialize use count to 0
   {}
 
   operator rational const &() const { return duration; }
@@ -217,10 +211,7 @@ public:
   friend inline void intrusive_ptr_release(proxied_partial_voice *p)
   { if (--p->use_count == 0) delete p; }
 
-  typedef boost::intrusive_ptr<proxied_partial_voice> shared_ptr;
-
-  typedef std::function<void(const_pointer, const_pointer, rational const &)>
-          function;
+  using shared_ptr = boost::intrusive_ptr<proxied_partial_voice>;
 };
 
 inline
@@ -232,7 +223,7 @@ class proxied_partial_measure : public std::vector<proxied_partial_voice::shared
 {
   std::size_t use_count;
 public:
-  typedef std::vector<proxied_partial_voice::shared_ptr> base_type;
+  using base_type = std::vector<proxied_partial_voice::shared_ptr>;
   proxied_partial_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
   , use_count{0}
@@ -244,11 +235,10 @@ public:
   friend inline void intrusive_ptr_release(proxied_partial_measure *p)
   { if (--p->use_count == 0) delete p; }
 
-  typedef boost::intrusive_ptr<proxied_partial_measure> shared_ptr;
+  using shared_ptr = boost::intrusive_ptr<proxied_partial_measure>;
 };
 
-inline
-rational
+inline rational
 duration(proxied_partial_measure const &voices)
 {
   rational value;
@@ -264,8 +254,7 @@ duration(proxied_partial_measure const &voices)
   return value;
 }
 
-inline
-rational
+inline rational
 duration(proxied_partial_measure::shared_ptr const &voices)
 { return duration(*voices); }
 
@@ -274,7 +263,7 @@ class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
   rational const duration;
   std::size_t use_count;
 public:
-  typedef std::vector<proxied_partial_measure::shared_ptr> base_type;
+  using base_type = std::vector<proxied_partial_measure::shared_ptr>;
   proxied_voice( const_pointer begin, const_pointer end
                , rational const &duration
                )
@@ -291,11 +280,10 @@ public:
 
   operator rational const &() const { return duration; }
 
-  typedef boost::intrusive_ptr<proxied_voice> shared_ptr;
+  using shared_ptr = boost::intrusive_ptr<proxied_voice>;
 };
 
-inline
-rational const &
+inline rational const &
 duration(proxied_voice::shared_ptr const &voice)
 { return *voice; }
 
@@ -305,7 +293,7 @@ class proxied_measure : public std::vector<proxied_voice::shared_ptr>
 {
   rational mean;
 public:
-  typedef std::vector<proxied_voice::shared_ptr> base_type;
+  using base_type = std::vector<proxied_voice::shared_ptr>;
 
   proxied_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
@@ -372,12 +360,11 @@ operator<<(std::basic_ostream<Char> &os, proxied_measure const &measure)
 
 class measure_interpretations: std::vector<proxied_measure>, public global_state
 {
-  std::size_t id;
+  ssize_t id;
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
-              , value_type::pointer stack_begin
-              , value_type::pointer stack_end
+              , value_type::pointer stack_begin, value_type::pointer stack_end
               , rational const &length
               ) ;
 
@@ -386,30 +373,28 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
 public:
   typedef std::vector<proxied_measure> base_type;
 
-  measure_interpretations()
-  : id(0)
-  {}
+  measure_interpretations() : id{-1} {}
 
   measure_interpretations(measure_interpretations const& other)
-  : base_type(other.begin(), other.end())
-  , global_state(other)
-  , id(other.id)
+  : base_type{other.begin(), other.end()}
+  , global_state{other}
+  , id{other.id}
   {}
 
   measure_interpretations( ast::measure& measure
                          , music::time_signature const &time_signature
                          , rational const &last_measure_duration = rational(0)
                          )
-  : base_type()
-  , global_state( time_signature
-                , last_measure_duration
-                , rational(1, time_signature.denominator())
-                )
-  , id(measure.id)
+  : base_type{}
+  , global_state{ time_signature, last_measure_duration
+                , rational{1, time_signature.denominator()}
+                }
+  , id{measure.id}
   {
     BOOST_ASSERT(time_signature >= 0);
     std::unique_ptr<value_type::value_type[]>
     stack(new value_type::value_type[measure.voices.size()]);
+
     recurse( measure.voices.begin(), measure.voices.end()
            , stack.get(), stack.get()
            , time_signature
@@ -433,7 +418,7 @@ public:
     return matches == 1;
   }
 
-  std::size_t get_measure_id() const { return id; }
+  ssize_t get_measure_id() const { return id; }
 
   using base_type::begin;
   using base_type::clear;
