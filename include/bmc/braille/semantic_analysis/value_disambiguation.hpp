@@ -8,7 +8,9 @@
 #define BMC_VALUE_DISAMBIGUATION_HPP
 
 #include "bmc/braille/ast.hpp"
+#include <atomic>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <boost/smart_ptr/intrusive_ptr.hpp>
 #include <boost/range/numeric.hpp>
@@ -175,9 +177,23 @@ struct global_state
   music::time_signature time_signature;
   rational last_measure_duration;
   rational beat;
-  bool exact_match_found = false;
+  std::atomic<bool> exact_match_found { false };
 
   global_state() = default;
+  global_state( global_state const &other )
+  : time_signature { other.time_signature }
+  , last_measure_duration { other.last_measure_duration }
+  , beat { other.beat }
+  , exact_match_found { other.exact_match_found.load() }
+  {}
+  global_state &operator=(global_state const &other)
+  {
+    time_signature = other.time_signature;
+    last_measure_duration = other.last_measure_duration;
+    beat = other.beat;
+    exact_match_found.store(other.exact_match_found.load());
+    return *this;
+  }
   global_state( music::time_signature const &time_signature
               , rational const &last_measure_duration
               , rational const &beat
@@ -211,7 +227,7 @@ public:
   friend inline void intrusive_ptr_release(proxied_partial_voice *p)
   { if (--p->use_count == 0) delete p; }
 
-  using shared_ptr = boost::intrusive_ptr<proxied_partial_voice>;
+  using shared_ptr = std::shared_ptr<proxied_partial_voice>;
 };
 
 inline
@@ -224,6 +240,7 @@ class proxied_partial_measure : public std::vector<proxied_partial_voice::shared
   std::size_t use_count;
 public:
   using base_type = std::vector<proxied_partial_voice::shared_ptr>;
+  proxied_partial_measure() = default;
   proxied_partial_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
   , use_count{0}
@@ -235,7 +252,7 @@ public:
   friend inline void intrusive_ptr_release(proxied_partial_measure *p)
   { if (--p->use_count == 0) delete p; }
 
-  using shared_ptr = boost::intrusive_ptr<proxied_partial_measure>;
+  using shared_ptr = std::shared_ptr<proxied_partial_measure>;
 };
 
 inline rational
@@ -264,6 +281,7 @@ class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
   std::size_t use_count;
 public:
   using base_type = std::vector<proxied_partial_measure::shared_ptr>;
+  proxied_voice() = default;
   proxied_voice( const_pointer begin, const_pointer end
                , rational const &duration
                )
@@ -280,7 +298,7 @@ public:
 
   operator rational const &() const { return duration; }
 
-  using shared_ptr = boost::intrusive_ptr<proxied_voice>;
+  using shared_ptr = std::shared_ptr<proxied_voice>;
 };
 
 inline rational const &
@@ -295,6 +313,7 @@ class proxied_measure : public std::vector<proxied_voice::shared_ptr>
 public:
   using base_type = std::vector<proxied_voice::shared_ptr>;
 
+  proxied_measure() = default;
   proxied_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
   , mean{} // Do not precalculate the harmonic mean as it is potentially unused
@@ -364,8 +383,8 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
-              , value_type::pointer stack_begin, value_type::pointer stack_end
-              , rational const &length
+              , value_type &&outer_stack
+              , rational const &length, std::mutex &
               ) ;
 
   void cleanup();
@@ -392,12 +411,10 @@ public:
   , id{measure.id}
   {
     BOOST_ASSERT(time_signature >= 0);
-    std::unique_ptr<value_type::value_type[]>
-    stack(new value_type::value_type[measure.voices.size()]);
-
+    std::mutex mutex;
     recurse( measure.voices.begin(), measure.voices.end()
-           , stack.get(), stack.get()
-           , time_signature
+           , value_type{}
+           , time_signature, mutex
            ) ;
 
     cleanup();
