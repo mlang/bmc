@@ -359,7 +359,7 @@ template<typename Function>
 class partial_voice_interpreter
 {
   bool const last_partial_measure;
-  global_state const &state;
+  global_state &state;
   rational const start_position;
   Function yield;
   unsigned int const max_threads = 4;
@@ -372,7 +372,6 @@ class partial_voice_interpreter
                       , value_proxy *stack_begin, value_proxy *stack_end
                       , rational const &max_duration, rational const &position
                       , tuplet_info const &tuplet
-                      , unsigned int threads
                       ) const;
 
 public:
@@ -383,14 +382,15 @@ public:
               , ast::partial_voice::iterator const &end
               , value_proxy *const stack_begin, value_proxy *stack_end
               , rational const &max_duration, rational const &position
-              , tuplet_info const &tuplet, unsigned int threads
+              , tuplet_info const &tuplet
               ) const
   {
     if (iterator == end) {
       if (not (last_partial_measure and state.exact_match_found
                and
-               static_cast<bool>(max_duration)))
+               static_cast<bool>(max_duration))) {
         yield(stack_begin, stack_end, position - start_position);
+      }
     } else {
       unsigned tuplet_number = 0;
       bool simple_triplet, tuplet_doubled;
@@ -405,12 +405,12 @@ public:
             if (on_beat(next_position)) {
               recurse( tail, end, stack_begin, group.end()
                      , max_duration - group_duration, next_position
-                     , group.tuplet_state(), threads);
+                     , group.tuplet_state());
             }
           }
         }
 
-        large_and_small(iterator, end, stack_begin, stack_end, max_duration, position, tuplet, threads);
+        large_and_small(iterator, end, stack_begin, stack_end, max_duration, position, tuplet);
       } else if ((tail = same_category_end
                          ( iterator, end
                          , ast::value_distinction::large_follows
@@ -421,7 +421,7 @@ public:
           recurse(tail, end, stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
                   position + duration(group)
-                  , tuplet, threads);
+                  , tuplet);
         }
       } else if ((tail = same_category_end
                          ( iterator, end
@@ -433,7 +433,7 @@ public:
           recurse(tail, end, stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
                   position + duration(group)
-                  , tuplet, threads);
+                  , tuplet);
         }
       } else if (is_tuplet_begin(iterator, tuplet_number, simple_triplet, tuplet_doubled)) {
         tail = iterator + 1;
@@ -452,7 +452,7 @@ public:
             t.levels.back().factor = factor;
             t.levels.back().ttl = ttl;
             recurse( tail, end, stack_begin, stack_end, max_duration, position
-                   , t, threads);
+                   , t);
           }
         } else {
           for (t.levels.back().ttl = ttl; t.levels.back().ttl;
@@ -460,19 +460,19 @@ public:
             for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
               t.levels.back().factor = factor;
               recurse( tail, end, stack_begin, stack_end, max_duration, position
-                     , t, threads);
+                     , t);
             }
         }
       } else {
         large_and_small( iterator, end, stack_begin, stack_end
-                       , max_duration, position, tuplet, threads);
+                       , max_duration, position, tuplet);
 
         if (stack_begin == stack_end and position == 0 and
             state.time_signature != 1 and
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
           recurse( std::next(iterator), end, stack_begin, std::next(stack_end)
-                 , zero, position + state.time_signature, tuplet, threads);
+                 , zero, position + state.time_signature, tuplet);
         }
       }
     }
@@ -480,7 +480,7 @@ public:
 
   partial_voice_interpreter( rational const &position
                            , bool last_partial_measure
-                           , global_state const &state
+                           , global_state &state
                            , Function yield
                            )
   : last_partial_measure{last_partial_measure}
@@ -497,7 +497,7 @@ public:
   {
     tuplet_info tuplet;
     recurse(begin, end, stack_begin, stack_end, max_duration, start_position
-           , tuplet, 1);
+           , tuplet);
   }
   rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
@@ -510,8 +510,9 @@ class large_and_small_visitor : public boost::static_visitor<bool>
   value_proxy *const stack_begin;
   value_proxy *const proxy;
   rational const &max_duration, &position;
+  global_state &state;
   tuplet_info const &tuplet_ref;               ;
-  unsigned int threads, max_threads;
+  unsigned int max_threads;
   Interpreter const &interpreter;
 public:
   large_and_small_visitor( ast::partial_voice::iterator const &rest
@@ -519,13 +520,15 @@ public:
                          , value_proxy *stack_begin, value_proxy *stack_end
                          , rational const &max_duration
                          , rational const &position
+                         , global_state &state
                          , tuplet_info const &tuplet
-                         , unsigned int threads, unsigned int max_threads
+                         , unsigned int max_threads
                          , Interpreter const &interpreter
                          )
   : rest{rest}, end{end}, stack_begin{stack_begin}, proxy{stack_end}
   , max_duration{max_duration}, position{position}
-  , tuplet_ref{tuplet}, threads{threads}, max_threads{max_threads}
+  , state { state }
+  , tuplet_ref{tuplet}, max_threads{max_threads}
   , interpreter{interpreter}
   {}
 
@@ -540,14 +543,14 @@ public:
     tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
     std::unique_ptr<value_proxy[]> new_stack {};
     std::future<void> future;
-    bool const spawn { threads < max_threads and std::distance(rest, end) >= 14 };
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (fast_leq(*new(proxy)value_proxy(value, large, factor), max_duration)) {
         rational const next_position(position + *proxy);
         // If this is a tuplet end, only accept it if its position makes sense.
         if (not dyadic_next_position or is_dyadic(next_position)) {
-          if (spawn) {
+          if (std::distance(rest, end) >= 10 and state.threads < max_threads) {
+            state.threads++;
             new_stack.reset(
               new value_proxy[std::distance(stack_begin, proxy + 1) +
                               std::distance(rest, end)]
@@ -559,14 +562,14 @@ public:
             future = std::async(std::launch::async, [&]() {
               interpreter.recurse( rest, end, new_stack.get(), new_proxy + 1
                                  , max_duration - *new_proxy, next_position
-                                 , tuplet, threads + 1
+                                 , tuplet
                                  );
+              state.threads--;
             });
           } else {
             proxy->set_tuplet_info(tuplet_begin, tuplet_end);
             interpreter.recurse( rest, end, stack_begin, next
                                , max_duration - *proxy, next_position, tuplet
-                               , threads
                                );
           }
         }
@@ -577,7 +580,6 @@ public:
           proxy->set_tuplet_info(tuplet_begin, tuplet_end);
           interpreter.recurse( rest, end, stack_begin, next
                              , max_duration - *proxy, next_position, tuplet
-                             , spawn? threads + 1: threads
                              );
         }
       }
@@ -596,7 +598,7 @@ public:
         rational const duration(static_cast<rational>(*proxy) / simile.count);
         interpreter.recurse( rest, end, stack_begin, proxy + 1
                            , max_duration - duration, position + duration
-                           , tuplet_ref, threads
+                           , tuplet_ref
                            );
       }
     } else { // partial measure simile
@@ -604,7 +606,7 @@ public:
         if (fast_leq(*new(proxy)value_proxy(simile, position), max_duration))
           interpreter.recurse( rest, end, stack_begin, proxy + 1
                              , max_duration - *proxy, position + *proxy
-                             , tuplet_ref, threads
+                             , tuplet_ref
                              );
       }
     }
@@ -637,17 +639,17 @@ partial_voice_interpreter<Function>::large_and_small
 , ast::partial_voice::iterator const &end
 , value_proxy *const stack_begin, value_proxy *stack_end
 , rational const &max_duration, rational const &position
-, tuplet_info const &tuplet, unsigned int threads
+, tuplet_info const &tuplet
 ) const
 {
   // Skip this sign if it does not result in at least one possible proxy
   auto rest = iterator; ++rest;
   if (not apply_visitor(large_and_small_visitor<partial_voice_interpreter<Function>>
                         { rest, end, stack_begin, stack_end
-                        , max_duration, position, tuplet
-                        , threads, max_threads
-                        , *this}, *iterator))
-    recurse(rest, end, stack_begin, stack_end, max_duration, position, tuplet, threads);
+                        , max_duration, position, state, tuplet, max_threads
+                        , *this
+                        }, *iterator))
+    recurse(rest, end, stack_begin, stack_end, max_duration, position, tuplet);
 }
 
 template<typename Function>
@@ -659,7 +661,7 @@ partial_voice_interpretations( ast::partial_voice::iterator const &begin
                              , rational const &max_duration
                              , rational const &position
                              , bool last_partial_measure
-                             , global_state const &state
+                             , global_state &state
                              , Function yield
                              )
 {
@@ -676,7 +678,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , rational const &length
                                , rational const &position
                                , bool last_partial_measure
-                               , global_state const &state
+                               , global_state &state
                                , Function yield
                                )
 {
@@ -736,7 +738,7 @@ voice_interpretations( ast::voice::iterator const &begin
                      , proxied_voice const &outer_stack
                      , rational const &max_length
                      , rational const &position
-                     , global_state const &state
+                     , global_state &state
                      , Function yield
                      )
 {

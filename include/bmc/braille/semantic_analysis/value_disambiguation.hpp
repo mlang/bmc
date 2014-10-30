@@ -178,6 +178,7 @@ struct global_state
   rational last_measure_duration;
   rational beat;
   std::atomic<bool> exact_match_found { false };
+  std::atomic<short> threads { 1 };
 
   global_state() = default;
   global_state( global_state const &other )
@@ -185,6 +186,7 @@ struct global_state
   , last_measure_duration { other.last_measure_duration }
   , beat { other.beat }
   , exact_match_found { other.exact_match_found.load() }
+  , threads { other.threads.load() }
   {}
   global_state &operator=(global_state const &other)
   {
@@ -192,6 +194,7 @@ struct global_state
     last_measure_duration = other.last_measure_duration;
     beat = other.beat;
     exact_match_found.store(other.exact_match_found.load());
+    threads.store(other.threads.load());
     return *this;
   }
   global_state( music::time_signature const &time_signature
