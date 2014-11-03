@@ -143,13 +143,11 @@ struct interval : locatable, pitched
   fingering_list fingers;
 };
 
-struct chord_tied {};
-
 struct chord : locatable, rhythmic
 {
   note base;
   std::vector<interval> intervals;
-  boost::optional<chord_tied> all_tied;
+  bool all_tied = false;
 
   virtual rational as_rational() const
   { return base.as_rational(); }

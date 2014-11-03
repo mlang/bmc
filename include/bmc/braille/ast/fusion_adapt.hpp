@@ -49,7 +49,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::chord,
   (music::braille::ast::note, base)
   (std::vector<music::braille::ast::interval>, intervals)
-  (boost::optional<music::braille::ast::chord_tied>, all_tied)
+  (bool, all_tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
   music::braille::ast::moving_note,

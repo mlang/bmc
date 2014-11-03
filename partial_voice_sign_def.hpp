@@ -45,6 +45,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
   boost::spirit::_val_type _val;
+  boost::spirit::attr_type attr;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
 
@@ -74,7 +75,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
   chord_tied_sign = brl(46) >> brl(14);
-  chord = note >> +interval >> -chord_tied_sign;
+  chord = note >> +interval >> (chord_tied_sign >> attr(true) | attr(false));
   moving_note = note >> moving_intervals;
   moving_intervals = +(interval >> brl(6)) >> interval;
   interval = -accidental_sign
@@ -95,7 +96,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   boost::spirit::eol_type eol;
   boost::spirit::eps_type eps;
-  boost::spirit::attr_type attr;
   simple_tie = brl(4) >> brl(14) >> attr(ast::tie::single);
 
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
