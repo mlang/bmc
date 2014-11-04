@@ -844,24 +844,27 @@ measure_interpretations::recurse
   }
 }
 
-template< std::size_t min_items_per_thread, typename Iterator
+template< std::size_t MinItemsPerThread, typename Iterator
         , typename Tuple = std::tuple<Iterator, bool>
         >
 Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 {
-  static Tuple (* const this_) (Iterator, Iterator, unsigned int) {
-    &best_harmonic_mean<min_items_per_thread, Iterator>
-  };
-  std::vector<decltype(std::async(std::launch::async, this_, first, last, 1))> results;
+  std::vector<std::future<Tuple>> results;
 
   if (threads > 1) {
     auto const size = std::distance(first, last);
-    while (threads > 1 and size / threads < min_items_per_thread) threads--;
+    while (threads > 1 and size / threads < MinItemsPerThread) threads--;
 
     auto const chunk_size = size / threads--;
     while (threads--) {
       Iterator const last_ { std::next(first, chunk_size) };
-      results.push_back(std::async(std::launch::async, this_, first, last_, 1));
+      results.push_back (
+        std::async
+        ( std::launch::async
+        , &best_harmonic_mean<MinItemsPerThread, Iterator, Tuple>
+        , first, last_, 1
+        )
+      );
       first = last_;
     }
   }
