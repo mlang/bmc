@@ -843,26 +843,65 @@ measure_interpretations::recurse
   }
 }
 
+template<typename Iterator>
+std::tuple<Iterator, bool>
+best_harmonic_mean(Iterator first, Iterator last, unsigned int max_threads = 1U)
+{
+  static decltype(best_harmonic_mean(first, last))
+  (*const recursive) (Iterator, Iterator, unsigned int) {
+    &best_harmonic_mean<Iterator>
+  };
+  std::vector <
+    decltype(std::async(std::launch::async, recursive, first, last, 1))
+  > futures;
+  while (max_threads > 1 and std::distance(first, last) / max_threads < 2000)
+    max_threads--;
+
+  if (max_threads > 1) {
+    auto threads = max_threads - 1;
+    auto const dist = std::distance(first, last) / max_threads;
+    while (threads--) {
+      auto next = std::next(first, dist);
+      futures.push_back(std::async(std::launch::async, recursive, first, next, 1));
+      first = next;
+    }
+  }
+
+  auto result = std::make_tuple(last, false);
+  if (first < last) {
+    result = std::make_tuple(first++, true);
+    while (first < last) { 
+      auto &best = std::get<0>(result);
+      if (best->harmonic_mean() < first->harmonic_mean()) {
+        result = std::make_tuple(first, true);
+      } else if (best->harmonic_mean() == first->harmonic_mean()) {
+        std::get<1>(result) = false;
+      }
+      std::advance(first, 1);
+    }
+
+    for (auto &&future: futures) {
+      auto other = future.get();
+      if (std::get<0>(result)->harmonic_mean() < std::get<0>(other)->harmonic_mean())
+        result = std::move(other);
+      else if (std::get<0>(result)->harmonic_mean() == std::get<0>(other)->harmonic_mean())
+        std::get<1>(result) = false;
+    }
+  }      
+  return result;
+}
+
 void
 measure_interpretations::cleanup()
 {
   // Drop interpretations with a significant lower harmonic mean
   if (exact_match_found and size() > 1) {
-    rational best_score;
-    bool single_best_score = false;
-    for (reference possibility: *this) {
-      rational const score{possibility.harmonic_mean()};
-      if (score > best_score) {
-        best_score = score, single_best_score = true;
-      } else if (score == best_score) {
-        single_best_score = false;
-      }
-    }
     // Do not consider possibilities below a certain margin as valid
-    if (single_best_score) {
-      rational const margin{best_score * rational{3, 4}};
+    auto best_mean = best_harmonic_mean(begin(), end(), 4);
+    if (std::get<1>(best_mean)) {
+      rational const margin{std::get<0>(best_mean)->harmonic_mean() * rational{3, 4}};
       erase(partition(begin(), end(), [&margin](reference measure) {
-        return measure.harmonic_mean() > margin;
+        return not fast_leq(measure.harmonic_mean(), margin);
       }), end());
     }
   }
