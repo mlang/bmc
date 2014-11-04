@@ -352,7 +352,8 @@ count_rhythmic( ast::partial_voice::iterator const &begin
 inline bool
 fast_leq(rational const &lhs, rational const &rhs)
 {
-  return (lhs.numerator() * rhs.denominator()) <= (rhs.numerator() * lhs.denominator());
+  return (lhs.numerator() * rhs.denominator())
+      <= (rhs.numerator() * lhs.denominator());
 }
 
 template<typename Function>
@@ -843,51 +844,57 @@ measure_interpretations::recurse
   }
 }
 
-template<typename Iterator>
-std::tuple<Iterator, bool>
-best_harmonic_mean(Iterator first, Iterator last, unsigned int max_threads = 1U)
+template< std::size_t min_items_per_thread, typename Iterator
+        , typename Tuple = std::tuple<Iterator, bool>
+        >
+Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 {
-  static decltype(best_harmonic_mean(first, last))
-  (*const recursive) (Iterator, Iterator, unsigned int) {
-    &best_harmonic_mean<Iterator>
+  static Tuple (* const this_) (Iterator, Iterator, unsigned int) {
+    &best_harmonic_mean<min_items_per_thread, Iterator>
   };
-  std::vector <
-    decltype(std::async(std::launch::async, recursive, first, last, 1))
-  > futures;
-  while (max_threads > 1 and std::distance(first, last) / max_threads < 2000)
-    max_threads--;
+  std::vector<decltype(std::async(std::launch::async, this_, first, last, 1))> results;
 
-  if (max_threads > 1) {
-    auto threads = max_threads - 1;
-    auto const dist = std::distance(first, last) / max_threads;
+  if (threads > 1) {
+    auto const size = std::distance(first, last);
+    while (threads > 1 and size / threads < min_items_per_thread) threads--;
+
+    auto const chunk_size = size / threads--;
     while (threads--) {
-      auto next = std::next(first, dist);
-      futures.push_back(std::async(std::launch::async, recursive, first, next, 1));
-      first = next;
+      Iterator const last_ { std::next(first, chunk_size) };
+      results.push_back(std::async(std::launch::async, this_, first, last_, 1));
+      first = last_;
     }
   }
 
-  auto result = std::make_tuple(last, false);
-  if (first < last) {
-    result = std::make_tuple(first++, true);
-    while (first < last) { 
-      auto &best = std::get<0>(result);
-      if (best->harmonic_mean() < first->harmonic_mean()) {
-        result = std::make_tuple(first, true);
-      } else if (best->harmonic_mean() == first->harmonic_mean()) {
-        std::get<1>(result) = false;
-      }
-      std::advance(first, 1);
+  if (first == last) {
+    BOOST_ASSERT(not results.empty());
+    return Tuple { last, false };
+  }
+
+  Tuple result { first++, true };
+
+  while (first < last) { 
+    rational const &best_mean { std::get<0>(result)->harmonic_mean() }
+                 , &curr_mean { first->harmonic_mean() };
+    if (best_mean < curr_mean) {
+      std::get<0>(result) = first, std::get<1>(result) = true;
+    } else if (best_mean == curr_mean) {
+      std::get<1>(result) = false;
     }
 
-    for (auto &&future: futures) {
-      auto other = future.get();
-      if (std::get<0>(result)->harmonic_mean() < std::get<0>(other)->harmonic_mean())
-        result = std::move(other);
-      else if (std::get<0>(result)->harmonic_mean() == std::get<0>(other)->harmonic_mean())
-        std::get<1>(result) = false;
+    std::advance(first, 1);
+  }
+
+  for (auto &&future: std::move(results)) {
+    Tuple other { future.get() };
+
+    if (std::get<0>(result)->harmonic_mean() < std::get<0>(other)->harmonic_mean()) {
+      result = std::move(other);
+    } else if (std::get<0>(result)->harmonic_mean() == std::get<0>(other)->harmonic_mean()) {
+      std::get<1>(result) = false;
     }
-  }      
+  }
+
   return result;
 }
 
@@ -897,7 +904,7 @@ measure_interpretations::cleanup()
   // Drop interpretations with a significant lower harmonic mean
   if (exact_match_found and size() > 1) {
     // Do not consider possibilities below a certain margin as valid
-    auto best_mean = best_harmonic_mean(begin(), end(), 4);
+    auto best_mean = best_harmonic_mean<2048>(begin(), end(), 4);
     if (std::get<1>(best_mean)) {
       rational const margin{std::get<0>(best_mean)->harmonic_mean() * rational{3, 4}};
       erase(partition(begin(), end(), [&margin](reference measure) {
