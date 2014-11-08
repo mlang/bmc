@@ -663,7 +663,7 @@ partial_voice_interpretations( ast::partial_voice::iterator const &begin
                              , rational const &position
                              , bool last_partial_measure
                              , global_state &state
-                             , Function yield
+                             , Function&& yield
                              )
 {
   partial_voice_interpreter<Function>
