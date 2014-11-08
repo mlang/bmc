@@ -675,7 +675,7 @@ template<typename Function>
 inline void
 partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                , ast::partial_measure::iterator const &end
-                               , proxied_partial_measure const &outer_stack
+                               , proxied_partial_measure &&outer_stack
                                , rational const &length
                                , rational const &position
                                , bool last_partial_measure
@@ -699,8 +699,8 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
         (value_proxy const *f, value_proxy const *l, rational const &duration)
         {
           proxied_partial_measure stack { };
-          stack.emplace_back(proxied_partial_voice::shared_ptr{new proxied_partial_voice{f, l, duration}});
-          partial_measure_interpretations( tail, end, stack
+          stack.emplace_back(std::make_shared<proxied_partial_voice>(f, l, duration));
+          partial_measure_interpretations( tail, end, std::move(stack)
                                          , duration, position
                                          , last_partial_measure
                                          , state, std::forward<Function>(yield)
@@ -718,9 +718,8 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
         {
           if (duration == length) {
             proxied_partial_measure copy { outer_stack };
-            copy.emplace_back(proxied_partial_voice::shared_ptr{new proxied_partial_voice{f, l, duration}});
-            partial_measure_interpretations( tail, end
-                                           , copy
+            copy.emplace_back(std::make_shared<proxied_partial_voice>(f, l, duration));
+            partial_measure_interpretations( tail, end, std::move(copy)
                                            , duration, position
                                            , last_partial_measure
                                            , state, std::forward<Function>(yield)
@@ -736,7 +735,7 @@ template<typename Function>
 inline void
 voice_interpretations( ast::voice::iterator const &begin
                      , ast::voice::iterator const &end
-                     , proxied_voice const &outer_stack
+                     , proxied_voice &&outer_stack
                      , rational const &max_length
                      , rational const &position
                      , global_state &state
@@ -757,9 +756,9 @@ voice_interpretations( ast::voice::iterator const &begin
       )
       {
         proxied_voice copy { outer_stack };
-        copy.emplace_back(proxied_partial_measure::shared_ptr{new proxied_partial_measure{f, l}});
-        rational const partial_measure_duration(duration(copy.back()));
-        voice_interpretations( std::next(begin), end, copy
+        copy.emplace_back(std::make_shared<proxied_partial_measure>(f, l));
+        rational const partial_measure_duration { duration(copy.back()) };
+        voice_interpretations( std::next(begin), end, std::move(copy)
                              , max_length - partial_measure_duration
                              , position + partial_measure_duration
                              , state
@@ -858,13 +857,10 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
     auto const chunk_size = size / threads--;
     while (threads--) {
       Iterator const last_ { std::next(first, chunk_size) };
-      results.push_back (
-        std::async
-        ( std::launch::async
-        , &best_harmonic_mean<MinItemsPerThread, Iterator, Tuple>
-        , first, last_, 1
-        )
-      );
+      results.push_back
+      ( std::async( std::launch::async
+                  , &best_harmonic_mean<MinItemsPerThread, Iterator, Tuple>
+                  , first, last_, 1));
       first = last_;
     }
   }
@@ -906,10 +902,9 @@ measure_interpretations::cleanup()
 {
   // Drop interpretations with a significant lower harmonic mean
   if (exact_match_found and size() > 1) {
-    // Do not consider possibilities below a certain margin as valid
-    auto best_mean = best_harmonic_mean<2048>(begin(), end(), 4);
-    if (std::get<1>(best_mean)) {
-      rational const margin{std::get<0>(best_mean)->harmonic_mean() * rational{3, 4}};
+    auto best = best_harmonic_mean<5000>(begin(), end(), 4);
+    if (std::get<1>(best)) {
+      auto const margin = std::get<0>(best)->harmonic_mean() * rational{3, 4};
       erase(partition(begin(), end(), [&margin](reference measure) {
         return not fast_leq(measure.harmonic_mean(), margin);
       }), end());

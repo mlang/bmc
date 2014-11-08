@@ -12,7 +12,6 @@
 #include <memory>
 #include <mutex>
 #include <sstream>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
 #include <boost/range/numeric.hpp>
 
 namespace music { namespace braille {
@@ -211,7 +210,6 @@ struct global_state
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration;
-  std::size_t use_count;
 public:
   using base_type = std::vector<value_proxy>;
   proxied_partial_voice( const_pointer begin, const_pointer end
@@ -219,16 +217,9 @@ public:
                        )
   : base_type{begin, end} // copy the given range of value_proxy objects
   , duration{duration}    // remember the accumulative duration of all elements
-  , use_count{0}          // initialize use count to 0
   {}
 
   operator rational const &() const { return duration; }
-
-  friend inline void intrusive_ptr_add_ref(proxied_partial_voice *p) BOOST_NOEXCEPT
-  { ++p->use_count; }
-
-  friend inline void intrusive_ptr_release(proxied_partial_voice *p)
-  { if (--p->use_count == 0) delete p; }
 
   using shared_ptr = std::shared_ptr<proxied_partial_voice>;
 };
@@ -240,20 +231,14 @@ duration(proxied_partial_voice::shared_ptr const &partial_voice)
 
 class proxied_partial_measure : public std::vector<proxied_partial_voice::shared_ptr>
 {
-  std::size_t use_count;
 public:
   using base_type = std::vector<proxied_partial_voice::shared_ptr>;
   proxied_partial_measure() = default;
   proxied_partial_measure(const_pointer begin, const_pointer end)
   : base_type{begin, end}
-  , use_count{0}
   {}
-
-  friend inline void intrusive_ptr_add_ref(proxied_partial_measure *p) BOOST_NOEXCEPT
-  { ++p->use_count; }
-
-  friend inline void intrusive_ptr_release(proxied_partial_measure *p)
-  { if (--p->use_count == 0) delete p; }
+  proxied_partial_measure(proxied_partial_measure const &) = default;
+  proxied_partial_measure(proxied_partial_measure &&) = default;
 
   using shared_ptr = std::shared_ptr<proxied_partial_measure>;
 };
@@ -281,7 +266,6 @@ duration(proxied_partial_measure::shared_ptr const &voices)
 class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
 {
   rational const duration;
-  std::size_t use_count;
 public:
   using base_type = std::vector<proxied_partial_measure::shared_ptr>;
   proxied_voice() = default;
@@ -290,14 +274,9 @@ public:
                )
   : base_type{begin, end}
   , duration{duration}
-  , use_count{0}
   {}
-
-  friend inline void intrusive_ptr_add_ref(proxied_voice *p) BOOST_NOEXCEPT
-  { ++p->use_count; }
-
-  friend inline void intrusive_ptr_release(proxied_voice *p)
-  { if (--p->use_count == 0) delete p; }
+  proxied_voice(proxied_voice const &) = default;
+  proxied_voice(proxied_voice &&) = default;
 
   operator rational const &() const { return duration; }
 
@@ -321,6 +300,10 @@ public:
   : base_type{begin, end}
   , mean{} // Do not precalculate the harmonic mean as it is potentially unused
   {}
+  proxied_measure(proxied_measure const &) = default;
+  proxied_measure(proxied_measure &&) = default;
+  proxied_measure &operator=(proxied_measure &&) = default;
+  proxied_measure &operator=(proxied_measure const &) = default;
 
   /** @brief Harmonic mean of all contained rhythmic values.
    *
