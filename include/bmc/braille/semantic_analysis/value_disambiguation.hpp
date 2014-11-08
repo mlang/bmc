@@ -265,7 +265,7 @@ duration(proxied_partial_measure::shared_ptr const &voices)
 
 class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
 {
-  rational const duration;
+  rational duration;
 public:
   using base_type = std::vector<proxied_partial_measure::shared_ptr>;
   proxied_voice() = default;
@@ -279,6 +279,8 @@ public:
   proxied_voice(proxied_voice &&) = default;
 
   operator rational const &() const { return duration; }
+
+  void set_duration(rational const &d) { duration = d; }
 
   using shared_ptr = std::shared_ptr<proxied_voice>;
 };

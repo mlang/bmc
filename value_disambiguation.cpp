@@ -684,7 +684,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                )
 {
   if (begin == end) {
-    if (not outer_stack.empty()) yield(&*outer_stack.begin(), &*outer_stack.end());
+    if (not outer_stack.empty()) yield(std::move(outer_stack));
   } else {
     std::unique_ptr<proxied_partial_voice::value_type[]> stack {
       new proxied_partial_voice::value_type[begin->size()]
@@ -743,20 +743,19 @@ voice_interpretations( ast::voice::iterator const &begin
                      )
 {
   if (begin == end) {
-    if (not outer_stack.empty())
-      yield(&*outer_stack.begin(), &*outer_stack.end(), position);
+    if (not outer_stack.empty()) {
+      outer_stack.set_duration(position);
+      yield(std::move(outer_stack));
+    }
   } else {
     partial_measure_interpretations
-    ( begin->begin(), begin->end()
-    , proxied_partial_measure{}
+    ( begin->begin(), begin->end(), proxied_partial_measure{}
     , max_length, position, std::next(begin) == end, state
     , [ outer_stack, &begin, &end, &max_length, &position, &state, &yield ]
-      ( proxied_partial_measure::const_pointer f
-      , proxied_partial_measure::const_pointer l
-      )
+      ( proxied_partial_measure &&p )
       {
         proxied_voice copy { outer_stack };
-        copy.emplace_back(std::make_shared<proxied_partial_measure>(f, l));
+        copy.emplace_back(std::make_shared<proxied_partial_measure>(std::move(p)));
         rational const partial_measure_duration { duration(copy.back()) };
         voice_interpretations( std::next(begin), end, std::move(copy)
                              , max_length - partial_measure_duration
@@ -823,25 +822,23 @@ measure_interpretations::recurse
     }
   } else {
     voice_interpretations
-    ( begin->begin(), begin->end()
-    , proxied_voice{}
-    , length, zero
-    , *this
+    ( begin->begin(), begin->end(), proxied_voice{}, length, zero, *this
     , [ &outer_stack, &begin, &end, &length, &mutex, this ]
-      ( proxied_voice::const_pointer f, proxied_voice::const_pointer l
-      , rational const &duration
-      )
+      ( proxied_voice &&p )
       {
         if ((outer_stack.empty() and not this->exact_match_found) or
-            (duration == length)) {
+            (static_cast<rational>(p) == length)) {
+          rational const duration { static_cast<rational>(p) };
           value_type copy { outer_stack };
-          copy.emplace_back(std::make_shared<proxied_voice>(f, l, duration));
+          copy.emplace_back(std::make_shared<proxied_voice>(std::move(p)));
           this->recurse(std::next(begin), end, std::move(copy), duration, mutex);
         }
       }
     );
   }
 }
+
+namespace {
 
 template< std::size_t MinItemsPerThread, typename Iterator
         , typename Tuple = std::tuple<Iterator, bool>
@@ -895,6 +892,8 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
   }
 
   return result;
+}
+
 }
 
 void
