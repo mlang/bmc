@@ -371,6 +371,10 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
 
   void recurse( std::vector<ast::voice>::iterator const& begin
               , std::vector<ast::voice>::iterator const& end
+              , rational const &length, std::mutex &
+              ) ;
+  void recurse( std::vector<ast::voice>::iterator const& begin
+              , std::vector<ast::voice>::iterator const& end
               , value_type &&outer_stack
               , rational const &length, std::mutex &
               ) ;
@@ -401,7 +405,6 @@ public:
     BOOST_ASSERT(time_signature >= 0);
     std::mutex mutex;
     recurse( measure.voices.begin(), measure.voices.end()
-           , value_type{}
            , time_signature, mutex
            ) ;
 
