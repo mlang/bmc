@@ -1,4 +1,4 @@
-// Copyright (C) 2012  Mario Lang <mlang@delysid.org>
+// Copyright (C) 2012-2014  Mario Lang <mlang@delysid.org>
 //
 // Distributed under the terms of the GNU General Public License version 3.
 // (see accompanying file LICENSE.txt or copy at
@@ -131,12 +131,15 @@ is_tuplet_begin( ast::partial_voice::iterator const &iterator
 }
 
 ast::partial_voice::iterator
-tuplet_end(ast::partial_voice::iterator begin, ast::partial_voice::iterator const &end, unsigned in_number, bool in_simple)
+tuplet_end( ast::partial_voice::iterator begin
+	  , ast::partial_voice::iterator const &end
+	  , unsigned in_number, bool in_simple
+	  )
 {
   unsigned number;
   bool doubled, simple;
   while (begin != end) {
-    if (apply_visitor(ast::is_tuplet_start(number, doubled, simple), *begin)) {
+    if (is_tuplet_begin(begin, number, simple, doubled)) {
       if (in_simple and simple) break;
 
       // This check prevents same-number tuplets to be nested.
@@ -264,13 +267,13 @@ notegroup_end( ast::partial_voice::iterator const &begin
 {
   if (apply_visitor(ast::is_rhythmic(), *begin)) {
     if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
-      auto iter = begin + 1;
+      auto iter = std::next(begin);
       while (iter != end and
              apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
              not apply_visitor(ast::is_rest(), *iter) and
              not apply_visitor(ast::get_augmentation_dots(), *iter) and
              not apply_visitor(ast::is_hyphen(), *iter))
-        ++iter;
+	std::advance(iter, 1);
       // A note group is only valid if it consists of at least 3 rhythmic signs
       if (std::distance(begin, iter) > 2) return iter;
     }
@@ -693,10 +696,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
     partial_voice_interpretations
     ( begin->begin(), begin->end(), stack.get(), stack.get()
     , length, position, last_partial_measure, state
-    , [ &outer_stack, &next, &end
-      , length, position, last_partial_measure, &state, &yield
-      ]
-      ( value_proxy const *f, value_proxy const *l, rational const &duration )
+    , [&](value_proxy const *f, value_proxy const *l, rational const &duration)
       {
         if (duration == length) {
           proxied_partial_measure copy { outer_stack };
@@ -730,8 +730,7 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
     partial_voice_interpretations
     ( begin->begin(), begin->end(), stack.get(), stack.get()
     , length, position, last_partial_measure, state
-    , [ &next, &end, position, last_partial_measure, &state, &yield ]
-      (value_proxy const *f, value_proxy const *l, rational const &duration)
+    , [&](value_proxy const *f, value_proxy const *l, rational const &duration)
       {
         proxied_partial_measure stack { };
         stack.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
@@ -757,16 +756,15 @@ voice_interpretations( ast::voice::iterator const &begin
   if (begin == end) {
     yield(std::move(outer_stack), position);
   } else {
-    auto next = std::next(begin);
+    auto const next = std::next(begin);
+
     partial_measure_interpretations
-    ( begin->begin(), begin->end()
-    , max_length, position, next == end, state
-    , [ &outer_stack, &next, &end, max_length, position, &state, &yield ]
-      ( proxied_partial_measure &&p )
+    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
         proxied_voice copy { outer_stack };
-        copy.emplace_back(std::make_shared<proxied_partial_measure>(std::move(p)));
+        copy.push_back(std::make_shared<proxied_partial_measure>(std::move(p)));
         voice_interpretations( next, end, std::move(copy)
                              , max_length - partial_measure_duration
                              , position + partial_measure_duration
@@ -788,10 +786,8 @@ voice_interpretations( ast::voice::iterator const &begin
   if (begin != end) {
     auto next = std::next(begin);
     partial_measure_interpretations
-    ( begin->begin(), begin->end()
-    , max_length, position, next == end, state
-    , [ &next, &end, max_length, position, &state, &yield ]
-      ( proxied_partial_measure &&p )
+    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
         proxied_voice stack { };
@@ -883,6 +879,7 @@ measure_interpretations::recurse
     }
   } else {
     auto const next = std::next(begin);
+
     voice_interpretations
     ( begin->begin(), begin->end(), length, zero, *this
     , [ &outer_stack, &next, &end, length, &mutex, this ]
