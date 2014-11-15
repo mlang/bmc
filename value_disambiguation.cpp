@@ -660,8 +660,6 @@ template<typename Function>
 inline void
 partial_voice_interpretations( ast::partial_voice::iterator const &begin
                              , ast::partial_voice::iterator const &end
-                             , proxied_partial_voice::pointer const stack_begin
-                             , proxied_partial_voice::pointer stack_end
                              , rational const &max_duration
                              , rational const &position
                              , bool last_partial_measure
@@ -669,9 +667,12 @@ partial_voice_interpretations( ast::partial_voice::iterator const &begin
                              , Function&& yield
                              )
 {
+  std::unique_ptr<proxied_partial_voice::value_type[]> stack {
+    new proxied_partial_voice::value_type[std::distance(begin, end)]
+  };
   partial_voice_interpreter<Function>
   (position, last_partial_measure, state, std::forward<Function>(yield))
-  (begin, end, stack_begin, stack_end, max_duration);
+  (begin, end, stack.get(), stack.get(), max_duration);
 }
 
 template<typename Function>
@@ -688,13 +689,10 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
   if (begin == end) {
     yield(std::move(outer_stack));
   } else {
-    std::unique_ptr<proxied_partial_voice::value_type[]> stack {
-      new proxied_partial_voice::value_type[begin->size()]
-    };
     auto const next = std::next(begin);
 
     partial_voice_interpretations
-    ( begin->begin(), begin->end(), stack.get(), stack.get()
+    ( begin->begin(), begin->end()
     , length, position, last_partial_measure, state
     , [&](value_proxy const *f, value_proxy const *l, rational const &duration)
       {
@@ -722,13 +720,10 @@ partial_measure_interpretations( ast::partial_measure::iterator const &begin
                                )
 {
   if (begin != end) {
-    std::unique_ptr<proxied_partial_voice::value_type[]> stack {
-      new proxied_partial_voice::value_type[begin->size()]
-    };
     auto const next = std::next(begin);
 
     partial_voice_interpretations
-    ( begin->begin(), begin->end(), stack.get(), stack.get()
+    ( begin->begin(), begin->end()
     , length, position, last_partial_measure, state
     , [&](value_proxy const *f, value_proxy const *l, rational const &duration)
       {
