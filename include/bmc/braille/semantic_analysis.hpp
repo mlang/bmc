@@ -14,11 +14,6 @@
 #include "bmc/braille/semantic_analysis/alteration_calculator.hpp"
 #include "bmc/braille/semantic_analysis/doubling_decoder.hpp"
 
-#include <boost/function.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_function.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-
 #include <future>
 
 namespace music { namespace braille {
@@ -256,12 +251,8 @@ public:
   compiler( ErrorHandler& error_handler
           , music::time_signature const& time_signature = music::time_signature(4, 4)
           )
-  : compiler_pass( boost::phoenix::function<ErrorHandler>(error_handler)
-                   ( L"Error"
-                   , boost::phoenix::arg_names::_2
-                   , boost::phoenix::cref(error_handler.iters)
-                     [boost::phoenix::arg_names::_1]
-                   )
+  : compiler_pass( [&error_handler](int tag, std::wstring const &what)
+                   { error_handler(L"Error", what, error_handler.iters[tag]); }
                  )
   , error_handler{error_handler}
   , calculate_locations(report_error, error_handler)
