@@ -14,7 +14,6 @@ value_disambiguator::value_disambiguator(report_error_type const& report_error)
 : compiler_pass(report_error)
 , time_signature(4, 4)
 , prev_duration(0)
-, anacrusis(new value_disambiguation::measure_interpretations())
 {}
 
 value_disambiguator::result_type
@@ -25,8 +24,8 @@ value_disambiguator::operator()(ast::measure& measure)
 
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
-    if (anacrusis->empty()) {
-      *anacrusis = interpretations;
+    if (not anacrusis) {
+      anacrusis = interpretations;
       prev_duration = 0;
       return true;
     } else {
@@ -36,7 +35,7 @@ value_disambiguator::operator()(ast::measure& measure)
             if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();
               prev_duration = duration(rhs);
-              anacrusis->clear();
+              anacrusis.reset();
               return true;
             }
           }
@@ -68,13 +67,13 @@ value_disambiguator::operator()(ast::measure& measure)
 
 bool
 value_disambiguator::end_of_staff() const {
-  if (anacrusis->size() > 1) {
+  if (anacrusis and anacrusis->size() > 1) {
     std::wstringstream msg;
     msg << "Unterminated anacrusis";
     report_error(anacrusis->get_measure_id(), msg.str());
     return false;
   }
-  if (not anacrusis->empty()) anacrusis->front().accept();
+  if (anacrusis and not anacrusis->empty()) anacrusis->front().accept();
   return true;
 }
 

@@ -46,7 +46,7 @@ class value_disambiguator: public compiler_pass
 {
   music::time_signature time_signature;
   rational prev_duration;
-  std::unique_ptr<value_disambiguation::measure_interpretations> anacrusis;
+  boost::optional<value_disambiguation::measure_interpretations> anacrusis;
 
 public:
   typedef bool result_type;
