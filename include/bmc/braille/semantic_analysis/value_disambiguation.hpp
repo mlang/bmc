@@ -12,7 +12,6 @@
 #include <memory>
 #include <mutex>
 #include <sstream>
-#include <boost/range/numeric.hpp>
 
 namespace music { namespace braille {
 
