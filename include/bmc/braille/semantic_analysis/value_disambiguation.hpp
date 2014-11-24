@@ -368,18 +368,6 @@ class measure_interpretations: std::vector<proxied_measure>, public global_state
 {
   ssize_t id;
 
-  void recurse( std::vector<ast::voice>::iterator const& begin
-              , std::vector<ast::voice>::iterator const& end
-              , rational const &length, std::mutex &
-              ) ;
-  void recurse( std::vector<ast::voice>::iterator const& begin
-              , std::vector<ast::voice>::iterator const& end
-              , value_type &&outer_stack
-              , rational const &length, std::mutex &
-              ) ;
-
-  void cleanup();
-
 public:
   typedef std::vector<proxied_measure> base_type;
 
@@ -394,22 +382,7 @@ public:
   measure_interpretations( ast::measure& measure
                          , music::time_signature const &time_signature
                          , rational const &last_measure_duration = rational(0)
-                         )
-  : base_type{}
-  , global_state{ time_signature, last_measure_duration
-                , rational{1, time_signature.denominator()}
-                }
-  , id{measure.id}
-  {
-    BOOST_ASSERT(time_signature >= 0);
-    std::mutex mutex;
-    recurse( measure.voices.begin(), measure.voices.end()
-           , time_signature, mutex
-           ) ;
-
-    cleanup();
-  }
-
+                         );
   bool contains_complete_measure() const
   { return exact_match_found; }
 

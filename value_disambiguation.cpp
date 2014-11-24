@@ -694,7 +694,9 @@ interpretations( ast::partial_measure::iterator const &begin
 
     interpretations
     ( begin->begin(), begin->end(), length, position, last_partial_measure, state
-    , [&](value_proxy const *f, value_proxy const *l, rational const &duration, tuplet_info const &tuplet)
+    , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
+         , tuplet_info const &tuplet
+         )
       {
         if (duration == length) {
           proxied_partial_measure copy { candidate };
@@ -793,6 +795,64 @@ interpretations( ast::voice::iterator const &begin
   }
 }
 
+template<typename Function>
+inline void
+interpretations
+( std::vector<ast::voice>::iterator const &begin
+, std::vector<ast::voice>::iterator const &end
+, proxied_measure &&candidate
+, rational const &length
+, global_state &state
+, Function&& yield
+)
+{
+  if (begin == end) {
+    yield(std::move(candidate), length);
+  } else {
+    auto const next = std::next(begin);
+
+    interpretations
+    ( begin->begin(), begin->end(), length, zero, state
+    , [&](proxied_voice &&p, rational const &position)
+      {
+        if (position == length) {
+          p.set_duration(position);
+          proxied_measure copy { candidate };
+          copy.push_back(std::make_shared<proxied_voice>(std::move(p)));
+          interpretations(next, end, std::move(copy), position, state, yield);
+        }
+      }
+    );
+  }
+}
+
+template<typename Function>
+inline void
+interpretations
+( std::vector<ast::voice>::iterator const &begin
+, std::vector<ast::voice>::iterator const &end
+, rational const &length
+, global_state &state
+, Function&& yield
+)
+{
+  if (begin != end) {
+    auto const next = std::next(begin);
+    interpretations
+    ( begin->begin(), begin->end(), length, zero, state
+    , [&](proxied_voice &&p, rational const &position)
+      {
+        if ((not state.exact_match_found) or (position == length)) {
+          p.set_duration(position);
+          proxied_measure candidate { };
+          candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
+          interpretations(next, end, std::move(candidate), position, state, yield);
+        }
+      }
+    );
+  }
+}
+
 }
 
 rational const &
@@ -821,71 +881,6 @@ proxied_measure::accept() const
       for (auto const &partial_voice: *partial_measure)
         for_each(partial_voice->begin(), partial_voice->end(),
                  std::mem_fun_ref(&value_proxy::accept));
-}
-
-void
-measure_interpretations::recurse
-( std::vector<ast::voice>::iterator const &begin
-, std::vector<ast::voice>::iterator const &end
-, rational const &length, std::mutex &mutex
-)
-{
-  if (begin != end) {
-    auto const next = std::next(begin);
-    interpretations
-    ( begin->begin(), begin->end(), length, zero, *this
-    , [ &next, &end, length, &mutex, this ]
-      ( proxied_voice &&p, rational const &position )
-      {
-        if ((not this->exact_match_found) or (position == length)) {
-          p.set_duration(position);
-          value_type candidate { };
-          candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          this->recurse(next, end, std::move(candidate), position, mutex);
-        }
-      }
-    );
-  }
-}
-
-void
-measure_interpretations::recurse
-( std::vector<ast::voice>::iterator const &begin
-, std::vector<ast::voice>::iterator const &end
-, value_type &&candidate
-, rational const &length, std::mutex &mutex
-)
-{
-  if (begin == end) {
-    std::lock_guard<std::mutex> lock { mutex };
-
-    if (not exact_match_found or length == time_signature) {
-      if (not exact_match_found and length == time_signature) {
-        // We found the first intepretation matching the time signature.
-        // So this is not an anacrusis.  Drop accumulated (incomplete)
-        // interpretations and continue more efficiently.
-        clear();
-        exact_match_found = true;
-      }
-      push_back(std::move(candidate));
-    }
-  } else {
-    auto const next = std::next(begin);
-
-    interpretations
-    ( begin->begin(), begin->end(), length, zero, *this
-    , [ &candidate, &next, &end, length, &mutex, this ]
-      ( proxied_voice &&p, rational const &position )
-      {
-        if (position == length) {
-	  p.set_duration(position);
-          value_type copy { candidate };
-          copy.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          this->recurse(next, end, std::move(copy), position, mutex);
-        }
-      }
-    );
-  }
 }
 
 namespace {
@@ -946,10 +941,44 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 
 }
 
-void
-measure_interpretations::cleanup()
+measure_interpretations::measure_interpretations
+( ast::measure& measure
+, music::time_signature const &time_signature
+, rational const &last_measure_duration
+)
+: base_type{}
+, global_state
+  {
+    time_signature, last_measure_duration,
+    rational{1, time_signature.denominator()}
+  }
+, id { measure.id }
 {
-  // Drop interpretations with a significant lower harmonic mean
+  BOOST_ASSERT(time_signature >= 0);
+  std::mutex mutex{};
+
+  // Find all possible measure interpretations.
+  interpretations
+  ( measure.voices.begin(), measure.voices.end()
+  , time_signature, *this
+  , [&](proxied_measure &&p, rational const &length)
+    {
+      std::lock_guard<std::mutex> lock { mutex };
+
+      if (not this->exact_match_found or length == time_signature) {
+        if (not this->exact_match_found and length == time_signature) {
+          // We found the first intepretation matching the time signature.
+          // So this is not an anacrusis.  Drop accumulated (incomplete)
+          // interpretations and continue more efficiently.
+          this->clear();
+          this->exact_match_found = true;
+        }
+        this->push_back(std::move(p));
+      }
+    }
+  );
+
+  // Drop interpretations with a significant lower harmonic mean.
   if (exact_match_found and size() > 1) {
     auto best = best_harmonic_mean<5000>(begin(), end(), 4);
     if (std::get<1>(best)) {
