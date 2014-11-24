@@ -661,16 +661,15 @@ template<typename Function>
 void
 interpretations( ast::partial_voice::iterator const &begin
                , ast::partial_voice::iterator const &end
-               , rational const &max_duration
-               , rational const &position
+               , rational const &max_duration, rational const &position
                , bool last_partial_measure
-               , global_state &state
-               , Function&& yield
+               , global_state &state, Function&& yield
                )
 {
   std::unique_ptr<proxied_partial_voice::value_type[]> stack {
     new proxied_partial_voice::value_type[std::distance(begin, end)]
   };
+
   partial_voice_interpreter<Function>
   (position, last_partial_measure, state, std::forward<Function>(yield))
   (begin, end, stack.get(), stack.get(), max_duration);
@@ -724,7 +723,9 @@ interpretations( ast::partial_measure::iterator const &begin
 
     interpretations
     ( begin->begin(), begin->end(), length, position, last_partial_measure, state
-    , [&](value_proxy const *f, value_proxy const *l, rational const &duration, tuplet_info const &tuplet)
+    , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
+	 , tuplet_info const &tuplet
+	 )
       {
         proxied_partial_measure candidate { };
         candidate.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
@@ -796,15 +797,12 @@ interpretations( ast::voice::iterator const &begin
 }
 
 template<typename Function>
-inline void
-interpretations
-( std::vector<ast::voice>::iterator const &begin
-, std::vector<ast::voice>::iterator const &end
-, proxied_measure &&candidate
-, rational const &length
-, global_state &state
-, Function&& yield
-)
+void
+interpretations( std::vector<ast::voice>::iterator const &begin
+               , std::vector<ast::voice>::iterator const &end
+               , proxied_measure &&candidate
+               , rational const &length, global_state &state, Function&& yield
+               )
 {
   if (begin == end) {
     yield(std::move(candidate), length);
@@ -827,17 +825,15 @@ interpretations
 }
 
 template<typename Function>
-inline void
-interpretations
-( std::vector<ast::voice>::iterator const &begin
-, std::vector<ast::voice>::iterator const &end
-, rational const &length
-, global_state &state
-, Function&& yield
-)
+void
+interpretations( std::vector<ast::voice>::iterator const &begin
+               , std::vector<ast::voice>::iterator const &end
+               , rational const &length, global_state &state, Function&& yield
+               )
 {
   if (begin != end) {
     auto const next = std::next(begin);
+
     interpretations
     ( begin->begin(), begin->end(), length, zero, state
     , [&](proxied_voice &&p, rational const &position)
@@ -955,6 +951,7 @@ measure_interpretations::measure_interpretations
 , id { measure.id }
 {
   BOOST_ASSERT(time_signature >= 0);
+
   std::mutex mutex{};
 
   // Find all possible measure interpretations.
@@ -963,9 +960,9 @@ measure_interpretations::measure_interpretations
   , time_signature, *this
   , [&](proxied_measure &&p, rational const &length)
     {
-      std::lock_guard<std::mutex> lock { mutex };
-
       if (not this->exact_match_found or length == time_signature) {
+        std::lock_guard<std::mutex> lock { mutex };
+
         if (not this->exact_match_found and length == time_signature) {
           // We found the first intepretation matching the time signature.
           // So this is not an anacrusis.  Drop accumulated (incomplete)
@@ -991,4 +988,3 @@ measure_interpretations::measure_interpretations
 }
 
 }}}
-
