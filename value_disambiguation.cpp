@@ -88,40 +88,40 @@ struct maybe_whole_measure_rest : boost::static_visitor<bool>
   template<typename T> result_type operator()(T const &) const { return false; }
 };
 
-struct tuplet_info
+struct tuplet_level {
+  unsigned number = 1;
+  rational factor = rational{1};
+  bool first_tuplet = true;
+  unsigned ttl = 0;
+  bool doubled = false;
+};
+
+using tuplet_info = std::vector<tuplet_level>;
+
+void process_tuplet_info( tuplet_info &tuplet
+                        , rational &factor
+                        , std::vector<rational> &tuplet_begin, unsigned &tuplet_end
+                        , bool &dyadic_next_position
+                        )
 {
-  struct level {
-    unsigned number = 1;
-    rational factor = rational{1};
-    bool first_tuplet = true;
-    unsigned ttl = 0;
-    bool doubled = false;
-  };
-  std::vector<level> levels;
+  factor = rational{1};
+  tuplet_begin.clear();
+  tuplet_end = 0;
+  dyadic_next_position = true;
 
-  void operator()( rational &factor
-                 , std::vector<rational> &tuplet_begin, unsigned &tuplet_end
-                 , bool &dyadic_next_position
-                 )
-  {
-    factor = rational{1};
-    tuplet_begin.clear();
-    tuplet_end = 0;
-    dyadic_next_position = true;
-    for (tuplet_info::level &level: levels) {
-      if (level.ttl) {
-        if (level.first_tuplet) {
-          tuplet_begin.emplace_back(level.factor);
-          level.first_tuplet = false;
-        }
-        if (level.ttl == 1) ++tuplet_end; else dyadic_next_position = false;
-        factor *= level.factor;
-
-        --level.ttl;
+  for (auto &&level: tuplet) {
+    if (level.ttl) {
+      if (level.first_tuplet) {
+        tuplet_begin.push_back(level.factor);
+        level.first_tuplet = false;
       }
+      if (level.ttl == 1) ++tuplet_end; else dyadic_next_position = false;
+      factor *= level.factor;
+
+      --level.ttl;
     }
   }
-};
+}
 
 bool
 is_tuplet_begin( ast::partial_voice::iterator const &iterator
@@ -166,7 +166,7 @@ public:
            )
   : type{ast::unknown}
   , stack_begin{stack_end}, stack_end{stack_end}
-  , tuplet(tuplet)
+  , tuplet{tuplet}
   { std::for_each(begin, end, apply_visitor(*this)); }
 
   result_type operator()(ast::note &note)
@@ -177,7 +177,7 @@ public:
     std::vector<rational> tuplet_begin;
     unsigned tuplet_end;
     bool dyadic_next_position;
-    tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
+    process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(note, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -190,7 +190,7 @@ public:
     std::vector<rational> tuplet_begin;
     unsigned tuplet_end;
     bool dyadic_next_position;
-    tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
+    process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(rest, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -203,7 +203,7 @@ public:
     std::vector<rational> tuplet_begin;
     unsigned tuplet_end;
     bool dyadic_next_position;
-    tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
+    process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(chord, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -216,7 +216,7 @@ public:
     std::vector<rational> tuplet_begin;
     unsigned tuplet_end;
     bool dyadic_next_position;
-    tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
+    process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     new (stack_end) value_proxy(chord, small, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
@@ -443,27 +443,27 @@ public:
       } else if (is_tuplet_begin(iterator, tuplet_number, simple_triplet, tuplet_doubled)) {
         tail = iterator + 1;
         tuplet_info t(tuplet);
-        unsigned parent_ttl = t.levels.empty()? 0: t.levels.back().ttl;
-        if (t.levels.empty() or t.levels.back().ttl > 0)
-          t.levels.emplace_back();
-        t.levels.back().number = tuplet_number;
-        t.levels.back().first_tuplet = true;
+        unsigned parent_ttl = t.empty()? 0: t.back().ttl;
+        if (t.empty() or t.back().ttl > 0)
+          t.emplace_back();
+        t.back().number = tuplet_number;
+        t.back().first_tuplet = true;
         unsigned ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
         // A nested tuplet can not be longer then the tuplet it is contained in.
         if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
         // Try all possible note counts and ratios.
         if (tuplet_doubled) {
-          t.levels.back().doubled = true;
-	  t.levels.back().ttl = ttl;
+          t.back().doubled = true;
+	  t.back().ttl = ttl;
           for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
-            t.levels.back().factor = factor;
+            t.back().factor = factor;
             recurse( tail, end, stack_begin, stack_end, max_duration, position, t);
           }
         } else {
-          for (t.levels.back().ttl = ttl; t.levels.back().ttl;
-               --t.levels.back().ttl)
+          for (t.back().ttl = ttl; t.back().ttl;
+               --t.back().ttl)
             for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
-              t.levels.back().factor = factor;
+              t.back().factor = factor;
               recurse( tail, end, stack_begin, stack_end, max_duration, position
                      , t);
             }
@@ -544,8 +544,8 @@ public:
     std::vector<rational> tuplet_begin;
     unsigned tuplet_end;
     bool dyadic_next_position;
-    tuplet_info tuplet(tuplet_ref);
-    tuplet(factor, tuplet_begin, tuplet_end, dyadic_next_position);
+    tuplet_info tuplet{tuplet_ref};
+    process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     std::unique_ptr<value_proxy[]> new_stack {};
     std::future<void> future;
     if (not is_grace(value)) {
