@@ -960,17 +960,17 @@ measure_interpretations::measure_interpretations
   , time_signature, *this
   , [&](proxied_measure &&p, rational const &length)
     {
-      if (not this->exact_match_found or length == time_signature) {
+      if (not exact_match_found or length == time_signature) {
         std::lock_guard<std::mutex> lock { mutex };
 
-        if (not this->exact_match_found and length == time_signature) {
+        if (not exact_match_found and length == time_signature) {
           // We found the first intepretation matching the time signature.
           // So this is not an anacrusis.  Drop accumulated (incomplete)
           // interpretations and continue more efficiently.
-          this->clear();
-          this->exact_match_found = true;
+          clear();
+          exact_match_found = true;
         }
-        this->push_back(std::move(p));
+        push_back(std::move(p));
       }
     }
   );
