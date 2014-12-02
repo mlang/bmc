@@ -283,10 +283,6 @@ public:
   using base_type = std::vector<std::shared_ptr<proxied_voice>>;
 
   proxied_measure() = default;
-  proxied_measure(const_pointer begin, const_pointer end)
-  : base_type{begin, end}
-  , mean{} // Do not precalculate the harmonic mean as it is potentially unused
-  {}
   proxied_measure(proxied_measure const &) = default;
   proxied_measure(proxied_measure &&) = default;
   proxied_measure &operator=(proxied_measure &&) = default;
@@ -311,9 +307,7 @@ public:
 
 /** @brief Duration of a proxied_measure.
  */
-inline
-rational
-duration(proxied_measure const &voices)
+inline rational duration(proxied_measure const &voices)
 {
   rational value;
   if (not voices.empty()) {
