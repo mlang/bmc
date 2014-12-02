@@ -262,39 +262,25 @@ inline rational
 duration(proxied_partial_measure::shared_ptr const &voices)
 { return duration(*voices); }
 
-class proxied_voice : public std::vector<proxied_partial_measure::shared_ptr>
+using proxied_voice = std::vector<std::shared_ptr<proxied_partial_measure>>;
+
+inline rational duration(std::shared_ptr<proxied_voice> const &voice)
 {
-  rational duration;
-public:
-  using base_type = std::vector<proxied_partial_measure::shared_ptr>;
-  proxied_voice() = default;
-  proxied_voice( const_pointer begin, const_pointer end
-               , rational const &duration
-               )
-  : base_type{begin, end}
-  , duration{duration}
-  {}
-  proxied_voice(proxied_voice const &) = default;
-  proxied_voice(proxied_voice &&) = default;
-
-  operator rational const &() const { return duration; }
-
-  void set_duration(rational const &d) { duration = d; }
-
-  using shared_ptr = std::shared_ptr<proxied_voice>;
-};
-
-inline rational const &
-duration(proxied_voice::shared_ptr const &voice)
-{ return *voice; }
+  BOOST_ASSERT(voice);
+  return std::accumulate(voice->begin(), voice->end(), zero, []
+    (rational const &lhs, std::shared_ptr<proxied_partial_measure> const &rhs) {
+      return lhs + duration(rhs);
+    }
+  );
+}
 
 /** @brief Represents a possible interpretation of an ast::measure.
  */
-class proxied_measure : public std::vector<proxied_voice::shared_ptr>
+class proxied_measure : public std::vector<std::shared_ptr<proxied_voice>>
 {
   rational mean;
 public:
-  using base_type = std::vector<proxied_voice::shared_ptr>;
+  using base_type = std::vector<std::shared_ptr<proxied_voice>>;
 
   proxied_measure() = default;
   proxied_measure(const_pointer begin, const_pointer end)

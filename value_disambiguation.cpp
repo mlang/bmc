@@ -814,7 +814,6 @@ interpretations( std::vector<ast::voice>::iterator const &begin
     , [&](proxied_voice &&p, rational const &position)
       {
         if (position == length) {
-          p.set_duration(position);
           proxied_measure copy { candidate };
           copy.push_back(std::make_shared<proxied_voice>(std::move(p)));
           interpretations(next, end, std::move(copy), position, state, yield);
@@ -839,7 +838,6 @@ interpretations( std::vector<ast::voice>::iterator const &begin
     , [&](proxied_voice &&p, rational const &position)
       {
         if ((not state.exact_match_found) or (position == length)) {
-          p.set_duration(position);
           proxied_measure candidate { };
           candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
           interpretations(next, end, std::move(candidate), position, state, yield);
