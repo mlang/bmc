@@ -511,11 +511,20 @@ public:
 
   void operator()( ast::partial_voice::iterator const &begin
                  , ast::partial_voice::iterator const &end
+                 , std::vector<rational> const &doubled_tuplets
                  , proxied_partial_voice::pointer stack_begin
                  , proxied_partial_voice::pointer stack_end
                  , rational const &max_duration)
   {
     tuplet_info tuplet;
+    for (auto &&factor: doubled_tuplets) {
+      tuplet.emplace_back();
+      tuplet.back().doubled = true;
+      tuplet.back().factor = factor;
+      tuplet.back().first_tuplet = true;
+      tuplet.back().ttl = 1024;
+    }
+
     recurse(begin, end, stack_begin, stack_end, max_duration, start_position
            , tuplet);
   }
@@ -676,6 +685,7 @@ template<typename Function>
 void
 interpretations( ast::partial_voice::iterator const &begin
                , ast::partial_voice::iterator const &end
+               , std::vector<rational> const &doubled_tuplets
                , rational const &max_duration, rational const &position
                , bool last_partial_measure
                , global_state &state, Function&& yield
@@ -687,13 +697,15 @@ interpretations( ast::partial_voice::iterator const &begin
 
   partial_voice_interpreter<Function>
   (position, last_partial_measure, state, std::forward<Function>(yield))
-  (begin, end, stack.get(), stack.get(), max_duration);
+  (begin, end, doubled_tuplets, stack.get(), stack.get(), max_duration);
 }
 
 template<typename Function>
 void
 interpretations( ast::partial_measure::iterator const &begin
                , ast::partial_measure::iterator const &end
+               , std::vector<std::vector<rational>>::const_iterator dt_begin
+               , std::vector<std::vector<rational>>::const_iterator dt_end
                , proxied_partial_measure &&candidate
                , rational const &length
                , rational const &position
@@ -705,9 +717,15 @@ interpretations( ast::partial_measure::iterator const &begin
     yield(std::move(candidate));
   } else {
     auto const next = std::next(begin);
+    std::vector<rational> tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, position, last_partial_measure, state
+    ( begin->begin(), begin->end(), tuplet_data
+    , length, position, last_partial_measure, state
     , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
          , tuplet_info const &tuplet
          )
@@ -719,7 +737,8 @@ interpretations( ast::partial_measure::iterator const &begin
               f, l, duration, extract_doubled(tuplet)
             )
           );
-          interpretations( next, end, std::move(copy), duration, position
+          interpretations( next, end, dt_begin, dt_end
+                         , std::move(copy), duration, position
                          , last_partial_measure, state, yield
                          );
         }
@@ -732,6 +751,8 @@ template<typename Function>
 void
 interpretations( ast::partial_measure::iterator const &begin
                , ast::partial_measure::iterator const &end
+               , std::vector<std::vector<rational>>::const_iterator dt_begin
+               , std::vector<std::vector<rational>>::const_iterator dt_end
                , rational const &length, rational const &position
                , bool last_partial_measure
                , global_state &state, Function&& yield
@@ -739,9 +760,15 @@ interpretations( ast::partial_measure::iterator const &begin
 {
   if (begin != end) {
     auto const next = std::next(begin);
+    std::vector<rational> tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, position, last_partial_measure, state
+    ( begin->begin(), begin->end(), tuplet_data
+    , length, position, last_partial_measure, state
     , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
 	 , tuplet_info const &tuplet
 	 )
@@ -752,7 +779,8 @@ interpretations( ast::partial_measure::iterator const &begin
             f, l, duration, extract_doubled(tuplet)
           )
         );
-        interpretations( next, end, std::move(candidate), duration, position
+        interpretations( next, end, dt_begin, dt_end
+                       , std::move(candidate), duration, position
                        , last_partial_measure, state, yield
                        );
       }
@@ -773,9 +801,10 @@ interpretations( ast::voice::iterator const &begin
     yield(std::move(candidate), position);
   } else {
     auto const next = std::next(begin);
+    std::vector<std::vector<rational>> tuplet_data;
 
     interpretations
-    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end(), max_length, position, next == end, state
     , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
@@ -795,6 +824,8 @@ template<typename Function>
 void
 interpretations( ast::voice::iterator const &begin
                , ast::voice::iterator const &end
+               , std::vector<std::vector<rational>>::const_iterator dt_begin
+               , std::vector<std::vector<rational>>::const_iterator dt_end
                , rational const &max_length, rational const &position
                , global_state &state, Function&& yield
                )
@@ -803,7 +834,8 @@ interpretations( ast::voice::iterator const &begin
     auto next = std::next(begin);
 
     interpretations
-    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    ( begin->begin(), begin->end(), dt_begin, dt_end
+    , max_length, position, next == end, state
     , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
@@ -823,6 +855,8 @@ template<typename Function>
 void
 interpretations( std::vector<ast::voice>::iterator const &begin
                , std::vector<ast::voice>::iterator const &end
+               , std::vector<std::vector<std::vector<rational>>>::const_iterator dt_begin
+               , std::vector<std::vector<std::vector<rational>>>::const_iterator dt_end
                , proxied_measure &&candidate
                , rational const &length, global_state &state, Function&& yield
                )
@@ -831,15 +865,21 @@ interpretations( std::vector<ast::voice>::iterator const &begin
     yield(std::move(candidate), length);
   } else {
     auto const next = std::next(begin);
+    std::vector<std::vector<rational>> tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, zero, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end()
+    , length, zero, state
     , [&](proxied_voice &&p, rational const &position)
       {
         if (position == length) {
           proxied_measure copy { candidate };
           copy.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          interpretations(next, end, std::move(copy), position, state, yield);
+          interpretations(next, end, dt_begin, dt_end, std::move(copy), position, state, yield);
         }
       }
     );
@@ -850,20 +890,28 @@ template<typename Function>
 void
 interpretations( std::vector<ast::voice>::iterator const &begin
                , std::vector<ast::voice>::iterator const &end
+               , std::vector<std::vector<std::vector<rational>>>::const_iterator dt_begin
+               , std::vector<std::vector<std::vector<rational>>>::const_iterator dt_end
                , rational const &length, global_state &state, Function&& yield
                )
 {
   if (begin != end) {
     auto const next = std::next(begin);
+    std::vector<std::vector<rational>> tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, zero, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end()
+    , length, zero, state
     , [&](proxied_voice &&p, rational const &position)
       {
         if ((not state.exact_match_found) or (position == length)) {
           proxied_measure candidate { };
           candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          interpretations(next, end, std::move(candidate), position, state, yield);
+          interpretations(next, end, dt_begin, dt_end, std::move(candidate), position, state, yield);
         }
       }
     );
@@ -979,6 +1027,7 @@ measure_interpretations::measure_interpretations
   // Find all possible measure interpretations.
   interpretations
   ( measure.voices.begin(), measure.voices.end()
+  , last_measure_doubled_tuplets.begin(), last_measure_doubled_tuplets.end()
   , time_signature, *this
   , [&](proxied_measure &&p, rational const &length)
     {
