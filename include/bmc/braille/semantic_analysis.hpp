@@ -31,6 +31,7 @@ class sign_converter: public boost::static_visitor<sign_conversion_result>
                   , partial_voice_index, partial_voice_count
                   ;
   ast::unfolded::measure *prev_unfolded_measure;
+  std::size_t simile_start = 0;
 public:
   sign_converter( ast::unfolded::partial_voice &target
                 , std::size_t voice_index, std::size_t voice_count
@@ -38,7 +39,7 @@ public:
                 , std::size_t partial_voice_index, std::size_t partial_voice_count
                 , ast::unfolded::measure *prev_unfolded_measure
                 )
-  : target(target)
+  : target{target}
   , voice_index(voice_index)
   , voice_count(voice_count)
   , partial_measure_index(partial_measure_index)
@@ -54,7 +55,7 @@ public:
   result_type operator() (ast::hyphen const &) const
   { return sign_conversion_result::ok; }
 
-  result_type operator() (ast::simile const &simile) const
+  result_type operator() (ast::simile const &simile)
   {
     if (not duration(target)) {
       if (prev_unfolded_measure and voice_count == 1) {
@@ -66,10 +67,13 @@ public:
                      , prev_unfolded_measure->voices[voice_index][partial_measure_index][partial_voice_index].end());
       }
     } else {
-      if (duration(target) == (simile.duration / simile.count)) {
-        ast::unfolded::partial_voice repeated(target.begin(), target.end());
+      ast::unfolded::partial_voice repeated {
+        std::next(target.begin(), simile_start), target.end()
+      };
+      if (duration(repeated) == (simile.duration / simile.count)) {
         for (unsigned i = 0; i < simile.count; ++i)
           target.insert(target.end(), repeated.begin(), repeated.end());
+        simile_start = target.size();
       }
     }
     return sign_conversion_result::ok;
@@ -120,7 +124,7 @@ public:
             switch (apply_visitor(unfold, *sign)) {
             case sign_conversion_result::failed: return false;
             case sign_conversion_result::full_measure_simile:
-              if (sign+1 == partial_voice.end()) {
+              if (std::next(sign) == partial_voice.end()) {
                 prev_unfolded_measure->count += 1;
                 insert = false;
               }
