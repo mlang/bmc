@@ -392,6 +392,10 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test3) {
   BOOST_CHECK(compile(attribute));
 }
 
+#include "bmc/lilypond.hpp"
+#include <sstream>
+#include <fstream>
+
 BOOST_AUTO_TEST_CASE(score_tuplet_test4) {
   std::locale::global(std::locale(""));
   std::wstring const input(L"⠨⠹⠆⠋⠛⠓⠆⠛⠸⠒⠄⠯⠿⠯⠑⠹⠣⠅");
@@ -410,6 +414,18 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test4) {
   BOOST_CHECK_EQUAL(attribute.parts[0][0].paragraphs.size(), std::size_t(1));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
+
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "output/score_tuplet_test4.ly");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
 BOOST_AUTO_TEST_CASE(score_tuplet_test5) {
@@ -473,11 +489,6 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test7) {
   BOOST_CHECK(compile(attribute));
 }
 
-
-#include "bmc/lilypond.hpp"
-#include <sstream>
-#include <fstream>
-
 BOOST_AUTO_TEST_CASE(score_tuplet_test8) {
   std::locale::global(std::locale(""));
   std::wstring const input {
@@ -499,6 +510,7 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test8) {
   BOOST_CHECK_EQUAL(attribute.parts[0][0].paragraphs.size(), std::size_t(1));
   music::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
+
   std::stringstream ss;
   music::lilypond_output_format(ss);
   ss << attribute;
