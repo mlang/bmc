@@ -473,6 +473,45 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test7) {
   BOOST_CHECK(compile(attribute));
 }
 
+
+#include "bmc/lilypond.hpp"
+#include <sstream>
+#include <fstream>
+
+BOOST_AUTO_TEST_CASE(score_tuplet_test8) {
+  std::locale::global(std::locale(""));
+  std::wstring const input {
+    // FIXME: The timesig should be 2/2, beat handling needs more work to support that.
+    L"⠼⠙⠩⠼⠙⠲ ⠆⠆⠸⠓⠐⠙⠋⠸⠓⠐⠙⠋⠶ ⠶ ⠸⠊⠙⠋⠶⠸⠊⠡⠐⠑⠛⠶ ⠸⠓⠩⠚⠐⠛⠸⠓⠐⠙⠋⠸⠓⠐⠙⠑⠆⠸⠛⠚⠑⠣⠅"
+  };
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type attribute;
+  BOOST_REQUIRE(parse(begin, end, parser, attribute));
+  BOOST_CHECK(begin == end);
+  BOOST_REQUIRE_EQUAL(attribute.parts.size(), std::size_t(1));
+  BOOST_REQUIRE_EQUAL(attribute.parts[0].size(), std::size_t(1));
+  BOOST_CHECK_EQUAL(attribute.parts[0][0].paragraphs.size(), std::size_t(1));
+  music::braille::compiler<error_handler_type> compile(errors);
+  BOOST_CHECK(compile(attribute));
+  std::stringstream ss;
+  music::lilypond_output_format(ss);
+  ss << attribute;
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::ifstream ly_file(DIR "output/score_tuplet_test8.ly");
+  BOOST_REQUIRE(ly_file.good());
+  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
+  std::string expected(in_begin, in_end);
+  BOOST_REQUIRE(not expected.empty());
+  BOOST_CHECK_EQUAL(ss.str(), expected);
+}
+
 struct slur_count_of_first_note : boost::static_visitor<std::size_t> {
   result_type operator()(music::braille::ast::measure const &measure) const {
     for (auto const &voice: measure.voices) {
@@ -540,10 +579,6 @@ BOOST_AUTO_TEST_CASE(common_factor) {
   BOOST_CHECK_EQUAL(boost::math::gcd(b, c), d);
   BOOST_CHECK_EQUAL(boost::math::lcm(b, c), a);
 }
-
-#include "bmc/lilypond.hpp"
-#include <sstream>
-#include <fstream>
 
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::locale::global(std::locale(""));

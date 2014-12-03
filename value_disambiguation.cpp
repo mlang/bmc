@@ -159,6 +159,8 @@ tuplet_end( ast::partial_voice::iterator begin
   unsigned number;
   bool doubled, simple;
   while (begin != end) {
+    if (apply_visitor(ast::is_simile(), *begin)) break;
+
     if (is_tuplet_begin(begin, number, simple, doubled)) {
       if (in_simple and simple) break;
 
@@ -468,6 +470,7 @@ public:
             not tuplet_doubled and t.back().number == tuplet_number) {
           // explicitly terminated doubled tuplet
           t.back().doubled = false;
+          t.back().first_tuplet = true;
           t.back().ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
           for (; t.back().ttl; --t.back().ttl)
             recurse(tail, end, stack_begin, stack_end, max_duration, position, t);
@@ -537,7 +540,7 @@ public:
       tuplet.back().factor = factor.factor;
       tuplet.back().number = factor.number;
       tuplet.back().first_tuplet = true;
-      tuplet.back().ttl = 1024;
+      tuplet.back().ttl = count_rhythmic(begin, tuplet_end(begin, end, factor.number, true));
     }
 
     recurse(begin, end, stack_begin, stack_end, max_duration, start_position
@@ -659,11 +662,18 @@ public:
       }
     } else { // partial measure simile
       if (interpreter.on_beat(position)) {
-        if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration(stack_begin, proxy)), max_duration))
+        if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration(stack_begin, proxy)), max_duration)) {
+          tuplet_info tuplet{tuplet_ref};
+          if (not tuplet.empty() and tuplet.back().doubled) {
+            BOOST_ASSERT(tuplet.back().ttl == 0);
+            tuplet.back().first_tuplet = true;
+            tuplet.back().ttl = count_rhythmic(rest, tuplet_end(rest, end, tuplet.back().number, true));
+          }
           interpreter.recurse( rest, end, stack_begin, proxy + 1
                              , max_duration - *proxy, position + *proxy
-                             , tuplet_ref
+                             , tuplet
                              );
+        }
       }
     }
     return true;
