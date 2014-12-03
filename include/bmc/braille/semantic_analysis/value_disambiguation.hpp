@@ -209,16 +209,23 @@ struct global_state
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration;
+  std::vector<rational> doubled_tuplets;
 public:
   using base_type = std::vector<value_proxy>;
   proxied_partial_voice( const_pointer begin, const_pointer end
                        , rational const &duration
+                       , std::vector<rational> const &doubled_tuplets
                        )
   : base_type{begin, end} // copy the given range of value_proxy objects
   , duration{duration}    // remember the accumulative duration of all elements
+  , doubled_tuplets{doubled_tuplets}
   {}
 
   operator rational const &() const { return duration; }
+
+  std::vector<rational> const &
+  get_doubled_tuplets() const
+  { return doubled_tuplets; }
 
   using shared_ptr = std::shared_ptr<proxied_partial_voice>;
 };
@@ -303,6 +310,19 @@ public:
    * @note This member function should only be called on one found result.
    */
   void accept() const;
+
+  std::vector<std::vector<std::vector<rational>>>
+  get_doubled_tuplets() const
+  {
+    std::vector<std::vector<std::vector<rational>>> result;
+    for (const_reference voice: *this) {
+      result.emplace_back();
+      for (auto &&partial_voice: *voice->back()) {
+        result.back().push_back(partial_voice->get_doubled_tuplets());
+      }
+    }
+    return result;
+  }
 };
 
 /** @brief Duration of a proxied_measure.
@@ -361,7 +381,8 @@ public:
 
   measure_interpretations( ast::measure& measure
                          , music::time_signature const &time_signature
-                         , rational const &last_measure_duration = rational(0)
+                         , rational const &last_measure_duration
+                         , std::vector<std::vector<std::vector<rational>>> const &last_doubled_tuplets
                          );
   bool contains_complete_measure() const
   { return exact_match_found; }

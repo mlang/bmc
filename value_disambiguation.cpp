@@ -121,6 +121,21 @@ void process_tuplet_info( tuplet_info &tuplet
       --level.ttl;
     }
   }
+
+  if (not tuplet.empty() and
+      not tuplet.back().ttl and
+      not tuplet.back().doubled) {
+    tuplet.pop_back();
+  }
+}
+
+std::vector<rational> extract_doubled( tuplet_info const &tuplets )
+{
+  std::vector<rational> result;
+  for (auto &&level: tuplets) {
+    if (level.doubled) result.push_back(level.factor);
+  }
+  return result;
 }
 
 bool
@@ -699,7 +714,11 @@ interpretations( ast::partial_measure::iterator const &begin
       {
         if (duration == length) {
           proxied_partial_measure copy { candidate };
-          copy.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
+          copy.push_back (
+            std::make_shared<proxied_partial_voice> (
+              f, l, duration, extract_doubled(tuplet)
+            )
+          );
           interpretations( next, end, std::move(copy), duration, position
                          , last_partial_measure, state, yield
                          );
@@ -728,7 +747,11 @@ interpretations( ast::partial_measure::iterator const &begin
 	 )
       {
         proxied_partial_measure candidate { };
-        candidate.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
+        candidate.push_back (
+          std::make_shared<proxied_partial_voice> (
+            f, l, duration, extract_doubled(tuplet)
+          )
+        );
         interpretations( next, end, std::move(candidate), duration, position
                        , last_partial_measure, state, yield
                        );
@@ -939,6 +962,7 @@ measure_interpretations::measure_interpretations
 ( ast::measure& measure
 , music::time_signature const &time_signature
 , rational const &last_measure_duration
+, std::vector<std::vector<std::vector<rational>>> const &last_measure_doubled_tuplets
 )
 : base_type{}
 , global_state
@@ -972,6 +996,13 @@ measure_interpretations::measure_interpretations
       }
     }
   );
+
+  if (not empty()) {
+    auto const doubled_tuplets = front().get_doubled_tuplets();
+    for (auto i = std::next(begin()); i != end(); ++i) {
+      BOOST_ASSERT(doubled_tuplets == i->get_doubled_tuplets());
+    }
+  }
 
   // Drop interpretations with a significant lower harmonic mean.
   if (exact_match_found and size() > 1) {
