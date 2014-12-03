@@ -507,6 +507,18 @@ public:
   rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
 
+rational repeated_duration(value_proxy const *begin, value_proxy const *end)
+{
+  return std::accumulate(begin, end, zero, []( rational const &lhs
+                                             , value_proxy const &rhs
+                                             )
+  {
+    if (rhs.type == value_proxy::ptr_type::simile) return zero;
+
+    return lhs + static_cast<rational>(rhs);
+  });
+}
+
 template<typename Interpreter>
 class large_and_small_visitor : public boost::static_visitor<bool>
 {
@@ -608,7 +620,7 @@ public:
       }
     } else { // partial measure simile
       if (interpreter.on_beat(position)) {
-        if (fast_leq(*new(proxy)value_proxy(simile, position), max_duration))
+        if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration(stack_begin, proxy)), max_duration))
           interpreter.recurse( rest, end, stack_begin, proxy + 1
                              , max_duration - *proxy, position + *proxy
                              , tuplet_ref

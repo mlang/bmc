@@ -37,10 +37,12 @@ enum value_category { large = 0, small = 4 };
  */
 class value_proxy
 {
+public:
   enum class ptr_type: uint8_t
   {
     uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
   } type;
+private:
   ast::value value_type:4;
   value_category category:4;
   ast::notegroup_member_type beam = ast::notegroup_member_type::none;
