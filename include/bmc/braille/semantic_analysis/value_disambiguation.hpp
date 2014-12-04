@@ -249,39 +249,23 @@ rational const &
 duration(proxied_partial_voice::shared_ptr const &partial_voice)
 { return *partial_voice; }
 
-class proxied_partial_measure : public std::vector<proxied_partial_voice::shared_ptr>
-{
-public:
-  using base_type = std::vector<proxied_partial_voice::shared_ptr>;
-  proxied_partial_measure() = default;
-  proxied_partial_measure(const_pointer begin, const_pointer end)
-  : base_type{begin, end}
-  {}
-  proxied_partial_measure(proxied_partial_measure const &) = default;
-  proxied_partial_measure(proxied_partial_measure &&) = default;
+using proxied_partial_measure = std::vector<proxied_partial_voice::shared_ptr>;
 
-  using shared_ptr = std::shared_ptr<proxied_partial_measure>;
-};
-
-inline rational
-duration(proxied_partial_measure const &voices)
+inline rational duration(proxied_partial_measure const &voices)
 {
   rational value;
   if (not voices.empty()) {
     value = duration(voices.front());
 #if !defined(NDEBUG)
-    for (proxied_partial_measure::const_iterator
-         voice = voices.begin() + 1; voice != voices.end(); ++voice) {
+    for (auto voice = std::next(voices.begin()); voice != voices.end(); ++voice)
       BOOST_ASSERT(value == duration(*voice));
-    }
 #endif
   }
   return value;
 }
 
-inline rational
-duration(proxied_partial_measure::shared_ptr const &voices)
-{ return duration(*voices); }
+inline rational duration(std::shared_ptr<proxied_partial_measure> const &partial_measure)
+{ return duration(*partial_measure); }
 
 using proxied_voice = std::vector<std::shared_ptr<proxied_partial_measure>>;
 
