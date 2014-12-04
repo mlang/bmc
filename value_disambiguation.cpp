@@ -649,14 +649,14 @@ public:
                            );
       }
     } else { // partial measure simile
-      if (interpreter.on_beat(position)) {
+      if (is_dyadic(position)) {
         rational const repeated_duration {
           std::accumulate
           ( stack_begin, proxy, zero
           , [](rational const &lhs, value_proxy const &rhs)
             {
               // Reset to zero if we found a (partial measure) simile.
-              if (rhs.type == value_proxy::ptr_type::simile) return rational{};
+              if (rhs.refers_to(value_proxy::ptr_type::simile)) return rational{};
 
               return lhs + static_cast<rational>(rhs);
             }

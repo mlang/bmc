@@ -492,8 +492,7 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test7) {
 BOOST_AUTO_TEST_CASE(score_tuplet_test8) {
   std::locale::global(std::locale(""));
   std::wstring const input {
-    // FIXME: The timesig should be 2/2, beat handling needs more work to support that.
-    L"⠼⠙⠩⠼⠙⠲ ⠆⠆⠸⠓⠐⠙⠋⠸⠓⠐⠙⠋⠶ ⠶ ⠸⠊⠙⠋⠶⠸⠊⠡⠐⠑⠛⠶ ⠸⠓⠩⠚⠐⠛⠸⠓⠐⠙⠋⠸⠓⠐⠙⠑⠆⠸⠛⠚⠑⠣⠅"
+    L"⠼⠙⠩⠼⠃⠆ ⠆⠆⠸⠓⠐⠙⠋⠸⠓⠐⠙⠋⠶ ⠶ ⠸⠊⠙⠋⠶⠸⠊⠡⠐⠑⠛⠶ ⠸⠓⠩⠚⠐⠛⠸⠓⠐⠙⠋⠸⠓⠐⠙⠑⠆⠸⠛⠚⠑⠣⠅"
   };
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());

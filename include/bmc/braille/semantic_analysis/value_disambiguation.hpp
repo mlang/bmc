@@ -41,8 +41,10 @@ public:
   enum class ptr_type: uint8_t
   {
     uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
-  } type;
+  };
+  bool refers_to(ptr_type expected) const { return type == expected; }
 private:
+  ptr_type type;
   ast::value value_type:4;
   value_category category:4;
   ast::notegroup_member_type beam = ast::notegroup_member_type::none;
