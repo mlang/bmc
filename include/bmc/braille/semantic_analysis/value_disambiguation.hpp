@@ -37,14 +37,10 @@ enum value_category { large = 0, small = 4 };
  */
 class value_proxy
 {
-public:
   enum class ptr_type: uint8_t
   {
     uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
-  };
-  bool refers_to(ptr_type expected) const { return type == expected; }
-private:
-  ptr_type type;
+  } type;
   ast::value value_type:4;
   value_category category:4;
   ast::notegroup_member_type beam = ast::notegroup_member_type::none;
@@ -158,11 +154,17 @@ public:
 
   operator rational const &() const { return duration; }
 
+  template<class> friend bool refers_to(value_proxy const &) { return false; }
+
   /** \brief Fill the infomation gathered about this partiuclar interpretation
     *        into the AST
    */
   void accept() const;
 };
+
+template<>
+inline bool refers_to<ast::simile>(value_proxy const &proxy)
+{ return proxy.type == value_proxy::ptr_type::simile; }
 
 inline rational
 duration(std::vector<value_proxy> const &values)

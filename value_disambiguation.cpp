@@ -656,7 +656,7 @@ public:
           , [](rational const &lhs, value_proxy const &rhs)
             {
               // Reset to zero if we found a (partial measure) simile.
-              if (rhs.refers_to(value_proxy::ptr_type::simile)) return rational{};
+              if (refers_to<ast::simile>(rhs)) return rational{};
 
               return lhs + static_cast<rational>(rhs);
             }
