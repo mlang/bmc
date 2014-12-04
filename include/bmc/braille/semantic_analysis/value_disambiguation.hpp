@@ -213,13 +213,13 @@ struct doubled_tuplet_level {
   rational factor;
 };
 using partial_voice_doubled_tuplet_info = std::vector<doubled_tuplet_level>;
-using partial_measure_doubled_tuplet_info = std::vector<std::vector<doubled_tuplet_level>>;
-using measure_doubled_tuplet_info = std::vector<std::vector<std::vector<doubled_tuplet_level>>>;
+using partial_measure_doubled_tuplet_info = std::vector<partial_voice_doubled_tuplet_info>;
+using measure_doubled_tuplet_info = std::vector<partial_measure_doubled_tuplet_info>;
 
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration;
-  partial_voice_doubled_tuplet_info doubled_tuplets;
+  partial_voice_doubled_tuplet_info const doubled_tuplets;
 public:
   using base_type = std::vector<value_proxy>;
   proxied_partial_voice( const_pointer begin, const_pointer end
