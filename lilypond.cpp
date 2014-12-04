@@ -336,6 +336,7 @@ generator::operator() (braille::ast::note const &note)
     case braille::ast::half_or_32th: os << "32"; break;
     case braille::ast::quarter_or_64th: os << "4"; break;
     case braille::ast::eighth_or_128th: os << "8"; break;
+    case braille::ast::unknown: BOOST_ASSERT(false);
     }
     last_type = 0, last_dots = 0;
   } else ly_rhythm(note);
@@ -365,6 +366,7 @@ generator::operator() (braille::ast::note const &note)
   }
 
   switch (note.slur_member) {
+  default: break;
   case braille::ast::slur_member_type::begin: os << '('; break;
   case braille::ast::slur_member_type::end:   os << ')'; break;
   }
