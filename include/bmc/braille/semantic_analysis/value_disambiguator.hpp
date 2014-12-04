@@ -46,6 +46,7 @@ class value_disambiguator: public compiler_pass
 {
   music::time_signature time_signature;
   rational prev_duration;
+  value_disambiguation::measure_doubled_tuplet_info prev_doubled_tuplets;
   boost::optional<value_disambiguation::measure_interpretations> anacrusis;
 
 public:

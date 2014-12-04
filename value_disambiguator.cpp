@@ -20,13 +20,14 @@ value_disambiguator::result_type
 value_disambiguator::operator()(ast::measure& measure)
 {
   value_disambiguation::measure_interpretations
-  interpretations(measure, time_signature, prev_duration);
+  interpretations(measure, time_signature, prev_duration, prev_doubled_tuplets);
 
   if (not interpretations.contains_complete_measure() and
       not interpretations.empty()) {
     if (not anacrusis) {
       anacrusis = interpretations;
       prev_duration = 0;
+      prev_doubled_tuplets.clear();
       return true;
     } else {
       if (anacrusis->completes_uniquely(interpretations)) {
@@ -35,6 +36,7 @@ value_disambiguator::operator()(ast::measure& measure)
             if (duration(lhs) + duration(rhs) == time_signature) {
               lhs.accept(), rhs.accept();
               prev_duration = duration(rhs);
+              prev_doubled_tuplets = rhs.get_doubled_tuplets();
               anacrusis.reset();
               return true;
             }
@@ -45,8 +47,10 @@ value_disambiguator::operator()(ast::measure& measure)
   }
 
   if (interpretations.size() == 1) {
-    interpretations.front().accept();
-    prev_duration = duration(interpretations.front());
+    auto &proxied_measure = interpretations.front();
+    proxied_measure.accept();
+    prev_duration = duration(proxied_measure);
+    prev_doubled_tuplets = proxied_measure.get_doubled_tuplets();
     return true;
   }
 

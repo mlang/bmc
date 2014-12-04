@@ -208,19 +208,34 @@ struct global_state
   {}
 };
 
+struct doubled_tuplet_level {
+  unsigned number = 1;
+  rational factor;
+};
+using partial_voice_doubled_tuplet_info = std::vector<doubled_tuplet_level>;
+using partial_measure_doubled_tuplet_info = std::vector<partial_voice_doubled_tuplet_info>;
+using measure_doubled_tuplet_info = std::vector<partial_measure_doubled_tuplet_info>;
+
 class proxied_partial_voice : public std::vector<value_proxy>
 {
   rational const duration;
+  partial_voice_doubled_tuplet_info const doubled_tuplets;
 public:
   using base_type = std::vector<value_proxy>;
   proxied_partial_voice( const_pointer begin, const_pointer end
                        , rational const &duration
+                       , partial_voice_doubled_tuplet_info const &doubled_tuplets
                        )
   : base_type{begin, end} // copy the given range of value_proxy objects
   , duration{duration}    // remember the accumulative duration of all elements
+  , doubled_tuplets{doubled_tuplets}
   {}
 
   operator rational const &() const { return duration; }
+
+  partial_voice_doubled_tuplet_info const &
+  get_doubled_tuplets() const
+  { return doubled_tuplets; }
 
   using shared_ptr = std::shared_ptr<proxied_partial_voice>;
 };
@@ -305,6 +320,19 @@ public:
    * @note This member function should only be called on one found result.
    */
   void accept() const;
+
+  measure_doubled_tuplet_info
+  get_doubled_tuplets() const
+  {
+    measure_doubled_tuplet_info result;
+    for (const_reference voice: *this) {
+      result.emplace_back();
+      for (auto &&partial_voice: *voice->back()) {
+        result.back().push_back(partial_voice->get_doubled_tuplets());
+      }
+    }
+    return result;
+  }
 };
 
 /** @brief Duration of a proxied_measure.
@@ -363,7 +391,8 @@ public:
 
   measure_interpretations( ast::measure& measure
                          , music::time_signature const &time_signature
-                         , rational const &last_measure_duration = rational(0)
+                         , rational const &last_measure_duration
+                         , measure_doubled_tuplet_info const &last_doubled_tuplets
                          );
   bool contains_complete_measure() const
   { return exact_match_found; }

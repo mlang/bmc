@@ -121,6 +121,25 @@ void process_tuplet_info( tuplet_info &tuplet
       --level.ttl;
     }
   }
+
+  if (not tuplet.empty() and
+      not tuplet.back().ttl and
+      not tuplet.back().doubled) {
+    tuplet.pop_back();
+  }
+}
+
+partial_voice_doubled_tuplet_info extract_doubled( tuplet_info const &tuplets )
+{
+  partial_voice_doubled_tuplet_info result;
+  for (auto &&level: tuplets) {
+    if (level.doubled) {
+      result.emplace_back();
+      result.back().number = level.number;
+      result.back().factor = level.factor;
+    }
+  }
+  return result;
 }
 
 bool
@@ -140,6 +159,8 @@ tuplet_end( ast::partial_voice::iterator begin
   unsigned number;
   bool doubled, simple;
   while (begin != end) {
+    if (apply_visitor(ast::is_simile(), *begin)) break;
+
     if (is_tuplet_begin(begin, number, simple, doubled)) {
       if (in_simple and simple) break;
 
@@ -444,29 +465,40 @@ public:
         tail = iterator + 1;
         tuplet_info t(tuplet);
         unsigned parent_ttl = t.empty()? 0: t.back().ttl;
-        if (t.empty() or t.back().ttl > 0)
-          t.emplace_back();
-        t.back().number = tuplet_number;
-        t.back().first_tuplet = true;
-        unsigned ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
-        // A nested tuplet can not be longer then the tuplet it is contained in.
-        if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
-        // Try all possible note counts and ratios.
-        if (tuplet_doubled) {
-          t.back().doubled = true;
-	  t.back().ttl = ttl;
-          for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
-            t.back().factor = factor;
-            recurse( tail, end, stack_begin, stack_end, max_duration, position, t);
-          }
+
+        if (not t.empty() and t.back().doubled and
+            not tuplet_doubled and t.back().number == tuplet_number) {
+          // explicitly terminated doubled tuplet
+          t.back().doubled = false;
+          t.back().first_tuplet = true;
+          t.back().ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
+          for (; t.back().ttl; --t.back().ttl)
+            recurse(tail, end, stack_begin, stack_end, max_duration, position, t);
         } else {
-          for (t.back().ttl = ttl; t.back().ttl;
-               --t.back().ttl)
+          if (t.empty() or t.back().ttl > 0) t.emplace_back();
+
+          t.back().number = tuplet_number;
+          t.back().first_tuplet = true;
+          unsigned ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
+          // A nested tuplet can not be longer then the tuplet it is contained in.
+          if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
+          // Try all possible note counts and ratios.
+          if (tuplet_doubled) {
+            t.back().doubled = true;
+  	    t.back().ttl = ttl;
             for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
               t.back().factor = factor;
-              recurse( tail, end, stack_begin, stack_end, max_duration, position
-                     , t);
+              recurse( tail, end, stack_begin, stack_end, max_duration, position, t);
             }
+          } else {
+            for (t.back().ttl = ttl; t.back().ttl; --t.back().ttl) {
+              for (rational const &factor: tuplet_number_factors.at(tuplet_number)) {
+                t.back().factor = factor;
+                recurse( tail, end, stack_begin, stack_end, max_duration, position
+                       , t);
+              }
+            }
+          }
         }
       } else {
         large_and_small( iterator, end, stack_begin, stack_end
@@ -496,28 +528,26 @@ public:
 
   void operator()( ast::partial_voice::iterator const &begin
                  , ast::partial_voice::iterator const &end
+                 , partial_voice_doubled_tuplet_info const &doubled_tuplets
                  , proxied_partial_voice::pointer stack_begin
                  , proxied_partial_voice::pointer stack_end
                  , rational const &max_duration)
   {
     tuplet_info tuplet;
+    for (auto &&factor: doubled_tuplets) {
+      tuplet.emplace_back();
+      tuplet.back().doubled = true;
+      tuplet.back().factor = factor.factor;
+      tuplet.back().number = factor.number;
+      tuplet.back().first_tuplet = true;
+      tuplet.back().ttl = count_rhythmic(begin, tuplet_end(begin, end, factor.number, true));
+    }
+
     recurse(begin, end, stack_begin, stack_end, max_duration, start_position
            , tuplet);
   }
   rational const &last_measure_duration() const { return state.last_measure_duration; }
 };
-
-rational repeated_duration(value_proxy const *begin, value_proxy const *end)
-{
-  return std::accumulate(begin, end, zero, []( rational const &lhs
-                                             , value_proxy const &rhs
-                                             )
-  {
-    if (rhs.type == value_proxy::ptr_type::simile) return zero;
-
-    return lhs + static_cast<rational>(rhs);
-  });
-}
 
 template<typename Interpreter>
 class large_and_small_visitor : public boost::static_visitor<bool>
@@ -620,11 +650,30 @@ public:
       }
     } else { // partial measure simile
       if (interpreter.on_beat(position)) {
-        if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration(stack_begin, proxy)), max_duration))
+        rational const repeated_duration {
+          std::accumulate
+          ( stack_begin, proxy, zero
+          , [](rational const &lhs, value_proxy const &rhs)
+            {
+              // Reset to zero if we found a (partial measure) simile.
+              if (rhs.type == value_proxy::ptr_type::simile) return rational{};
+
+              return lhs + static_cast<rational>(rhs);
+            }
+          )
+        };
+        if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration), max_duration)) {
+          tuplet_info tuplet{tuplet_ref};
+          if (not tuplet.empty() and tuplet.back().doubled) {
+            BOOST_ASSERT(tuplet.back().ttl == 0);
+            tuplet.back().first_tuplet = true;
+            tuplet.back().ttl = count_rhythmic(rest, tuplet_end(rest, end, tuplet.back().number, true));
+          }
           interpreter.recurse( rest, end, stack_begin, proxy + 1
                              , max_duration - *proxy, position + *proxy
-                             , tuplet_ref
+                             , tuplet
                              );
+        }
       }
     }
     return true;
@@ -673,6 +722,7 @@ template<typename Function>
 void
 interpretations( ast::partial_voice::iterator const &begin
                , ast::partial_voice::iterator const &end
+               , partial_voice_doubled_tuplet_info const &doubled_tuplets
                , rational const &max_duration, rational const &position
                , bool last_partial_measure
                , global_state &state, Function&& yield
@@ -684,13 +734,15 @@ interpretations( ast::partial_voice::iterator const &begin
 
   partial_voice_interpreter<Function>
   (position, last_partial_measure, state, std::forward<Function>(yield))
-  (begin, end, stack.get(), stack.get(), max_duration);
+  (begin, end, doubled_tuplets, stack.get(), stack.get(), max_duration);
 }
 
 template<typename Function>
 void
 interpretations( ast::partial_measure::iterator const &begin
                , ast::partial_measure::iterator const &end
+               , partial_measure_doubled_tuplet_info::const_iterator dt_begin
+               , partial_measure_doubled_tuplet_info::const_iterator dt_end
                , proxied_partial_measure &&candidate
                , rational const &length
                , rational const &position
@@ -702,17 +754,28 @@ interpretations( ast::partial_measure::iterator const &begin
     yield(std::move(candidate));
   } else {
     auto const next = std::next(begin);
+    partial_voice_doubled_tuplet_info tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, position, last_partial_measure, state
+    ( begin->begin(), begin->end(), tuplet_data
+    , length, position, last_partial_measure, state
     , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
          , tuplet_info const &tuplet
          )
       {
         if (duration == length) {
           proxied_partial_measure copy { candidate };
-          copy.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
-          interpretations( next, end, std::move(copy), duration, position
+          copy.push_back (
+            std::make_shared<proxied_partial_voice> (
+              f, l, duration, extract_doubled(tuplet)
+            )
+          );
+          interpretations( next, end, dt_begin, dt_end
+                         , std::move(copy), duration, position
                          , last_partial_measure, state, yield
                          );
         }
@@ -725,6 +788,8 @@ template<typename Function>
 void
 interpretations( ast::partial_measure::iterator const &begin
                , ast::partial_measure::iterator const &end
+               , partial_measure_doubled_tuplet_info::const_iterator dt_begin
+               , partial_measure_doubled_tuplet_info::const_iterator dt_end
                , rational const &length, rational const &position
                , bool last_partial_measure
                , global_state &state, Function&& yield
@@ -732,16 +797,27 @@ interpretations( ast::partial_measure::iterator const &begin
 {
   if (begin != end) {
     auto const next = std::next(begin);
+    partial_voice_doubled_tuplet_info tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, position, last_partial_measure, state
+    ( begin->begin(), begin->end(), tuplet_data
+    , length, position, last_partial_measure, state
     , [&]( value_proxy const *f, value_proxy const *l, rational const &duration
 	 , tuplet_info const &tuplet
 	 )
       {
         proxied_partial_measure candidate { };
-        candidate.push_back(std::make_shared<proxied_partial_voice>(f, l, duration));
-        interpretations( next, end, std::move(candidate), duration, position
+        candidate.push_back (
+          std::make_shared<proxied_partial_voice> (
+            f, l, duration, extract_doubled(tuplet)
+          )
+        );
+        interpretations( next, end, dt_begin, dt_end
+                       , std::move(candidate), duration, position
                        , last_partial_measure, state, yield
                        );
       }
@@ -762,9 +838,10 @@ interpretations( ast::voice::iterator const &begin
     yield(std::move(candidate), position);
   } else {
     auto const next = std::next(begin);
+    partial_measure_doubled_tuplet_info tuplet_data;
 
     interpretations
-    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end(), max_length, position, next == end, state
     , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
@@ -784,6 +861,8 @@ template<typename Function>
 void
 interpretations( ast::voice::iterator const &begin
                , ast::voice::iterator const &end
+               , partial_measure_doubled_tuplet_info::const_iterator dt_begin
+               , partial_measure_doubled_tuplet_info::const_iterator dt_end
                , rational const &max_length, rational const &position
                , global_state &state, Function&& yield
                )
@@ -792,7 +871,8 @@ interpretations( ast::voice::iterator const &begin
     auto next = std::next(begin);
 
     interpretations
-    ( begin->begin(), begin->end(), max_length, position, next == end, state
+    ( begin->begin(), begin->end(), dt_begin, dt_end
+    , max_length, position, next == end, state
     , [&](proxied_partial_measure &&p)
       {
         rational const partial_measure_duration { duration(p) };
@@ -812,6 +892,8 @@ template<typename Function>
 void
 interpretations( std::vector<ast::voice>::iterator const &begin
                , std::vector<ast::voice>::iterator const &end
+               , measure_doubled_tuplet_info::const_iterator dt_begin
+               , measure_doubled_tuplet_info::const_iterator dt_end
                , proxied_measure &&candidate
                , rational const &length, global_state &state, Function&& yield
                )
@@ -820,15 +902,21 @@ interpretations( std::vector<ast::voice>::iterator const &begin
     yield(std::move(candidate), length);
   } else {
     auto const next = std::next(begin);
+    partial_measure_doubled_tuplet_info tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, zero, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end()
+    , length, zero, state
     , [&](proxied_voice &&p, rational const &position)
       {
         if (position == length) {
           proxied_measure copy { candidate };
           copy.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          interpretations(next, end, std::move(copy), position, state, yield);
+          interpretations(next, end, dt_begin, dt_end, std::move(copy), position, state, yield);
         }
       }
     );
@@ -839,20 +927,28 @@ template<typename Function>
 void
 interpretations( std::vector<ast::voice>::iterator const &begin
                , std::vector<ast::voice>::iterator const &end
+               , measure_doubled_tuplet_info::const_iterator dt_begin
+               , measure_doubled_tuplet_info::const_iterator dt_end
                , rational const &length, global_state &state, Function&& yield
                )
 {
   if (begin != end) {
     auto const next = std::next(begin);
+    partial_measure_doubled_tuplet_info tuplet_data;
+    if (dt_begin != dt_end) {
+      tuplet_data.assign(dt_begin->begin(), dt_begin->end());
+      dt_begin++;
+    }
 
     interpretations
-    ( begin->begin(), begin->end(), length, zero, state
+    ( begin->begin(), begin->end(), tuplet_data.begin(), tuplet_data.end()
+    , length, zero, state
     , [&](proxied_voice &&p, rational const &position)
       {
         if ((not state.exact_match_found) or (position == length)) {
           proxied_measure candidate { };
           candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
-          interpretations(next, end, std::move(candidate), position, state, yield);
+          interpretations(next, end, dt_begin, dt_end, std::move(candidate), position, state, yield);
         }
       }
     );
@@ -951,6 +1047,7 @@ measure_interpretations::measure_interpretations
 ( ast::measure& measure
 , music::time_signature const &time_signature
 , rational const &last_measure_duration
+, measure_doubled_tuplet_info const &last_measure_doubled_tuplets
 )
 : base_type{}
 , global_state
@@ -967,6 +1064,7 @@ measure_interpretations::measure_interpretations
   // Find all possible measure interpretations.
   interpretations
   ( measure.voices.begin(), measure.voices.end()
+  , last_measure_doubled_tuplets.begin(), last_measure_doubled_tuplets.end()
   , time_signature, *this
   , [&](proxied_measure &&p, rational const &length)
     {
@@ -984,6 +1082,15 @@ measure_interpretations::measure_interpretations
       }
     }
   );
+
+#if !defined(NDEBUG)
+  if (not empty()) {
+    auto const doubled_tuplets = front().get_doubled_tuplets();
+    for (auto i = std::next(begin()); i != end(); ++i) {
+      BOOST_ASSERT(doubled_tuplets == i->get_doubled_tuplets());
+    }
+  }
+#endif
 
   // Drop interpretations with a significant lower harmonic mean.
   if (exact_match_found and size() > 1) {

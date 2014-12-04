@@ -78,7 +78,7 @@ set(BMC_TEST_NAMES
     compiler_test1
     score_solo_test1 score_solo_test2
     score_tuplet_test1 score_tuplet_test2 score_tuplet_test3 score_tuplet_test4
-    score_tuplet_test5 score_tuplet_test6
+    score_tuplet_test5 score_tuplet_test6 score_tuplet_test7 score_tuplet_test8
     slur_test1
     score_multiple_time_sigs
     common_factor
