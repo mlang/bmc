@@ -656,7 +656,7 @@ public:
           , [](rational const &lhs, value_proxy const &rhs)
             {
               // Reset to zero if we found a (partial measure) simile.
-              if (rhs.type == value_proxy::ptr_type::simile) return zero;
+              if (rhs.type == value_proxy::ptr_type::simile) return rational{};
 
               return lhs + static_cast<rational>(rhs);
             }
@@ -1083,12 +1083,14 @@ measure_interpretations::measure_interpretations
     }
   );
 
+#if !defined(NDEBUG)
   if (not empty()) {
     auto const doubled_tuplets = front().get_doubled_tuplets();
     for (auto i = std::next(begin()); i != end(); ++i) {
       BOOST_ASSERT(doubled_tuplets == i->get_doubled_tuplets());
     }
   }
+#endif
 
   // Drop interpretations with a significant lower harmonic mean.
   if (exact_match_found and size() > 1) {
