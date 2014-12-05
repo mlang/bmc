@@ -154,7 +154,7 @@ public:
 
   operator rational const &() const { return duration; }
 
-  template<class> friend bool refers_to(value_proxy const &) { return false; }
+  template<class> friend bool refers_to(value_proxy const &);
 
   /** \brief Fill the infomation gathered about this partiuclar interpretation
     *        into the AST
@@ -162,8 +162,8 @@ public:
   void accept() const;
 };
 
-template<>
-inline bool refers_to<ast::simile>(value_proxy const &proxy)
+template<class> bool refers_to(value_proxy const &) { return false; }
+template<> inline bool refers_to<ast::simile>(value_proxy const &proxy)
 { return proxy.type == value_proxy::ptr_type::simile; }
 
 inline rational
