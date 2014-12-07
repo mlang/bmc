@@ -13,7 +13,7 @@
 
 namespace music {
 
-void lilypond(std::ostream &, braille::ast::score const &);
+void musicxml(std::ostream &, braille::ast::score const &);
 
 }
 

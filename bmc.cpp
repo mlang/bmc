@@ -14,8 +14,12 @@
 #include <boost/program_options.hpp>
 
 #include "bmc/lilypond.hpp"
+#include "bmc/musicxml.hpp"
 
-int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrument, bool no_tagline) {
+int bmc2ly( std::wistream &wistream
+          , bool lilypond, bool musicxml
+          , bool include_locations, std::string instrument, bool no_tagline
+          ) {
   std::istreambuf_iterator<wchar_t> wcin_begin(wistream.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
   typedef std::wstring::const_iterator iterator_type;
@@ -34,11 +38,15 @@ int bmc2ly(std::wistream &wistream, bool include_locations, std::string instrume
     music::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
-      music::lilypond::generator generate(std::cout, true, true, include_locations);
-      if (not instrument.empty()) generate.instrument(instrument);
-      if (no_tagline) generate.remove_tagline();
-      generate(score);
-
+      if (lilypond) {
+        music::lilypond::generator generate(std::cout, true, true, include_locations);
+        if (not instrument.empty()) generate.instrument(instrument);
+        if (no_tagline) generate.remove_tagline();
+        generate(score);
+      }
+      if (musicxml) {
+        music::musicxml(std::cout, score);
+      }
       return EXIT_SUCCESS;
     } else {
       std::wcerr << "Failed to compile:" << std::endl << error_handler << std::endl;
@@ -66,6 +74,8 @@ main(int argc, char const *argv[])
   ("help,h", "print usage message")
   ("input-file", value(&input_files), "input file")
   ("instrument,i", value(&instrument), "default MIDI instrument")
+  ("lilypond", "Produce LilyPond output.")
+  ("musicxml", "Produce MusicXML output.")
   ("locations,l", bool_switch(&locations), "Include braille locations in LilyPond output")
   ("no-tagline", bool_switch(&no_tagline)->default_value(false), "Supress LilyPond default tagline")
   ;
@@ -95,11 +105,13 @@ main(int argc, char const *argv[])
   }
 
   int status = EXIT_SUCCESS;
+  bool const do_lilypond { bool(vm.count("lilypond")) }
+           , do_musicxml { bool(vm.count("musicxml")) };
   for (auto const &file: input_files) {
-    if (file == "-") status = bmc2ly(std::wcin, locations, instrument, no_tagline);
+    if (file == "-") status = bmc2ly(std::wcin, do_lilypond, do_musicxml, locations, instrument, no_tagline);
     else {
       std::wifstream f(file);
-      if (f.good()) status = bmc2ly(f, locations, instrument, no_tagline);
+      if (f.good()) status = bmc2ly(f, do_lilypond, do_musicxml, locations, instrument, no_tagline);
     }
   }
 

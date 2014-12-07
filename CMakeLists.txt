@@ -36,12 +36,12 @@ set_target_properties(bmc_parse
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
 target_link_libraries(bmc_parse bmc_ttb xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
-add_executable(bmc2ly bmc2ly.cpp)
-target_link_libraries(bmc2ly ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
+add_executable(bmc bmc.cpp)
+target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
-add_executable(bmc main.cpp fluidsynth.cpp)
-find_library(FLUIDSYNTH_LIBRARY fluidsynth)
-target_link_libraries(bmc bmc_parse ${FLUIDSYNTH_LIBRARY})
+#add_executable(bmc main.cpp fluidsynth.cpp)
+#find_library(FLUIDSYNTH_LIBRARY fluidsynth)
+#target_link_libraries(bmc bmc_parse ${FLUIDSYNTH_LIBRARY})
 add_definitions(-DHAVE_ICONV_H=1)
 add_definitions(-DHAVE_WCHAR_H=1)
 add_definitions(-DTABLES_DIRECTORY="${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/Tables")
@@ -113,11 +113,11 @@ endforeach(test_name)
 # A kludge to workaround cmake's inability to add dependencies to the test target
 add_custom_target(check
                   COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-                  DEPENDS bmc_test bmc2ly
+                  DEPENDS bmc_test bmc
                  )
 
-install(TARGETS bmc bmc2ly DESTINATION bin)
-install(TARGETS bmc_parse DESTINATION lib)
+install(TARGETS bmc DESTINATION bin)
+#install(TARGETS bmc_parse DESTINATION lib)
 install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
 
 find_package(PkgConfig)
