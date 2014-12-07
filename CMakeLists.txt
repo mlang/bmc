@@ -22,20 +22,20 @@ include_directories(${bmc_SOURCE_DIR})
 include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++11)
-add_library(bmc_parse SHARED
+add_library(bmc_parse
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             partial_voice_sign.cpp simile.cpp tuplet_start.cpp
             measure.cpp score.cpp
             value_disambiguation.cpp value_disambiguator.cpp
-            lilypond.cpp
+            lilypond.cpp mxml.cpp
            )
 set_target_properties(bmc_parse
                       PROPERTIES
                       VERSION ${bmc_VERSION}
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
-target_link_libraries(bmc_parse bmc_ttb ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(bmc_parse bmc_ttb xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc2ly bmc2ly.cpp)
 target_link_libraries(bmc2ly ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
