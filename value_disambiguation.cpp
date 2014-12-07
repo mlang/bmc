@@ -1083,15 +1083,6 @@ measure_interpretations::measure_interpretations
     }
   );
 
-#if !defined(NDEBUG)
-  if (not empty()) {
-    auto const doubled_tuplets = front().get_doubled_tuplets();
-    for (auto i = std::next(begin()); i != end(); ++i) {
-      BOOST_ASSERT(doubled_tuplets == i->get_doubled_tuplets());
-    }
-  }
-#endif
-
   // Drop interpretations with a significant lower harmonic mean.
   if (exact_match_found and size() > 1) {
     auto best = best_harmonic_mean<5000>(begin(), end(), 4);
