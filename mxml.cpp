@@ -11,9 +11,16 @@ namespace music {
 
 namespace {
 
+// We are going to export score-partwise documents.
 using score_type = ::musicxml::score_partwise;
 using part_type = score_type::part_type;
 using measure_type = part_type::measure_type;
+
+// Determine the greatest common divisor of all rhythmic values.
+// We need this for the MusicXML divisons element.
+// We're basically determining the common denominator such that all
+// rhythmic values can be expressed as an integer, since the MusicXML duration
+// element is not a rational.
 
 class duration_gcd_visitor : public boost::static_visitor<void> {
   rational value = 0;
@@ -50,6 +57,8 @@ rational duration_gcd(braille::ast::score const &score) {
   return accumulator.get();
 }
  
+// Conversion functions between our AST and MusicXML objects:
+
 ::musicxml::key xml(key_signature const &key) {
   ::musicxml::key xml_key{};
   xml_key.fifths(key);
@@ -81,6 +90,7 @@ public:
                                   unsigned staff_number,
                                   rational const &divisions)
   : measures { measures }, staff_number { staff_number }, divisions { divisions } {}
+
   void operator()(braille::ast::unfolded::measure const &measure) {
     if (measure_number > measures.size())
       measures.push_back({std::to_string(measure_number)});
@@ -92,7 +102,10 @@ public:
     for (auto vi = measure.voices.begin(), ve = measure.voices.end();
          vi != ve; ++vi) {
       for (auto &&partial_measure: *vi) {
-        for (auto &&partial_voice: partial_measure) {
+        for (auto pvi = partial_measure.begin(), pve = partial_measure.end();
+             pvi != pve; ++pvi) {
+          if (std::next(pvi) != pve)
+            ::musicxml::push_back(xml_measure, backup(duration(*pvi), divisions));
         }
       }
       if (std::next(vi) != ve)
@@ -132,6 +145,7 @@ part_type::measure_sequence get_measures(braille::ast::unfolded::part const &p, 
 
 void musicxml(std::ostream &os, music::braille::ast::score const &score)
 {
+  // The divisons element expresses the number of "ticks" per quarter note.
   rational const divisions {
     rational{1, 4} / boost::math::gcd(duration_gcd(score), rational{1, 4})
   };
