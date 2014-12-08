@@ -50,19 +50,54 @@ rational duration_gcd(braille::ast::score const &score) {
   return accumulator.get();
 }
  
+::musicxml::key xml(key_signature const &key) {
+  ::musicxml::key xml_key{};
+  xml_key.fifths(key);
+
+  return xml_key;
+}
+
+::musicxml::time xml(time_signature const &time) {
+  ::musicxml::time xml_time{};
+  xml_time.beats().push_back(std::to_string(time.numerator()));
+  xml_time.beat_type().push_back(std::to_string(time.denominator()));
+
+  return xml_time;
+}
+
+::musicxml::backup backup(rational const &duration, rational const &divisions) {
+  return {
+    boost::rational_cast<double>(duration / (rational{1, 4} / divisions))
+  };
+}
+
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
   part_type::measure_sequence &measures;
   unsigned staff_number;
+  rational divisions;
   unsigned measure_number = 1;
 public:
   make_measures_for_staff_visitor(part_type::measure_sequence &measures,
-                                  unsigned staff_number)
-  : measures { measures }, staff_number { staff_number } {}
+                                  unsigned staff_number,
+                                  rational const &divisions)
+  : measures { measures }, staff_number { staff_number }, divisions { divisions } {}
   void operator()(braille::ast::unfolded::measure const &measure) {
     if (measure_number > measures.size())
       measures.push_back({std::to_string(measure_number)});
 
     measure_type &xml_measure = measures[measure_number - 1];
+
+    if (staff_number > 1)
+      ::musicxml::push_back(xml_measure, backup(duration(measure), divisions));
+    for (auto vi = measure.voices.begin(), ve = measure.voices.end();
+         vi != ve; ++vi) {
+      for (auto &&partial_measure: *vi) {
+        for (auto &&partial_voice: partial_measure) {
+        }
+      }
+      if (std::next(vi) != ve)
+        ::musicxml::push_back(xml_measure, backup(duration(*vi), divisions));
+    }
 
     measure_number += 1;
   }
@@ -70,10 +105,10 @@ public:
   }
 };
 
-part_type::measure_sequence get_measures(braille::ast::unfolded::part const &p, float divisions) {
+part_type::measure_sequence get_measures(braille::ast::unfolded::part const &p, rational const &divisions) {
   measure_type initial_measure { "1" };
   ::musicxml::attributes attributes { };
-  attributes.divisions(divisions);
+  attributes.divisions(boost::rational_cast<double>(divisions));
   attributes.staves(p.size());
   ::musicxml::push_back(initial_measure, attributes);
 
@@ -82,7 +117,9 @@ part_type::measure_sequence get_measures(braille::ast::unfolded::part const &p, 
 
   unsigned staff_number { 1 };
   for (auto &&staff: p) {
-    make_measures_for_staff_visitor visitor { measures, staff_number };
+    make_measures_for_staff_visitor visitor {
+      measures, staff_number, divisions
+    };
     std::for_each(staff.begin(), staff.end(), apply_visitor(visitor));
 
     staff_number += 1;
@@ -100,12 +137,15 @@ void musicxml(std::ostream &os, music::braille::ast::score const &score)
   };
   BOOST_ASSERT(divisions.denominator() == 1);
 
+  ::musicxml::attributes global_attributes {};
+  global_attributes.key().push_back(xml(score.key_sig));
+  std::clog << global_attributes;
   score_type xml_score { ::musicxml::part_list {} };
   unsigned c { 1 };
   for (auto &&p: score.unfolded_part) {
     part_type part { "P" + std::to_string(c) };
 
-    part.measure(get_measures(p, boost::rational_cast<float>(divisions)));
+    part.measure(get_measures(p, divisions));
 
     xml_score.part_list().score_part().push_back({
       "Part-" + std::to_string(c++), part.id()
