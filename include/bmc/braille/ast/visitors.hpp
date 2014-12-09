@@ -72,6 +72,18 @@ namespace music {
         { return std::is_base_of<rhythmic, T>::value; }
       };
 
+      inline bool is_grace(note const &n)
+      {
+        return std::find_if(n.articulations.begin(), n.articulations.end(),
+                            [](articulation a)
+               {
+                 return a == appoggiatura || a ==  short_appoggiatura;
+               }) != n.articulations.end();
+      }
+      inline bool is_grace(ast::rest const &) { return false; }
+      inline bool is_grace(ast::chord const &chord) { return is_grace(chord.base); }
+      inline bool is_grace(ast::moving_note &chord) { return is_grace(chord.base); }
+
       struct is_simile : boost::static_visitor<bool>
       {
         template <typename T>

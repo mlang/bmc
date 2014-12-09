@@ -170,10 +170,16 @@ public:
   void operator()(braille::ast::note const &note) const {
     ::musicxml::note xml_note { };
 
+    if (is_grace(note)) {
+      xml_note.grace(::musicxml::grace{});
+    }
     xml_note.pitch(pitch(note));
-    xml_note.duration(
-      boost::rational_cast<double>(
-        note.as_rational() / (rational{1, 4} / divisions)));
+      
+    if (not is_grace(note)) {
+      xml_note.duration(
+        boost::rational_cast<double>(
+          note.as_rational() / (rational{1, 4} / divisions)));
+    }
     xml_note.type(note_type(note.get_type()));
     for (unsigned dots = 0; dots < note.get_dots(); ++dots)
       xml_note.dot().push_back(::musicxml::empty_placement{});

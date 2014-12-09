@@ -2562,12 +2562,12 @@
     </measure>
     <measure number="12">
       <note>
+        <grace/>
         <pitch>
           <step>F</step>
           <alter>1</alter>
           <octave>4</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -2908,11 +2908,11 @@
         <duration>16</duration>
       </backup>
       <note>
+        <grace/>
         <pitch>
           <step>D</step>
           <octave>4</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>

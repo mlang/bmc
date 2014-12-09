@@ -2770,11 +2770,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -2798,12 +2798,12 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>C</step>
           <alter>1</alter>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -5885,11 +5885,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>

@@ -1220,11 +1220,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>A</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>

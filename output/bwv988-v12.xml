@@ -3920,11 +3920,11 @@
         <duration>24</duration>
       </backup>
       <note>
+        <grace/>
         <pitch>
           <step>F</step>
           <octave>3</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <accidental>natural</accidental>
         <staff>2</staff>
@@ -4013,11 +4013,11 @@
     </measure>
     <measure number="20">
       <note>
+        <grace/>
         <pitch>
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>

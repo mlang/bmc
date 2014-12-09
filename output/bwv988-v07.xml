@@ -751,11 +751,11 @@
     </measure>
     <measure number="8">
       <note>
+        <grace/>
         <pitch>
           <step>C</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -1581,11 +1581,11 @@
     </measure>
     <measure number="15">
       <note>
+        <grace/>
         <pitch>
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -1711,12 +1711,12 @@
     </measure>
     <measure number="16">
       <note>
+        <grace/>
         <pitch>
           <step>C</step>
           <alter>1</alter>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <accidental>sharp</accidental>
         <staff>1</staff>

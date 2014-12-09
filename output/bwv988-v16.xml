@@ -504,11 +504,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -670,11 +670,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>G</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -845,11 +845,11 @@
         <staff>1</staff>
       </note>
       <note>
+        <grace/>
         <pitch>
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>
@@ -974,11 +974,11 @@
     </measure>
     <measure number="6">
       <note>
+        <grace/>
         <pitch>
           <step>F</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <accidental>natural</accidental>
         <staff>1</staff>
@@ -2057,11 +2057,11 @@
     </measure>
     <measure number="10">
       <note>
+        <grace/>
         <pitch>
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <duration>0</duration>
         <type>whole</type>
         <staff>1</staff>
       </note>

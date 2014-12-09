@@ -685,17 +685,6 @@ public:
   result_type operator()(ast::tie &) const { return false; }
   result_type operator()(ast::tuplet_start &) const { return false; }
   result_type operator()(ast::barline &) const { return false; }
-
-  static bool is_grace(ast::note const &note)
-  {
-    return std::find_if(note.articulations.begin(), note.articulations.end(),
-                        [](articulation a) {
-                          return a == appoggiatura || a ==  short_appoggiatura;
-                        }) != note.articulations.end();
-  }
-  static bool is_grace(ast::rest const &) { return false; }
-  static bool is_grace(ast::chord const &chord) { return is_grace(chord.base); }
-  static bool is_grace(ast::moving_note &chord) { return is_grace(chord.base); }
 };
 
 template<typename Function>
