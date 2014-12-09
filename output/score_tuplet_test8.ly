@@ -6,9 +6,9 @@ music =
     \new Staff {
       \key e \major
       \time 2/2
-      \repeat unfold 2 {  \times 2/3 { gis8 cis' e' gis cis' e' }  \times 2/3 { gis cis' e' gis cis' e' } } | % 1
+      \repeat unfold 2 { \times 2/3 { gis8 cis' e' gis cis' e' } \times 2/3 { gis cis' e' gis cis' e' } } | % 1
       \times 2/3 { a8 cis' e' } \times 2/3 { a cis' e' } \times 2/3 { a d' fis' } \times 2/3 { a d' fis' } | % 2
-      \times 2/3 { gis8 bis fis' gis cis' e' gis cis' dis' }  \times 2/3 { fis bis dis' } | % 3
+      \times 2/3 { gis8 bis fis' gis cis' e' gis cis' dis' } \times 2/3 { fis bis dis' } | % 3
     }
   >>
 

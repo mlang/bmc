@@ -260,11 +260,6 @@ generator::operator() (braille::ast::tie const &) const
 }
 
 generator::result_type
-generator::operator() (braille::ast::tuplet_start const &) const
-{
-}
-
-generator::result_type
 generator::operator() (braille::ast::clef const &clef) const
 {
   static char const *lily_clef[3][5] = {
