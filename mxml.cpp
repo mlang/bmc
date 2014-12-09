@@ -128,16 +128,19 @@ std::string to_string(rational const & r) {
 }
 
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
+  braille::ast::score const &brl_score;
   part_type::measure_sequence &measures;
   unsigned staff_number;
   rational divisions;
   unsigned measure_number = 1;
   measure_type *current_measure;
 public:
-  make_measures_for_staff_visitor(part_type::measure_sequence &measures,
+  make_measures_for_staff_visitor(braille::ast::score const &brl_score,
+                                  part_type::measure_sequence &measures,
                                   unsigned staff_number,
                                   rational const &divisions)
-  : measures { measures }, staff_number { staff_number }, divisions { divisions }
+  : brl_score { brl_score }
+  , measures { measures }, staff_number { staff_number }, divisions { divisions }
   , current_measure { nullptr }
   {}
 
@@ -147,6 +150,12 @@ public:
 
     current_measure = &measures[measure_number - 1];
 
+    if (measure_number == 1) {
+      if ((not brl_score.time_sigs.empty() and (duration(measure) != brl_score.time_sigs.front())) or
+          (brl_score.time_sigs.empty() and duration(measure) != 1)) {
+        current_measure->implicit(::musicxml::yes_no::yes);
+      }
+    }
     if (staff_number > 1)
       ::musicxml::push_back(*current_measure, backup(duration(measure), divisions));
     for (auto vi = measure.voices.begin(), ve = measure.voices.end();
@@ -295,7 +304,7 @@ public:
     unsigned staff_number { 1 };
     for (auto &&staff: p) {
       make_measures_for_staff_visitor visitor {
-        measures, staff_number, divisions
+        brl_score, measures, staff_number, divisions
       };
       std::for_each(staff.begin(), staff.end(), apply_visitor(visitor));
 
