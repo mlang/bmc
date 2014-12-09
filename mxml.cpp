@@ -186,13 +186,29 @@ public:
     ::musicxml::note xml_note { };
     xml_note.rest(::musicxml::rest{});
     xml_note.duration(boost::rational_cast<double>(rest.as_rational() / (rational{1, 4} / divisions)));
+    xml_note.type(note_type(rest.get_type()));
+    for (unsigned dots = 0; dots < rest.get_dots(); ++dots)
+      xml_note.dot().push_back(::musicxml::empty_placement{});
+    xml_note.staff(staff_number);
+
     ::musicxml::push_back(*current_measure, xml_note);
   }
   void operator()(braille::ast::chord const &chord) const {
     (*this)(chord.base);
     for (auto &&interval: chord.intervals) {
       ::musicxml::note xml_note { };
+
       xml_note.chord(::musicxml::empty{});
+      xml_note.pitch(pitch(interval));
+      xml_note.duration(
+        boost::rational_cast<double>(
+          chord.base.as_rational() / (rational{1, 4} / divisions)));
+      xml_note.type(note_type(chord.base.get_type()));
+      for (unsigned dots = 0; dots < chord.base.get_dots(); ++dots)
+        xml_note.dot().push_back(::musicxml::empty_placement{});
+      if (interval.acc) xml_note.accidental(accidental(*interval.acc));
+      xml_note.staff(staff_number);
+
       ::musicxml::push_back(*current_measure, xml_note);
     }
   }
@@ -201,7 +217,17 @@ public:
     ::musicxml::push_back(*current_measure, backup(moving_note.base.as_rational(), divisions));
     for (auto &&interval: moving_note.intervals) {
       ::musicxml::note xml_note { };
-      xml_note.chord(::musicxml::empty{});
+
+      xml_note.pitch(pitch(interval));
+      xml_note.duration(
+        boost::rational_cast<double>(
+          (moving_note.base.as_rational() / moving_note.intervals.size()) / (rational{1, 4} / divisions)));
+      xml_note.type(note_type(moving_note.base.get_type() / moving_note.intervals.size()));
+      for (unsigned dots = 0; dots < moving_note.base.get_dots(); ++dots)
+        xml_note.dot().push_back(::musicxml::empty_placement{});
+      if (interval.acc) xml_note.accidental(accidental(*interval.acc));
+      xml_note.staff(staff_number);
+
       ::musicxml::push_back(*current_measure, xml_note);
     }
   }

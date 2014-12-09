@@ -72,11 +72,13 @@ struct rhythmic_data
 class rhythmic
 {
 protected:
-  rhythmic() {}
+  //rhythmic() {}
   virtual ~rhythmic() {}
 public:
   virtual rational as_rational() const = 0;
   virtual unsigned get_dots() const = 0;
+  virtual rational get_type() const = 0;
+  virtual rational get_factor() const = 0;
 };
 
 struct slur : locatable
@@ -107,10 +109,12 @@ struct stem : rhythmic
   unsigned dots;
   boost::optional<ast::tie> tied;
 
-  rational as_rational() const
-  { return type * 2 - type / pow(2, dots); }
-  virtual unsigned get_dots() const
+  rational as_rational() const override
+  { return type * augmentation_dots_factor(dots); }
+  unsigned get_dots() const override
   { return dots; }
+  rational get_factor() const override { return 1; }
+  rational get_type() const override { return type; }
 };
 
 struct note : locatable, rhythmic_data, rhythmic, pitched
@@ -123,18 +127,21 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
   note(): locatable(), rhythmic_data(), pitched() {}
   virtual rational as_rational() const
   { return type * augmentation_dots_factor(dots) * factor; }
-  virtual unsigned get_dots() const
-  { return dots; }
+  virtual unsigned get_dots() const override { return dots; }
+  rational get_factor() const override { return factor; }
+  rational get_type() const override { return type; }
 };
 
 struct rest : locatable, rhythmic_data, rhythmic
 {
   rest(): locatable(), rhythmic_data(), whole_measure(false) {}
   bool whole_measure; // filled in by disambiguate.hpp
-  virtual rational as_rational() const
+  rational as_rational() const override
   { return type * augmentation_dots_factor(dots) * factor; }
-  virtual unsigned get_dots() const
+  unsigned get_dots() const override
   { return dots; }
+  rational get_factor() const override { return factor; }
+  rational get_type() const override { return type; }
 };
 
 struct interval : locatable, pitched
@@ -153,6 +160,8 @@ struct chord : locatable, rhythmic
   { return base.as_rational(); }
   virtual unsigned get_dots() const
   { return base.get_dots(); }
+  rational get_factor() const override { return base.factor; }
+  rational get_type() const override { return base.type; }
 };
 
 /** The moving-note device, although infrequently employed,
@@ -169,6 +178,8 @@ struct moving_note : locatable, rhythmic
   { return base.as_rational(); }
   virtual unsigned get_dots() const
   { return base.get_dots(); }
+  rational get_factor() const override { return base.factor; }
+  rational get_type() const override { return base.type; }
 };
 
 struct value_distinction : locatable

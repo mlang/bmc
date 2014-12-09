@@ -591,6 +591,8 @@ BOOST_AUTO_TEST_CASE(common_factor) {
   BOOST_CHECK_EQUAL(boost::math::lcm(b, c), a);
 }
 
+#include "bmc/musicxml.hpp"
+
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::locale::global(std::locale(""));
   std::wifstream file(DIR "input/bwv988-v01.bmc");
@@ -647,6 +649,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v01.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
@@ -686,6 +701,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v02.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v03) {
@@ -724,6 +752,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v03.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v04) {
@@ -760,6 +801,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
   std::string expected(in_begin, in_end);
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v04.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v05) {
@@ -799,6 +853,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v05) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v05.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v06) {
@@ -838,6 +905,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v06) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v06.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v07) {
@@ -876,6 +956,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v07) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v07.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v08) {
@@ -915,6 +1008,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v08) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v08.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v09) {
@@ -954,6 +1060,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v09) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v09.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v10) {
@@ -993,6 +1112,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v10) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v10.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v11) {
@@ -1032,6 +1164,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v11) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v11.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v12) {
@@ -1071,6 +1216,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v12) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v12.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
@@ -1109,6 +1267,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v13.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v16) {
@@ -1147,6 +1318,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v16.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
@@ -1212,6 +1396,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v14) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v14.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v15) {
@@ -1251,6 +1448,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v15) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v15.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v17) {
@@ -1289,6 +1499,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v17) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v17.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v18) {
@@ -1327,6 +1550,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v18) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v18.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v19) {
@@ -1366,6 +1602,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v19.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v22) {
@@ -1405,6 +1654,19 @@ BOOST_AUTO_TEST_CASE(bwv988_v22) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v22.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30) {
@@ -1445,4 +1707,17 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   std::string expected(in_begin, in_end);
   BOOST_REQUIRE(not expected.empty());
   BOOST_CHECK_EQUAL(ss.str(), expected);
+
+  { // MusicXML output:
+    std::stringstream ss;
+    music::musicxml(ss, attribute);
+    BOOST_REQUIRE(not ss.str().empty());
+
+    std::ifstream xml_file(DIR "output/bwv988-v30.xml");
+    BOOST_REQUIRE(xml_file.good());
+    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
+    std::string expected(in_begin, in_end);
+    BOOST_REQUIRE(not expected.empty());
+    BOOST_CHECK_EQUAL(ss.str(), expected);
+  }
 }
