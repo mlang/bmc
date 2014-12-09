@@ -80,6 +80,53 @@ rational duration_gcd(braille::ast::score const &score) {
   };
 }
 
+std::string to_string(rational const & r) {
+  return std::to_string(r.numerator()) + "/" + std::to_string(r.denominator());
+}
+
+::musicxml::note_type note_type(rational const &r) {
+  BOOST_ASSERT(r.numerator() == 1);
+  switch (r.denominator()) {
+  case 1: return ::musicxml::note_type_value::whole;
+  case 2: return ::musicxml::note_type_value::half;
+  case 4: return ::musicxml::note_type_value::quarter;
+  case 8: return ::musicxml::note_type_value::eighth;
+  case 16: return ::musicxml::note_type_value::cxx_16th;
+  case 32: return ::musicxml::note_type_value::cxx_32nd;
+  default: throw std::runtime_error("Unknown note type: " + to_string(r));
+  }
+}
+
+::musicxml::pitch pitch(braille::ast::pitched const &p) {
+  ::musicxml::step::value step;
+  switch (p.step) {
+  case A: step = ::musicxml::step::A; break;
+  case B: step = ::musicxml::step::B; break;
+  case C: step = ::musicxml::step::C; break;
+  case D: step = ::musicxml::step::D; break;
+  case E: step = ::musicxml::step::E; break;
+  case F: step = ::musicxml::step::F; break;
+  case G: step = ::musicxml::step::G; break;
+  default: BOOST_ASSERT(false);
+  }
+  ::musicxml::pitch xml_pitch { step, p.octave - 1 };
+
+  if (p.alter) xml_pitch.alter(p.alter);
+
+  return xml_pitch;
+}
+
+::musicxml::accidental accidental(music::accidental const &a) {
+  switch (a) {
+  case music::natural: return { ::musicxml::accidental_value::natural };
+  case music::flat:    return { ::musicxml::accidental_value::flat };
+  case music::sharp:   return { ::musicxml::accidental_value::sharp };
+  case music::double_flat: return { ::musicxml::accidental_value::flat_flat };
+  case music::double_sharp: return { ::musicxml::accidental_value::sharp_sharp };
+  default: throw std::runtime_error("Invalid accidental: " + std::to_string(a));
+  }
+}
+
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
   part_type::measure_sequence &measures;
   unsigned staff_number;
@@ -122,7 +169,17 @@ public:
   }
   void operator()(braille::ast::note const &note) const {
     ::musicxml::note xml_note { };
-    xml_note.duration(boost::rational_cast<double>(note.as_rational() / (rational{1, 4} / divisions)));
+
+    xml_note.pitch(pitch(note));
+    xml_note.duration(
+      boost::rational_cast<double>(
+        note.as_rational() / (rational{1, 4} / divisions)));
+    xml_note.type(note_type(note.get_type()));
+    for (unsigned dots = 0; dots < note.get_dots(); ++dots)
+      xml_note.dot().push_back(::musicxml::empty_placement{});
+    if (note.acc) xml_note.accidental(accidental(*note.acc));
+    xml_note.staff(staff_number);
+
     ::musicxml::push_back(*current_measure, xml_note);
   }
   void operator()(braille::ast::rest const &rest) const {
