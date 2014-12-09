@@ -293,10 +293,12 @@ typedef boost::make_variant_over
         < boost::mpl::remove
         < boost::mpl::remove
         < boost::mpl::remove
+        < boost::mpl::remove
         < ast::sign::types
         , value_distinction>::type
         , hyphen>::type
         , simile>::type
+        , tuplet_start>::type
         >::type sign;
 
 struct partial_voice : locatable, std::vector<sign>

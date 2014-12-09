@@ -49,10 +49,12 @@ public:
   , prev_unfolded_measure(prev_unfolded_measure)
   {}
 
-  // Value distinction signs and music hyphens are irrelevant from here on.
+  // Value distinction signs, music hyphens and tuplet indicators are irrelevant from here on.
   result_type operator() (ast::value_distinction const &) const
   { return sign_conversion_result::ok; }
   result_type operator() (ast::hyphen const &) const
+  { return sign_conversion_result::ok; }
+  result_type operator() (ast::tuplet_start const &) const
   { return sign_conversion_result::ok; }
 
   result_type operator() (ast::simile const &simile)
