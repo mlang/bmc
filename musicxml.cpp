@@ -127,6 +127,12 @@ std::string to_string(rational const & r) {
   }
 }
 
+::musicxml::positive_divisions duration(rational const &dur, rational const &divisions) {
+  return {
+    boost::rational_cast<double>(dur / (rational{1, 4} / divisions))
+  };
+}
+
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
   braille::ast::score const &brl_score;
   part_type::measure_sequence &measures;
@@ -177,17 +183,12 @@ public:
   void operator()(braille::ast::key_and_time_signature const &) {
   }
   void operator()(braille::ast::note const &note) const {
-    ::musicxml::note xml_note { };
+    ::musicxml::note xml_note {
+      pitch(note), duration(note.as_rational(), divisions)
+    };
 
     if (is_grace(note)) {
       xml_note.grace(::musicxml::grace{});
-    }
-    xml_note.pitch(pitch(note));
-      
-    if (not is_grace(note)) {
-      xml_note.duration(
-        boost::rational_cast<double>(
-          note.as_rational() / (rational{1, 4} / divisions)));
     }
     xml_note.type(note_type(note.get_type()));
     for (unsigned dots = 0; dots < note.get_dots(); ++dots)
@@ -198,9 +199,9 @@ public:
     ::musicxml::push_back(*current_measure, xml_note);
   }
   void operator()(braille::ast::rest const &rest) const {
-    ::musicxml::note xml_note { };
-    xml_note.rest(::musicxml::rest{});
-    xml_note.duration(boost::rational_cast<double>(rest.as_rational() / (rational{1, 4} / divisions)));
+    ::musicxml::note xml_note {
+      ::musicxml::rest{}, duration(rest.as_rational(), divisions)
+    };
     xml_note.type(note_type(rest.get_type()));
     for (unsigned dots = 0; dots < rest.get_dots(); ++dots)
       xml_note.dot().push_back(::musicxml::empty_placement{});
@@ -211,13 +212,11 @@ public:
   void operator()(braille::ast::chord const &chord) const {
     (*this)(chord.base);
     for (auto &&interval: chord.intervals) {
-      ::musicxml::note xml_note { };
+      ::musicxml::note xml_note {
+        pitch(interval), duration(chord.base.as_rational(), divisions)
+      };
 
       xml_note.chord(::musicxml::empty{});
-      xml_note.pitch(pitch(interval));
-      xml_note.duration(
-        boost::rational_cast<double>(
-          chord.base.as_rational() / (rational{1, 4} / divisions)));
       xml_note.type(note_type(chord.base.get_type()));
       for (unsigned dots = 0; dots < chord.base.get_dots(); ++dots)
         xml_note.dot().push_back(::musicxml::empty_placement{});
@@ -231,12 +230,12 @@ public:
     (*this)(moving_note.base);
     ::musicxml::push_back(*current_measure, backup(moving_note.base.as_rational(), divisions));
     for (auto &&interval: moving_note.intervals) {
-      ::musicxml::note xml_note { };
+      ::musicxml::note xml_note {
+        pitch(interval),
+        duration(moving_note.base.as_rational() / moving_note.intervals.size(),
+                 divisions)
+      };
 
-      xml_note.pitch(pitch(interval));
-      xml_note.duration(
-        boost::rational_cast<double>(
-          (moving_note.base.as_rational() / moving_note.intervals.size()) / (rational{1, 4} / divisions)));
       xml_note.type(note_type(moving_note.base.get_type() / moving_note.intervals.size()));
       for (unsigned dots = 0; dots < moving_note.base.get_dots(); ++dots)
         xml_note.dot().push_back(::musicxml::empty_placement{});
@@ -246,6 +245,7 @@ public:
       ::musicxml::push_back(*current_measure, xml_note);
     }
   }
+
   void operator()(braille::ast::barline const &) const {
   }
   void operator()(braille::ast::clef const &) const {
