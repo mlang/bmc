@@ -5,7 +5,7 @@
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 #include "bmc/musicxml.hpp"
-#include "xsdcxx-musicxml/document.hxx"
+#include "xsdcxx-musicxml/musicxml.hpp"
 
 namespace music {
 
