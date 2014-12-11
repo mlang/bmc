@@ -16,7 +16,7 @@ using score_type = ::musicxml::score_partwise;
 using part_type = score_type::part_type;
 using measure_type = part_type::measure_type;
 
-// Determine the greatest common divisor of all rhythmic values.
+// Determine the greatest common divisor of all rhythmic values in a braille score.
 // We need this for the MusicXML divisons element.
 // We're basically determining the common denominator such that all
 // rhythmic values can be expressed as an integer, since the MusicXML duration
@@ -57,7 +57,7 @@ rational duration_gcd(braille::ast::score const &score) {
   return accumulator.get();
 }
  
-// Conversion functions between our AST and MusicXML objects:
+// Conversion functions between braille AST and MusicXML objects:
 
 ::musicxml::key xml(key_signature const &key) {
   ::musicxml::key xml_key{};
@@ -74,10 +74,14 @@ rational duration_gcd(braille::ast::score const &score) {
   return xml_time;
 }
 
-::musicxml::backup backup(rational const &duration, rational const &divisions) {
+::musicxml::positive_divisions duration(rational const &dur, rational const &divisions) {
   return {
-    boost::rational_cast<double>(duration / (rational{1, 4} / divisions))
+    boost::rational_cast<double>(dur / (rational{1, 4} / divisions))
   };
+}
+
+::musicxml::backup backup(rational const &dur, rational const &divisions) {
+  return { duration(dur, divisions) };
 }
 
 std::string to_string(rational const & r) {
@@ -93,6 +97,8 @@ std::string to_string(rational const & r) {
   case 8: return ::musicxml::note_type_value::eighth;
   case 16: return ::musicxml::note_type_value::cxx_16th;
   case 32: return ::musicxml::note_type_value::cxx_32nd;
+  case 64: return ::musicxml::note_type_value::cxx_64th;
+  case 128: return ::musicxml::note_type_value::cxx_128th;
   default: throw std::runtime_error("Unknown note type: " + to_string(r));
   }
 }
@@ -125,12 +131,6 @@ std::string to_string(rational const & r) {
   case music::double_sharp: return { ::musicxml::accidental_value::sharp_sharp };
   default: throw std::runtime_error("Invalid accidental: " + std::to_string(a));
   }
-}
-
-::musicxml::positive_divisions duration(rational const &dur, rational const &divisions) {
-  return {
-    boost::rational_cast<double>(dur / (rational{1, 4} / divisions))
-  };
 }
 
 class fingering_visitor : public boost::static_visitor<void> {
