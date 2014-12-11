@@ -44,6 +44,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -62,6 +67,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -132,6 +142,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -211,6 +226,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -419,6 +439,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -429,6 +454,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -438,6 +468,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -477,6 +512,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -506,6 +546,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -547,6 +592,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -577,6 +627,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -604,6 +659,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="7">
@@ -673,6 +733,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -819,6 +884,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -855,6 +925,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="9">
@@ -884,6 +959,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -905,6 +985,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -978,6 +1063,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -996,6 +1086,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1028,6 +1123,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1067,6 +1167,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1155,6 +1260,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1213,6 +1323,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1235,6 +1350,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1277,6 +1397,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1318,6 +1443,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1327,6 +1457,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1349,6 +1484,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1461,6 +1601,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1475,6 +1620,11 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1505,6 +1655,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1566,6 +1721,11 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1584,6 +1744,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1747,6 +1912,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1765,6 +1935,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1883,6 +2058,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1912,6 +2092,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1942,6 +2127,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2099,6 +2289,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2167,6 +2362,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2215,6 +2415,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="22">
@@ -2268,6 +2473,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2289,6 +2499,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2317,6 +2532,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2335,6 +2555,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="23">
@@ -2357,6 +2582,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2406,6 +2636,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2420,6 +2655,11 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2448,6 +2688,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2538,6 +2783,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2557,6 +2807,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2566,6 +2821,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -2584,6 +2844,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2604,6 +2869,11 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2613,6 +2883,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2623,6 +2898,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2780,6 +3060,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2792,6 +3077,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2820,6 +3110,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="27">
@@ -2849,6 +3144,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2888,6 +3188,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2936,6 +3241,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2992,6 +3302,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3014,6 +3329,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3074,6 +3394,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="29">
@@ -3125,6 +3450,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3249,6 +3579,11 @@
         <type>quarter</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3279,6 +3614,11 @@
         <duration>1</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3356,6 +3696,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>

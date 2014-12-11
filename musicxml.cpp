@@ -133,6 +133,34 @@ std::string to_string(rational const & r) {
   };
 }
 
+class fingering_visitor : public boost::static_visitor<void> {
+  ::musicxml::technical::fingering_sequence &xml_fingers;
+public:
+  fingering_visitor(::musicxml::technical::fingering_sequence &xml_fingers)
+  : xml_fingers { xml_fingers }
+  {}
+
+  void operator()(unsigned f) {
+    xml_fingers.push_back({ std::to_string(f) });
+  }
+  void operator()(braille::finger_change const &fc) {
+  }
+};
+
+::musicxml::technical::fingering_sequence
+fingering(braille::fingering_list const &fingers) {
+  ::musicxml::technical::fingering_sequence xml_fingers;
+
+  BOOST_ASSERT(fingers.size() == 1);
+
+  if (not fingers.empty()) {
+    fingering_visitor visitor { xml_fingers };
+    apply_visitor(visitor, fingers.front());
+  }
+
+  return xml_fingers;
+}
+
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
   braille::ast::score const &brl_score;
   part_type::measure_sequence &measures;
@@ -196,6 +224,14 @@ public:
     if (note.acc) xml_note.accidental(accidental(*note.acc));
     xml_note.staff(staff_number);
 
+    auto xml_fingers = fingering(note.fingers);
+    if (not xml_fingers.empty()) {
+      ::musicxml::technical xml_technical { };
+      xml_technical.fingering(xml_fingers);
+      ::musicxml::notations xml_notations { };
+      xml_notations.technical().push_back(xml_technical);      
+      xml_note.notations().push_back(xml_notations);
+    }
     ::musicxml::push_back(*current_measure, xml_note);
   }
   void operator()(braille::ast::rest const &rest) const {
