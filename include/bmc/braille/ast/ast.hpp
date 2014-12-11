@@ -18,7 +18,7 @@
 #include "bmc/music.hpp"
 #include "bmc/braille_music.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Data types required to store parse result.
@@ -53,7 +53,7 @@ enum class slur_member_type: uint8_t {
  *
  * A rhythmic value consists of an ambiguous value type and the number of
  * augmentation dots.  The unambiguous value type is filled in after the parse
- * step by the music::braille::compiler.
+ * step by the ::bmc::braille::compiler.
  */
 struct rhythmic_data
 {
@@ -146,7 +146,7 @@ struct rest : locatable, rhythmic_data, rhythmic
 
 struct interval : locatable, pitched
 {
-  music::interval steps;
+  ::bmc::interval steps;
   fingering_list fingers;
 };
 

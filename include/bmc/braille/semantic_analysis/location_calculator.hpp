@@ -13,7 +13,7 @@
 #include "compiler_pass.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Set line and column numbers for all locatable objects.

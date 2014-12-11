@@ -9,7 +9,7 @@
 
 #include <list>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 enum class interval_direction
 { down

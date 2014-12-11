@@ -13,7 +13,7 @@
 #include <bmc/ttb/ttb.h>
 #include <bmc/ttb/unicode.h>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 // A special version of qi::symbols<> which transparently translates its input
 // to Unicode braille.
@@ -50,9 +50,9 @@ BMC_DEFINE_SYMBOL_TABLE(ast::value_distinction::type,
                         value_distinction_symbols, value_distinction_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::slur::type, slur_symbols, slur_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::tie::type, tie_symbols, tie_sign)
-BMC_DEFINE_SYMBOL_TABLE(music::articulation, articulation_symbols, articulation_sign)
+BMC_DEFINE_SYMBOL_TABLE(::bmc::articulation, articulation_symbols, articulation_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::barline, barline_symbols, barline_sign)
-BMC_DEFINE_SYMBOL_TABLE(music::rational, stem_symbols, stem_sign)
+BMC_DEFINE_SYMBOL_TABLE(::bmc::rational, stem_symbols, stem_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::clef, clef_symbols, clef_sign)
 
 #undef BMC_DEFINE_SYMBOL_TABLE

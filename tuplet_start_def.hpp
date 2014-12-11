@@ -19,7 +19,7 @@
 #include <boost/spirit/include/phoenix_object.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template<typename Iterator>
 tuplet_start_grammar<Iterator>::tuplet_start_grammar(error_handler<Iterator>& error_handler)
@@ -28,7 +28,7 @@ tuplet_start_grammar<Iterator>::tuplet_start_grammar(error_handler<Iterator>& er
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
   boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;

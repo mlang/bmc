@@ -6,7 +6,7 @@
 
 #include "key_signature_def.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 typedef std::wstring::const_iterator iterator_type;
 template struct key_signature_grammar<iterator_type>;

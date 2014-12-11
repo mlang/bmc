@@ -12,7 +12,7 @@
 #include "brlsym.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template <typename Iterator>
 time_signature_grammar<Iterator>::time_signature_grammar()
@@ -21,15 +21,15 @@ time_signature_grammar<Iterator>::time_signature_grammar()
   boost::spirit::qi::_1_type _1;
   boost::spirit::qi::_a_type _a;
   boost::spirit::qi::_val_type _val;
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
   using boost::phoenix::construct;
   start = brl(3456)
        >> upper_number[_a = _1]
-       >> lower_number[_val = construct<music::time_signature>(_a, _1)]
+       >> lower_number[_val = construct<::bmc::time_signature>(_a, _1)]
         | brl(46)
-       >> brl(14)[_val = construct<music::time_signature>(4, 4)]
+       >> brl(14)[_val = construct<::bmc::time_signature>(4, 4)]
         | brl(456)
-       >> brl(14)[_val = construct<music::time_signature>(4, 4)]
+       >> brl(14)[_val = construct<::bmc::time_signature>(4, 4)]
         ;
 }
 

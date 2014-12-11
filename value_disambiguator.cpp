@@ -8,7 +8,7 @@
 #include "bmc/braille/semantic_analysis/value_disambiguator.hpp"
 #include "bmc/braille/semantic_analysis/value_disambiguation.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 value_disambiguator::value_disambiguator(report_error_type const& report_error)
 : compiler_pass(report_error)

@@ -11,7 +11,7 @@
 
 #include <ostream>
 
-namespace music {
+namespace bmc {
 
 void musicxml(std::ostream &, braille::ast::score const &);
 

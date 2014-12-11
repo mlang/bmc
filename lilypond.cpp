@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <iterator>
 
-namespace music { namespace lilypond {
+namespace bmc { namespace lilypond {
 
 generator::generator( std::ostream &os
                     , bool layout

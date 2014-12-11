@@ -141,7 +141,7 @@ cgicc::option instrument_option(std::string const &instrument, cgicc::Cgicc cons
 
 std::ostream &instrument_select(std::ostream &os, cgicc::Cgicc const &cgi) {
   os << cgicc::select().set("name", "instrument").set("id", "instrument");
-  for (auto instrument: music::lilypond::instruments) {
+  for (auto instrument: ::bmc::lilypond::instruments) {
     os << instrument_option(instrument, cgi);
   }
   os << cgicc::select();
@@ -170,16 +170,16 @@ main(int argc, char const *argv[])
     typedef std::wstring::const_iterator iterator_type;
     iterator_type const end = source.end();
     iterator_type iter = source.begin();
-    typedef music::braille::error_handler<iterator_type> error_handler_type;
+    typedef ::bmc::braille::error_handler<iterator_type> error_handler_type;
     error_handler_type error_handler(iter, end);
-    typedef music::braille::score_grammar<iterator_type> parser_type;
+    typedef ::bmc::braille::score_grammar<iterator_type> parser_type;
     parser_type parser(error_handler);
     boost::spirit::traits::attribute_of<parser_type>::type score;
 
     bool const success = parse(iter, end, parser, score);
 
     if (success and iter == end) {
-      music::braille::compiler<error_handler_type> compile(error_handler);
+      ::bmc::braille::compiler<error_handler_type> compile(error_handler);
       if (compile(score)) {
         prefix = hash(braille->getValue());
         std::string dir("/tmp/bmc.cgi/");
@@ -187,7 +187,7 @@ main(int argc, char const *argv[])
         bmc << braille->getValue();
         bmc.close();
         std::ofstream ly(dir + prefix + ".ly");
-        music::lilypond::generator generate(ly, true, true, false);
+        ::bmc::lilypond::generator generate(ly, true, true, false);
         generate.remove_tagline();
         if (not cgi("instrument").empty())
           generate.instrument(cgi("instrument"));

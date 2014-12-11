@@ -6,105 +6,105 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::slur,
-  (music::braille::ast::slur::type, value)
+  ::bmc::braille::ast::slur,
+  (::bmc::braille::ast::slur::type, value)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::tie,
-  (music::braille::ast::tie::type, value)
+  ::bmc::braille::ast::tie,
+  (::bmc::braille::ast::tie::type, value)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::rest,
-  (music::braille::ast::value, ambiguous_value)
+  ::bmc::braille::ast::rest,
+  (::bmc::braille::ast::value, ambiguous_value)
   (unsigned, dots)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::stem,
-  (music::rational, type)
+  ::bmc::braille::ast::stem,
+  (::bmc::rational, type)
   (unsigned, dots)
-  (boost::optional<music::braille::ast::tie>, tied)
+  (boost::optional<::bmc::braille::ast::tie>, tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::note,
-  (std::vector<music::articulation>, articulations)
-  (boost::optional<music::accidental>, acc)
+  ::bmc::braille::ast::note,
+  (std::vector<::bmc::articulation>, articulations)
+  (boost::optional<::bmc::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
-  (music::diatonic_step, step)
-  (music::braille::ast::value, ambiguous_value)
+  (::bmc::diatonic_step, step)
+  (::bmc::braille::ast::value, ambiguous_value)
   (unsigned, dots)
-  (std::vector<music::braille::ast::slur>, slurs)
-  (music::braille::fingering_list, fingers)
-  (boost::optional<music::braille::ast::tie>, tie)
-  (std::vector<music::braille::ast::stem>, extra_stems)
+  (std::vector<::bmc::braille::ast::slur>, slurs)
+  (::bmc::braille::fingering_list, fingers)
+  (boost::optional<::bmc::braille::ast::tie>, tie)
+  (std::vector<::bmc::braille::ast::stem>, extra_stems)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::interval,
-  (boost::optional<music::accidental>, acc)
+  ::bmc::braille::ast::interval,
+  (boost::optional<::bmc::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
-  (music::interval, steps)
-  (music::braille::fingering_list, fingers)
-  (boost::optional<music::braille::ast::tie>, tie)
+  (::bmc::interval, steps)
+  (::bmc::braille::fingering_list, fingers)
+  (boost::optional<::bmc::braille::ast::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::chord,
-  (music::braille::ast::note, base)
-  (std::vector<music::braille::ast::interval>, intervals)
+  ::bmc::braille::ast::chord,
+  (::bmc::braille::ast::note, base)
+  (std::vector<::bmc::braille::ast::interval>, intervals)
   (bool, all_tied)
 )
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::moving_note,
-  (music::braille::ast::note, base)
-  (std::vector<music::braille::ast::interval>, intervals)
+  ::bmc::braille::ast::moving_note,
+  (::bmc::braille::ast::note, base)
+  (std::vector<::bmc::braille::ast::interval>, intervals)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::value_distinction,
-  (music::braille::ast::value_distinction::type, value)
+  ::bmc::braille::ast::value_distinction,
+  (::bmc::braille::ast::value_distinction::type, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::simile,
+  ::bmc::braille::ast::simile,
   (boost::optional<unsigned>, octave_spec)
   (unsigned, count)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::measure,
+  ::bmc::braille::ast::measure,
   (boost::optional<unsigned>, ending)
-  (std::vector<music::braille::ast::voice>, voices)
+  (std::vector<::bmc::braille::ast::voice>, voices)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::key_and_time_signature,
-  (music::key_signature, key)
-  (music::time_signature, time)
+  ::bmc::braille::ast::key_and_time_signature,
+  (::bmc::key_signature, key)
+  (::bmc::time_signature, time)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::measure_specification,
-  (music::braille::ast::measure_specification::number_type, number)
-  (boost::optional<music::braille::ast::measure_specification::number_type>, alternative)
+  ::bmc::braille::ast::measure_specification,
+  (::bmc::braille::ast::measure_specification::number_type, number)
+  (boost::optional<::bmc::braille::ast::measure_specification::number_type>, alternative)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::measure_range,
-  (music::braille::ast::measure_specification, first)
-  (music::braille::ast::measure_specification, last)
+  ::bmc::braille::ast::measure_range,
+  (::bmc::braille::ast::measure_specification, first)
+  (::bmc::braille::ast::measure_specification, last)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::section,
-  (boost::optional<music::braille::ast::key_and_time_signature>, key_and_time_sig)
-  (boost::optional<music::braille::ast::section::number_type>, number)
-  (boost::optional<music::braille::ast::measure_range>, range)
-  (std::vector<music::braille::ast::paragraph>, paragraphs)
+  ::bmc::braille::ast::section,
+  (boost::optional<::bmc::braille::ast::key_and_time_signature>, key_and_time_sig)
+  (boost::optional<::bmc::braille::ast::section::number_type>, number)
+  (boost::optional<::bmc::braille::ast::measure_range>, range)
+  (std::vector<::bmc::braille::ast::paragraph>, paragraphs)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-  music::braille::ast::score,
-  (music::key_signature, key_sig)
-  (std::vector<music::time_signature>, time_sigs)
-  (std::vector<music::braille::ast::part>, parts)
+  ::bmc::braille::ast::score,
+  (::bmc::key_signature, key_sig)
+  (std::vector<::bmc::time_signature>, time_sigs)
+  (std::vector<::bmc::braille::ast::part>, parts)
 )
 
 #endif

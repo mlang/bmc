@@ -14,7 +14,7 @@
 #include "bmc/braille/parsing/grammar/simile.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief A grammar for parsing a single braille music measure.

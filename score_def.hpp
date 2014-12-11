@@ -23,7 +23,7 @@
 #include <boost/spirit/include/phoenix_statement.hpp>
 #include "spirit/detail/info_wchar_t_io.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template<typename Iterator>
 score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
@@ -44,7 +44,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_3_type _3;
   boost::spirit::qi::_4_type _4;
   boost::spirit::qi::_val_type _val;
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
   boost::spirit::standard_wide::blank_type blank;
   boost::spirit::standard_wide::space_type space;
 

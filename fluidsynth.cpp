@@ -8,7 +8,7 @@
 #include <thread>
 #include <boost/range/numeric.hpp>
 
-namespace music {
+namespace bmc {
 
 fluidsynth::fluidsynth(std::string const& soundfont)
 : settings(new_fluid_settings())
@@ -113,7 +113,7 @@ public:
 }
 
 
-namespace music {
+namespace bmc {
 
 void
 fluidsynth::operator()(braille::ast::measure const& measure)

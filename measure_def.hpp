@@ -25,7 +25,7 @@
 #include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template<typename Iterator>
 measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handler)
@@ -35,7 +35,7 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
 
   start = -ending >> (voice % full_measure_in_accord);
 

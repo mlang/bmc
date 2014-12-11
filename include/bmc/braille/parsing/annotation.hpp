@@ -12,7 +12,7 @@
 #include <boost/mpl/bool.hpp>
 #include "bmc/braille/ast.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template <typename Iterator>
 struct annotation

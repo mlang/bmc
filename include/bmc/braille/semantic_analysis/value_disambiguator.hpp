@@ -11,7 +11,7 @@
 #include <bmc/braille/semantic_analysis/value_disambiguation.hpp>
 #include "compiler_pass.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Calcualte the duration (value) of all notes and rests in a measure.
@@ -44,7 +44,7 @@ namespace music { namespace braille {
  */
 class value_disambiguator: public compiler_pass
 {
-  music::time_signature time_signature;
+  ::bmc::time_signature time_signature;
   rational prev_duration;
   value_disambiguation::measure_doubled_tuplet_info prev_doubled_tuplets;
   boost::optional<value_disambiguation::measure_interpretations> anacrusis;
@@ -53,7 +53,7 @@ public:
   typedef bool result_type;
   value_disambiguator(report_error_type const& report_error);
 
-  void set(music::time_signature const& time_sig)
+  void set(::bmc::time_signature const& time_sig)
   { time_signature = time_sig; }
 
   result_type operator()(ast::measure& measure);

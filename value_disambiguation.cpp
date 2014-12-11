@@ -9,7 +9,7 @@
 #include <future>
 #include <map>
 
-namespace music { namespace braille { namespace value_disambiguation {
+namespace bmc { namespace braille { namespace value_disambiguation {
 
 rational const undotted[8] = {
   rational{1, 1},  rational{1, 2},  rational{1, 4},  rational{1, 8},
@@ -1034,7 +1034,7 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 
 measure_interpretations::measure_interpretations
 ( ast::measure& measure
-, music::time_signature const &time_signature
+, ::bmc::time_signature const &time_signature
 , rational const &last_measure_duration
 , measure_doubled_tuplet_info const &last_measure_doubled_tuplets
 )

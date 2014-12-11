@@ -12,7 +12,7 @@
 #include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Calculate the alteration of note and interval pitches.
@@ -29,8 +29,8 @@ class alteration_calculator
 : public boost::static_visitor<void>
 , public compiler_pass
 {
-  music::accidental memory[10][steps_per_octave];
-  music::key_signature key_sig;
+  ::bmc::accidental memory[10][steps_per_octave];
+  ::bmc::key_signature key_sig;
 
 public:
   alteration_calculator(report_error_type const& report_error)
@@ -41,7 +41,7 @@ public:
   /**
    * \brief Set the current key signature.
    */
-  void set(music::key_signature sig) { key_sig = sig; }
+  void set(::bmc::key_signature sig) { key_sig = sig; }
 
   result_type operator() (ast::measure& measure)
   { reset_memory(), visit_chronologically(measure); }
@@ -109,9 +109,9 @@ private:
       }
     }
   }
-  int to_alter( boost::optional<music::accidental> const& accidental
+  int to_alter( boost::optional<::bmc::accidental> const& accidental
               , unsigned octave
-              , music::diatonic_step step
+              , ::bmc::diatonic_step step
               )
   {
     BOOST_ASSERT(octave < 10);

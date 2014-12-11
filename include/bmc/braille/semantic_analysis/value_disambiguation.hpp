@@ -13,7 +13,7 @@
 #include <mutex>
 #include <sstream>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Utilities for disambiguating note and rest values.
@@ -178,7 +178,7 @@ duration(std::vector<value_proxy> const &values)
 
 struct global_state
 {
-  music::time_signature time_signature;
+  ::bmc::time_signature time_signature;
   rational last_measure_duration;
   rational beat;
   std::atomic<bool> exact_match_found { false };
@@ -201,7 +201,7 @@ struct global_state
     threads.store(other.threads.load());
     return *this;
   }
-  global_state( music::time_signature const &time_signature
+  global_state( ::bmc::time_signature const &time_signature
               , rational const &last_measure_duration
               , rational const &beat
               )
@@ -378,7 +378,7 @@ public:
   {}
 
   measure_interpretations( ast::measure& measure
-                         , music::time_signature const &time_signature
+                         , ::bmc::time_signature const &time_signature
                          , rational const &last_measure_duration
                          , measure_doubled_tuplet_info const &last_doubled_tuplets
                          );

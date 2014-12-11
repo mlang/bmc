@@ -14,7 +14,7 @@
 #include "brlsym.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template <typename Iterator>
 key_signature_grammar<Iterator>::key_signature_grammar()

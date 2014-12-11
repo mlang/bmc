@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
   ///////////////////////////////////////////////////////////////////////////////
   //  The error handler

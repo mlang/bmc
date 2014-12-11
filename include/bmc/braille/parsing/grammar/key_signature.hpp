@@ -12,7 +12,7 @@
 #include "bmc/braille/parsing/grammar/numbers.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief A grammar for parsing a braille key signature.
@@ -20,11 +20,11 @@ namespace music { namespace braille {
  * \ingroup grammar
  */
 template<typename Iterator>
-struct key_signature_grammar : boost::spirit::qi::grammar<Iterator, music::key_signature()>
+struct key_signature_grammar : boost::spirit::qi::grammar<Iterator, ::bmc::key_signature()>
 {
   key_signature_grammar();
 
-  boost::spirit::qi::rule<Iterator, music::key_signature()> start;
+  boost::spirit::qi::rule<Iterator, ::bmc::key_signature()> start;
   boost::spirit::qi::rule<Iterator, int()> flat_sign, sharp_sign;
   upper_number_grammar<Iterator> upper_number;
 };

@@ -11,7 +11,7 @@
 #include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Calcualte octaves for every note in a section of music.
@@ -29,7 +29,7 @@ class octave_calculator
 , public compiler_pass
 {
   ast::note const* prev;
-  music::braille::interval_direction interval_direction;
+  ::bmc::braille::interval_direction interval_direction;
 
 public:
   octave_calculator(report_error_type const& report_error)
@@ -37,7 +37,7 @@ public:
   , prev(nullptr)
   {}
 
-  void set(music::braille::interval_direction interval_dir)
+  void set(::bmc::braille::interval_direction interval_dir)
   { interval_direction = interval_dir; }
 
   void reset()

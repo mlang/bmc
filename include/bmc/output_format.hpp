@@ -7,7 +7,7 @@
 #include <cassert>
 #include <ios>
 
-namespace music {
+namespace bmc {
 
 enum class output_format: long
 {

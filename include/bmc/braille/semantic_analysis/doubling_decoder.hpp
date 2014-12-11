@@ -11,7 +11,7 @@
 #include "bmc/braille/ast.hpp"
 #include "compiler_pass.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 class doubling_decoder : public compiler_pass, public boost::static_visitor<bool>
 {

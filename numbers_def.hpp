@@ -13,7 +13,7 @@
 #include "brlsym.hpp"
 #include "spirit/qi/primitive/brl.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template <typename Iterator>
 upper_number_grammar<Iterator>::upper_number_grammar()

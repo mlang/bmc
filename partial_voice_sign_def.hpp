@@ -26,7 +26,7 @@
 #include <boost/phoenix/statement/sequence.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template<typename Iterator>
 partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<Iterator>& error_handler)
@@ -41,7 +41,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
   boost::spirit::_val_type _val;

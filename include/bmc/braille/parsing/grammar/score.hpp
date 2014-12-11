@@ -15,7 +15,7 @@
 #include "bmc/braille/parsing/grammar/key_signature.hpp"
 #include "bmc/braille/parsing/grammar/time_signature.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief Top-level grammar for parsing braille music scores.

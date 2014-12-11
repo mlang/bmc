@@ -10,7 +10,7 @@
 #include "bmc/braille/ast.hpp"
 #include "bmc/output_format.hpp"
 
-namespace music { namespace lilypond {
+namespace bmc { namespace lilypond {
 
 extern std::string instruments[128];
 
@@ -64,7 +64,7 @@ private:
   void operator() (braille::ast::unfolded::partial_measure const&);
   void operator() (braille::ast::unfolded::partial_voice const&);
 public:
-  /** @name Operators for visiting music::braille::sign objects */
+  /** @name Operators for visiting ::bmc::braille::sign objects */
   /** @{ */
   result_type operator() (braille::ast::barline const&) const;
   result_type operator() (braille::ast::tie const&) const;
@@ -96,12 +96,12 @@ private: // utilities
 inline std::ostream&
 operator <<
 ( std::ostream& stream
-, music::braille::ast::score const& score
+, ::bmc::braille::ast::score const& score
 ) {
-  switch (music::get_output_format(stream)) {
-  case music::output_format::lilypond: {
-    bool const locations = music::get_lilypond_flags(stream) == music::lilypond_flags::include_locations;
-    music::lilypond::generator generate(stream, true, true, locations);
+  switch (::bmc::get_output_format(stream)) {
+  case ::bmc::output_format::lilypond: {
+    bool const locations = ::bmc::get_lilypond_flags(stream) == ::bmc::lilypond_flags::include_locations;
+    ::bmc::lilypond::generator generate(stream, true, true, locations);
     generate(score);
     break;
   }

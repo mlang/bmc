@@ -20,14 +20,14 @@ reStructuredText directive for entering braille music code
 
 This module enables a new reStructuredText directive when you import it.
 
-.. braille-music:: bmc-rst-example-1
+.. braille-::bmc:: bmc-rst-example-1
    :title: A minimal example
 
    ⠐⠽⠣⠅
 
 The syntax for this directive is as follows::
 
-  .. braille-music:: unique-identifier-used-as-basename-for-generated-files
+  .. braille-::bmc:: unique-identifier-used-as-basename-for-generated-files
      :title: An optional title (caption) for the music
 
      ⠐⠹⠳⠳⠳⠀⠹⠳⠳⠳⠀⠱⠪⠪⠪⠀⠽⠣⠅

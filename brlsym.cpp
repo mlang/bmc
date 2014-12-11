@@ -6,7 +6,7 @@
 
 #include "brlsym.hpp"
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 upper_digit_symbols::upper_digit_symbols()
 {

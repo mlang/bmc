@@ -10,7 +10,7 @@
 #include <boost/config.hpp>
 #include "bmc/math.hpp"
 
-namespace music {
+namespace bmc {
 
 typedef boost::rational<std::int32_t> rational;
 

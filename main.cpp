@@ -35,24 +35,24 @@ main(int argc, char const *argv[])
 
   iterator_type iter = source.begin();
   iterator_type const end = source.end();
-  typedef music::braille::error_handler<iterator_type> error_handler_type;
+  typedef ::bmc::braille::error_handler<iterator_type> error_handler_type;
   error_handler_type error_handler(iter, end);
-  typedef music::braille::score_grammar<iterator_type> parser_type;
+  typedef ::bmc::braille::score_grammar<iterator_type> parser_type;
   parser_type parser(error_handler);
   boost::spirit::traits::attribute_of<parser_type>::type score;
 
   bool const success = parse(iter, end, parser, score);
 
   if (success and iter == end) {
-    music::braille::compiler<error_handler_type> compile(error_handler);
+    ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::thread player;
 
       if (argc == 2 and strcmp(argv[1], "-p") == 0)
-        player = std::thread(music::fluidsynth(SOUNDFONT_PATH), score);
+        player = std::thread(::bmc::fluidsynth(SOUNDFONT_PATH), score);
 
-      music::lilypond_output_format(std::cout);
-      //music::include_locations_for_lilypond(std::cout);
+      ::bmc::lilypond_output_format(std::cout);
+      //::bmc::include_locations_for_lilypond(std::cout);
       std::cout << score;
 
       if (player.joinable()) player.join();

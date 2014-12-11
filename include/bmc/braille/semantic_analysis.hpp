@@ -16,7 +16,7 @@
 
 #include <future>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 enum class sign_conversion_result
 {
@@ -157,14 +157,14 @@ class annotate_staff : public compiler_pass, public boost::static_visitor<bool>
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
-  music::time_signature global_time_signature;
-  music::key_signature global_key_signature;
+  ::bmc::time_signature global_time_signature;
+  ::bmc::key_signature global_key_signature;
 
 public:
   annotate_staff( ErrorHandler &error_handler
                 , report_error_type const &report_error
-                , music::time_signature const& time_signature = music::time_signature(4, 4)
-                , music::key_signature const& key_signature = music::key_signature(0)
+                , ::bmc::time_signature const& time_signature = ::bmc::time_signature(4, 4)
+                , ::bmc::key_signature const& key_signature = ::bmc::key_signature(0)
                 )
   : compiler_pass( report_error )
   , calculate_locations(report_error, error_handler)
@@ -251,11 +251,11 @@ class compiler : public compiler_pass, public boost::static_visitor<bool>
   octave_calculator calculate_octaves;
   value_disambiguator disambiguate_values;
   alteration_calculator calculate_alterations;
-  music::time_signature global_time_signature;
+  ::bmc::time_signature global_time_signature;
 
 public:
   compiler( ErrorHandler& error_handler
-          , music::time_signature const& time_signature = music::time_signature(4, 4)
+          , ::bmc::time_signature const& time_signature = ::bmc::time_signature(4, 4)
           )
   : compiler_pass( [&error_handler](int tag, std::wstring const &what)
                    { error_handler(L"Error", what, error_handler.iters[tag]); }

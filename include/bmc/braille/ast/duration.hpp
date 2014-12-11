@@ -10,7 +10,7 @@
 #include "bmc/braille/ast/ast.hpp"
 #include <boost/variant/apply_visitor.hpp>
 
-namespace music {
+namespace bmc {
   namespace braille {
     namespace ast {
       struct get_duration: boost::static_visitor<rational>
@@ -52,7 +52,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::partial_voice::const_reference sign
+            , ::bmc::braille::ast::partial_voice::const_reference sign
             )
   {
     return r + duration(sign);
@@ -61,7 +61,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::unfolded::partial_voice::const_reference sign
+            , ::bmc::braille::ast::unfolded::partial_voice::const_reference sign
             )
   {
     return r + duration(sign);
@@ -70,7 +70,7 @@ namespace boost {
 
 #include <boost/range/numeric.hpp>
 
-namespace music {
+namespace bmc {
   namespace braille {
     namespace ast {
       inline
@@ -111,7 +111,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::voice::const_reference partial_measure
+            , ::bmc::braille::ast::voice::const_reference partial_measure
             )
   {
     return r + duration(partial_measure);
@@ -120,14 +120,14 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::unfolded::voice::const_reference partial_measure
+            , ::bmc::braille::ast::unfolded::voice::const_reference partial_measure
             )
   {
     return r + duration(partial_measure);
   }
 }
 
-namespace music {
+namespace bmc {
   namespace braille {
     namespace ast {
       inline
@@ -192,7 +192,7 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::paragraph::const_reference paragraph_element
+            , ::bmc::braille::ast::paragraph::const_reference paragraph_element
             )
   {
     return r + duration(paragraph_element);
@@ -201,14 +201,14 @@ namespace boost {
   inline
   rational<IntType>
   operator+ ( rational<IntType> const& r
-            , music::braille::ast::unfolded::staff::const_reference staff_element
+            , ::bmc::braille::ast::unfolded::staff::const_reference staff_element
             )
   {
     return r + duration(staff_element);
   }
 }
 
-namespace music {
+namespace bmc {
   namespace braille {
     namespace ast {
       inline

@@ -8,7 +8,7 @@
 #include <boost/variant.hpp>
 #include <queue>
 
-namespace music { namespace midi {
+namespace bmc { namespace midi {
 
 struct channel_event
 {

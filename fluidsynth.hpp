@@ -8,7 +8,7 @@
 #include "bmc/braille/ast.hpp"
 #include "midi.hpp"
 
-namespace music {
+namespace bmc {
 
 class fluidsynth
 : public boost::static_visitor<void>

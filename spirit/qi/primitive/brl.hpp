@@ -12,25 +12,25 @@
 #include <bmc/ttb/brldots.h>
 
 // definition the place holder
-namespace music { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl) }}
+namespace bmc { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl) }}
 
 // implementation the enabler
 namespace boost { namespace spirit
 {
   template <typename A0>
   struct use_terminal< qi::domain
-                     , terminal_ex< music::braille::tag::brl
+                     , terminal_ex< ::bmc::braille::tag::brl
                                   , fusion::vector1<A0>
                                   >
                      > : mpl::or_<is_integral<A0>, is_enum<A0> > {};
 
   template <>
-  struct use_lazy_terminal<qi::domain, music::braille::tag::brl, 1>
+  struct use_lazy_terminal<qi::domain, ::bmc::braille::tag::brl, 1>
     : mpl::true_ {};
 }}
 
 // implementation of the parser
-namespace music { namespace braille {
+namespace bmc { namespace braille {
   template <typename Int>
   struct brl_parser : boost::spirit::qi::primitive_parser< brl_parser<Int> > {
     template <typename Context, typename Iterator>
@@ -76,13 +76,13 @@ namespace music { namespace braille {
 namespace boost { namespace spirit { namespace qi
 {
   template<typename Modifiers, typename A0>
-  struct make_primitive< terminal_ex< music::braille::tag::brl
+  struct make_primitive< terminal_ex< ::bmc::braille::tag::brl
                                     , fusion::vector1<A0>
                                     >
                        , Modifiers
                        >
   {
-    typedef music::braille::brl_parser<A0> result_type;
+    typedef ::bmc::braille::brl_parser<A0> result_type;
 
     template<typename Terminal>
     result_type operator()(Terminal const& term, unused_type) const {

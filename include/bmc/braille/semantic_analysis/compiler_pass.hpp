@@ -9,7 +9,7 @@
 
 #include <functional>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 class compiler_pass
 {

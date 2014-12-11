@@ -10,7 +10,7 @@
 #include "bmc/braille/ast/ast.hpp"
 #include <boost/variant/static_visitor.hpp>
 
-namespace music {
+namespace bmc {
   namespace braille {
     namespace ast {
 

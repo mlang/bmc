@@ -11,7 +11,7 @@
 #include "bmc/music.hpp"
 #include <boost/spirit/include/qi_grammar.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 /**
  * \brief A grammar for parsing a sequence of braille digits written in the

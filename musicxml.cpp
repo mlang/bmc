@@ -7,7 +7,7 @@
 #include "bmc/musicxml.hpp"
 #include "xsdcxx-musicxml/musicxml.hpp"
 
-namespace music {
+namespace bmc {
 
 namespace {
 
@@ -34,7 +34,7 @@ public:
       }
     }
   }
-  void operator()(music::braille::ast::rhythmic const &r) {
+  void operator()(::bmc::braille::ast::rhythmic const &r) {
     value = boost::math::gcd(value, r.as_rational());
   }
   void operator()(braille::ast::clef const &) {}
@@ -122,13 +122,13 @@ std::string to_string(rational const & r) {
   return xml_pitch;
 }
 
-::musicxml::accidental accidental(music::accidental const &a) {
+::musicxml::accidental accidental(::bmc::accidental const &a) {
   switch (a) {
-  case music::natural: return { ::musicxml::accidental_value::natural };
-  case music::flat:    return { ::musicxml::accidental_value::flat };
-  case music::sharp:   return { ::musicxml::accidental_value::sharp };
-  case music::double_flat: return { ::musicxml::accidental_value::flat_flat };
-  case music::double_sharp: return { ::musicxml::accidental_value::sharp_sharp };
+  case ::bmc::natural: return { ::musicxml::accidental_value::natural };
+  case ::bmc::flat:    return { ::musicxml::accidental_value::flat };
+  case ::bmc::sharp:   return { ::musicxml::accidental_value::sharp };
+  case ::bmc::double_flat: return { ::musicxml::accidental_value::flat_flat };
+  case ::bmc::double_sharp: return { ::musicxml::accidental_value::sharp_sharp };
   default: throw std::runtime_error("Invalid accidental: " + std::to_string(a));
   }
 }
@@ -355,7 +355,7 @@ public:
 
 }
 
-void musicxml(std::ostream &os, music::braille::ast::score const &score)
+void musicxml(std::ostream &os, ::bmc::braille::ast::score const &score)
 {
   ::musicxml::score_partwise_(os, musicxml_generator(score).score_partwise());
 }

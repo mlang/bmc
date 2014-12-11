@@ -22,7 +22,7 @@
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
-namespace music { namespace braille {
+namespace bmc { namespace braille {
 
 template<typename Iterator>
 simile_grammar<Iterator>::simile_grammar(error_handler<Iterator>& error_handler)
@@ -31,7 +31,7 @@ simile_grammar<Iterator>::simile_grammar(error_handler<Iterator>& error_handler)
   typedef boost::phoenix::function< annotation<Iterator> >
           annotation_function;
 
-  music::braille::brl_type brl;
+  ::bmc::braille::brl_type brl;
   boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
