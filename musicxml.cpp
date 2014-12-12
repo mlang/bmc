@@ -357,7 +357,7 @@ public:
 
 void musicxml(std::ostream &os, ::bmc::braille::ast::score const &score)
 {
-  ::musicxml::score_partwise_(os, musicxml_generator(score).score_partwise());
+  ::musicxml::serialize(os, musicxml_generator(score).score_partwise());
 }
 
 }
