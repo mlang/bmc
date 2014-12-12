@@ -191,7 +191,7 @@ public:
       }
     }
     if (staff_number > 1)
-      ::musicxml::push_back(*current_measure, backup(duration(measure), divisions));
+      current_measure->variant().push_back(backup(duration(measure), divisions));
     for (auto vi = measure.voices.begin(), ve = measure.voices.end();
          vi != ve; ++vi) {
       for (auto &&partial_measure: *vi) {
@@ -199,11 +199,11 @@ public:
              pvi != pve; ++pvi) {
           std::for_each(pvi->begin(), pvi->end(), apply_visitor(*this));
           if (std::next(pvi) != pve)
-            ::musicxml::push_back(*current_measure, backup(duration(*pvi), divisions));
+            current_measure->variant().push_back(backup(duration(*pvi), divisions));
         }
       }
       if (std::next(vi) != ve)
-        ::musicxml::push_back(*current_measure, backup(duration(*vi), divisions));
+        current_measure->variant().push_back(backup(duration(*vi), divisions));
     }
 
     measure_number += 1;
@@ -232,7 +232,7 @@ public:
       xml_notations.technical().push_back(xml_technical);      
       xml_note.notations().push_back(xml_notations);
     }
-    ::musicxml::push_back(*current_measure, xml_note);
+    current_measure->variant().push_back(xml_note);
   }
   void operator()(braille::ast::rest const &rest) const {
     ::musicxml::note xml_note {
@@ -243,7 +243,7 @@ public:
       xml_note.dot().push_back(::musicxml::empty_placement{});
     xml_note.staff(staff_number);
 
-    ::musicxml::push_back(*current_measure, xml_note);
+    current_measure->variant().push_back(xml_note);
   }
   void operator()(braille::ast::chord const &chord) const {
     (*this)(chord.base);
@@ -259,12 +259,12 @@ public:
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
-      ::musicxml::push_back(*current_measure, xml_note);
+      current_measure->variant().push_back(xml_note);
     }
   }
   void operator()(braille::ast::moving_note const &moving_note) const {
     (*this)(moving_note.base);
-    ::musicxml::push_back(*current_measure, backup(moving_note.base.as_rational(), divisions));
+    current_measure->variant().push_back(backup(moving_note.base.as_rational(), divisions));
     for (auto &&interval: moving_note.intervals) {
       ::musicxml::note xml_note {
         pitch(interval),
@@ -278,7 +278,7 @@ public:
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
-      ::musicxml::push_back(*current_measure, xml_note);
+      current_measure->variant().push_back(xml_note);
     }
   }
 
@@ -332,7 +332,7 @@ public:
     measure_type initial_measure { "1" };
     ::musicxml::attributes attributes { global_attributes };
     attributes.staves(p.size());
-    ::musicxml::push_back(initial_measure, attributes);
+    initial_measure.variant().push_back(attributes);
 
     part_type::measure_sequence measures;
     measures.push_back(initial_measure);
