@@ -309,6 +309,8 @@ public:
   {
     BOOST_ASSERT(divisions.denominator() == 1);
 
+    xml_score.version("3.0");
+
     global_attributes.divisions(boost::rational_cast<double>(divisions));
     global_attributes.key().push_back(xml(brl_score.key_sig));
     if (not brl_score.time_sigs.empty())
