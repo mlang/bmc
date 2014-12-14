@@ -22,7 +22,7 @@ include_directories(${bmc_SOURCE_DIR})
 include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++11)
-add_library(bmc_parse
+add_library(bmc_parse SHARED
             brlsym.cpp music.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             partial_voice_sign.cpp simile.cpp tuplet_start.cpp
@@ -117,8 +117,8 @@ add_custom_target(check
                  )
 
 install(TARGETS bmc DESTINATION bin)
-#install(TARGETS bmc_parse DESTINATION lib)
-install(DIRECTORY ${bmc_SOURCE_DIR}/include/ DESTINATION include)
+install(TARGETS bmc_parse DESTINATION lib)
+install(DIRECTORY ${bmc_SOURCE_DIR}/include/bmc DESTINATION include/bmc)
 
 find_package(PkgConfig)
   pkg_search_module(CGICC cgicc)
