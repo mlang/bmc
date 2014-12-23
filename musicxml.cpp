@@ -103,6 +103,13 @@ std::string to_string(rational const & r) {
   }
 }
 
+::musicxml::note::dot_sequence dots(braille::ast::rhythmic const &rhythmic) {
+  ::musicxml::note::dot_sequence xml_dots;
+  std::fill_n(std::back_inserter(xml_dots), rhythmic.get_dots(),
+              ::musicxml::empty_placement{});
+  return xml_dots;
+}
+
 ::musicxml::pitch pitch(braille::ast::pitched const &p) {
   ::musicxml::step::value step;
   switch (p.step) {
@@ -219,8 +226,7 @@ public:
       xml_note.grace(::musicxml::grace{});
     }
     xml_note.type(note_type(note.get_type()));
-    for (unsigned dots = 0; dots < note.get_dots(); ++dots)
-      xml_note.dot().push_back(::musicxml::empty_placement{});
+    xml_note.dot(dots(note));
     if (note.acc) xml_note.accidental(accidental(*note.acc));
     xml_note.staff(staff_number);
 
@@ -239,8 +245,7 @@ public:
       ::musicxml::rest{}, duration(rest.as_rational(), divisions)
     };
     xml_note.type(note_type(rest.get_type()));
-    for (unsigned dots = 0; dots < rest.get_dots(); ++dots)
-      xml_note.dot().push_back(::musicxml::empty_placement{});
+    xml_note.dot(dots(rest));
     xml_note.staff(staff_number);
 
     current_measure->music_data().push_back(xml_note);
@@ -254,8 +259,7 @@ public:
 
       xml_note.chord(::musicxml::empty{});
       xml_note.type(note_type(chord.base.get_type()));
-      for (unsigned dots = 0; dots < chord.base.get_dots(); ++dots)
-        xml_note.dot().push_back(::musicxml::empty_placement{});
+      xml_note.dot(dots(chord.base));
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
@@ -273,8 +277,7 @@ public:
       };
 
       xml_note.type(note_type(moving_note.base.get_type() / moving_note.intervals.size()));
-      for (unsigned dots = 0; dots < moving_note.base.get_dots(); ++dots)
-        xml_note.dot().push_back(::musicxml::empty_placement{});
+      xml_note.dot(dots(moving_note.base));
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
