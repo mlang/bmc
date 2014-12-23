@@ -4218,6 +4218,11 @@
         <duration>1</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

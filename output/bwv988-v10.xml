@@ -3622,6 +3622,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

@@ -263,6 +263,15 @@ public:
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
+      auto xml_fingers = fingering(interval.fingers);
+      if (not xml_fingers.empty()) {
+        ::musicxml::technical xml_technical { };
+        xml_technical.fingering(xml_fingers);
+        ::musicxml::notations xml_notations { };
+        xml_notations.technical().push_back(xml_technical);
+        xml_note.notations().push_back(xml_notations);
+      }
+
       current_measure->music_data().push_back(xml_note);
     }
   }
