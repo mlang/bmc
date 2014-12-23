@@ -218,6 +218,34 @@ public:
   void operator()(braille::ast::key_and_time_signature const &) {
   }
   void operator()(braille::ast::note const &note) const {
+    current_measure->music_data().push_back(xml(note));
+  }
+  void operator()(braille::ast::rest const &rest) const {
+    current_measure->music_data().push_back(xml(rest));
+  }
+  void operator()(braille::ast::chord const &chord) const {
+    measure_type::music_data_sequence music_data(xml(chord));
+
+    current_measure->music_data().insert(current_measure->music_data().end(),
+                                         music_data.begin(), music_data.end());
+  }
+  void operator()(braille::ast::moving_note const &moving_note) const {
+    measure_type::music_data_sequence music_data(xml(moving_note));
+
+    current_measure->music_data().insert(current_measure->music_data().end(),
+                                         music_data.begin(), music_data.end());
+  }
+  void operator()(braille::ast::barline const &) const {
+  }
+  void operator()(braille::ast::clef const &) const {
+  }
+  void operator()(braille::hand_sign const &) const {
+  }
+  void operator()(braille::ast::tie const &) const {
+  }
+
+private:
+  ::musicxml::note xml(braille::ast::note const &note) const {
     ::musicxml::note xml_note {
       pitch(note), duration(note.as_rational(), divisions)
     };
@@ -235,12 +263,13 @@ public:
       ::musicxml::technical xml_technical { };
       xml_technical.fingering(xml_fingers);
       ::musicxml::notations xml_notations { };
-      xml_notations.technical().push_back(xml_technical);      
+      xml_notations.technical().push_back(xml_technical);
       xml_note.notations().push_back(xml_notations);
     }
-    current_measure->music_data().push_back(xml_note);
+
+    return xml_note;
   }
-  void operator()(braille::ast::rest const &rest) const {
+  ::musicxml::note xml(braille::ast::rest const &rest) const {
     ::musicxml::note xml_note {
       ::musicxml::rest{}, duration(rest.as_rational(), divisions)
     };
@@ -248,10 +277,14 @@ public:
     xml_note.dot(dots(rest));
     xml_note.staff(staff_number);
 
-    current_measure->music_data().push_back(xml_note);
+    return xml_note;
   }
-  void operator()(braille::ast::chord const &chord) const {
-    (*this)(chord.base);
+
+  measure_type::music_data_sequence xml(braille::ast::chord const &chord) const
+  {
+    measure_type::music_data_sequence music_data;
+
+    music_data.push_back(xml(chord.base));
     for (auto &&interval: chord.intervals) {
       ::musicxml::note xml_note {
         pitch(interval), duration(chord.base.as_rational(), divisions)
@@ -272,12 +305,20 @@ public:
         xml_note.notations().push_back(xml_notations);
       }
 
-      current_measure->music_data().push_back(xml_note);
+      music_data.push_back(xml_note);
     }
+
+    return music_data;
   }
-  void operator()(braille::ast::moving_note const &moving_note) const {
-    (*this)(moving_note.base);
-    current_measure->music_data().push_back(backup(moving_note.base.as_rational(), divisions));
+
+  measure_type::music_data_sequence
+  xml(braille::ast::moving_note const &moving_note) const
+  {
+    measure_type::music_data_sequence music_data;
+
+    music_data.push_back(xml(moving_note.base));
+    music_data.push_back(backup(moving_note.base.as_rational(), divisions));
+
     for (auto &&interval: moving_note.intervals) {
       ::musicxml::note xml_note {
         pitch(interval),
@@ -290,17 +331,19 @@ public:
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
 
-      current_measure->music_data().push_back(xml_note);
-    }
-  }
+      auto xml_fingers = fingering(interval.fingers);
+      if (not xml_fingers.empty()) {
+        ::musicxml::technical xml_technical { };
+        xml_technical.fingering(xml_fingers);
+        ::musicxml::notations xml_notations { };
+        xml_notations.technical().push_back(xml_technical);
+        xml_note.notations().push_back(xml_notations);
+      }
 
-  void operator()(braille::ast::barline const &) const {
-  }
-  void operator()(braille::ast::clef const &) const {
-  }
-  void operator()(braille::hand_sign const &) const {
-  }
-  void operator()(braille::ast::tie const &) const {
+      music_data.push_back(xml_note);
+    }
+
+    return music_data;
   }
 };
 
