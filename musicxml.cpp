@@ -24,15 +24,14 @@ using measure_type = part_type::measure_type;
 
 class duration_gcd_visitor : public boost::static_visitor<void> {
   rational value = 0;
+
 public:
   void operator()(braille::ast::unfolded::measure const &measure) {
-    for (auto &&voice: measure.voices) {
-      for (auto &&partial_measure: voice) {
-        for (auto &&partial_voice: partial_measure) {
-          std::for_each(partial_voice.begin(), partial_voice.end(), apply_visitor(*this));
-        }
-      }
-    }
+    for (auto &&voice: measure.voices)
+      for (auto &&partial_measure: voice)
+        for (auto &&partial_voice: partial_measure)
+          std::for_each(partial_voice.begin(), partial_voice.end(),
+                        apply_visitor(*this));
   }
   void operator()(::bmc::braille::ast::rhythmic const &r) {
     value = boost::math::gcd(value, r.as_rational());
@@ -42,17 +41,15 @@ public:
   void operator()(braille::ast::tie const &) {}
   void operator()(braille::ast::tuplet_start const &) {}
 
-  rational get() const { return value; }
+  rational const &get() const { return value; }
 };
 
 rational duration_gcd(braille::ast::score const &score) {
   duration_gcd_visitor accumulator { };
 
-  for (auto &&part: score.unfolded_part) {
-    for (auto &&staff: part) {
+  for (auto &&part: score.unfolded_part)
+    for (auto &&staff: part)
       std::for_each(staff.begin(), staff.end(), apply_visitor(accumulator));
-    }
-  }
 
   return accumulator.get();
 }
@@ -142,6 +139,7 @@ std::string to_string(rational const & r) {
 
 class fingering_visitor : public boost::static_visitor<void> {
   ::musicxml::technical::fingering_sequence &xml_fingers;
+
 public:
   fingering_visitor(::musicxml::technical::fingering_sequence &xml_fingers)
   : xml_fingers { xml_fingers }
@@ -168,37 +166,86 @@ fingering(braille::fingering_list const &fingers) {
   return xml_fingers;
 }
 
+bool is_anacrusis(braille::ast::unfolded::measure const &measure,
+                  braille::ast::score const &score) {
+  return
+  (not score.time_sigs.empty() and (duration(measure) != score.time_sigs.front())) or
+  (score.time_sigs.empty() and duration(measure) != 1);
+}
+
+class starts_with_anacrusis_visitor : public boost::static_visitor<bool> {
+  braille::ast::score const &brl_score;
+  bool active = true;
+
+public:
+  starts_with_anacrusis_visitor(braille::ast::score const &brl_score)
+  : brl_score { brl_score }
+  {}
+
+  result_type operator()(braille::ast::unfolded::measure const &measure) {
+    result_type result { active and is_anacrusis(measure, brl_score) };
+
+    active = false;
+
+    return result;
+  }
+
+  result_type operator()(braille::ast::key_and_time_signature const &) const {
+    return false;
+  }
+};
+
+bool starts_with_anacrusis(braille::ast::unfolded::part const &part,
+                           braille::ast::score const &score) {
+  starts_with_anacrusis_visitor visitor { score };
+  BOOST_ASSERT(not part.empty());
+  auto staff = part.front();
+
+  return std::any_of(staff.begin(), staff.end(), boost::apply_visitor(visitor));
+}
+
 class make_measures_for_staff_visitor : public boost::static_visitor<void> {
   braille::ast::score const &brl_score;
   part_type::measure_sequence &measures;
   unsigned staff_number;
-  rational divisions;
+  rational const &divisions;
   unsigned measure_number = 1;
   measure_type *current_measure;
+  bool implicit = false;
+
 public:
   make_measures_for_staff_visitor(braille::ast::score const &brl_score,
                                   part_type::measure_sequence &measures,
                                   unsigned staff_number,
                                   rational const &divisions)
   : brl_score { brl_score }
-  , measures { measures }, staff_number { staff_number }, divisions { divisions }
+  , measures { measures }
+  , staff_number { staff_number }
+  , divisions { divisions }
   , current_measure { nullptr }
   {}
 
   void operator()(braille::ast::unfolded::measure const &measure) {
+    if (measure_number == 1) {
+      if (is_anacrusis(measure, brl_score)) implicit = true;
+    }
+
     if (measure_number > measures.size())
-      measures.push_back({std::to_string(measure_number)});
+      measures.push_back({std::to_string(implicit? measure_number - 1
+                                                 : measure_number)});
 
     current_measure = &measures[measure_number - 1];
 
-    if (measure_number == 1) {
-      if ((not brl_score.time_sigs.empty() and (duration(measure) != brl_score.time_sigs.front())) or
-          (brl_score.time_sigs.empty() and duration(measure) != 1)) {
-        current_measure->implicit(::musicxml::yes_no::yes);
-      }
+    if (implicit and measure_number == 1) {
+      current_measure->implicit(::musicxml::yes_no::yes);
     }
+
+    // If this is not the first staff, insert backup element as appropriate.
     if (staff_number > 1)
-      current_measure->music_data().push_back(backup(duration(measure), divisions));
+      current_measure->music_data().push_back(
+        backup(duration(measure), divisions)
+      );
+
     for (auto vi = measure.voices.begin(), ve = measure.voices.end();
          vi != ve; ++vi) {
       for (auto &&partial_measure: *vi) {
@@ -224,13 +271,13 @@ public:
     current_measure->music_data().push_back(xml(rest));
   }
   void operator()(braille::ast::chord const &chord) const {
-    measure_type::music_data_sequence music_data(xml(chord));
+    auto music_data = xml(chord);
 
     current_measure->music_data().insert(current_measure->music_data().end(),
                                          music_data.begin(), music_data.end());
   }
   void operator()(braille::ast::moving_note const &moving_note) const {
-    measure_type::music_data_sequence music_data(xml(moving_note));
+    auto music_data = xml(moving_note);
 
     current_measure->music_data().insert(current_measure->music_data().end(),
                                          music_data.begin(), music_data.end());
@@ -269,6 +316,7 @@ private:
 
     return xml_note;
   }
+
   ::musicxml::note xml(braille::ast::rest const &rest) const {
     ::musicxml::note xml_note {
       ::musicxml::rest{}, duration(rest.as_rational(), divisions)
@@ -386,7 +434,7 @@ public:
 
   part_type::measure_sequence get_measures(braille::ast::unfolded::part const &p)
   {
-    measure_type initial_measure { "1" };
+    measure_type initial_measure { starts_with_anacrusis(p, brl_score)? "0": "1" };
     ::musicxml::attributes attributes { global_attributes };
     attributes.staves(p.size());
     initial_measure.music_data().push_back(attributes);
@@ -412,10 +460,9 @@ public:
 
 }
 
-void musicxml(std::ostream &os, ::bmc::braille::ast::score const &score)
+void musicxml(::std::ostream &os, braille::ast::score const &score)
 {
   ::musicxml::serialize(os, musicxml_generator(score).score_partwise());
 }
 
 }
-
