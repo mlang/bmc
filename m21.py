@@ -36,4 +36,4 @@ if __name__ == "__main__":
         exit(1)
     bmc = argv[1]
     for stream in convertible_snippets:
-        assert(system('%s %s' % (bmc, stream.write('braille'))) == 0)
+        assert(system('%s --lilypond %s' % (bmc, stream.write('braille'))) == 0)
