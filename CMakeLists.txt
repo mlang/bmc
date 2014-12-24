@@ -4,6 +4,7 @@ set(bmc_VERSION_MAJOR 0)
 set(bmc_VERSION_MINOR 0)
 set(bmc_VERSION_PATCH 1)
 set(bmc_VERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}.${bmc_VERSION_PATCH})
+add_definitions(-DBMC_VERSION="${bmc_VERSION}")
 if (CMAKE_COMPILER_IS_GNUCC)
   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                   OUTPUT_VARIABLE GCC_VERSION)

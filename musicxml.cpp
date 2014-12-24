@@ -414,6 +414,17 @@ public:
 
     xml_score.version("3.0");
 
+    ::musicxml::encoding encoding { };
+    encoding.software().push_back("Braille Music Compiler " BMC_VERSION);
+    encoding.supports().push_back({::musicxml::yes_no::yes, "accidental"});
+    encoding.supports().push_back({::musicxml::yes_no::no, "beam"});
+    encoding.supports().push_back({::musicxml::yes_no::no, "print"});
+    encoding.supports().push_back({::musicxml::yes_no::no, "stem"});
+    encoding.supports().push_back({::musicxml::yes_no::no, "transpose"});
+    ::musicxml::identification identification { };
+    identification.encoding(encoding);
+    xml_score.identification(identification);
+
     global_attributes.divisions(boost::rational_cast<double>(divisions));
     global_attributes.key().push_back(xml(brl_score.key_sig));
     if (not brl_score.time_sigs.empty())

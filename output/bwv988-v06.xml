@@ -2,6 +2,17 @@
 <!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
 <score-partwise version="3.0">
 
+  <identification>
+    <encoding>
+      <software>Braille Music Compiler 0.0.1</software>
+      <supports element="accidental" type="yes"/>
+      <supports element="beam" type="no"/>
+      <supports element="print" type="no"/>
+      <supports element="stem" type="no"/>
+      <supports element="transpose" type="no"/>
+    </encoding>
+  </identification>
+
   <part-list>
     <score-part id="P1">
       <part-name>Part-1</part-name>
