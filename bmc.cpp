@@ -38,7 +38,7 @@ int bmc2ly( std::wistream &wistream
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
-      if (lilypond) {
+      if (not musicxml or lilypond) {
         ::bmc::lilypond::generator generate(std::cout, true, true, include_locations);
         if (not instrument.empty()) generate.instrument(instrument);
         if (no_tagline) generate.remove_tagline();
