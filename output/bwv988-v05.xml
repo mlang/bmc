@@ -1946,6 +1946,9 @@
         <type>quarter</type>
         <staff>2</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>2</fingering>
           </technical>
@@ -2032,6 +2035,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>
@@ -2928,6 +2936,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent long="yes"/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>
@@ -3488,6 +3501,11 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -3517,6 +3535,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3716,6 +3739,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent long="yes"/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>
@@ -3868,6 +3896,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent long="yes"/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>

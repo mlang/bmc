@@ -272,6 +272,11 @@
         <type>quarter</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -290,6 +295,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -606,6 +616,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -666,6 +681,9 @@
         <dot/>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
           <technical>
             <fingering>4</fingering>
           </technical>
@@ -902,6 +920,11 @@
         <dot/>
         <accidental>natural</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -942,6 +965,9 @@
         <dot/>
         <staff>2</staff>
         <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
           <technical>
             <fingering>1</fingering>
           </technical>
@@ -1170,6 +1196,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1191,6 +1222,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1357,6 +1393,7 @@
           <technical>
             <fingering>4</fingering>
           </technical>
+          <arpeggiate direction="up"/>
         </notations>
       </note>
       <note>
@@ -1368,6 +1405,9 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <arpeggiate direction="up"/>
+        </notations>
       </note>
       <note>
         <chord/>
@@ -1379,6 +1419,9 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <arpeggiate direction="up"/>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1625,6 +1668,9 @@
         <type>quarter</type>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
           <technical>
             <fingering>3</fingering>
           </technical>
@@ -1707,6 +1753,9 @@
           <technical>
             <fingering>2</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -1717,6 +1766,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1727,6 +1781,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1736,6 +1795,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1750,6 +1814,9 @@
           <technical>
             <fingering>2</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -1760,6 +1827,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1769,6 +1841,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>1</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <backup>
         <duration>32</duration>
@@ -1781,6 +1858,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1794,6 +1876,9 @@
           <technical>
             <fingering>1</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -1808,6 +1893,9 @@
           <technical>
             <fingering>3</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -1819,6 +1907,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1828,6 +1921,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1838,6 +1936,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1847,6 +1950,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1860,6 +1968,9 @@
           <technical>
             <fingering>3</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -1870,6 +1981,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2053,6 +2169,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2085,6 +2206,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2094,6 +2220,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2109,6 +2240,9 @@
           <technical>
             <fingering>3</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -2121,6 +2255,11 @@
         <type>16th</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2130,6 +2269,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2144,6 +2288,9 @@
           <technical>
             <fingering>4</fingering>
           </technical>
+          <articulations>
+            <staccato/>
+          </articulations>
         </notations>
       </note>
       <note>
@@ -2154,6 +2301,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2164,6 +2316,11 @@
         <duration>2</duration>
         <type>16th</type>
         <staff>2</staff>
+        <notations>
+          <articulations>
+            <staccato/>
+          </articulations>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2643,6 +2800,11 @@
         <dot/>
         <accidental>natural</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2874,6 +3036,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3179,6 +3346,9 @@
         <dot/>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>3</fingering>
           </technical>
@@ -3496,6 +3666,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3622,6 +3797,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3780,6 +3960,9 @@
         <dot/>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
           <technical>
             <fingering>4</fingering>
           </technical>
@@ -3808,6 +3991,11 @@
         <type>quarter</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -4211,6 +4399,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -5664,6 +5857,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -5994,6 +6192,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -6499,6 +6702,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -6917,6 +7125,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>12</duration>
@@ -7112,6 +7325,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -7345,6 +7563,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>

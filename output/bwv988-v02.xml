@@ -55,6 +55,9 @@
         <type>quarter</type>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>3</fingering>
           </technical>
@@ -236,6 +239,9 @@
         <type>quarter</type>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>4</fingering>
           </technical>

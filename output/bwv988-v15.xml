@@ -1395,6 +1395,11 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
     </measure>
     <measure number="8">

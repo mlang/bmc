@@ -104,6 +104,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -123,6 +128,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
     </measure>
     <measure number="2">
@@ -135,6 +145,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -192,6 +207,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -228,6 +248,9 @@
         <dot/>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>4</fingering>
           </technical>
@@ -343,6 +366,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -990,6 +1018,11 @@
         <type>quarter</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>
@@ -1003,6 +1036,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1108,6 +1146,11 @@
         <type>quarter</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>
@@ -1123,6 +1166,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1307,6 +1355,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2100,6 +2153,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2332,6 +2390,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3071,6 +3134,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3381,6 +3449,11 @@
         <dot/>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3413,6 +3486,11 @@
         <type>eighth</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>

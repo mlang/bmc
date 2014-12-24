@@ -162,6 +162,17 @@ struct chord : locatable, rhythmic
   { return base.get_dots(); }
   rational get_factor() const override { return base.factor; }
   rational get_type() const override { return base.type; }
+
+  enum class arpeggio_type { up, down };
+  boost::optional<arpeggio_type> arpeggio() const {
+    if (std::find(base.articulations.begin(), base.articulations.end(),
+                  ::bmc::arpeggio_up) != base.articulations.end())
+      return arpeggio_type::up;
+    if (std::find(base.articulations.begin(), base.articulations.end(),
+                  ::bmc::arpeggio_down) != base.articulations.end())
+      return arpeggio_type::down;
+    return {};
+  };
 };
 
 /** The moving-note device, although infrequently employed,

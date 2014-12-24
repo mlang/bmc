@@ -314,6 +314,56 @@ private:
       xml_note.notations().push_back(xml_notations);
     }
 
+    for (auto &&articulation: note.articulations) {
+      switch(articulation) {
+      default: throw std::runtime_error("Unknown articulation: " + std::to_string(articulation));
+      case appoggiatura: // Handled by is_grace().
+      case arpeggio_up: // Handled by arpeggio() method of ast::chord
+      case arpeggio_down:
+        break;
+      case extended_mordent: {
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        if (xml_note.notations().back().ornaments().empty())
+          xml_note.notations().back().ornaments().push_back(::musicxml::ornaments{});
+        auto mordent = ::musicxml::mordent{};
+        mordent.long_(::musicxml::yes_no::yes);
+        xml_note.notations().back().ornaments().back().mordent().push_back(mordent);
+        break;
+      }
+      case mordent:
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        if (xml_note.notations().back().ornaments().empty())
+          xml_note.notations().back().ornaments().push_back(::musicxml::ornaments{});
+        xml_note.notations().back().ornaments().back().mordent().push_back(::musicxml::mordent{});
+        break;
+      case extended_short_trill:
+      case short_trill:
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        if (xml_note.notations().back().ornaments().empty())
+          xml_note.notations().back().ornaments().push_back(::musicxml::ornaments{});
+        xml_note.notations().back().ornaments().back().trill_mark().push_back(::musicxml::empty_trill_sound{});
+        break;
+      case staccato:
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        if (xml_note.notations().back().articulations().empty())
+          xml_note.notations().back().articulations().push_back(::musicxml::articulations{});
+        xml_note.notations().back().articulations().back().staccato().push_back(::musicxml::empty_placement{});
+        break;
+      case turn_between_notes:
+      case turn_above_or_below_note:
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        if (xml_note.notations().back().ornaments().empty())
+          xml_note.notations().back().ornaments().push_back(::musicxml::ornaments{});
+        xml_note.notations().back().ornaments().back().turn().push_back(::musicxml::horizontal_turn{});
+        break;
+      }
+    }
+
     return xml_note;
   }
 
@@ -331,8 +381,24 @@ private:
   measure_type::music_data_sequence xml(braille::ast::chord const &chord) const
   {
     measure_type::music_data_sequence music_data;
-
+    auto arpeggio = chord.arpeggio();
     music_data.push_back(xml(chord.base));
+    if (arpeggio) {
+      ::musicxml::note &note = boost::get<::musicxml::note>(music_data.back());
+      if (note.notations().empty())
+        note.notations().push_back(::musicxml::notations{});
+      ::musicxml::arpeggiate arp { };
+      switch (*arpeggio) {
+      default: throw std::runtime_error("Unknown arpeggio_type.");
+      case braille::ast::chord::arpeggio_type::up:
+        arp.direction(::musicxml::up_down::up);
+        break;
+      case braille::ast::chord::arpeggio_type::down:
+        arp.direction(::musicxml::up_down::down);
+        break;
+      }
+      note.notations().back().arpeggiate().push_back(arp);
+    }
     for (auto &&interval: chord.intervals) {
       ::musicxml::note xml_note {
         pitch(interval), duration(chord.base.as_rational(), divisions)
@@ -351,6 +417,22 @@ private:
         ::musicxml::notations xml_notations { };
         xml_notations.technical().push_back(xml_technical);
         xml_note.notations().push_back(xml_notations);
+      }
+
+      if (arpeggio) {
+        if (xml_note.notations().empty())
+          xml_note.notations().push_back(::musicxml::notations{});
+        ::musicxml::arpeggiate arp { };
+        switch (*arpeggio) {
+        default: throw std::runtime_error("Unknown arpeggio_type.");
+        case braille::ast::chord::arpeggio_type::up:
+          arp.direction(::musicxml::up_down::up);
+          break;
+        case braille::ast::chord::arpeggio_type::down:
+          arp.direction(::musicxml::up_down::down);
+          break;
+        }
+        xml_note.notations().back().arpeggiate().push_back(arp);
       }
 
       music_data.push_back(xml_note);

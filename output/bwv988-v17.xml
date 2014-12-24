@@ -2213,6 +2213,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -2670,6 +2675,9 @@
         <type>quarter</type>
         <staff>1</staff>
         <notations>
+          <ornaments>
+            <mordent/>
+          </ornaments>
           <technical>
             <fingering>3</fingering>
           </technical>
@@ -4718,6 +4726,11 @@
         <type>eighth</type>
         <accidental>sharp</accidental>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <turn/>
+          </ornaments>
+        </notations>
       </note>
     </measure>
     <measure number="21">

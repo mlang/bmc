@@ -499,6 +499,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <pitch>

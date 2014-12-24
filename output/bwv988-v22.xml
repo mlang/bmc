@@ -1060,6 +1060,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <chord/>
@@ -1172,6 +1177,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <ornaments>
+            <trill-mark/>
+          </ornaments>
+        </notations>
       </note>
       <note>
         <chord/>
