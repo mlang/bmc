@@ -4626,6 +4626,11 @@
         <type>eighth</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

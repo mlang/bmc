@@ -134,6 +134,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -212,6 +217,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -377,6 +387,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -602,6 +617,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -695,6 +715,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -885,6 +910,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -1360,6 +1390,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -1597,6 +1632,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -1872,6 +1912,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2007,6 +2052,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2180,6 +2230,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2470,6 +2525,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 4</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -2942,6 +3002,11 @@
         <duration>2</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -2969,6 +3034,11 @@
         <duration>8</duration>
         <type>whole</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3339,6 +3409,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3447,6 +3522,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3562,6 +3642,11 @@
         <duration>4</duration>
         <type>half</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -3751,6 +3836,11 @@
         <type>half</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>

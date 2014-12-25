@@ -229,6 +229,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -798,6 +803,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2004,6 +2014,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -3286,6 +3301,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -4109,6 +4129,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -4266,6 +4291,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -4276,6 +4306,11 @@
         <type>quarter</type>
         <accidental>natural</accidental>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5 3</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>8</duration>
@@ -4373,6 +4408,11 @@
         <duration>4</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 3</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

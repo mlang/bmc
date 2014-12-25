@@ -1855,6 +1855,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1 5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -4578,6 +4583,11 @@
         <duration>8</duration>
         <type>quarter</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3 2</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -7265,6 +7275,11 @@
         <duration>4</duration>
         <type>eighth</type>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4 1</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

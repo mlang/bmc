@@ -1341,6 +1341,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
     </measure>
     <measure number="12">
@@ -3525,6 +3530,11 @@
         <type>quarter</type>
         <dot/>
         <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1 2</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>24</duration>

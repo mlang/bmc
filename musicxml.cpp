@@ -149,6 +149,7 @@ public:
     xml_fingers.push_back({ std::to_string(f) });
   }
   void operator()(braille::finger_change const &fc) {
+    xml_fingers.push_back({ std::to_string(fc.first) + " " + std::to_string(fc.second) });
   }
 };
 

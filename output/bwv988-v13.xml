@@ -1165,6 +1165,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>5 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -2263,6 +2268,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>1 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -5145,6 +5155,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>
@@ -5458,6 +5473,11 @@
         <type>quarter</type>
         <dot/>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>4 5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <pitch>

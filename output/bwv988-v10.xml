@@ -1416,6 +1416,11 @@
         <duration>8</duration>
         <type>half</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3 4</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -1821,6 +1826,11 @@
         <duration>8</duration>
         <type>half</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3 5</fingering>
+          </technical>
+        </notations>
       </note>
       <note>
         <rest/>
@@ -1929,6 +1939,11 @@
         <duration>16</duration>
         <type>whole</type>
         <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering>3 5</fingering>
+          </technical>
+        </notations>
       </note>
       <backup>
         <duration>16</duration>
