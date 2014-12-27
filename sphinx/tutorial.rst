@@ -46,7 +46,7 @@ If none of dot 3 or 6 are present, a `eighth note`_ (quaver) or
 | ⠚    |2 4 5  | B       | 1/8 or 1/128    |
 +------+-------+---------+-----------------+
 
-.. _half note: http://en.wikipedia.org/wiki/Half_note) (minim
+.. _half note: http://en.wikipedia.org/wiki/Half_note
 .. _thirty-second note: http://en.wikipedia.org/wiki/Thirty-second_note
 
 If dot 3 is added, we are dealing with either a `half note`_ (minim) or
@@ -211,7 +211,8 @@ Compare the following two examples.
 
    ⠼⠉⠲ ⠐⠙⠑⠋⠙⠛⠙⠀⠓⠙⠐⠎⠣⠅
 
-With an interval of a sixth or greater to the previous note, it always receives an octave sign.
+With an interval of a sixth or greater to the previous note, it always receives an
+octave sign.
 
 .. braille-music::
 
@@ -228,7 +229,7 @@ Value distinction
 
 Value ambiguity is usually not a problem, because knowledge of the current
 time signature will make it easy in most cases to determine to which of the two
-values a note (or rest) belongs.
+value categories a note (or rest) belongs.
 Where confusion is likely to arise (e.g. in the case of the half followed
 immediately by a 32th), one of the value signs must be placed between them.
 
@@ -236,9 +237,10 @@ immediately by a 32th), one of the value signs must be placed between them.
 
    ⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
 
-When a piece begins with an incomplete measure (pickup or
-[anacrusis](http://en.wikipedia.org/wiki/Anacrusis)) and there is any
-doubt as to the value of the first note or rest, the sign ⠠⠣⠂ is used if the
+.. _anacrusis: http://en.wikipedia.org/wiki/Anacrusis
+
+When a piece begins with an incomplete measure (pickup or anacrusis_) and there
+is any doubt as to the value of the first note or rest, the sign ⠠⠣⠂ is used if the
 note or rest belongs to the smaller of the two values.
 
 .. braille-music::
