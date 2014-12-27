@@ -14,4 +14,4 @@ To install the binary programs and libraries onto your system, run:
 
     $ make install
 
-bmc2ly should be installed in /usr/local/bin now.
+bmc should be installed in /usr/local/bin now.
