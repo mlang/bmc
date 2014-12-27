@@ -439,7 +439,9 @@ Rhythmic note groups
 Beaming
 -------
 
-A [beam](http://en.wikipedia.org/wiki/Beam_%28music%29) in visual music notation
+.. _beam: http://en.wikipedia.org/wiki/Beam_%28music%29
+
+A `beam`_ in visual music notation
 is a thick line frequently used to connect multiple consecutive eighth notes
 (quavers), or notes of shorter value (indicated by two or more beams), and
 occasionally rests.  Beamed notes or rests are groups of notes and rests
