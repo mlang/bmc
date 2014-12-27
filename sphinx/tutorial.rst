@@ -146,6 +146,16 @@ each sign can have two meanings.
 | ⠭    |1 3 4 6|eighth or 128th|
 +------+-------+---------------+
 
+Augmentation dots
+-----------------
+
+Augmentation (or sometimes also called prolongation) dots are represented with
+dot 3 directly following the note or rest sign.
+
+.. braille-music::
+
+   ⠐⠙⠄⠵⠫⠻⠫ ⠱⠝⠄⠣⠅
+
 Meter and barlines
 ------------------
 
