@@ -189,6 +189,12 @@ def html_visit_bmc(self, node):
     raise nodes.SkipNode
 
 
+def man_visit_bmc(self, node):
+    self.ensure_eol()
+    self.body.append('.sp\n'+'\n.br\n'.join(node['code'].split('\n'))+'\n')
+    raise nodes.SkipNode
+
+
 def text_visit_bmc(self, node):
     self.add_text(node['code'])
     raise nodes.SkipNode
@@ -197,6 +203,7 @@ def text_visit_bmc(self, node):
 def setup(app):
     app.add_node(bmc,
                  html=(html_visit_bmc, None),
+                 man=(man_visit_bmc, None),
                  text=(text_visit_bmc, None))
     app.add_directive('braille-music', BrailleMusic)
     app.add_config_value('bmc_executable', 'bmc', 'html')
