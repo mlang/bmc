@@ -6,7 +6,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-:doc:`tutorial`
+   tutorial
+   goldberg
 
 
 Indices and tables
