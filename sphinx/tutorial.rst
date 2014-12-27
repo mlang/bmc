@@ -380,7 +380,7 @@ Differences between braille and visual notation
 -----------------------------------------------
 
 Braille music code has no equivalent for stave lines and ledger lines, nor
-does it has a need for clefs.  This is because the diatonic pitch of a note
+does it have a need for clefs.  This is because the diatonic pitch of a note
 is encoded into the note sign and octave signs are used to indicate the actual
 pitch of notes.  Clef signs are usually omitted in braille music code since
 they are not relevant to braille music readers most of the time.
@@ -396,6 +396,12 @@ part and a bass clef in the left hand stave.  If a passage of music differs
 significantly in pitch from what is common for a particular clef, braille music
 code writers should consider adding clef signs as appropriate to ensure that
 automatic conversion to visual notation can produce a pleasant result.
+
+Additionally, clef signs might be important for communcation between blind and sighted
+music readers.  While it should always be possible to indicate exact positions
+inside a piece by counting measures and beats, it can be quite
+natural for a sighted reader to say: "After the F-Clef".  In those situations, it is
+particularily helpful if clef signs are presented in braille.
 
 Accidentals
 ===========
