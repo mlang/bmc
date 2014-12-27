@@ -549,7 +549,7 @@ public:
     return measures;
   }
 
-  score_type score_partwise() const { return xml_score; }
+  score_type const &score_partwise() const { return xml_score; }
 };
 
 }
