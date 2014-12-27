@@ -85,6 +85,18 @@ class BrailleMusic(Directive):
         return [node]
 
 
+def midi2mp3(midi_file, mp3_file, timidity_executable='timidity', timidity_args=[], lame_executable='lame', lame_args=[]):
+    timidity = [timidity_executable]
+    timidity.extend(timidity_args)
+    timidity.extend(['-idqq', '-Ow', '-o', '-', midi_file])
+    lame = [lame_executable]
+    lame.extend(lame_args)
+    lame.extend(['-b64', '--quiet', '-', mp3_file])
+    p1 = Popen(timidity, stdout=PIPE)
+    p2 = Popen(lame, stdin=p1.stdout, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p2.communicate()
+    return (p2.returncode, stdout, stderr)
+
 def render_bmc(self, code, prefix='bmc'):
     """Render braille music code into a MIDI and PDF output files."""
     hashkey = (code + \
@@ -166,6 +178,11 @@ def render_bmc(self, code, prefix='bmc'):
     if not path.isfile(outfn + '.preview.svg') or not path.isfile(outfn + '.midi'):
         raise BMCError('lilypond did not produce an output file:\n[stderr]\n%s\n'
                             '[stdout]\n%s' % (stderr.decode('utf-8'), stdout.decode('utf-8')))
+
+    returncode, stdin, stdout = midi2mp3(outfn + '.midi', outfn + '.mp3')
+    if returncode != 0:
+        raise BMCError('midi2mp3 exited with non-zero exit-code.')
+
     return relfn, outfn
 
 
@@ -185,6 +202,7 @@ def html_visit_bmc(self, node):
     self.body.append('<pre>' + self.encode(node['code']) + '</pre>')
 
     self.body.append('<img src="%s.preview.svg" alt="Engraved music"/>' % fname)
+    self.body.append('<a href="%s.mp3">MP3</a>' % fname)
     self.body.append('</section>\n')
     raise nodes.SkipNode
 
