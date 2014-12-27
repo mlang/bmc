@@ -20,7 +20,7 @@ Notes
 The signs used for notes follow a certain system.  The note name
 is encoded in the upper 4 braille dots.  Braille letter d through j are
 used to indicate the note name.  Dots 3 and 6 can be added
-to indicate the note value.
+to modify the note value.
 
 .. _eighth note: http://en.wikipedia.org/wiki/Eighth_note
 .. _hundred twenty-eighth note: http://en.wikipedia.org/wiki/Hundred_twenty-eighth_note
