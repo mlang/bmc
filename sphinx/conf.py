@@ -227,8 +227,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'bmc', 'BMC Documentation',
-     ['Mario Lang'], 1)
+    ('bmc', 'bmc', 'Braille Music Compiler', ['Mario Lang'], 1),
+    ('tutorial', 'braille_music', 'Braille Muisc Tutorial', ['Mario Lang'], 7)
 ]
 
 # If true, show URL addresses after external links.
@@ -242,7 +242,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'BMC', 'BMC Documentation',
-   'Mario Lang', 'BMC', 'One line description of project.',
+   'Mario Lang', 'BMC', 'Braille Music Compiler.',
    'Miscellaneous'),
 ]
 
@@ -257,5 +257,7 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# Options for the BMC Sphinx extension:
 
 bmc_executable = '../bmc'
