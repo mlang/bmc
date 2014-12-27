@@ -505,6 +505,16 @@ an octave sign or not.
 
 .. braille-music:: chords-lh.bmc
 
+Moving note
+-----------
+
+When two, or at most three, notes of equal value move below or above a longer note, they can be written as
+intervals separated by dot 6.
+
+.. braille-music::
+
+   ⠨⠷⠬⠠⠔ ⠨⠗⠄⠬⠠⠼⠠⠔⠧⠣⠅
+
 in-accord
 ---------
 
@@ -519,6 +529,17 @@ octave sign on the first note no matter if it is in-accord or not.
 .. braille-music::
 
    ⠨⠽⠣⠜⠐⠫⠱⠫⠻⠀⠐⠾⠣⠜⠐⠳⠻⠫⠱⠣⠅
+
+measure-division
+----------------
+
+It frequently happens that a measure is too long or too complicated for this
+simple use of the in-accord sign and it is then advisable to divide such a measure
+into convenient sections, each section being treated as an isolated unit
+of the measure. The sign used for this purpose is ⠨⠅
+and it joins the sections on either side without intervening spaces. The
+in-accord sign used in such part-measure sections is changed to ⠐⠂ and the first
+note after both signs must have an octave mark.
 
 If only one part of a measure requires an in-accord sign, a partial measure sign
 is used in combination with a partial measure in-accord sign.
