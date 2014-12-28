@@ -243,6 +243,14 @@ value categories a note (or rest) belongs.
 Where confusion is likely to arise (e.g. in the case of the half followed
 immediately by a 32th), one of the value signs must be placed between them.
 
+.. index:: value signs
+
+⠠⠣⠂
+   Small value(s) follow.
+
+⠘⠣⠂
+   Large value(s) follow.
+
 .. braille-music::
 
    ⠼⠉⠲⠀⠨⠝⠠⠣⠂⠝⠕⠏⠟⠓⠣⠅
@@ -479,11 +487,12 @@ braille music code.
 Tuplets
 -------
 
-A [tuplet](http://en.wikipedia.org/wiki/Tuplet) is a grouping of notes
-with irregular time.
+.. _tuplet: http://en.wikipedia.org/wiki/Tuplet
+
+A `tuplet`_ is a grouping of notes with irregular time.
 
 The simplest of tuplets, the triplet, has two possible signs in braille.
-THe shorter version is used in combination with the 3-character sign if
+The shorter version is used in combination with the 3-character sign if
 triplets are nested.
 
 .. braille-music::
