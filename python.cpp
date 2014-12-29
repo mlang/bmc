@@ -4,9 +4,40 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "bmc/music.hpp"
+#include "config.hpp"
+#include <boost/spirit/include/qi_parse.hpp>
+#include "bmc/braille/parsing/grammar/score.hpp"
+#include "bmc/braille/semantic_analysis.hpp"
+#include "bmc/lilypond.hpp"
+
 #define BOOST_PYTHON_PY_SIGNATURES_PROPER_INIT_SELF_TYPE
 #include <boost/python.hpp>
+
+static std::string to_lilypond(std::wstring const &source) {
+  typedef std::wstring::const_iterator iterator_type;
+
+  iterator_type iter = source.begin();
+  iterator_type const end = source.end();
+  typedef ::bmc::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type error_handler(iter, end);
+  typedef ::bmc::braille::score_grammar<iterator_type> parser_type;
+  parser_type parser(error_handler);
+  boost::spirit::traits::attribute_of<parser_type>::type score;
+
+  bool const success = parse(iter, end, parser, score);
+
+  if (success and iter == end) {
+    ::bmc::braille::compiler<error_handler_type> compile(error_handler);
+    if (compile(score)) {
+      std::wcerr << error_handler;
+      std::stringstream ss;
+      ::bmc::lilypond::generator generate(ss, true, true, false);
+      generate(score);
+      return ss.str();
+    }
+  }
+  return "";
+}
 
 BOOST_PYTHON_MODULE(bmc) {
   using namespace boost::python;
@@ -77,4 +108,5 @@ BOOST_PYTHON_MODULE(bmc) {
     .value("seventh", ::bmc::seventh)
     .value("octave", ::bmc::octave)
     ;
+  def("to_lilypond", &to_lilypond);
 }
