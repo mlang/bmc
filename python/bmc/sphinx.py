@@ -124,7 +124,7 @@ def render_bmc(self, code, prefix='bmc'):
 
     bmc_args = [self.builder.config.bmc_executable]
     bmc_args.extend(self.builder.config.bmc_args)
-    bmc_args.extend(['--lilypond', '-'])
+    bmc_args.extend(['--lilypond', '--no-tagline', '-'])
     try:
         p = Popen(bmc_args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     except OSError as err:
