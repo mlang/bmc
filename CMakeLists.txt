@@ -13,7 +13,6 @@ if (CMAKE_COMPILER_IS_GNUCC)
   endif()
 endif()
 add_subdirectory(doxygen)
-add_subdirectory(sphinx)
 add_subdirectory(xsdcxx-musicxml)
 add_subdirectory(ttb)
 add_subdirectory(ui)
@@ -54,7 +53,7 @@ set_target_properties(bmc_test
                       COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/"
                      )
 target_link_libraries(bmc_test bmc_parse)
-include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIR})
 add_library(pybmc SHARED python.cpp)
 set_target_properties(pybmc PROPERTIES PREFIX "")
 set_target_properties(pybmc PROPERTIES OUTPUT_NAME "bmc")
@@ -141,6 +140,10 @@ if(PYTHONINTERP_FOUND)
     message(STATUS "music21 not found")
   endif()
 endif(PYTHONINTERP_FOUND)
+
+
+add_subdirectory(sphinx)
+
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${bmc_SOURCE_DIR}/LICENSE.txt")
