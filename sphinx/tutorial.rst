@@ -315,13 +315,13 @@ as the note F below middle C.
 Finally, the C clef identifies the third line up on the five line stave
 as middle C.
 
-.. |GClef| image:: http://upload.wikimedia.org/wikipedia/commons/f/ff/GClef.svg
+.. |GClef| image:: GClef.*
            :alt: G-Clef
 
-.. |CClef| image:: http://upload.wikimedia.org/wikipedia/commons/b/b0/CClef.svg
+.. |CClef| image:: CClef.*
            :alt: C-Clef
 
-.. |FClef| image:: http://upload.wikimedia.org/wikipedia/commons/c/c5/FClef.svg
+.. |FClef| image:: FClef.*
            :alt: F-Clef
 
 +------+---------+--------+----+----+
