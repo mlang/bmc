@@ -41,11 +41,6 @@ class value_proxy
   {
     uninitialized, note, rest, whole_measure_rest, chord, moving_note, simile
   } type;
-  ast::value value_type:4;
-  value_category category:4;
-  ast::notegroup_member_type beam = ast::notegroup_member_type::none;
-  std::vector<rational> tuplet_begin;
-  unsigned tuplet_end = 0;
   union {
     ast::note *note_ptr;
     ast::rest *rest_ptr;
@@ -53,6 +48,11 @@ class value_proxy
     ast::moving_note *moving_note_ptr;
     ast::simile *simile_ptr;
   };
+  ast::value value_type:4;
+  value_category category:4;
+  ast::notegroup_member_type beam = ast::notegroup_member_type::none;
+  std::vector<rational> tuplet_begin;
+  unsigned tuplet_end = 0;
   rational tuplet_factor = rational{1};
   rational duration;
 
@@ -62,74 +62,75 @@ class value_proxy
 public:
   value_proxy() : type(ptr_type::uninitialized) {}
 
-  value_proxy(ast::note &note, value_category category, rational const &factor)
+  value_proxy(ast::note &note, value_category note_value_category, rational const &factor)
   : type(ptr_type::note), note_ptr(&note)
-  , value_type(note.ambiguous_value), category(category)
+  , value_type(note.ambiguous_value), category(note_value_category)
+  , tuplet_factor{factor}
+  , duration{calculate_duration(note.dots)}
+  { BOOST_ASSERT(note_ptr->type == zero); }
+
+  value_proxy( ast::note &note, value_category note_value_category
+             , ast::value note_value_type, rational const &factor)
+  : type{ptr_type::note}, note_ptr{&note}
+  , value_type{note_value_type}, category{note_value_category}
   , tuplet_factor{factor}
   , duration(calculate_duration(note.dots))
   { BOOST_ASSERT(note_ptr->type == zero); }
 
-  value_proxy(ast::note &note, value_category category, ast::value value_type, rational const &factor)
-  : type(ptr_type::note), note_ptr(&note)
-  , value_type(value_type), category(category)
-  , tuplet_factor{factor}
-  , duration(calculate_duration(note.dots))
-  { BOOST_ASSERT(note_ptr->type == zero); }
-
-  value_proxy(ast::rest &rest, value_category category, rational const &factor)
+  value_proxy(ast::rest &rest, value_category rest_value_category, rational const &factor)
   : type(ptr_type::rest), rest_ptr(&rest)
-  , value_type(rest.ambiguous_value), category(category)
+  , value_type(rest.ambiguous_value), category(rest_value_category)
   , tuplet_factor{factor}
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, value_category category, ast::value value_type, rational const &factor)
+  value_proxy(ast::rest &rest, value_category rest_value_category, ast::value rest_value_type, rational const &factor)
   : type(ptr_type::rest), rest_ptr(&rest)
-  , value_type(value_type), category(category)
+  , value_type(rest_value_type), category(rest_value_category)
   , tuplet_factor{factor}
   , duration(calculate_duration(rest.dots))
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::rest &rest, rational const &duration)
-  : type(ptr_type::whole_measure_rest), rest_ptr(&rest)
-  , duration(duration)
+  value_proxy(ast::rest &rest, rational const &whole_measure_rest_duration)
+  : type{ptr_type::whole_measure_rest}, rest_ptr{&rest}
+  , duration(whole_measure_rest_duration)
   { BOOST_ASSERT(rest_ptr->type == zero); }
 
-  value_proxy(ast::chord &chord, value_category category, rational const &factor)
+  value_proxy(ast::chord &chord, value_category chord_value_category, rational const &factor)
   : type(ptr_type::chord), chord_ptr(&chord)
-  , value_type(chord.base.ambiguous_value), category(category)
+  , value_type(chord.base.ambiguous_value), category(chord_value_category)
   , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
-  value_proxy( ast::chord &chord, value_category category
-             , ast::value value_type, rational const &factor
+  value_proxy( ast::chord &chord, value_category chord_value_category
+             , ast::value chord_value_type, rational const &factor
              )
-  : type(ptr_type::chord), chord_ptr(&chord)
-  , value_type(value_type), category(category)
+  : type{ptr_type::chord}, chord_ptr{&chord}
+  , value_type{chord_value_type}, category{chord_value_category}
   , tuplet_factor{factor}
-  , duration(calculate_duration(chord.base.dots))
+  , duration{calculate_duration(chord.base.dots)}
   { BOOST_ASSERT(chord_ptr->base.type == zero); }
 
-  value_proxy(ast::moving_note &chord, value_category category, rational const &factor)
+  value_proxy(ast::moving_note &chord, value_category moving_note_value_category, rational const &factor)
   : type(ptr_type::moving_note), moving_note_ptr(&chord)
-  , value_type(chord.base.ambiguous_value), category(category)
+  , value_type(chord.base.ambiguous_value), category(moving_note_value_category)
   , tuplet_factor{factor}
   , duration(calculate_duration(chord.base.dots))
   { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
-  value_proxy( ast::moving_note &chord, value_category category
-             , ast::value value_type, rational const &factor
+  value_proxy( ast::moving_note &chord, value_category moving_note_value_category
+             , ast::value moving_note_value_type, rational const &factor
              )
   : type(ptr_type::moving_note), moving_note_ptr(&chord)
-  , value_type(value_type), category(category)
+  , value_type{moving_note_value_type}, category{moving_note_value_category}
   , tuplet_factor{factor}
-  , duration(calculate_duration(chord.base.dots))
+  , duration{calculate_duration(chord.base.dots)}
   { BOOST_ASSERT(moving_note_ptr->base.type == zero); }
 
-  value_proxy(ast::simile &simile, rational const& duration)
-  : type(ptr_type::simile), simile_ptr(&simile)
-  , duration(duration * simile.count)
+  value_proxy(ast::simile &simile, rational const& simile_duration)
+  : type{ptr_type::simile}, simile_ptr{&simile}
+  , duration{simile_duration * simile.count}
   { BOOST_ASSERT(simile_ptr->duration == zero); }
 
   void make_beam_begin()
@@ -182,7 +183,7 @@ struct global_state
   rational last_measure_duration;
   rational beat;
   std::atomic<bool> exact_match_found { false };
-  std::atomic<short> threads { 1 };
+  std::atomic<unsigned int> threads { 1 };
 
   global_state() = default;
   global_state( global_state const &other )
