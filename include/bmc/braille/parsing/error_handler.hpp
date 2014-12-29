@@ -8,6 +8,7 @@
 #define BMC_ERROR_HANDLER_HPP
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
