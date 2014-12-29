@@ -24,7 +24,7 @@ include_directories(${bmc_SOURCE_DIR}/include/)
 include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-std=c++11)
 add_library(bmc_parse SHARED
-            brlsym.cpp music.cpp
+            brlsym.cpp music.cpp ast.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             partial_voice_sign.cpp simile.cpp tuplet_start.cpp
             measure.cpp score.cpp

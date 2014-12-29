@@ -73,7 +73,7 @@ class rhythmic
 {
 protected:
   //rhythmic() {}
-  virtual ~rhythmic() {}
+  virtual ~rhythmic();
 public:
   virtual rational as_rational() const = 0;
   virtual unsigned get_dots() const = 0;
@@ -109,6 +109,8 @@ struct stem : rhythmic
   unsigned dots;
   boost::optional<ast::tie> tied;
 
+  virtual ~stem();
+
   rational as_rational() const override
   { return type * augmentation_dots_factor(dots); }
   unsigned get_dots() const override
@@ -125,9 +127,10 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
   std::vector<stem> extra_stems;
 
   note(): locatable(), rhythmic_data(), pitched() {}
-  virtual rational as_rational() const
+  virtual ~note();
+  rational as_rational() const override
   { return type * augmentation_dots_factor(dots) * factor; }
-  virtual unsigned get_dots() const override { return dots; }
+  unsigned get_dots() const override { return dots; }
   rational get_factor() const override { return factor; }
   rational get_type() const override { return type; }
 };
@@ -135,6 +138,7 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
 struct rest : locatable, rhythmic_data, rhythmic
 {
   rest(): locatable(), rhythmic_data(), whole_measure(false) {}
+  virtual ~rest();
   bool whole_measure; // filled in by disambiguate.hpp
   rational as_rational() const override
   { return type * augmentation_dots_factor(dots) * factor; }
@@ -156,6 +160,8 @@ struct chord : locatable, rhythmic
   std::vector<interval> intervals;
   bool all_tied = false;
 
+  virtual ~chord();
+
   virtual rational as_rational() const
   { return base.as_rational(); }
   virtual unsigned get_dots() const
@@ -172,7 +178,7 @@ struct chord : locatable, rhythmic
                   ::bmc::arpeggio_down) != base.articulations.end())
       return arpeggio_type::down;
     return {};
-  };
+  }
 };
 
 /** The moving-note device, although infrequently employed,
@@ -184,6 +190,8 @@ struct moving_note : locatable, rhythmic
 {
   note base;
   std::vector<interval> intervals;
+
+  virtual ~moving_note();
 
   virtual rational as_rational() const
   { return base.as_rational(); }
