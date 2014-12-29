@@ -260,4 +260,5 @@ texinfo_documents = [
 
 # Options for the BMC Sphinx extension:
 
-bmc_executable = '@CMAKE_BINARY_DIR@/bmc'
+bmc_executable = '@CMAKE_BINARY_DIR@/bmc@CMAKE_EXECUTABLE_SUFFIX@'
+bmc_lilypond_executable = '@LILYPOND_EXECUTABLE@'
