@@ -56,7 +56,7 @@ target_link_libraries(bmc_test bmc_parse)
 include_directories(${PYTHON_INCLUDE_DIR})
 add_library(pybmc SHARED python.cpp)
 set_target_properties(pybmc PROPERTIES PREFIX "")
-set_target_properties(pybmc PROPERTIES OUTPUT_NAME "bmc")
+set_target_properties(pybmc PROPERTIES OUTPUT_NAME "_bmc")
 target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} bmc_parse)
 
 find_package(Boost QUIET COMPONENTS unit_test_framework)
