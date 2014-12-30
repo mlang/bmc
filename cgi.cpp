@@ -22,7 +22,9 @@
 #include <cgicc/HTTPContentHeader.h>
 #include <cgicc/XHTMLDoctype.h>
 
-// Output the has of an arbitrary string in hex.
+namespace {
+
+// Output the hash of an arbitrary string in hex.
 std::string hash(std::string const &string)
 {
   std::stringstream stream;
@@ -148,8 +150,9 @@ std::ostream &instrument_select(std::ostream &os, cgicc::Cgicc const &cgi) {
   return os;
 }
 
-int
-main(int argc, char const *argv[])
+} // namespace
+
+int main()
 {
   std::locale::global(std::locale(""));
   cgicc::Cgicc cgi;

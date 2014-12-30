@@ -16,6 +16,8 @@
 #include "bmc/lilypond.hpp"
 #include "bmc/musicxml.hpp"
 
+namespace {
+
 int bmc2ly( std::wistream &wistream
           , bool lilypond, bool musicxml
           , bool include_locations, std::string instrument, bool no_tagline
@@ -58,8 +60,9 @@ int bmc2ly( std::wistream &wistream
   return EXIT_FAILURE;
 }
 
-int
-main(int argc, char const *argv[])
+} // namespace
+
+int main(int argc, char const *argv[])
 {
   std::locale::global(std::locale(""));
 
