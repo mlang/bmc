@@ -162,10 +162,8 @@ struct chord : locatable, rhythmic
 
   virtual ~chord();
 
-  virtual rational as_rational() const
-  { return base.as_rational(); }
-  virtual unsigned get_dots() const
-  { return base.get_dots(); }
+  rational as_rational() const override { return base.as_rational(); }
+  unsigned get_dots() const override { return base.get_dots(); }
   rational get_factor() const override { return base.factor; }
   rational get_type() const override { return base.type; }
 
@@ -193,10 +191,8 @@ struct moving_note : locatable, rhythmic
 
   virtual ~moving_note();
 
-  virtual rational as_rational() const
-  { return base.as_rational(); }
-  virtual unsigned get_dots() const
-  { return base.get_dots(); }
+  rational as_rational() const override { return base.as_rational(); }
+  unsigned get_dots() const override { return base.get_dots(); }
   rational get_factor() const override { return base.factor; }
   rational get_type() const override { return base.type; }
 };
