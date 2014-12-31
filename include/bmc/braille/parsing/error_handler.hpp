@@ -26,8 +26,8 @@ namespace bmc { namespace braille {
     template <typename>
     struct result { typedef void type; };
 
-    error_handler(iterator_type first, iterator_type last)
-    : first(first), last(last)
+    error_handler(iterator_type f, iterator_type l)
+    : first(f), last(l)
     , messages{std::make_shared<std::vector<string_type>>()}
     {}
 
@@ -88,7 +88,6 @@ namespace bmc { namespace braille {
       return string_type(line_start, line_end);
     }
 
-    std::shared_ptr<std::vector<string_type>> messages;
     friend std::wostream &operator<<(std::wostream &os, error_handler const &eh)
     {
       for (auto const &line: *eh.messages) os << line << std::endl;
@@ -97,6 +96,7 @@ namespace bmc { namespace braille {
 
     iterator_type first, last;
     std::vector<iterator_type> iters;
+    std::shared_ptr<std::vector<string_type>> messages;
   };
 
 }}
