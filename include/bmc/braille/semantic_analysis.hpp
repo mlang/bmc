@@ -27,25 +27,23 @@ class sign_converter: public boost::static_visitor<sign_conversion_result>
 {
   ast::unfolded::partial_voice &target;
   std::size_t const voice_index, voice_count
-                  , partial_measure_index, partial_measure_count
-                  , partial_voice_index, partial_voice_count
+                  , partial_measure_index
+                  , partial_voice_index
                   ;
   ast::unfolded::measure *prev_unfolded_measure;
   std::size_t simile_start = 0;
 public:
   sign_converter( ast::unfolded::partial_voice &target
                 , std::size_t voice_index, std::size_t voice_count
-                , std::size_t partial_measure_index, std::size_t partial_measure_count
-                , std::size_t partial_voice_index, std::size_t partial_voice_count
+                , std::size_t partial_measure_index
+                , std::size_t partial_voice_index
                 , ast::unfolded::measure *prev_unfolded_measure
                 )
   : target{target}
   , voice_index(voice_index)
   , voice_count(voice_count)
   , partial_measure_index(partial_measure_index)
-  , partial_measure_count(partial_measure_count)
   , partial_voice_index(partial_voice_index)
-  , partial_voice_count(partial_voice_count)
   , prev_unfolded_measure(prev_unfolded_measure)
   {}
 
@@ -70,9 +68,9 @@ public:
       }
     } else {
       ast::unfolded::partial_voice repeated {
-        std::next(target.begin(), simile_start), target.end()
+        std::next(target.begin(), ssize_t(simile_start)), target.end()
       };
-      if (duration(repeated) == (simile.duration / simile.count)) {
+      if (duration(repeated) == (simile.duration / rational::int_type(simile.count))) {
         for (unsigned i = 0; i < simile.count; ++i)
           target.insert(target.end(), repeated.begin(), repeated.end());
         simile_start = target.size();
@@ -117,8 +115,8 @@ public:
           new_partial_measure.emplace_back();
           sign_converter unfold( new_partial_measure.back()
                                , voice_index, measure.voices.size()
-                               , partial_measure_index, voice.size()
-                               , partial_voice_index, partial_measure.size()
+                               , partial_measure_index
+                               , partial_voice_index
                                , prev_unfolded_measure
                                );
           for (ast::partial_voice::const_iterator sign = partial_voice.begin();
@@ -304,13 +302,12 @@ public:
   {
     for (ast::part const &part: score.parts) {
       score.unfolded_part.emplace_back();
-      if (not unfold(part, score.unfolded_part.back(), score)) return false;
+      if (not unfold(part, score.unfolded_part.back())) return false;
     }
     return true;
   }
   result_type unfold ( ast::part const &source
                      , ast::unfolded::part &target
-                     , ast::score const &score
                      )
   {
     BOOST_ASSERT(not source.empty());
@@ -319,17 +316,17 @@ public:
                              [staves](ast::section const &section) -> bool {
                                return section.paragraphs.size() == staves;
                              }));
-    for (int i = 0; i < staves; ++i) target.emplace_back();
+    for (unsigned int i = 0; i < staves; ++i) target.emplace_back();
     for (ast::section const &section: source) {
       int i = 0;
       for (ast::paragraph const &paragraph: section.paragraphs) {
-        if (not unfold(paragraph, target.at(i++), score)) return false;
+        if (not unfold(paragraph, target.at(i++))) return false;
       }
     }
 
     std::size_t staff_nr = 0;
     for (ast::unfolded::staff &staff: target) {
-      doubling_decoder undouble(report_error, staff_nr);
+      doubling_decoder undouble(report_error);
       if (not std::all_of(staff.begin(), staff.end(), apply_visitor(undouble)))
         return false;
       staff_nr += 1;
@@ -339,7 +336,6 @@ public:
   }
   result_type unfold ( ast::paragraph const &source
                      , ast::unfolded::staff &target
-                     , ast::score const &score
                      )
   {
     staff_converter unfold(target);
