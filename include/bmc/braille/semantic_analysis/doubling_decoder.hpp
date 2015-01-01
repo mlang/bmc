@@ -15,7 +15,6 @@ namespace bmc { namespace braille {
 
 class doubling_decoder : public compiler_pass, public boost::static_visitor<bool>
 {
-  std::size_t staff_number;
   struct info
   {
     enum state { active, final, none };
@@ -26,11 +25,9 @@ class doubling_decoder : public compiler_pass, public boost::static_visitor<bool
   std::map<std::size_t, info> states;
   info *current;
 public:
-  doubling_decoder( report_error_type const &report_error
-                  , std::size_t staff_number
-                  )
+  doubling_decoder(report_error_type const &report_error)
   : compiler_pass{report_error}
-  , staff_number{staff_number}, states{}, current{nullptr}
+  , states{}, current{nullptr}
   {}
 
   result_type end_of_staff() const {
