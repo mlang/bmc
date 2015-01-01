@@ -48,16 +48,14 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   boost::spirit::_2_type _2;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
-  boost::spirit::standard_wide::space_type space;
   boost::spirit::eol_type eol;
 
   full_measure_in_accord = brl(126) >> brl(345) >> -+eol;
   partial_measure_sign = brl(46) >> brl(13) >> -+eol;
   partial_measure_in_accord = brl(5) >> brl(2) >> -+eol;
-  boost::spirit::qi::_pass_type _pass;
 
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
-  ending = brl(3456) >> lower_digit_sign > optional_dot;
+  ending = (brl(3456) >> lower_digit_sign) > optional_dot;
 
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\

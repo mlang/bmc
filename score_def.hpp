@@ -46,7 +46,6 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_val_type _val;
   ::bmc::braille::brl_type brl;
   boost::spirit::standard_wide::blank_type blank;
-  boost::spirit::standard_wide::space_type space;
 
   whitespace = blank | brl(0);
   indent = whitespace >> +whitespace;
@@ -126,8 +125,8 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 
   key_and_time_signature = key_signature >> time_signature;
 
-  right_hand_sign = brl(46) >> brl(345) > optional_dot;
-  left_hand_sign = brl(456) >> brl(345) > optional_dot;
+  right_hand_sign = (brl(46) >> brl(345)) > optional_dot;
+  left_hand_sign = (brl(456) >> brl(345)) > optional_dot;
   eom = brl(126) >> brl(13) >> !brl(3);
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
 

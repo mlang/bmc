@@ -31,8 +31,8 @@ namespace bmc { namespace braille {
 template<typename Iterator>
 partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<Iterator>& error_handler)
 : partial_voice_sign_grammar::base_type(start, "partial_voice_sign")
-, simile(error_handler)
 , tuplet_start(error_handler)
+, simile(error_handler)
 {
   using boost::phoenix::begin;
   using boost::phoenix::end;
@@ -103,8 +103,8 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   clef = clef_sign > optional_dot;
 
   optional_dot = !dots_123 | brl(3);
-  hand_sign = (brl(46) >> brl(345) > optional_dot > attr(braille::right_hand))
-            | (brl(456) >> brl(345) > optional_dot > attr(braille::left_hand));
+  hand_sign = ((brl(46) >> brl(345)) > optional_dot > attr(braille::right_hand))
+            | ((brl(456) >> brl(345)) > optional_dot > attr(braille::left_hand));
 
   hyphen = brl(5) >> eol;
 #define BMC_LOCATABLE_SET_ID(rule) \
