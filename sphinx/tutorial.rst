@@ -167,7 +167,7 @@ In braille music code, measures of music are separated with a space or newline.
 Each part of a piece of music needs to end with the final barline sign (⠣⠅).
 
 The time signature is often expressed as a fraction.  In braille, we write
-a number sign (⠼) followed by two numbers  - the first in the upper position,
+a number sign (⠼) followed by two numbers - the first in the upper position,
 and the second in the lower position.
 If no time signature is specified, 4/4 (⠼⠙⠲) is assumed.
 
@@ -425,9 +425,10 @@ particularly helpful if clef signs are presented in braille.
 Accidentals
 ===========
 
+.. _diatonic scale: http://en.wikipedia.org/wiki/Diatonic_scale
+
 Just like lines and spaces in five-line staff notation, the pitches of
-braille music notes correspond to the
-[diatonic scale](http://en.wikipedia.org/wiki/Diatonic_scale).  They can
+braille music notes correspond to the `diatonic scale`_.  They can
 be essentially viewed as the white keys of a piano keyboard.  To reach pitches
 that are a half step away from the diatonic pitches, accidentals are used.
 
