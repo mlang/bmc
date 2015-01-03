@@ -74,7 +74,6 @@ value_proxy::accept() const
   case ptr_type::simile:
     simile_ptr->duration = duration;
     break;
-  default:
   case ptr_type::uninitialized: BOOST_ASSERT(false);
   }
 }
@@ -242,15 +241,15 @@ public:
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
-  result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
+  [[noreturn]] result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
   // A note group must never contain a music hyphen.
-  result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
+  [[noreturn]] result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
-  result_type operator()(braille::ast::tuplet_start &) { BOOST_ASSERT(false); }
+  [[noreturn]] result_type operator()(braille::ast::tuplet_start &) { BOOST_ASSERT(false); }
   result_type operator()(braille::hand_sign &) {}
   result_type operator()(ast::clef &) {}
   result_type operator()(ast::barline &) {}
-  result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
+  [[noreturn]] result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
 
   value_proxy *end() const
   {
@@ -367,7 +366,7 @@ count_rhythmic( ast::partial_voice::iterator const &begin
               )
 {
   ast::is_rhythmic is_rhythmic;
-  return std::count_if(begin, end, apply_visitor(is_rhythmic));
+  return unsigned(std::count_if(begin, end, apply_visitor(is_rhythmic)));
 }
 
 /** A fast but potentially unsafe operator<= for rationals.
@@ -558,7 +557,7 @@ class large_and_small_visitor : public boost::static_visitor<bool>
   value_proxy *const proxy;
   rational const &max_duration, &position;
   global_state &state;
-  tuplet_info const &tuplet_ref;               ;
+  tuplet_info const &tuplet_ref;
   unsigned int max_threads;
   Interpreter const &interpreter;
 public:
@@ -641,8 +640,8 @@ public:
       BOOST_ASSERT(static_cast<bool>(interpreter.last_measure_duration()));
       if (*new(proxy)value_proxy
           (simile, interpreter.last_measure_duration()) > rational(0) and
-          fast_leq(static_cast<rational>(*proxy) / simile.count, max_duration)) {
-        rational const duration(static_cast<rational>(*proxy) / simile.count);
+          fast_leq(static_cast<rational>(*proxy) / rational::int_type(simile.count), max_duration)) {
+        rational const duration(static_cast<rational>(*proxy) / rational::int_type(simile.count));
         interpreter.recurse( rest, end, stack_begin, proxy + 1
                            , max_duration - duration, position + duration
                            , tuplet_ref
@@ -985,7 +984,7 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 
   if (threads > 1) {
     auto const size = std::distance(first, last);
-    while (threads > 1 and size / threads < MinItemsPerThread) threads--;
+    while (threads > 1 and std::size_t(size / threads) < MinItemsPerThread) threads--;
 
     auto const chunk_size = size / threads--;
     while (threads--) {
