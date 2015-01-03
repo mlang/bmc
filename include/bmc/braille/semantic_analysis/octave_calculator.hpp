@@ -130,7 +130,7 @@ public:
   }
 
   // The note following a clef sign must always have its proper octave mark.
-  result_type operator()(ast::clef &clef)
+  result_type operator()(ast::clef &)
   {
     prev = nullptr;
     return true;
