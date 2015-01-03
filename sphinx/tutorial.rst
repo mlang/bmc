@@ -46,29 +46,7 @@ an `eighth note`_ (quaver) or a `hundred twenty-eighth note`_ (semihemidemisemiq
 | ⠚    |2 4 5  | B       | 1/8 or 1/128    |
 +------+-------+---------+-----------------+
 
-.. _half note: http://en.wikipedia.org/wiki/Half_note
-.. _thirty-second note: http://en.wikipedia.org/wiki/Thirty-second_note
-
-If dot 3 is added, we are dealing with either a `half note`_ (minim) or
-a `thirty-second note`_ (demisemiquaver).
-
-+------+---------+---------+-----------------+
-| Sign |  Dots   |Note name| Possible values |
-+======+=========+=========+=================+
-| ⠝    |1 3 4 5  | C       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠕    |1 3 5    | D       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠏    |1 2 3 4  | E       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠟    |1 2 3 4 5| F       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠗    |1 2 3 5  | G       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠎    |2 3 4    | A       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
-| ⠞    |2 3 4 5  | B       | 1/2 or 1/32     |
-+------+---------+---------+-----------------+
+.. index:: quarter or 64th notes
 
 .. _quarter note: http://en.wikipedia.org/wiki/Quarter_note
 .. _sixty-fourth note: http://en.wikipedia.org/wiki/Sixty-fourth_note
@@ -93,6 +71,34 @@ a `sixty-fourth note`_ (hemidemisemiquaver).
 +------+---------+---------+-----------------+
 | ⠺    |2 4 5 6  | B       | 1/4 or 1/64     |
 +------+---------+---------+-----------------+
+
+.. index:: half or 32nd note
+
+.. _half note: http://en.wikipedia.org/wiki/Half_note
+.. _thirty-second note: http://en.wikipedia.org/wiki/Thirty-second_note
+
+If dot 3 is added, we are dealing with either a `half note`_ (minim) or
+a `thirty-second note`_ (demisemiquaver).
+
++------+---------+---------+-----------------+
+| Sign |  Dots   |Note name| Possible values |
++======+=========+=========+=================+
+| ⠝    |1 3 4 5  | C       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠕    |1 3 5    | D       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠏    |1 2 3 4  | E       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠟    |1 2 3 4 5| F       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠗    |1 2 3 5  | G       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠎    |2 3 4    | A       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+| ⠞    |2 3 4 5  | B       | 1/2 or 1/32     |
++------+---------+---------+-----------------+
+
+.. index:: whole or 16th notes
 
 .. _whole note: http://en.wikipedia.org/wiki/Whole_note
 .. _sixteenth note: http://en.wikipedia.org/wiki/Sixteenth_note
@@ -189,6 +195,9 @@ Octave Signs
 Contrary to visual music notation, where clefs determine the pitch of a note,
 braille music uses octave signs to indicate the exact pitch of a note.
 
+An octave goes from C up to and including B (or H).  The fourth octave contains
+what is commonly called `middle C`.
+
 An octave sign is placed directly in front of a note sign, without any other
 signs in between.
 The following example shows octave signs 1 through 7 placed in front of a
@@ -201,7 +210,8 @@ quarter C.
 There must be an octave sign in front of the first note of a piece.
 For all following notes, these rules apply:
 
-If the next note is a second or third up or down, it does not need an octave sign.
+If the next note is an interval of a second or third up or down, it does not
+need an octave sign.
 
 .. braille-music::
 
@@ -426,11 +436,12 @@ Accidentals
 ===========
 
 .. _diatonic scale: http://en.wikipedia.org/wiki/Diatonic_scale
+.. _accidentals: http://en.wikipedia.org/wiki/Accidental_(music)
 
 Just like lines and spaces in five-line staff notation, the pitches of
 braille music notes correspond to the `diatonic scale`_.  They can
 be essentially viewed as the white keys of a piano keyboard.  To reach pitches
-that are a half step away from the diatonic pitches, accidentals are used.
+that are a half step away from the diatonic pitches, accidentals_ are used.
 
 +------+-------------+
 | Sign | Description |
@@ -452,6 +463,10 @@ Key Signature
 Following the clef, the key signature on a staff indicates the key of the piece
 by specifying that certain notes are flat or sharp throughout the piece unless
 otherwise indicated.
+
+The key signature in braille is usually
+stated together with the time signature at the beginning of the piece, optionally
+separated with a space characetr.
 
 Rhythmic Note Groups
 ====================
