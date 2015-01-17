@@ -7,6 +7,7 @@ add_custom_command(
   COMMAND ${SPHINX_BUILD_EXECUTABLE} -q -b man -c ${CMAKE_CURRENT_BINARY_DIR}
           ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/man
   DEPENDS bmc.rst tutorial.rst ${CMAKE_SOURCE_DIR}/python/bmc/sphinx.py
+          ${CMAKE_BINARY_DIR}/bmc
 )
 add_custom_target(man ALL
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/man/bmc.1
