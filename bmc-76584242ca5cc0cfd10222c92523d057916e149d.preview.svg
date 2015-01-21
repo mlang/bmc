@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2" width="41.52mm" height="12.92mm" viewBox="8.5358 -0.0240 23.6258 7.3500">
+<line transform="translate(8.5358, 5.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="23.5758" y2="-0.0000"/>
+<line transform="translate(8.5358, 4.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="23.5758" y2="-0.0000"/>
+<line transform="translate(8.5358, 3.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="23.5758" y2="-0.0000"/>
+<line transform="translate(8.5358, 2.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="23.5758" y2="-0.0000"/>
+<line transform="translate(8.5358, 1.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="23.5758" y2="-0.0000"/>
+<rect transform="translate(31.9716, 3.7760)" x="0.0000" y="-2.0000" width="0.1900" height="4.0000" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(27.1337, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:19:20">
+<path transform="translate(27.0687, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+<rect transform="translate(24.6175, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:16:17">
+<path transform="translate(24.5525, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+<polygon transform="translate(17.0040, 6.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.1224 -0.2000 5.1224 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:22:23">
+<path transform="translate(29.5849, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+<rect transform="translate(29.6499, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<polygon transform="translate(24.5525, 6.7760)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.1224 -0.2000 5.1224 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:6:7">
+<path transform="translate(17.0040, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+<path transform="translate(9.3358, 4.7760) scale(0.0040, -0.0040)" d="M376 262c4 0 9 1 13 1c155 0 256 -128 256 -261c0 -76 -33 -154 -107 -210c-22 -17 -47 -28 -73 -36c3 -35 5 -70 5 -105c0 -19 -1 -39 -2 -58c-7 -120 -90 -228 -208 -228c-108 0 -195 88 -195 197c0 58 53 103 112 103c54 0 95 -47 95 -103c0 -52 -43 -95 -95 -95
+c-11 0 -21 2 -31 6c26 -39 68 -65 117 -65c96 0 157 92 163 191c1 18 2 37 2 55c0 31 -1 61 -4 92c-29 -5 -58 -8 -89 -8c-188 0 -333 172 -333 374c0 177 131 306 248 441c-19 62 -37 125 -45 190c-6 52 -7 104 -7 156c0 115 55 224 149 292c3 2 7 3 10 3c4 0 7 0 10 -3
+c71 -84 133 -245 133 -358c0 -143 -86 -255 -180 -364c21 -68 39 -138 56 -207zM461 -203c68 24 113 95 113 164c0 90 -66 179 -173 190c24 -116 46 -231 60 -354zM74 28c0 -135 129 -247 264 -247c28 0 55 2 82 6c-14 127 -37 245 -63 364c-79 -8 -124 -61 -124 -119
+c0 -44 25 -91 81 -123c5 -5 7 -10 7 -15c0 -11 -10 -22 -22 -22c-3 0 -6 1 -9 2c-80 43 -117 115 -117 185c0 88 58 174 160 197c-14 58 -29 117 -46 175c-107 -121 -213 -243 -213 -403zM408 1045c-99 -48 -162 -149 -162 -259c0 -74 18 -133 36 -194
+c80 97 146 198 146 324c0 55 -4 79 -20 129z" fill="currentColor"/>
+<path transform="translate(13.5358, 5.7905) scale(0.0040, -0.0040)" d="M259 288c27 29 49 62 49 102c0 55 -57 87 -117 87c-47 0 -75 -36 -75 -71c0 -20 10 -40 30 -52zM289 271c55 -31 83 -79 83 -127c0 -73 -66 -144 -189 -144c-94 0 -183 54 -183 140c0 50 39 85 76 120c-41 28 -61 67 -61 106c0 68 61 134 176 134c81 0 161 -38 161 -110
+c0 -47 -30 -85 -63 -119zM106 242c-33 -29 -62 -59 -62 -102c0 -69 66 -117 139 -117c54 0 86 42 86 83c0 24 -10 48 -35 62z" fill="currentColor"/>
+<path transform="translate(13.5870, 3.7760) scale(0.0040, -0.0040)" d="M170 256c-51 0 -53 -44 -53 -102v-14v-15c0 -58 2 -102 53 -102c57 0 61 51 61 117s-4 116 -61 116zM117 266c17 7 34 13 53 13c101 0 170 -44 170 -139s-69 -140 -170 -140c-112 0 -170 124 -170 250c0 128 72 250 190 250c71 0 138 -39 138 -103c0 -36 -29 -66 -65 -66
+s-66 30 -66 66c0 24 39 25 39 49c0 20 -23 31 -46 31c-66 0 -75 -65 -75 -139c0 -24 2 -48 2 -72z" fill="currentColor"/>
+<rect transform="translate(17.0690, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(22.1013, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:13:14">
+<path transform="translate(22.0363, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+<rect transform="translate(19.5852, 3.7760)" x="-0.0650" y="0.1878" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:11:10:11">
+<path transform="translate(19.5202, 3.7760) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+</a>
+</svg>
