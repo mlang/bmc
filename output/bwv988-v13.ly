@@ -49,11 +49,11 @@ music =
         << {fis4. b8 a b}\\{d'8. a16 d'2~} >> | % 2
         << {e4. a8-2 g a}\\{d'8. b16-2 cis'2} >> | % 3
         << {d4. e8-2 d c}\\{r8 r16 fis-3 a2} >> | % 4
-        << {b,4.-"5-4" g,8 a, b,-5}\\{r8 r16 d g2~} >> | % 5
+        << {b,4.^\markup { \finger "5 - 4" } g,8 a, b,-5}\\{r8 r16 d g2~} >> | % 5
         << {c4. a,8 b, c-5}\\{g8. fis16 g2~} >> | % 6
         << {d4. d8-2 c d}\\{g8. e16 fis2-1} >> | % 7
         << {g,4. g,8 b, d}\\{r8 r16 d g4 r} >> | % 8
-        << {g4.-"1-4" g8-3 fis e}\\{r8 b e'2~} >> | % 9
+        << {g4.^\markup { \finger "1 - 4" } g8-3 fis e}\\{r8 b e'2~} >> | % 9
         << {fis4. b8 a b}\\{e'8 a d'2~} >> | % 10
         << {e4. fis8 e d}\\{d'8 b g2~-1} >> | % 11
         << {cis4. e8-2 a,-5 g,-4}\\{g16 a-2 g-1 fis g8 r r4} >> | % 12
@@ -63,8 +63,8 @@ music =
         << {d2.}\\{d'8 e fis bes a4-1 } >> \bar ":|:" % 16
         << { d'4.-3 c'16 b c'8 a}\\{r8 r16 fis' a'2} >> | % 17
         << {b4. d'8 g b}\\{r8 r16 d' g'2~} >> | % 18
-        << {c'4.-"3-4" b8-5 c' a}\\{g'8. gis'16-2 a'8 d' e' g'~} >> | % 19
-        << {b4.-"4-5" b,8-3 cis dis}\\{g'8 fis'16 e' fis'8 r r4} >> | % 20
+        << {c'4.^\markup { \finger "3 - 4" } b8-5 c' a}\\{g'8. gis'16-2 a'8 d' e' g'~} >> | % 19
+        << {b4.^\markup { \finger "4 - 5" } b,8-3 cis dis}\\{g'8 fis'16 e' fis'8 r r4} >> | % 20
         << {e,8 g16 a g8 fis e4}\\{r8 b4 a gis8} >> | % 21
         << {a,8 a16-3 g a8 c'-2 a fis}\\{r8 c'4 e'8 c' a} >> | % 22
         << {b,8 dis-4 e-5 g-4 b4-3}\\{r8 fis g-1 e'4 dis'8} >> | % 23

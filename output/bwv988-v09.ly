@@ -9,13 +9,13 @@ music =
         \key g \major
         \time 4/4
         << {b'8-2 a' b' c'' d'' a' d'' c''}\\{r1} >> | % 1
-        << {b'8 d''-3 g''4~ g''8-"5-4" a''16 g'' fis''4-3}\\{g'8 fis' g' a'-2 b'-1  fis'  b'-1  a'-1} >> | % 2
+        << {b'8 d''-3 g''4~ g''8^\markup { \finger "5 - 4" } a''16 g'' fis''4-3}\\{g'8 fis' g' a'-2 b'-1  fis'  b'-1  a'-1} >> | % 2
         << {g''8 fis''-2 g'' a'' b'' fis''-3 b'' a''}\\{ g'8 b'  e''4~ e''8 fis''16-3 e'' d''4} >> | % 3
-        << {g''8-3 a''16 b'' c'''4~-4 c'''8 b''16-5 a'' b''8 b'}\\{e''8-2 d'' e'' fis''-2 g''-2 d'' g'' fis''-"2-4"} >> | % 4
-        << {cis''8 b' cis''-2 dis''-1 e'' b' e'' d''-"2-4"}\\{e''8-5 fis''16-3 g'' a''4~ a''8 g''16 fis'' g''8-5 g'} >> | % 5
-        << {c''8 d''16-5 e''-4 f''4~ f''8 e''16 d'' e''-5 fis''-4 g''8~}\\{a'8 g' a'-2 b'-1 c'' g' c''-2 b'-"1-2"} >> | % 6
+        << {g''8-3 a''16 b'' c'''4~-4 c'''8 b''16-5 a'' b''8 b'}\\{e''8-2 d'' e'' fis''-2 g''-2 d'' g'' fis''^\markup { \finger "2 - 4" }} >> | % 4
+        << {cis''8 b' cis''-2 dis''-1 e'' b' e'' d''^\markup { \finger "2 - 4" }}\\{e''8-5 fis''16-3 g'' a''4~ a''8 g''16 fis'' g''8-5 g'} >> | % 5
+        << {c''8 d''16-5 e''-4 f''4~ f''8 e''16 d'' e''-5 fis''-4 g''8~}\\{a'8 g' a'-2 b'-1 c'' g' c''-2 b'^\markup { \finger "1 - 2" }} >> | % 6
         << {g''8 fis''4 e''8-2 fis'' g'' a'' g''}\\{a'8 b'16 cis'' d''4~-1 d''8 cis''16-2 b' cis'' d''-1 e''8~} >> | % 7
-        << {fis''4-"3-5" e'' d''2}\\{e''8 d''4 cis''8 d''2 } >> \bar ":|:" % 8
+        << {fis''4^\markup { \finger "3 - 5" } e'' d''2}\\{e''8 d''4 cis''8 d''2 } >> \bar ":|:" % 8
         << { fis''8-3 d'' e'' fis'' g'' d'' g''-3 a''}\\{r1} >> | % 9
         << {b''8 e''-3 a''4~ a''8 g''16-4 fis'' g''8 r}\\{d''8-2 b' cis'' dis'' e''-3 b' e'' fis''} >> | % 10
         << {r8 e''4-4 d''16 c'' b'[ a'-2 g' fis'] g'[ a' b' g'-2]}\\{g''8-5 cis'' f''4~ f''8 e''16-4 dis'' e''8-5 r} >> | % 11
@@ -30,7 +30,7 @@ music =
         \key g \major
         \time 4/4
         g,4 g~ g8 fis16 e fis8 d | % 1
-        g8 a-4 b c' d'4.-"1-5" dis'8-4 | % 2
+        g8 a-4 b c' d'4.^\markup { \finger "1 - 5" } dis'8-4 | % 2
         e'4 r8 c'-3 g d' g' a'16-3 b' | % 3
         c''8 b' a' d'' g'2~ | % 4
         g'8 g4-3 fis8 e e'16 dis' e'4~ | % 5
@@ -44,7 +44,7 @@ music =
         e8 c d e a, a e16-3[ d e fis] | % 13
         g16[ a-2 b g] a[ fis g a-1] d[ e fis g-1] fis[ e d-1 c] | % 14
         b,16[ g, a, b,] c[ d e-3 fis] g[ a-3 b a] g-1[ fis e d-1] | % 15
-        c16 b, c a, d8 d, g,-"3-5" b,16 d g4  \bar ":|" % 16
+        c16 b, c a, d8 d, g,^\markup { \finger "3 - 5" } b,16 d g4  \bar ":|" % 16
       }
     >>
   >>

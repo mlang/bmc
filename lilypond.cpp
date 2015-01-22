@@ -448,7 +448,11 @@ class print_fingering: public boost::static_visitor<std::ostream &>
 public:
   print_fingering(std::ostream &os): os(os) {}
   result_type operator() (braille::finger_change const &change) const
-  { return os << "-\"" << change.first << "-" << change.second << "\""; }
+  {
+    return os << "^\\markup { \\finger \"" 
+              << change.first << " - " << change.second
+              << "\" }";
+  }
   result_type operator() (unsigned finger) const
   { return os << "-" << finger; }
 };

@@ -66,7 +66,7 @@ music =
         c'8.~ c'16[ e' g'] c''-2[ b' a'-1] g'[ fis' e'-1] | % 19
         dis'16[ cis' b-1] a[ g fis] e-1[ dis cis] b,-1[ c-2 a,] | % 20
         g,8.~ g,16[ b, e] g b-3 dis' e'8 g,16-5 | % 21
-        a,8.~-"4-5" a,16[ c f] a c'-3 dis' e'8 ais,16-4 | % 22
+        a,8.~^\markup { \finger "4 - 5" } a,16[ c f] a c'-3 dis' e'8 ais,16-4 | % 22
         b,8.~ b,16[ cis-3 dis] e[ fis-4 g] a[ g fis] | % 23
         g16[ e g-4] b[ e' dis'-3] e'[ g' e'] b[ g b-1] | % 24
         c8.~ c8 e'16-5 a'-2[ g' fis'] e'-1[ d' c'] | % 25

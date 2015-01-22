@@ -27,7 +27,7 @@ music =
          a''16-5[ fis'' g'' e''] fis''[ d'' e''-4 c''] d''[ b' c''-4 a'] | % 17
         b'16[ g' a' fis'] g'[ e' fis' dis'] e'[ c' d' b] | % 18
         c'16[ a b-5 gis] a[ fis g e] f-5[ dis e cis] | % 19
-        dis16[ cis dis cis] dis4~-"3-2" dis16[ fis b a] | % 20
+        dis16[ cis dis cis] dis4~^\markup { \finger "3 - 2" } dis16[ fis b a] | % 20
         g16-1[ b a c'] b-1[ dis' cis' e'] dis'-3[ fis'-4 e'-1 g'] | % 21
         fis'16[ a' g' b'] a'-1[ c'' b' d''] c''-1[ e'' dis'' fis''] | % 22
         e''16[ g'' fis'' a''] g''[ b'' a'' c'''] b''[ g'' a''-4 fis''] | % 23
@@ -38,7 +38,7 @@ music =
         c'''8~-4 c'''32 b'' a'' g'' fis''16-3 g'' a'' fis'' \appoggiatura e''8 d''4~ | % 28
          d''16[ b'-2 c'' a'] b'[ g'' a' f''] g'[ e'' f' d''] | % 29
         e'8 r32 g'-2 a' b' c''16[ a' b' g'-1] a'-4[ fis' g' e'] | % 30
-        fis'16 e'' d''8~-"4-1" d''32[ e'' fis'' g'' fis'' e'' d'' c''-2] b'16[ g'' a' fis''] | % 31
+        fis'16 e'' d''8~^\markup { \finger "4 - 1" } d''32[ e'' fis'' g'' fis'' e'' d'' c''-2] b'16[ g'' a' fis''] | % 31
         g'16[ fis'-2 g' fis'] g'-1 b' d'' fis'' g''8 r  \bar ":|" % 32
       }
       \new Staff = "LH" {
@@ -52,7 +52,7 @@ music =
          d''16[ b'-3 c'' a'] b'-1[ g' a'-2 f'] g'-1[ e' f' d'] | % 5
         e'16-1[ c' d' b] c'[ a b g] a[ fis-2 g e] | % 6
         fis16-2[ d e c] d-1[ b, c a,] b,-1[ g, a, fis,] | % 7
-        g,16-1[ fis, g, fis,] g,4~-"1-5" g,16[ d g fis-4] | % 8
+        g,16-1[ fis, g, fis,] g,4~^\markup { \finger "1 - 5" } g,16[ d g fis-4] | % 8
         g16 b d' fis'-2 g'8. a'16-4 b'[ cis'' d'' b'] | % 9
         cis''16[ b' a'-1 g'] fis'[ e'-1 dis' cis'] b-1[ a g fis] | % 10
         e16 g b dis'-2 e'8. fis'16-4 g'[ a' b' g'] | % 11

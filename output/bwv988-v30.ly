@@ -22,9 +22,9 @@ music =
         <a'' a'>8 <g''-4 b'> <fis''-3 a'> <e''-5 g'> << {dis''8 cis''16 dis'' b'8 b''}\\{ fis'8-1 e' dis' r} >> | % 11
         << {e''8 b'' e'' b'' dis''16-2 e''-4 fis''-3 g'' a''8 g''16 fis''}\\{ b'4 b' c'' c''} >> | % 12
         << {g''8-5 fis''16 e''-5 dis''-3[ e'' fis'' dis''] e''2~-5}\\{b'8 c'' b' a' g' fis'16-2 g'-2 e'8 r} >> | % 13
-        << {e''16[( d''-1) fis''-3( e'']) g''( fis'') a''8 d''4.-"1-3" c''16 d''}\\{r2  g'4  g'-1} >> | % 14
+        << {e''16[( d''-1) fis''-3( e'']) g''( fis'') a''8 d''4.^\markup { \finger "1 - 3" } c''16 d''}\\{r2  g'4  g'-1} >> | % 14
         << {e''8-4 fis''16-3 g'' a''8 g''-4 fis''16 e''32 fis''-5 d''8-3 r4}\\{c''8.-1 d''16 c''8 b' a' b'-2 c''-1 d''} >> | % 15
-        << {b''8-"5-4" c''' d'''-4 b'' c'''-5 b''-4 a''-5 g''-"4-5"}\\{b'8  a'16-1  b'-1  g'8-1 r r  e''16-2 d'' c''8-1 e''} >> | % 16
+        << {b''8^\markup { \finger "5 - 4" } c''' d'''-4 b'' c'''-5 b''-4 a''-5 g''^\markup { \finger "4 - 5" }}\\{b'8  a'16-1  b'-1  g'8-1 r r  e''16-2 d'' c''8-1 e''} >> | % 16
         << {fis''8 g'' a'' fis'' g''4 g''8}\\{a'16[ d''-3 c'' b'] c'' a' d''8~ d'' c''16 d'' b'8} >>  \bar ":|" % 17
       }
       \new Staff = "LH" {
@@ -37,17 +37,17 @@ music =
         << {b,2 c}\\{g4 r8 d' c' b a g-1} >> | % 3
         << {d2 g,4 r8 b16 a}\\{fis4~ fis16 e32 fis d8~-1 d4 r} >> | % 4
         g8 fis16 g-1 e8 d16 e fis4. b8 | % 5
-        e4.-4 fis16 g a4~-"1-4" a16[ g fis-4 e] | % 6
+        e4.-4 fis16 g a4~^\markup { \finger "1 - 4" } a16[ g fis-4 e] | % 6
         << {fis4-3 d g g,}\\{fis8-3 g a fis-2 g fis e-1 d} >> | % 7
         << {a,2-5 d,4 r8}\\{cis8 d e cis-2 d4 d8} >>  \bar ":|:" % 8
         << { r8}\\{fis'8-1} >> | % 9
         << {d'4-2 c' b g}\\{d'8-2 fis' d' fis' g' d' d'-2 g'} >> | % 10
         << {c'8-3 b c' a b4. a8}\\{e'8-2 r r4 fis'-1 fis'} >> | % 11
         << {g8 e' g e' a4. ais8-4}\\{g'4 g' fis'8-1 g'-1 fis'-2 e'-1} >> | % 12
-        << {b4-5 b, e4.-"3-5" d8}\\{dis'8-2 e'16 fis'-2 b4~ b8 a16 b g8-3 a16-1 b-2} >> | % 13
+        << {b4-5 b, e4.^\markup { \finger "3 - 5" } d8}\\{dis'8-2 e'16 fis'-2 b4~ b8 a16 b g8-3 a16-1 b-2} >> | % 13
         << {c4 c' b4. c'16-3 b}\\{c'8 d'-1 e'-3 fis' g' fis'16 e' d'8-1 r} >> | % 14
         << {a4. b16 c' d'4.-3 c'16 d'}\\{r8 a' e'-2 d'16 e'-1 fis'8-2 g'4 fis'8} >> | % 15
-        << {g8 a b-3 g c'4.-"3-5" cis'8}\\{d'4-2 d' e' e'-2} >> | % 16
+        << {g8 a b-3 g c'4.^\markup { \finger "3 - 5" } cis'8}\\{d'4-2 d' e' e'-2} >> | % 16
         << {d'4-3 d g-4 g,8}\\{d'8-3 e' d'-1 c'-2 b-1 a g} >>  \bar ":|" % 17
       }
     >>

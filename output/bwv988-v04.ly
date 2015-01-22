@@ -57,14 +57,14 @@ music =
         \time 3/8
         \repeat volta 2 {
           g4.-1 |
-          fis4.-"5-4" |
+          fis4.^\markup { \finger "5 - 4" } |
           << {e4.}\\{r8 b-1 g} >> |
           << {r8 d-4 fis}\\{d'4 r8} >> |
           << {b,4.}\\{r8 g b} >> |
-          << {c4.-"4-5"}\\{e8 a g~-"2-1"} >> |
+          << {c4.^\markup { \finger "4 - 5" }}\\{e8 a g~^\markup { \finger "2 - 1" }} >> |
           << {d4.}\\{g8 fis16 e fis8} >> |
           << {r8 b,-4 d-1}\\{g8 d r} >> |
-          << {g,8 g4~-"1-4"}\\{R1*3/8} >> |
+          << {g,8 g4~^\markup { \finger "1 - 4" }}\\{R1*3/8} >> |
           << {g8 fis4~}\\{r8 d'-2 fis'} >> |
           << {fis8-4 e g}\\{b8-2 e' r} >> |
           << {cis8 a-4 cis'}\\{r8 cis' e'} >> |
@@ -86,11 +86,11 @@ music =
           <a-3 c'-2>8 b-1 b, |
           <<{e4-3}\\{ b8 g8 }>> <d b>8 |
           << {c4.~}\\{e8 a16 g fis g-1} >> |
-          << {c8-"5-3" b,4~}\\{ d'4.} >> |
+          << {c8^\markup { \finger "5 - 3" } b,4~}\\{ d'4.} >> |
           << {b,8 a, c-4}\\{ c'8  fis-2 a} >> |
           << {fis,8-3 d, fis,-4}\\{d4.~} >> |
           << {g,8-5 b, g,}\\{d4 g8~} >> |
-          << {c4.~-"3-5"}\\{g8 a-2 c'} >> |
+          << {c4.~^\markup { \finger "3 - 5" }}\\{g8 a-2 c'} >> |
           <c fis>8 <b, g-1> <d-2 a> |
         }
         \alternative {

@@ -14,13 +14,13 @@ music =
           g'8. g''32 fis'' g''8. e''16 \appoggiatura d''8 cis''8. b''16 a''8. g''16 |
           << {fis''4.-4 g''8}\\{d''4-1 r} >> \appoggiatura g''8 a''2~ |
           a''8~ a''32 a'' g'' fis'' g''8. d''16~ << {\appoggiatura e''8 f''4.\mordent  g''8-5}\\{d''2} >> |
-          \appoggiatura f''8 <e''~-"3-4" c''>8 e''32 d'' c'' b' c''8~-4 c''32 b' a' g' a'8. a'16-1 g''8.\mordent  g''16 |
+          \appoggiatura f''8 <e''~^\markup { \finger "3 - 4" } c''>8 e''32 d'' c'' b' c''8~-4 c''32 b' a' g' a'8. a'16-1 g''8.\mordent  g''16 |
           <g''~-4 d'' fis'>4 g''32 b'' a'' g'' fis'' e'' d''-2 c'' a''8. c''16 a''8. c''16 |
           b'4~-3 b'8~ b'32 a' g'-3 fis' g'16-1[ d''-.-2 e''-. fis''-.] g''-.[ fis''-.-2 g''-. a''-.] |
           b''8~ b''32 a'' g'' fis'' g''8~ g''32 fis'' e'' dis''-2 e''8. b'16 cis''8.\mordent  <d'' b'>16 |
           << {\appoggiatura d''8-3 cis''8~ cis''32 e''-4 fis''-3 g'' a''8. a''16 a''4~ a''8~ a''32 a'' g'' fis''}\\{a'4 r8 r16 a'' dis''8. fis''16 b'4~} >> |
           << {g''8~-5 g''32 fis'' e'' dis'' e''8. b''16 d''4. cis''16 b'}\\{b'4 r b'2} >> |
-          << {cis''8~-4 cis''32 d'' cis''-2 d'' d''8. cis''32 d'' e''4~-"4-5" e''32[ d'' cis'' b' a' g'-4 fis' e']}\\{a'4-"2-1" b' cis'' r} >> |
+          << {cis''8~-4 cis''32 d'' cis''-2 d'' d''8. cis''32 d'' e''4~^\markup { \finger "4 - 5" } e''32[ d'' cis'' b' a' g'-4 fis' e']}\\{a'4^\markup { \finger "2 - 1" } b' cis'' r} >> |
           d'8. fis'16 a'8.\mordent -3 b'16( <c''~ a' d'>4 c''8~) c''32 c''-3 b' a' |
           b'8~ b'32 cis'' d'' e'' d''8~ d''32 cis'' d'' e'' a'8~ a'32 e''-2 fis'' g'' a''8. cis''16-2( |
           d''4.-4-1) e''8-3 << {e''4. d''8}\\{cis''2-1} >> |
@@ -51,7 +51,7 @@ music =
           << {d''32-1 e'' fis''16 fis''8. e''32 fis''}\\{fis'16 r r8 r} >> |
           g''8 fis''16 e'' d'' c''-2 |
           b'16[ d'' c'' e'' d'' f''] |
-          << {e''4.~-"4-5"}\\{r8 fis'-2 g'\turn } >> |
+          << {e''4.~^\markup { \finger "4 - 5" }}\\{r8 fis'-2 g'\turn } >> |
           << {e''16[ d'' c'' b' c''-1 fis'']}\\{a'8 r r} >> |
           a''16[ d''-2 c'' b'-3 c'' a'] |
           b'16-1[ e''-4 d'' c'' d''-1 gis''] |
@@ -77,7 +77,7 @@ music =
           d8. c'32 b c'8. a16 fis8.-5 e'16 d'8. c'16 |
           b4.-1 b8 b~ b32 c' b a b8. g16 |
           c'4~\mordent  c'8~-2 c'32 d' c' b c'8~-1 c'32 b a g a8~-1 a32 g fis e |
-          d2~-"5-1" d16 c32 b, a,-1 g, fis, e, d,16[ fis, a, d] |
+          d2~^\markup { \finger "5 - 1" } d16 c32 b, a,-1 g, fis, e, d,16[ fis, a, d] |
           g,16-.[ d-.-1 e-.-3 fis-.] g-.[ fis-. g-. a-.-3] b4~ b8~ b32 a-1 g fis |
           g16-.[ b-. cis'-.-3 dis'-.] e'-.[ dis'-.-4 e'-. fis'-.] g'8. g16 g'8. g'16-2 |
           g'4~-1 g'8~ g'32 g' fis' e' fis'8~ fis'32 b cis' dis' e'8. e'16-1 |
