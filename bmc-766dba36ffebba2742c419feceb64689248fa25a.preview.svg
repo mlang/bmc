@@ -1,404 +1,418 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2" width="177.25mm" height="42.71mm" viewBox="7.2582 -0.0000 100.8623 24.3071">
-<rect transform="translate(107.9305, 20.1923)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(76.9466, 7.8047)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(76.9466, 20.1923)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(76.9466, -0.0000)" x="0.0000" y="9.8547" width="0.1900" height="8.3376" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(107.9305, 7.8047)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(47.1583, -0.0000)" x="0.0000" y="9.8547" width="0.1900" height="8.3376" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(107.9305, -0.0000)" x="0.0000" y="9.8547" width="0.1900" height="8.3376" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(47.1583, 20.1923)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<rect transform="translate(47.1583, 7.8047)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
-<line transform="translate(8.5358, 22.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 21.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 20.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 19.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 18.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 9.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 8.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 7.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 6.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<line transform="translate(8.5358, 5.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
-<rect transform="translate(0.0000, 4.8047)" x="65.0857" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 4.8047)" x="88.0276" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 4.8047)" x="91.4384" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 4.8047)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 4.8047)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="58.3876" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="61.7998" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="73.4080" y="-0.1000" width="1.8202" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="77.6989" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 16.1923)" x="77.6989" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="88.0276" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="94.8498" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 16.1923)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 15.1923)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 16.1923)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 15.1923)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 17.1923)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 16.1923)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 15.1923)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
-<rect transform="translate(0.0000, 14.1923)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.2" width="177.25mm" height="40.69mm" viewBox="7.2582 -0.0000 100.8623 23.1561">
+<rect transform="translate(107.9305, 20.1061)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(76.9466, 7.6767)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(76.9466, 20.1061)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(76.9466, -0.0000)" x="0.0000" y="9.7267" width="0.1900" height="8.3793" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(107.9305, 7.6767)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(47.1583, -0.0000)" x="0.0000" y="9.7267" width="0.1900" height="8.3793" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(107.9305, -0.0000)" x="0.0000" y="9.7267" width="0.1900" height="8.3793" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(47.1583, 20.1061)" x="0.0000" y="-2.0500" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<rect transform="translate(47.1583, 7.6767)" x="0.0000" y="-2.0000" width="0.1900" height="4.0500" ry="0.0000" fill="currentColor"/>
+<line transform="translate(8.5358, 22.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 21.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 20.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 19.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 18.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 9.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 8.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 7.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 6.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<line transform="translate(8.5358, 5.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.1000" stroke="currentColor" x1="0.0500" y1="-0.0000" x2="99.5346" y2="-0.0000"/>
+<rect transform="translate(0.0000, 4.6767)" x="65.0857" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 4.6767)" x="88.0276" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 4.6767)" x="91.4384" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 4.6767)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 4.6767)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="58.3876" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="61.7998" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="73.4080" y="-0.1000" width="1.8202" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="77.6989" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 16.1061)" x="77.6989" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="88.0276" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="94.8498" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 16.1061)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 15.1061)" x="99.6058" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 16.1061)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 15.1061)" x="103.0181" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 17.1061)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 16.1061)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 15.1061)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
+<rect transform="translate(0.0000, 14.1061)" x="105.3961" y="-0.1000" width="1.9743" height="0.2000" ry="0.1000" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:29:30">
-<path transform="translate(88.3566, 4.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(88.3566, 4.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(82.8164, 7.8047)" x="-0.0650" y="-5.2968" width="0.1300" height="3.1090" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(82.8164, 7.6767)" x="-0.0650" y="-5.2968" width="0.1300" height="3.1090" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:61:62">
-<path transform="translate(81.5652, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(81.5652, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:22:23">
-<path transform="translate(81.7965, 1.7680) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
+<path transform="translate(81.7965, 1.6400) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
 c36 0 74 -13 111 -40c19 -14 40 -21 59 -21c22 0 40 10 46 31c2 7 7 11 13 11c7 0 15 -5 15 -14v-5c-19 -71 -84 -111 -146 -111c-38 0 -75 15 -101 47c-12 15 -28 22 -44 22c-29 0 -57 -21 -60 -56z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:17:18">
-<path transform="translate(81.5652, 5.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(81.5652, 5.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(81.6302, 7.8047)" x="-0.0650" y="0.1878" width="0.1300" height="2.6344" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(81.6302, 7.6767)" x="-0.0650" y="0.1878" width="0.1300" height="2.6344" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:15:16">
-<path transform="translate(88.3566, 17.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(88.3566, 17.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(78.0930, 20.1923)" x="-0.0650" y="-3.8122" width="0.1300" height="3.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(78.0930, 20.1061)" x="-0.0650" y="-3.8122" width="0.1300" height="3.8122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:17:18">
-<path transform="translate(88.6221, 16.1423) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<path transform="translate(88.6221, 16.0560) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
-<rect transform="translate(86.3537, 7.8047)" x="-0.0650" y="-5.4016" width="0.1300" height="2.7138" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(85.1675, 7.8047)" x="-0.0650" y="-1.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(86.3537, 7.6767)" x="-0.0650" y="-5.4016" width="0.1300" height="2.7138" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(85.1675, 7.6767)" x="-0.0650" y="-1.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:12:13">
-<path transform="translate(85.1025, 20.1923) scale(0.0040, -0.0040)" d="M72 -250l117 326c-34 -12 -69 -22 -105 -22c-46 0 -87 33 -87 79c0 40 33 72 73 72c25 0 48 -15 56 -39c10 -28 6 -59 35 -59c16 0 54 48 61 63c6 12 23 12 28 0l-123 -420c-8 -7 -17 -10 -27 -10s-20 3 -28 10z" fill="currentColor"/>
+<path transform="translate(85.1025, 20.1061) scale(0.0040, -0.0040)" d="M72 -250l117 326c-34 -12 -69 -22 -105 -22c-46 0 -87 33 -87 79c0 40 33 72 73 72c25 0 48 -15 56 -39c10 -28 6 -59 35 -59c16 0 54 48 61 63c6 12 23 12 28 0l-123 -420c-8 -7 -17 -10 -27 -10s-20 3 -28 10z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:65:66">
-<path transform="translate(85.1025, 6.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(85.1025, 6.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:25:26">
-<path transform="translate(85.1025, 5.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(85.1025, 5.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(89.6078, 7.8047)" x="-0.0650" y="-5.4981" width="0.1300" height="2.3103" ry="0.0400" fill="currentColor"/>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:55:56">
-<path transform="translate(70.4362, 4.7547) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<rect transform="translate(89.6078, 7.6767)" x="-0.0650" y="-5.4981" width="0.1300" height="2.3103" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:77:78">
+<path transform="translate(70.4362, 4.6267) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
-<rect transform="translate(70.2358, 7.8047)" x="-0.0650" y="0.1878" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(71.4220, 7.8047)" x="-0.0650" y="-4.6667" width="0.1300" height="2.4789" ry="0.0400" fill="currentColor"/>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:92:93">
-<path transform="translate(70.4362, 13.5156) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
+<rect transform="translate(70.2358, 7.6767)" x="-0.0650" y="0.1878" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(71.4220, 7.6767)" x="-0.0650" y="-4.6667" width="0.1300" height="2.4789" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:114:115">
+<path transform="translate(70.4362, 13.3876) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
 c-5 0 -9 -2 -11 -7l-66 -127c-4 -7 -9 -9 -15 -9c-9 0 -19 7 -19 17c0 3 0 6 2 9l129 250c1 3 4 4 7 4z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:90:91">
-<path transform="translate(70.1708, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:112:113">
+<path transform="translate(70.1708, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:96:97">
-<path transform="translate(73.5830, 8.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:118:119">
+<path transform="translate(73.5830, 8.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:49:50">
-<path transform="translate(70.1708, 5.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:71:72">
+<path transform="translate(70.1708, 5.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(69.0439, 7.8047)" x="-0.0650" y="-5.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:45:46">
-<path transform="translate(67.7928, 5.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<rect transform="translate(69.0439, 7.6767)" x="-0.0650" y="-5.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:67:68">
+<path transform="translate(67.7928, 5.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(65.4797, 7.8047)" x="-0.0650" y="1.6878" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(65.4797, 7.6767)" x="-0.0650" y="1.6878" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:13:14">
-<path transform="translate(25.6103, 20.1923)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M1.516178 -2.0C2.41963840762382 -2.83201936313165 5.72101880303239 -2.83201936313165 6.62447921065621 -2.0C5.72101880303239 -2.71201936313165 2.41963840762382 -2.71201936313165 1.516178 -2.0z"/>
+<path transform="translate(25.6103, 20.1061)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M1.516178 -2.0C2.41963840762382 -2.83201936313165 5.72101880303239 -2.83201936313165 6.62447921065621 -2.0C5.72101880303239 -2.71201936313165 2.41963840762382 -2.71201936313165 1.516178 -2.0z"/>
 </a>
-<rect transform="translate(78.0930, 7.8047)" x="-0.0650" y="1.1878" width="0.1300" height="2.3000" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(79.2792, 7.8047)" x="-0.0650" y="-5.1919" width="0.1300" height="2.5041" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(78.0930, 7.6767)" x="-0.0650" y="1.1878" width="0.1300" height="2.3000" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(79.2792, 7.6767)" x="-0.0650" y="-5.1919" width="0.1300" height="2.5041" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:8:9">
-<path transform="translate(78.0280, 16.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(78.0280, 16.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:57:58">
-<path transform="translate(78.0280, 8.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(78.0280, 8.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:12:13">
-<path transform="translate(78.0280, 5.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(78.0280, 5.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<path transform="translate(72.1330, 16.6923) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
+<path transform="translate(72.1330, 16.6061) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
 c0 10 8 19 18 19s19 -9 19 -19v-145l83 31v158c0 10 9 19 19 19s18 -9 18 -19v-145l32 12c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -16 -13 -19l-46 -16v-160l32 11c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -15 -13 -18l-46 -17v-158zM96 65v-160l83 30v160z" fill="currentColor"/>
-<path transform="translate(73.7130, 20.1523) scale(0.0040, -0.0040)" d="M0 0h-16v250h16c98 58 227 148 227 259c0 57 -16 112 -41 163c-3 16 10 27 23 27c7 0 15 -3 20 -11c25 -56 40 -117 40 -179c0 -204 -269 -305 -269 -509z" fill="currentColor"/>
-<rect transform="translate(73.6480, 20.1923)" x="-0.0650" y="-3.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(73.6480, 7.8047)" x="-0.0650" y="0.6878" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:36:37">
-<path transform="translate(73.7802, 15.6423) scale(0.0022, -0.0022)" d="M198 284c24 15 48 29 65 52c12 16 19 34 28 52c2 5 6 7 11 7c8 0 16 -6 16 -17v-217h79c12 0 18 -9 18 -18s-6 -18 -18 -18h-79c2 -51 33 -96 80 -96c10 0 15 -8 15 -15s-5 -14 -15 -14c-49 0 -96 14 -145 14s-97 -14 -146 -14c-10 0 -14 7 -14 14s4 15 14 15
+<path transform="translate(73.7130, 20.0661) scale(0.0040, -0.0040)" d="M0 0h-16v250h16c98 58 227 148 227 259c0 57 -16 112 -41 163c-3 16 10 27 23 27c7 0 15 -3 20 -11c25 -56 40 -117 40 -179c0 -204 -269 -305 -269 -509z" fill="currentColor"/>
+<rect transform="translate(73.6480, 20.1061)" x="-0.0650" y="-3.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(73.6480, 7.6767)" x="-0.0650" y="0.6878" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:58:59">
+<path transform="translate(73.7802, 15.5560) scale(0.0022, -0.0022)" d="M198 284c24 15 48 29 65 52c12 16 19 34 28 52c2 5 6 7 11 7c8 0 16 -6 16 -17v-217h79c12 0 18 -9 18 -18s-6 -18 -18 -18h-79c2 -51 33 -96 80 -96c10 0 15 -8 15 -15s-5 -14 -15 -14c-49 0 -96 14 -145 14s-97 -14 -146 -14c-10 0 -14 7 -14 14s4 15 14 15
 c47 0 79 45 81 96h-152c-29 0 -38 17 -38 28c0 3 1 6 2 8c78 88 123 201 123 319c0 11 8 21 17 21c1 0 3 -1 4 -1c25 -7 50 -14 76 -14s52 7 77 14c2 1 4 1 6 1c10 0 17 -7 17 -14c0 -2 0 -5 -2 -7l-282 -319h152v96c0 10 1 21 10 27z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:31:32">
-<path transform="translate(73.5830, 16.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:53:54">
+<path transform="translate(73.5830, 16.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:98:99">
-<path transform="translate(73.8485, 13.5156) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:120:121">
+<path transform="translate(73.8485, 13.3876) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
 c-5 0 -9 -2 -11 -7l-66 -127c-4 -7 -9 -9 -15 -9c-9 0 -19 7 -19 17c0 3 0 6 2 9l129 250c1 3 4 4 7 4z" fill="currentColor"/>
 </a>
-<rect transform="translate(105.7901, 20.1923)" x="-0.0650" y="-5.8122" width="0.1300" height="5.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(105.7901, 20.1061)" x="-0.0650" y="-5.8122" width="0.1300" height="5.8122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:35:36">
-<path transform="translate(105.7251, 14.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(105.7251, 14.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(103.4121, 20.1923)" x="-0.0650" y="-5.3122" width="0.1300" height="5.3122" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(104.5983, 7.8047)" x="-0.0650" y="-5.8100" width="0.1300" height="2.6222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(103.4121, 20.1061)" x="-0.0650" y="-5.3122" width="0.1300" height="5.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(104.5983, 7.6767)" x="-0.0650" y="-5.8100" width="0.1300" height="2.6222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:32:33">
-<path transform="translate(103.6125, 13.6423) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<path transform="translate(103.6125, 13.5560) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:28:29">
-<path transform="translate(103.3471, 14.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(103.3471, 14.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:49:50">
-<path transform="translate(103.3471, 4.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(103.3471, 4.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(99.9999, 20.1923)" x="-0.0650" y="-4.8122" width="0.1300" height="4.8122" ry="0.0400" fill="currentColor"/>
-<polygon transform="translate(19.9720, 4.9947)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.3267 -0.5800 10.3267 -0.1800 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(35.7207, 21.9240)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 0.0684 2.4680 0.4684 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(32.4348, 22.3823)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.7539 0.4200 5.7539 0.8200 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(33.6210, 4.3047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.4192 -0.2000 11.4192 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(40.4767, 22.3823)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.3772 0.4200 3.3772 0.8200 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(49.4994, 4.9947)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.5856 -0.8900 3.5856 -0.4900 0.0400 0.2000 0.0400 -0.2000"/>
+<rect transform="translate(99.9999, 20.1061)" x="-0.0650" y="-4.8122" width="0.1300" height="4.8122" ry="0.0400" fill="currentColor"/>
+<polygon transform="translate(19.9720, 4.8667)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.3267 -0.5800 10.3267 -0.1800 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(35.7207, 21.8377)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 0.0684 2.4680 0.4684 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(32.4348, 22.2961)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.7539 0.4200 5.7539 0.8200 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(33.6210, 4.1767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.4192 -0.2000 11.4192 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(40.4767, 22.2961)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.3772 0.4200 3.3772 0.8200 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(49.4994, 4.8667)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.5856 -0.8900 3.5856 -0.4900 0.0400 0.2000 0.0400 -0.2000"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:26:27">
-<path transform="translate(55.3044, 7.8047)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M1.651178 -3.0C2.54138960655958 -3.82636553095846 5.73426760409662 -3.82636553095846 6.6244792106562 -3.0C5.73426760409662 -3.70636553095846 2.54138960655958 -3.70636553095846 1.651178 -3.0z"/>
+<path transform="translate(55.3044, 7.6767)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M1.651178 -3.0C2.54138960655958 -3.82636553095846 5.73426760409662 -3.82636553095846 6.6244792106562 -3.0C5.73426760409662 -3.70636553095846 2.54138960655958 -3.70636553095846 1.651178 -3.0z"/>
 </a>
-<polygon transform="translate(48.3133, 11.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4934 -0.3900 10.4934 0.0100 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(48.3133, 21.3823)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4934 -1.2000 10.4934 -0.8000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(63.3151, 2.3047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.7539 -0.2000 5.7539 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(66.6009, 3.1147)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(62.1289, 11.6147)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.5442 -0.2000 11.5442 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(78.0280, 11.3047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.6272 -0.8900 3.6272 -0.4900 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(48.3133, 11.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4934 -0.3900 10.4934 0.0100 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(48.3133, 21.2961)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4934 -1.2000 10.4934 -0.8000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(63.3151, 2.1767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.7539 -0.2000 5.7539 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(66.6009, 2.9867)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(62.1289, 11.4867)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.5442 -0.2000 11.5442 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(78.0280, 11.1767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.6272 -0.8900 3.6272 -0.4900 0.0400 0.2000 0.0400 -0.2000"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:69:70">
-<path transform="translate(85.1025, 7.8047)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M0.858089000000007 -0.801612519071748C1.79571084507766 0.0444064388007451 5.39239390016537 0.0444064388007451 6.33001574524303 -0.801612519071748C5.39239390016537 -0.0755935611992549 1.79571084507766 -0.0755935611992549 0.858089000000007 -0.801612519071748z"/>
+<path transform="translate(85.1025, 7.6767)" stroke-width="0.0800" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" fill="currentColor" d="M0.858089000000007 -0.801612519071748C1.79571084507766 0.0444064388007451 5.39239390016537 0.0444064388007451 6.33001574524303 -0.801612519071748C5.39239390016537 -0.0755935611992549 1.79571084507766 -0.0755935611992549 0.858089000000007 -0.801612519071748z"/>
 </a>
-<polygon transform="translate(79.2142, 2.6147)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4186 -0.5100 10.4186 -0.1100 0.0400 0.2000 0.0400 -0.2000"/>
-<rect transform="translate(99.9999, 7.8047)" x="-0.0650" y="-0.8122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<polygon transform="translate(95.1788, 8.8047)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(91.7675, 9.6147)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.8793 -0.2000 5.8793 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(91.7675, 21.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.5013 -1.0100 3.5013 -0.6100 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(92.9537, 1.9947)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.6696 -0.2000 11.6696 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(103.3471, 19.3823)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<polygon transform="translate(99.9349, 20.1923)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.8803 -0.2000 5.8803 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
-<rect transform="translate(96.4300, 7.8047)" x="-0.0650" y="-5.8100" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
+<polygon transform="translate(79.2142, 2.4867)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="10.4186 -0.5100 10.4186 -0.1100 0.0400 0.2000 0.0400 -0.2000"/>
+<rect transform="translate(99.9999, 7.6767)" x="-0.0650" y="-0.8122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<polygon transform="translate(95.1788, 8.6767)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(91.7675, 9.4867)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.8793 -0.2000 5.8793 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(91.7675, 21.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="3.5013 -1.0100 3.5013 -0.6100 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(92.9537, 1.8667)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="11.6696 -0.2000 11.6696 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(103.3471, 19.2961)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="2.4680 -0.2000 2.4680 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<polygon transform="translate(99.9349, 20.1061)" stroke-linejoin="round" stroke-linecap="round" stroke-width="0.0800" fill="currentColor" stroke="currentColor" points="5.8803 -0.2000 5.8803 0.2000 0.0400 0.2000 0.0400 -0.2000"/>
+<rect transform="translate(96.4300, 7.6767)" x="-0.0650" y="-5.8100" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:22:23">
-<path transform="translate(95.1788, 16.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(95.1788, 16.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:83:84">
-<path transform="translate(95.4443, 11.4815) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<path transform="translate(95.4443, 11.3535) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:76:77">
-<path transform="translate(95.1788, 5.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(95.1788, 5.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:42:43">
-<path transform="translate(95.4443, 1.2547) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<path transform="translate(95.4443, 1.1267) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:37:38">
-<path transform="translate(95.1788, 5.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(95.1788, 5.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(91.8325, 20.1923)" x="-0.0650" y="-1.3122" width="0.1300" height="2.2973" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(91.8325, 7.8047)" x="-0.0650" y="-1.3122" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(93.0187, 7.8047)" x="-0.0650" y="-5.8100" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(91.8325, 20.1061)" x="-0.0650" y="-1.3122" width="0.1300" height="2.2973" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(91.8325, 7.6767)" x="-0.0650" y="-1.3122" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(93.0187, 7.6767)" x="-0.0650" y="-5.8100" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:20:21">
-<path transform="translate(91.7675, 18.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(91.7675, 18.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:71:72">
-<path transform="translate(91.7675, 6.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(91.7675, 6.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:33:34">
-<path transform="translate(91.7675, 4.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(91.7675, 4.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<path transform="translate(88.4866, 20.6523) scale(0.0040, -0.0040)" d="M0 0h-16v250h16c98 58 227 148 227 259c0 57 -16 112 -41 163c-3 16 10 27 23 27c7 0 15 -3 20 -11c25 -56 40 -117 40 -179c0 -204 -269 -305 -269 -509z" fill="currentColor"/>
-<rect transform="translate(101.1860, 7.8047)" x="-0.0650" y="-5.8100" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
+<path transform="translate(88.4866, 20.5661) scale(0.0040, -0.0040)" d="M0 0h-16v250h16c98 58 227 148 227 259c0 57 -16 112 -41 163c-3 16 10 27 23 27c7 0 15 -3 20 -11c25 -56 40 -117 40 -179c0 -204 -269 -305 -269 -509z" fill="currentColor"/>
+<rect transform="translate(101.1860, 7.6767)" x="-0.0650" y="-5.8100" width="0.1300" height="2.1222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:37:25:26">
-<path transform="translate(99.9349, 15.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(99.9349, 15.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:90:91">
-<path transform="translate(99.9349, 6.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(99.9349, 6.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:45:46">
-<path transform="translate(99.9349, 4.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(99.9349, 4.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(97.6218, 7.8047)" x="-0.0650" y="-1.3122" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(97.6218, 7.6767)" x="-0.0650" y="-1.3122" width="0.1300" height="3.1222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:16:86:87">
-<path transform="translate(97.5568, 6.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(97.5568, 6.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(88.4216, 20.1923)" x="-0.0650" y="-2.8122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(95.2438, 20.1923)" x="-0.0650" y="-3.3122" width="0.1300" height="3.5171" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(95.2438, 7.8047)" x="-0.0650" y="-1.8122" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(88.4216, 20.1061)" x="-0.0650" y="-2.8122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(95.2438, 20.1061)" x="-0.0650" y="-3.3122" width="0.1300" height="3.5171" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(95.2438, 7.6767)" x="-0.0650" y="-1.8122" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:32:33">
-<path transform="translate(35.7207, 8.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(35.7207, 8.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(38.1637, 20.1923)" x="-0.0650" y="-0.3122" width="0.1300" height="3.1152" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(38.1637, 20.1061)" x="-0.0650" y="-0.3122" width="0.1300" height="3.1152" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:24:25">
-<path transform="translate(38.0987, 19.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(38.0987, 19.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(35.7857, 20.1923)" x="-0.0650" y="-0.8122" width="0.1300" height="3.3608" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(36.9718, 7.8047)" x="-0.0650" y="-3.5000" width="0.1300" height="3.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(35.7857, 20.1061)" x="-0.0650" y="-0.8122" width="0.1300" height="3.3608" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(36.9718, 7.6767)" x="-0.0650" y="-3.5000" width="0.1300" height="3.8122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:18:19">
-<path transform="translate(35.7207, 19.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(35.7207, 19.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(32.4998, 20.1923)" x="-0.0650" y="-1.3122" width="0.1300" height="3.5091" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(33.6860, 7.8047)" x="-0.0650" y="-3.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(32.4998, 20.1061)" x="-0.0650" y="-1.3122" width="0.1300" height="3.5091" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(33.6860, 7.6767)" x="-0.0650" y="-3.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:15:16">
-<path transform="translate(32.4348, 18.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(32.4348, 18.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:28:29">
-<path transform="translate(32.4348, 6.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(32.4348, 6.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:31:32">
-<path transform="translate(43.7639, 20.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(43.7639, 20.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:8:9">
-<path transform="translate(48.3133, 18.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(48.3133, 18.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:61:62">
-<path transform="translate(48.3133, 8.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:83:84">
+<path transform="translate(48.3133, 8.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:12:13">
-<path transform="translate(48.3133, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(48.3133, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(43.8289, 20.1923)" x="-0.0650" y="0.1878" width="0.1300" height="2.6104" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(45.0151, 7.8047)" x="-0.0650" y="-3.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(43.8289, 20.1061)" x="-0.0650" y="0.1878" width="0.1300" height="2.6104" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(45.0151, 7.6767)" x="-0.0650" y="-3.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:39:40">
-<path transform="translate(43.7639, 7.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(43.7639, 7.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(40.5417, 20.1923)" x="-0.0650" y="-0.8122" width="0.1300" height="3.0140" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(41.7279, 7.8047)" x="-0.0650" y="-3.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(40.5417, 20.1061)" x="-0.0650" y="-0.8122" width="0.1300" height="3.0140" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(41.7279, 7.6767)" x="-0.0650" y="-3.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:26:27">
-<path transform="translate(40.4767, 19.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(40.4767, 19.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:35:36">
-<path transform="translate(40.4767, 6.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(40.4767, 6.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:8:9">
-<path transform="translate(18.7858, 22.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(18.7858, 22.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(20.0370, 20.1923)" x="-0.0650" y="-1.5000" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(20.0370, 7.8047)" x="-0.0650" y="-2.8124" width="0.1300" height="2.6246" ry="0.0400" fill="currentColor"/>
-<path transform="translate(15.0858, 20.1923) scale(0.0040, -0.0040)" d="M359 27c-49 0 -75 42 -75 75c0 38 27 77 72 77c4 0 9 0 14 -1c-28 37 -72 59 -120 59c-106 0 -113 -73 -113 -186v-51v-51c0 -113 7 -187 113 -187c80 0 139 70 158 151c2 7 7 10 12 10c6 0 13 -4 13 -12c0 -94 -105 -174 -183 -174c-68 0 -137 21 -184 70
+<rect transform="translate(20.0370, 20.1061)" x="-0.0650" y="-1.5000" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(20.0370, 7.6767)" x="-0.0650" y="-2.8124" width="0.1300" height="2.6246" ry="0.0400" fill="currentColor"/>
+<path transform="translate(15.0858, 20.1061) scale(0.0040, -0.0040)" d="M359 27c-49 0 -75 42 -75 75c0 38 27 77 72 77c4 0 9 0 14 -1c-28 37 -72 59 -120 59c-106 0 -113 -73 -113 -186v-51v-51c0 -113 7 -187 113 -187c80 0 139 70 158 151c2 7 7 10 12 10c6 0 13 -4 13 -12c0 -94 -105 -174 -183 -174c-68 0 -137 21 -184 70
 c-49 51 -66 122 -66 193s17 142 66 193c47 49 116 69 184 69c87 0 160 -64 175 -150c1 -5 1 -9 1 -13c0 -40 -30 -72 -67 -72z" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:33:8:9">
-<path transform="translate(12.8358, 19.1923) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
+<path transform="translate(12.8358, 19.1061) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
 c0 10 8 19 18 19s19 -9 19 -19v-145l83 31v158c0 10 9 19 19 19s18 -9 18 -19v-145l32 12c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -16 -13 -19l-46 -16v-160l32 11c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -15 -13 -18l-46 -17v-158zM96 65v-160l83 30v160z" fill="currentColor"/>
 </a>
-<path transform="translate(9.3358, 19.1923) scale(0.0040, -0.0040)" d="M557 -125c0 28 23 51 51 51s51 -23 51 -51s-23 -51 -51 -51s-51 23 -51 51zM557 125c0 28 23 51 51 51s51 -23 51 -51s-23 -51 -51 -51s-51 23 -51 51zM232 263c172 0 293 -88 293 -251c0 -263 -263 -414 -516 -521c-3 -3 -6 -4 -9 -4c-7 0 -13 6 -13 13c0 3 1 6 4 9
+<path transform="translate(9.3358, 19.1061) scale(0.0040, -0.0040)" d="M557 -125c0 28 23 51 51 51s51 -23 51 -51s-23 -51 -51 -51s-51 23 -51 51zM557 125c0 28 23 51 51 51s51 -23 51 -51s-23 -51 -51 -51s-51 23 -51 51zM232 263c172 0 293 -88 293 -251c0 -263 -263 -414 -516 -521c-3 -3 -6 -4 -9 -4c-7 0 -13 6 -13 13c0 3 1 6 4 9
 c202 118 412 265 412 493c0 120 -63 235 -171 235c-74 0 -129 -54 -154 -126c11 5 22 8 34 8c55 0 100 -45 100 -100c0 -58 -44 -106 -100 -106c-60 0 -112 47 -112 106c0 133 102 244 232 244z" fill="currentColor"/>
-<path transform="translate(15.0858, 7.8047) scale(0.0040, -0.0040)" d="M359 27c-49 0 -75 42 -75 75c0 38 27 77 72 77c4 0 9 0 14 -1c-28 37 -72 59 -120 59c-106 0 -113 -73 -113 -186v-51v-51c0 -113 7 -187 113 -187c80 0 139 70 158 151c2 7 7 10 12 10c6 0 13 -4 13 -12c0 -94 -105 -174 -183 -174c-68 0 -137 21 -184 70
+<path transform="translate(15.0858, 7.6767) scale(0.0040, -0.0040)" d="M359 27c-49 0 -75 42 -75 75c0 38 27 77 72 77c4 0 9 0 14 -1c-28 37 -72 59 -120 59c-106 0 -113 -73 -113 -186v-51v-51c0 -113 7 -187 113 -187c80 0 139 70 158 151c2 7 7 10 12 10c6 0 13 -4 13 -12c0 -94 -105 -174 -183 -174c-68 0 -137 21 -184 70
 c-49 51 -66 122 -66 193s17 142 66 193c47 49 116 69 184 69c87 0 160 -64 175 -150c1 -5 1 -9 1 -13c0 -40 -30 -72 -67 -72z" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:12:8:9">
-<path transform="translate(12.8358, 5.8047) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
+<path transform="translate(12.8358, 5.6767) scale(0.0040, -0.0040)" d="M216 -312c0 -10 -8 -19 -18 -19s-19 9 -19 19v145l-83 -31v-158c0 -10 -9 -19 -19 -19s-18 9 -18 19v145l-32 -12c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 16 13 19l46 16v160l-32 -11c-2 -1 -5 -1 -7 -1c-11 0 -20 9 -20 20v60c0 8 5 15 13 18l46 17v158
 c0 10 8 19 18 19s19 -9 19 -19v-145l83 31v158c0 10 9 19 19 19s18 -9 18 -19v-145l32 12c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -16 -13 -19l-46 -16v-160l32 11c2 1 5 1 7 1c11 0 20 -9 20 -20v-60c0 -8 -5 -15 -13 -18l-46 -17v-158zM96 65v-160l83 30v160z" fill="currentColor"/>
 </a>
-<path transform="translate(9.3358, 8.8047) scale(0.0040, -0.0040)" d="M376 262c4 0 9 1 13 1c155 0 256 -128 256 -261c0 -76 -33 -154 -107 -210c-22 -17 -47 -28 -73 -36c3 -35 5 -70 5 -105c0 -19 -1 -39 -2 -58c-7 -120 -90 -228 -208 -228c-108 0 -195 88 -195 197c0 58 53 103 112 103c54 0 95 -47 95 -103c0 -52 -43 -95 -95 -95
+<path transform="translate(9.3358, 8.6767) scale(0.0040, -0.0040)" d="M376 262c4 0 9 1 13 1c155 0 256 -128 256 -261c0 -76 -33 -154 -107 -210c-22 -17 -47 -28 -73 -36c3 -35 5 -70 5 -105c0 -19 -1 -39 -2 -58c-7 -120 -90 -228 -208 -228c-108 0 -195 88 -195 197c0 58 53 103 112 103c54 0 95 -47 95 -103c0 -52 -43 -95 -95 -95
 c-11 0 -21 2 -31 6c26 -39 68 -65 117 -65c96 0 157 92 163 191c1 18 2 37 2 55c0 31 -1 61 -4 92c-29 -5 -58 -8 -89 -8c-188 0 -333 172 -333 374c0 177 131 306 248 441c-19 62 -37 125 -45 190c-6 52 -7 104 -7 156c0 115 55 224 149 292c3 2 7 3 10 3c4 0 7 0 10 -3
 c71 -84 133 -245 133 -358c0 -143 -86 -255 -180 -364c21 -68 39 -138 56 -207zM461 -203c68 24 113 95 113 164c0 90 -66 179 -173 190c24 -116 46 -231 60 -354zM74 28c0 -135 129 -247 264 -247c28 0 55 2 82 6c-14 127 -37 245 -63 364c-79 -8 -124 -61 -124 -119
 c0 -44 25 -91 81 -123c5 -5 7 -10 7 -15c0 -11 -10 -22 -22 -22c-3 0 -6 1 -9 2c-80 43 -117 115 -117 185c0 88 58 174 160 197c-14 58 -29 117 -46 175c-107 -121 -213 -243 -213 -403zM408 1045c-99 -48 -162 -149 -162 -259c0 -74 18 -133 36 -194
 c80 97 146 198 146 324c0 55 -4 79 -20 129z" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:46:47">
-<path transform="translate(18.7858, 9.8047) scale(0.0040, -0.0040)" d="M365 -156h-355c-6 0 -10 4 -10 10v136c0 6 4 10 10 10h355c6 0 10 -4 10 -10v-136c0 -6 -4 -10 -10 -10z" fill="currentColor"/>
+<path transform="translate(18.7858, 9.6767) scale(0.0040, -0.0040)" d="M365 -156h-355c-6 0 -10 4 -10 10v136c0 6 4 10 10 10h355c6 0 10 -4 10 -10v-136c0 -6 -4 -10 -10 -10z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:15:16">
-<path transform="translate(19.0171, 4.2524) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
+<path transform="translate(19.0171, 4.1243) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
 c36 0 74 -13 111 -40c19 -14 40 -21 59 -21c22 0 40 10 46 31c2 7 7 11 13 11c7 0 15 -5 15 -14v-5c-19 -71 -84 -111 -146 -111c-38 0 -75 15 -101 47c-12 15 -28 22 -44 22c-29 0 -57 -21 -60 -56z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:12:13">
-<path transform="translate(18.7858, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(18.7858, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(8.4758, 13.9985)" x="0.0000" y="-8.2438" width="0.1600" height="16.4876" ry="0.0500" fill="currentColor"/>
-<path transform="translate(8.1758, 13.9985) scale(0.0040, -0.0040)" d="M-12 -620c0 -332 -128 -652 -128 -968c0 -168 36 -328 152 -456c4 -4 4 -8 4 -12c0 -8 -8 -16 -16 -16c-4 0 -8 0 -12 4c-152 172 -208 392 -208 620c0 340 132 668 132 988c0 168 -36 324 -152 452v8v8c116 128 152 284 152 452c0 320 -132 648 -132 988
+<rect transform="translate(8.4758, 13.8914)" x="0.0000" y="-8.2647" width="0.1600" height="16.5293" ry="0.0500" fill="currentColor"/>
+<path transform="translate(8.1758, 13.8914) scale(0.0040, -0.0040)" d="M-12 -620c0 -332 -128 -652 -128 -968c0 -168 36 -328 152 -456c4 -4 4 -8 4 -12c0 -8 -8 -16 -16 -16c-4 0 -8 0 -12 4c-152 172 -208 392 -208 620c0 340 132 668 132 988c0 168 -36 324 -152 452v8v8c116 128 152 284 152 452c0 320 -132 648 -132 988
 c0 228 56 448 208 620c4 4 8 4 12 4c8 0 16 -8 16 -16c0 -4 0 -8 -4 -12c-116 -128 -152 -288 -152 -456c0 -316 128 -636 128 -968c0 -228 -52 -448 -200 -620c148 -172 200 -392 200 -620z" fill="currentColor"/>
-<rect transform="translate(30.2737, 7.8047)" x="-0.0650" y="-3.1876" width="0.1300" height="2.4998" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(30.2737, 7.6767)" x="-0.0650" y="-3.1876" width="0.1300" height="2.4998" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:24:25">
-<path transform="translate(29.0225, 7.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(29.0225, 7.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(25.6753, 20.1923)" x="-0.0650" y="-1.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(26.8615, 7.8047)" x="-0.0650" y="-3.0625" width="0.1300" height="2.8747" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(25.6753, 20.1061)" x="-0.0650" y="-1.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(26.8615, 7.6767)" x="-0.0650" y="-3.0625" width="0.1300" height="2.8747" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:35:12:13">
-<path transform="translate(25.6103, 18.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(25.6103, 18.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:21:22">
-<path transform="translate(25.6103, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(25.6103, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(23.4492, 7.8047)" x="-0.0650" y="-2.9375" width="0.1300" height="3.2496" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(23.4492, 7.6767)" x="-0.0650" y="-2.9375" width="0.1300" height="3.2496" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:14:18:19">
-<path transform="translate(22.1981, 8.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(22.1981, 8.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(58.7816, 20.1923)" x="-0.0650" y="-2.8122" width="0.1300" height="3.0084" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(58.7816, 7.8047)" x="-0.0650" y="0.6878" width="0.1300" height="3.1234" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(58.7816, 20.1061)" x="-0.0650" y="-2.8122" width="0.1300" height="3.0084" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(58.7816, 7.6767)" x="-0.0650" y="0.6878" width="0.1300" height="3.1234" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:17:18">
-<path transform="translate(58.7166, 17.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(58.7166, 17.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:75:76">
-<path transform="translate(58.9479, 13.4826) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:97:98">
+<path transform="translate(58.9479, 13.3546) scale(0.0022, -0.0022)" d="M29 13c-1 -9 -7 -13 -14 -13s-15 5 -15 14c0 173 233 163 233 341c0 56 -14 116 -62 116c-33 0 -66 -15 -66 -44c0 -24 31 -37 31 -61c0 -34 -27 -61 -61 -61s-61 27 -61 61c0 78 74 134 157 134c98 0 191 -55 191 -145c0 -144 -135 -156 -233 -206h7
 c36 0 74 -13 111 -40c19 -14 40 -21 59 -21c22 0 40 10 46 31c2 7 7 11 13 11c7 0 15 -5 15 -14v-5c-19 -71 -84 -111 -146 -111c-38 0 -75 15 -101 47c-12 15 -28 22 -44 22c-29 0 -57 -21 -60 -56z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:73:74">
-<path transform="translate(58.7166, 8.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:95:96">
+<path transform="translate(58.7166, 8.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(55.3694, 20.1923)" x="-0.0650" y="-2.3122" width="0.1300" height="2.8323" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(55.3694, 7.8047)" x="-0.0650" y="1.1878" width="0.1300" height="2.6849" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(49.5644, 7.8047)" x="-0.0650" y="-2.8224" width="0.1300" height="2.6346" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(56.5556, 7.8047)" x="-0.0650" y="-5.0000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(55.3694, 20.1061)" x="-0.0650" y="-2.3122" width="0.1300" height="2.8323" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(55.3694, 7.6767)" x="-0.0650" y="1.1878" width="0.1300" height="2.6849" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(49.5644, 7.6767)" x="-0.0650" y="-2.8224" width="0.1300" height="2.6346" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(56.5556, 7.6767)" x="-0.0650" y="-5.0000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:15:16">
-<path transform="translate(55.3044, 17.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(55.3044, 17.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:70:71">
-<path transform="translate(55.3044, 8.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:92:93">
+<path transform="translate(55.3044, 8.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:22:23">
-<path transform="translate(55.3044, 5.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(55.3044, 5.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(66.6659, 7.8047)" x="-0.0650" y="-5.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:84:85">
-<path transform="translate(65.4147, 9.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<rect transform="translate(66.6659, 7.6767)" x="-0.0650" y="-5.5000" width="0.1300" height="2.3122" ry="0.0400" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:106:107">
+<path transform="translate(65.4147, 9.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:39:40">
-<path transform="translate(65.4147, 4.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:61:62">
+<path transform="translate(65.4147, 4.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(62.1939, 20.1923)" x="-0.0650" y="-3.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
-<path transform="translate(63.8950, 16.6923) scale(0.0040, -0.0040)" d="M0 0c0 31 25 56 56 56s56 -25 56 -56s-25 -56 -56 -56s-56 25 -56 56z" fill="currentColor"/>
-<rect transform="translate(62.1939, 7.8047)" x="-0.0650" y="0.1878" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(63.3801, 7.8047)" x="-0.0650" y="-5.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(62.1939, 20.1061)" x="-0.0650" y="-3.3122" width="0.1300" height="3.3122" ry="0.0400" fill="currentColor"/>
+<path transform="translate(63.8950, 16.6061) scale(0.0040, -0.0040)" d="M0 0c0 31 25 56 56 56s56 -25 56 -56s-25 -56 -56 -56s-56 25 -56 56z" fill="currentColor"/>
+<rect transform="translate(62.1939, 7.6767)" x="-0.0650" y="0.1878" width="0.1300" height="3.6222" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(63.3801, 7.6767)" x="-0.0650" y="-5.5000" width="0.1300" height="2.8122" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:24:25">
-<text transform="translate(62.1289, 24.2729)" font-family="Century Schoolbook L" font-size="2.2001" text-anchor="start" fill="currentColor">
-<tspan>
-1-5</tspan>
-</text>
+<g transform="translate(62.1289, 15.5960)" >
+<path transform="scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
+c-5 0 -9 -2 -11 -7l-66 -127c-4 -7 -9 -9 -15 -9c-9 0 -19 7 -19 17c0 3 0 6 2 9l129 250c1 3 4 4 7 4z" fill="currentColor"/>
+
+
+<path transform="translate(1.2292, 0.0000) scale(0.0022, -0.0022)" d="M149 149h-131c-10 0 -18 8 -18 18s8 18 18 18h131c10 0 18 -8 18 -18s-8 -18 -18 -18z" fill="currentColor"/>
+
+
+<path transform="translate(2.0486, 0.0000) scale(0.0022, -0.0022)" d="M54 500c45 -8 91 -14 137 -14s92 6 137 14h4c11 0 19 -7 19 -14c0 -2 -1 -4 -3 -6c-68 -68 -162 -101 -258 -101c-11 0 -20 -10 -20 -21v-73c27 27 67 36 106 36c117 0 188 -50 188 -161c0 -97 -96 -160 -200 -160c-84 0 -164 43 -164 119c0 32 26 58 58 58
+s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -35 44 -42 84 -42c55 0 71 67 71 131c0 59 -8 125 -59 125c-42 0 -85 -5 -109 -38c-4 -5 -10 -8 -15 -8c-9 0 -18 7 -18 18v223c0 11 8 20 18 20h2z" fill="currentColor"/>
+</g>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:20:21">
-<path transform="translate(62.1289, 16.6923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(62.1289, 16.6061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:80:81">
-<path transform="translate(62.3943, 13.5156) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:102:103">
+<path transform="translate(62.3943, 13.3876) scale(0.0022, -0.0022)" d="M136 504c20 0 38 -18 58 -18c16 0 31 8 45 14c2 1 2 1 4 1c8 0 16 -9 16 -21v-351c0 -52 32 -100 81 -100c10 0 14 -8 14 -15s-4 -14 -14 -14c-49 0 -97 14 -146 14s-96 -14 -145 -14c-10 0 -15 7 -15 14s5 15 15 15c49 0 80 48 80 100v215c0 15 -11 23 -20 23
 c-5 0 -9 -2 -11 -7l-66 -127c-4 -7 -9 -9 -15 -9c-9 0 -19 7 -19 17c0 3 0 6 2 9l129 250c1 3 4 4 7 4z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:78:79">
-<path transform="translate(62.1289, 7.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:100:101">
+<path transform="translate(62.1289, 7.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:32:33">
-<text transform="translate(62.1289, 1.5706)" font-family="Century Schoolbook L" font-size="2.2001" text-anchor="start" fill="currentColor">
-<tspan>
-5-4</tspan>
-</text>
+<g transform="translate(62.1289, 1.4767)" >
+<path transform="scale(0.0022, -0.0022)" d="M54 500c45 -8 91 -14 137 -14s92 6 137 14h4c11 0 19 -7 19 -14c0 -2 -1 -4 -3 -6c-68 -68 -162 -101 -258 -101c-11 0 -20 -10 -20 -21v-73c27 27 67 36 106 36c117 0 188 -50 188 -161c0 -97 -96 -160 -200 -160c-84 0 -164 43 -164 119c0 32 26 58 58 58
+s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -35 44 -42 84 -42c55 0 71 67 71 131c0 59 -8 125 -59 125c-42 0 -85 -5 -109 -38c-4 -5 -10 -8 -15 -8c-9 0 -18 7 -18 18v223c0 11 8 20 18 20h2z" fill="currentColor"/>
+
+
+<path transform="translate(1.2292, 0.0000) scale(0.0022, -0.0022)" d="M149 149h-131c-10 0 -18 8 -18 18s8 18 18 18h131c10 0 18 -8 18 -18s-8 -18 -18 -18z" fill="currentColor"/>
+
+
+<path transform="translate(2.0486, 0.0000) scale(0.0022, -0.0022)" d="M198 284c24 15 48 29 65 52c12 16 19 34 28 52c2 5 6 7 11 7c8 0 16 -6 16 -17v-217h79c12 0 18 -9 18 -18s-6 -18 -18 -18h-79c2 -51 33 -96 80 -96c10 0 15 -8 15 -15s-5 -14 -15 -14c-49 0 -96 14 -145 14s-97 -14 -146 -14c-10 0 -14 7 -14 14s4 15 14 15
+c47 0 79 45 81 96h-152c-29 0 -38 17 -38 28c0 3 1 6 2 8c78 88 123 201 123 319c0 11 8 21 17 21c1 0 3 -1 4 -1c25 -7 50 -14 76 -14s52 7 77 14c2 1 4 1 6 1c10 0 17 -7 17 -14c0 -2 0 -5 -2 -7l-282 -319h152v96c0 10 1 21 10 27z" fill="currentColor"/>
+</g>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:28:29">
-<path transform="translate(62.1289, 5.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(62.1289, 5.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:65:66">
-<path transform="translate(51.8088, 9.3047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:87:88">
+<path transform="translate(51.8088, 9.1767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:19:20">
-<path transform="translate(52.0743, 3.5771) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
+<path transform="translate(52.0743, 3.4491) scale(0.0022, -0.0022)" d="M155 471c-34 0 -70 -8 -70 -38c0 -19 31 -23 31 -42c0 -28 -23 -51 -51 -51s-51 23 -51 51c0 67 68 109 141 109c93 0 174 -31 174 -113c0 -41 -6 -77 -42 -94c-11 -5 -17 -16 -17 -27s6 -22 17 -27c40 -19 59 -53 59 -98c0 -94 -83 -141 -186 -141
 c-82 0 -160 45 -160 119c0 32 26 58 58 58s58 -26 58 -58c0 -22 -36 -26 -36 -48c0 -33 42 -42 80 -42c46 0 56 58 56 112v38c0 40 -4 69 -43 69h-74c-12 0 -18 9 -18 18s6 18 18 18h74c40 0 43 31 43 73v30c0 50 -16 84 -61 84z" fill="currentColor"/>
 </a>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:15:16:17">
-<path transform="translate(51.8088, 6.8047) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(51.8088, 6.6767) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(48.3783, 20.1923)" x="-0.0650" y="-1.3122" width="0.1300" height="2.4960" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(48.3783, 7.8047)" x="-0.0650" y="1.1878" width="0.1300" height="2.8110" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(48.3783, 20.1061)" x="-0.0650" y="-1.3122" width="0.1300" height="2.4960" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(48.3783, 7.6767)" x="-0.0650" y="1.1878" width="0.1300" height="2.8110" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:11:12">
-<path transform="translate(51.8088, 18.1923) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
+<path transform="translate(51.8088, 18.1061) scale(0.0040, -0.0040)" d="M220 138c56 0 109 -29 109 -91c0 -72 -56 -121 -103 -149c-36 -21 -76 -36 -117 -36c-56 0 -109 29 -109 91c0 72 56 121 103 149c36 21 76 36 117 36z" fill="currentColor"/>
 </a>
-<rect transform="translate(53.0600, 7.8047)" x="-0.0650" y="-3.4876" width="0.1300" height="2.2998" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(51.8738, 20.1923)" x="-0.0650" y="-1.8122" width="0.1300" height="2.6642" ry="0.0400" fill="currentColor"/>
-<rect transform="translate(51.8738, 7.8047)" x="-0.0650" y="1.6878" width="0.1300" height="2.2480" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(53.0600, 7.6767)" x="-0.0650" y="-3.4876" width="0.1300" height="2.2998" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(51.8738, 20.1061)" x="-0.0650" y="-1.8122" width="0.1300" height="2.6642" ry="0.0400" fill="currentColor"/>
+<rect transform="translate(51.8738, 7.6767)" x="-0.0650" y="1.6878" width="0.1300" height="2.2480" ry="0.0400" fill="currentColor"/>
 <a style="color:inherit;" xlink:href="textedit:///tmp/src/s/b/sphinx/html/-:36:12:13">
-<path transform="translate(52.0060, 17.1423) scale(0.0022, -0.0022)" d="M198 284c24 15 48 29 65 52c12 16 19 34 28 52c2 5 6 7 11 7c8 0 16 -6 16 -17v-217h79c12 0 18 -9 18 -18s-6 -18 -18 -18h-79c2 -51 33 -96 80 -96c10 0 15 -8 15 -15s-5 -14 -15 -14c-49 0 -96 14 -145 14s-97 -14 -146 -14c-10 0 -14 7 -14 14s4 15 14 15
+<path transform="translate(52.0060, 17.0560) scale(0.0022, -0.0022)" d="M198 284c24 15 48 29 65 52c12 16 19 34 28 52c2 5 6 7 11 7c8 0 16 -6 16 -17v-217h79c12 0 18 -9 18 -18s-6 -18 -18 -18h-79c2 -51 33 -96 80 -96c10 0 15 -8 15 -15s-5 -14 -15 -14c-49 0 -96 14 -145 14s-97 -14 -146 -14c-10 0 -14 7 -14 14s4 15 14 15
 c47 0 79 45 81 96h-152c-29 0 -38 17 -38 28c0 3 1 6 2 8c78 88 123 201 123 319c0 11 8 21 17 21c1 0 3 -1 4 -1c25 -7 50 -14 76 -14s52 7 77 14c2 1 4 1 6 1c10 0 17 -7 17 -14c0 -2 0 -5 -2 -7l-282 -319h152v96c0 10 1 21 10 27z" fill="currentColor"/>
 </a>
 </svg>
