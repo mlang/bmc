@@ -157,8 +157,6 @@ public:
 fingering(braille::fingering_list const &fingers) {
   ::musicxml::technical::fingering_sequence xml_fingers;
 
-  BOOST_ASSERT(fingers.size() == 1);
-
   if (not fingers.empty()) {
     fingering_visitor visitor { xml_fingers };
     apply_visitor(visitor, fingers.front());
