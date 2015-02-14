@@ -19,9 +19,13 @@ add_subdirectory(ui)
 find_package(PythonLibs REQUIRED)
 find_package(Boost 1.54.0 REQUIRED COMPONENTS program_options python)
 find_package(Threads)
-include_directories(${bmc_SOURCE_DIR})
-include_directories(${bmc_SOURCE_DIR}/include/)
-include_directories(${Boost_INCLUDE_DIRS})
+include_directories(
+  ${bmc_BINARY_DIR}
+  ${bmc_SOURCE_DIR}
+  ${bmc_SOURCE_DIR}/include
+  ${bmc_SOURCE_DIR}/xsdcxx-musicxml
+  ${Boost_INCLUDE_DIRS}
+)
 add_definitions(-std=c++11)
 add_library(bmc_parse SHARED
             brlsym.cpp music.cpp ast.cpp
