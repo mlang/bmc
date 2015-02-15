@@ -538,7 +538,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -727,7 +726,6 @@
           <step>G</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -907,7 +905,6 @@
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -1054,7 +1051,6 @@
           <step>F</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <accidental>natural</accidental>
         <staff>1</staff>
       </note>
@@ -2383,7 +2379,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -4441,7 +4436,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>
@@ -4564,7 +4559,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>
@@ -4638,7 +4633,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>
@@ -4758,7 +4753,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>
@@ -4900,7 +4895,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>
@@ -5003,7 +4998,7 @@
       <note>
         <rest/>
         <duration>12</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
       <backup>

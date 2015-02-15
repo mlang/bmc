@@ -153,7 +153,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -397,7 +396,6 @@
           <step>A</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -740,7 +738,6 @@
           <step>G</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -1272,7 +1269,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -4619,7 +4615,6 @@
           <step>C</step>
           <octave>6</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -4876,7 +4871,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -7031,7 +7025,6 @@
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -7063,7 +7056,6 @@
           <step>A</step>
           <octave>4</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -7316,7 +7308,6 @@
           <step>A</step>
           <octave>4</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -7349,7 +7340,6 @@
           <step>G</step>
           <octave>4</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>

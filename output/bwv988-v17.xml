@@ -3162,7 +3162,6 @@
           <step>D</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -3191,7 +3190,6 @@
           <alter>1</alter>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>
@@ -6617,7 +6615,6 @@
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>

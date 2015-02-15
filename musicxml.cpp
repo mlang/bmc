@@ -297,7 +297,7 @@ private:
     if (is_grace(note)) {
       xml_note.grace(::musicxml::grace{});
     }
-    xml_note.type(note_type(note.get_type()));
+    if (note.get_type() != zero) xml_note.type(note_type(note.get_type()));
     xml_note.dot(dots(note));
     if (note.acc) xml_note.accidental(accidental(*note.acc));
     xml_note.staff(staff_number);

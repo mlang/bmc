@@ -4549,7 +4549,6 @@
           <step>F</step>
           <octave>3</octave>
         </pitch>
-        <type>whole</type>
         <accidental>natural</accidental>
         <staff>2</staff>
       </note>
@@ -4642,7 +4641,6 @@
           <step>E</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
       </note>
       <note>

@@ -853,7 +853,6 @@
           <step>C</step>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -1783,7 +1782,6 @@
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <type>whole</type>
         <staff>1</staff>
         <notations>
           <technical>
@@ -1929,7 +1927,6 @@
           <alter>1</alter>
           <octave>5</octave>
         </pitch>
-        <type>whole</type>
         <accidental>sharp</accidental>
         <staff>1</staff>
       </note>
