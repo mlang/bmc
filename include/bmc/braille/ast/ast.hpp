@@ -145,7 +145,8 @@ struct rest : locatable, rhythmic_data, rhythmic
   unsigned get_dots() const override
   { return dots; }
   rational get_factor() const override { return factor; }
-  rational get_type() const override { return type; }
+  rational get_type() const override
+  { return whole_measure? rational{1}: type; }
 };
 
 struct interval : locatable, pitched

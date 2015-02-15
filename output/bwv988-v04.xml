@@ -391,7 +391,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -400,7 +400,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -448,7 +448,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -810,7 +810,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -845,7 +845,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
     </measure>
@@ -876,7 +876,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -1845,7 +1845,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>1</staff>
       </note>
       <backup>
@@ -1881,7 +1881,7 @@
       <note>
         <rest/>
         <duration>6</duration>
-        <type>eighth</type>
+        <type>whole</type>
         <staff>2</staff>
       </note>
     </measure>
