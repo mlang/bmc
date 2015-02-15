@@ -157,10 +157,8 @@ public:
 fingering(braille::fingering_list const &fingers) {
   ::musicxml::technical::fingering_sequence xml_fingers;
 
-  if (not fingers.empty()) {
-    fingering_visitor visitor { xml_fingers };
-    apply_visitor(visitor, fingers.front());
-  }
+  fingering_visitor visitor { xml_fingers };
+  std::for_each(fingers.begin(), fingers.end(), apply_visitor(visitor));
 
   return xml_fingers;
 }
