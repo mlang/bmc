@@ -6,6 +6,7 @@
 
 #include "bmc/musicxml.hpp"
 #include <xsdcxx-musicxml/musicxml.hpp>
+#include <bmc/braille/ast/visitor.hpp>
 
 namespace bmc {
 
@@ -22,35 +23,17 @@ using measure_type = part_type::measure_type;
 // rhythmic values can be expressed as an integer, since the MusicXML duration
 // element is not a rational.
 
-class duration_gcd_visitor : public boost::static_visitor<void> {
-  rational value = 0;
-
-public:
-  void operator()(braille::ast::unfolded::measure const &measure) {
-    for (auto &&voice: measure.voices)
-      for (auto &&partial_measure: voice)
-        for (auto &&partial_voice: partial_measure)
-          std::for_each(partial_voice.begin(), partial_voice.end(),
-                        apply_visitor(*this));
-  }
-  void operator()(::bmc::braille::ast::rhythmic const &r) {
-    value = boost::math::gcd(value, r.as_rational());
-  }
-  void operator()(braille::ast::clef const &) {}
-  void operator()(braille::ast::key_and_time_signature const &) {}
-  void operator()(braille::ast::tie const &) {}
-  void operator()(braille::ast::tuplet_start const &) {}
-
-  rational const &get() const { return value; }
-};
-
 rational duration_gcd(braille::ast::score const &score) {
-  duration_gcd_visitor accumulator { };
+  class gcd_visitor : public braille::ast::visitor<gcd_visitor> {
+    rational value;
+  public:
+    void rhythmic(braille::ast::rhythmic const &rhythmic) {
+      value = boost::math::gcd(value, rhythmic.as_rational());
+    }
 
-  for (auto &&part: score.unfolded_part)
-    for (auto &&staff: part)
-      std::for_each(staff.begin(), staff.end(), apply_visitor(accumulator));
-
+    rational const &get() const { return value; }
+  } accumulator;
+  accumulator(score);
   return accumulator.get();
 }
  
