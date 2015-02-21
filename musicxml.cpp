@@ -24,7 +24,7 @@ using measure_type = part_type::measure_type;
 // element is not a rational.
 
 rational duration_gcd(braille::ast::score const &score) {
-  class gcd_visitor : public braille::ast::visitor<gcd_visitor> {
+  class gcd_visitor : public braille::ast::const_visitor<gcd_visitor> {
     rational value;
   public:
     void rhythmic(braille::ast::rhythmic const &rhythmic) {
