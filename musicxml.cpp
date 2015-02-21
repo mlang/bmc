@@ -33,7 +33,9 @@ rational duration_gcd(braille::ast::score const &score) {
 
     rational const &get() const { return value; }
   } accumulator;
+
   accumulator(score);
+
   return accumulator.get();
 }
  

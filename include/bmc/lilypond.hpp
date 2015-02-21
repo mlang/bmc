@@ -64,7 +64,7 @@ private:
   void operator() (braille::ast::unfolded::partial_measure const&);
   void operator() (braille::ast::unfolded::partial_voice const&);
 public:
-  /** @name Operators for visiting ::bmc::braille::sign objects */
+  /** @name Operators for visiting ::bmc::braille::ast::unfolded::sign objects */
   /** @{ */
   result_type operator() (braille::ast::barline const&) const;
   result_type operator() (braille::ast::tie const&) const;

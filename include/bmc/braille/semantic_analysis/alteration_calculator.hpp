@@ -8,8 +8,7 @@
 #define BMC_ALTERATION_CALCULATOR_HPP
 
 #include <map>
-#include <boost/variant/static_visitor.hpp>
-#include "bmc/braille/ast.hpp"
+#include "bmc/braille/ast/visitor.hpp"
 #include "compiler_pass.hpp"
 
 namespace bmc { namespace braille {
@@ -26,11 +25,13 @@ namespace bmc { namespace braille {
  * \ingroup compilation
  */
 class alteration_calculator
-: public boost::static_visitor<void>
+: public ast::visitor<alteration_calculator>
 , public compiler_pass
 {
   ::bmc::accidental memory[10][steps_per_octave];
   ::bmc::key_signature key_sig;
+  ::std::multimap<rational const, ast::sign&> signs;
+  rational voice_position, position;
 
 public:
   alteration_calculator(report_error_type const& report_error)
@@ -43,27 +44,37 @@ public:
    */
   void set(::bmc::key_signature sig) { key_sig = sig; }
 
-  result_type operator() (ast::measure& measure)
-  { reset_memory(), visit_chronologically(measure); }
-
-  result_type operator()(ast::note& note)
-  { note.alter = to_alter(note.acc, note.octave, note.step); }
-
-  result_type operator()(ast::chord& chord)
-  {
-    (*this)(chord.base);
-    for (auto& interval: chord.intervals)
-      interval.alter = to_alter(interval.acc, interval.octave, interval.step);
+  bool visit_measure(ast::measure &measure) {
+    reset_memory();
+    signs.clear();
+    visit_all(measure.voices);
+    for (auto &pair: signs) apply_visitor(*this, pair.second);
+    return false;
   }
-  result_type operator()(ast::moving_note &chord)
-  {
-    (*this)(chord.base);
-    for (auto& interval: chord.intervals)
-      interval.alter = to_alter(interval.acc, interval.octave, interval.step);
+  bool visit_voice(ast::voice const &) {
+    voice_position = 0;
+    return true;
   }
-
-  template <typename Sign>
-  result_type operator() (Sign&) const { }
+  void partial_measure_visited(ast::partial_measure const &pm) {
+    voice_position += duration(pm);
+  }
+  bool visit_partial_voice(ast::partial_voice const &) {
+    position = voice_position;
+    return true;
+  }
+  bool visit_sign(ast::sign &sign) {
+    signs.insert(std::pair<rational const, ast::sign &>{position, sign});
+    position += duration(sign);
+    return false;
+  }
+  bool visit_note(ast::note &note) {
+    note.alter = to_alter(note.acc, note.octave, note.step);
+    return false;
+  }
+  bool visit_interval(ast::interval &interval) {
+    interval.alter = to_alter(interval.acc, interval.octave, interval.step);
+    return false;
+  }
 
 private:
   void reset_memory()
@@ -127,34 +138,6 @@ private:
     case double_sharp: return 2;
     case triple_sharp: return 3;
     }
-  }
-  /** \brief A (multi)map of signs sorted by time
-   */
-  struct signmap: std::multimap<rational const, ast::sign&>
-  {
-    signmap( ast::measure& measure
-           , rational const& measure_position = rational()
-           )
-    {
-      for (ast::voice& voice: measure.voices) {
-        rational voice_position(measure_position);
-        for (ast::partial_measure& partial_measure: voice) {
-          for (ast::partial_voice& partial_voice: partial_measure) {
-            rational position(voice_position);
-            for (ast::sign& sign: partial_voice) {
-              insert(value_type(position, sign));
-              position += duration(sign);
-            }
-          }
-          voice_position += duration(partial_measure);
-        }
-      }
-    }
-  };
-  void visit_chronologically(ast::measure& measure)
-  {
-    for (signmap::value_type& value: signmap(measure))
-      boost::apply_visitor(*this, value.second);
   }
 };
 
