@@ -27,16 +27,18 @@ rational duration_gcd(braille::ast::score const &score) {
   class gcd_visitor : public braille::ast::const_visitor<gcd_visitor> {
     rational value;
   public:
-    void rhythmic(braille::ast::rhythmic const &rhythmic) {
+    bool visit_rhythmic(braille::ast::rhythmic const &rhythmic) {
       value = boost::math::gcd(value, rhythmic.as_rational());
+
+      return true;
     }
 
-    rational const &get() const { return value; }
+    rational const &get_result() const { return value; }
   } accumulator;
 
-  accumulator(score);
+  accumulator.traverse_score(score);
 
-  return accumulator.get();
+  return accumulator.get_result();
 }
  
 // Conversion functions between braille AST and MusicXML objects:

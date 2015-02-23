@@ -14,134 +14,160 @@
 namespace bmc { namespace braille { namespace ast {
 
 template<template<typename> class Ref, class Derived>
-class visitor_base : public boost::static_visitor<void> {
+class visitor_base {
+  Derived const &derived() const { return *static_cast<Derived const *>(this); }
   Derived &derived() { return *static_cast<Derived *>(this); }
 public:
   using base_type = visitor_base<Ref, Derived>;
-
-  bool visit_score(ast::score const &) { return true; }
-  bool visit_part(std::vector<ast::section> const &) { return true; }
-  bool visit_section(ast::section const &) { return true; }
-  bool visit_paragraph(ast::paragraph const &) { return true; }
-  bool visit_paragraph_element(ast::paragraph_element const &) { return true; }
-  bool visit_measure(ast::measure const &) { return true; }
-  bool visit_voice(ast::voice const &) { return true; }
-  bool visit_partial_measure(ast::partial_measure const &) { return true; }
-  void partial_measure_visited(ast::partial_measure const &) {}
-  bool visit_partial_voice(ast::partial_voice const &) { return true; }
-  bool visit_sign(ast::sign const &) { return true; }
-  bool visit_note(ast::note const &) { return true; }
-  void rhythmic(ast::rhythmic const &) {}
-  void pitched(ast::pitched const &) {}
-  bool visit_rest(ast::rest const &) { return true; }
-  bool visit_chord(ast::chord const &) { return true; }
-  bool visit_chord_base(ast::note const &) { return true; }
-  bool visit_chord_interval(ast::interval const &) { return true; }
-  bool visit_moving_note(ast::moving_note const &) { return true; }
-  bool visit_moving_note_base(ast::note const &) { return true; }
-  bool visit_moving_note_interval(ast::interval const &) { return true; }
-  bool visit_interval(ast::interval const &) { return true; }
-  void value_distinction(ast::value_distinction const &) {}
-  void hyphen(ast::hyphen const &) {}
-
+  visitor_base()
+  : paragraph_element_visitor{derived()}, sign_visitor{derived()} {}
+  visitor_base(visitor_base<Ref, Derived> const &other)
+  : paragraph_element_visitor{derived()}, sign_visitor{derived()} {
+  }
 
   template<typename T> void visit_all(T &t) { for (auto &e: t) derived()(e); }
 
-  void operator()(Ref<ast::score> s) {
-    if (derived().visit_score(s)) {
-      visit_all(s.parts);
-    }
+  template<typename Container>
+  bool all_of(Container &c, bool (Derived::*fn)(Ref<typename Container::value_type>)) {
+    for (auto &e: c) if (not (derived().*fn)(e)) return false;
+    return true;
   }
 
-  void operator()(Ref<std::vector<ast::section>> p) {
-    if (derived().visit_part(p)) visit_all(p);
-  }
+#define SIMPLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME) \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
+    return derived().walk_up_from_##NAME(VAR) and                              \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME) and \
+           derived().end_of_##NAME(VAR); \
+  }                                                                            \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
+    return derived().visit_##NAME(VAR);                                        \
+  }                                                                            \
+  bool visit_##NAME(Ref<CLASS>) { return true; } \
+  bool end_of_##NAME(Ref<CLASS>) { return true; }
+#define SIMPLE_VARIANT(NAME, CLASS, VAR, VISITOR) \
+  bool traverse_##NAME(Ref<CLASS> VAR) { \
+    return derived().walk_up_from_##NAME(VAR) and apply_visitor(derived().VISITOR, VAR); \
+  }\
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {\
+    return derived().visit_##NAME(VAR);\
+  }\
+  bool visit_##NAME(Ref<CLASS>) { return true; }
+#define SIMPLE_BASE(NAME, CLASS, VAR) \
+  bool traverse_##NAME(Ref<CLASS> VAR) {\
+    return derived().walk_up_from_##NAME(VAR);\
+  }\
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {\
+    return derived().visit_##NAME(VAR);\
+  }\
+  bool visit_##NAME(Ref<CLASS>) { return true; }
 
-  void operator()(Ref<ast::section> s) {
-    if (derived().visit_section(s)) visit_all(s.paragraphs);
-  }
+  SIMPLE_CONTAINER(score, ast::score, s, s.parts, part)
+  SIMPLE_CONTAINER(part, ast::part, p, p, section)
+  SIMPLE_CONTAINER(section, ast::section, s, s.paragraphs, paragraph)
+  SIMPLE_CONTAINER(paragraph, ast::paragraph, p, p, paragraph_element)
+  SIMPLE_VARIANT(paragraph_element, ast::paragraph_element, pe,
+                 paragraph_element_visitor)
+  SIMPLE_CONTAINER(measure, ast::measure, m, m.voices, voice)
+  SIMPLE_CONTAINER(voice, ast::voice, v, v, partial_measure)
+  SIMPLE_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice)
+  SIMPLE_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign)
+  SIMPLE_VARIANT(sign, ast::sign, s, sign_visitor)
 
-  void operator()(Ref<ast::paragraph> p) {
-    if (derived().visit_paragraph(p)) visit_all(p);
+  bool traverse_note(Ref<ast::note> n) {
+    return derived().walk_up_from_note(n);
   }
-
-  void operator()(Ref<ast::paragraph_element> pe) {
-    if (derived().visit_paragraph_element(pe)) apply_visitor(derived(), pe);
+  bool walk_up_from_note(Ref<ast::note> n) {
+    return derived().walk_up_from_rhythmic(static_cast<Ref<ast::rhythmic>>(n)) and
+           derived().walk_up_from_pitched(static_cast<Ref<ast::pitched>>(n)) and
+           derived().visit_note(n);
   }
+  bool visit_note(Ref<ast::note>) { return true; }
 
-  void operator()(Ref<ast::measure> m) {
-    if (derived().visit_measure(m)) visit_all(m.voices);
+  bool traverse_rest(Ref<ast::rest> r) {
+    return derived().walk_up_from_rest(r);
   }
-
-  void operator()(Ref<ast::voice> v) {
-    if (derived().visit_voice(v)) visit_all(v);
+  bool walk_up_from_rest(Ref<ast::rest> r) {
+    return derived().walk_up_from_rhythmic(static_cast<Ref<ast::rhythmic>>(r)) and
+           derived().visit_rest(r);
   }
+  bool visit_rest(Ref<ast::rest>) { return true; }
 
-  void operator()(Ref<ast::partial_measure> pm) {
-    if (derived().visit_partial_measure(pm)) {
-      visit_all(pm);
-      derived().partial_measure_visited(pm);
-    }
+  SIMPLE_BASE(rhythmic, ast::rhythmic, r)
+  SIMPLE_BASE(pitched, ast::pitched, p)
+
+  bool traverse_chord(Ref<ast::chord> c) {
+    return derived().walk_up_from_chord(c) and
+           traverse_note(c.base) and
+           all_of(c.intervals, &Derived::traverse_interval) and
+           derived().end_of_chord(c);
   }
-
-  void operator()(Ref<ast::partial_voice> pv) {
-    if (derived().visit_partial_voice(pv)) visit_all(pv);
+  bool walk_up_from_chord(Ref<ast::chord> c) {
+    return derived().visit_chord(c);
   }
+  bool visit_chord(Ref<ast::chord>) { return true; }
+  bool end_of_chord(Ref<ast::chord>) { return true; }
 
-  void operator()(Ref<ast::sign> s) {
-    if (derived().visit_sign(s)) apply_visitor(derived(), s);
+  bool traverse_moving_note(Ref<ast::moving_note> mn) {
+    return derived().walk_up_from_moving_note(mn) and
+           derived().traverse_note(mn.base) and
+           all_of(mn.intervals, &Derived::traverse_interval) and
+           derived().end_of_moving_note(mn);
   }
-
-  void operator()(Ref<ast::note> n) {
-    if (derived().visit_note(n)) {
-      derived().rhythmic(static_cast<Ref<ast::rhythmic>>(n));
-      derived().pitched(static_cast<Ref<ast::pitched>>(n));
-    }
+  bool walk_up_from_moving_note(Ref<ast::moving_note> mn) {
+    return derived().visit_moving_note(mn);
   }
+  bool visit_moving_note(Ref<ast::moving_note>) { return true; }
+  bool end_of_moving_note(Ref<ast::moving_note>) { return true; }
 
-  void operator()(Ref<ast::rest> r) {
-    if (derived().visit_rest(r)) {
-      derived().rhythmic(static_cast<Ref<ast::rhythmic>>(r));
-    }
+  SIMPLE_BASE(interval, ast::interval, i)
+
+  SIMPLE_BASE(value_distinction, ast::value_distinction, v)
+  SIMPLE_BASE(hyphen, ast::hyphen, h)
+  SIMPLE_BASE(tie, ast::tie, t)
+  SIMPLE_BASE(tuplet_start, ast::tuplet_start, t)
+  SIMPLE_BASE(clef, ast::clef, c)
+  SIMPLE_BASE(simile, ast::simile, s)
+  SIMPLE_BASE(hand_sign, hand_sign, h)
+  SIMPLE_BASE(barline, ast::barline, b)
+
+  bool traverse_key_and_time_signature(Ref<ast::key_and_time_signature> kt) {
+    return derived().walk_up_from_key_and_time_signature(kt);
   }
-
-  void operator()(Ref<ast::chord> c) {
-    if (derived().visit_chord(c)) {
-      if (derived().visit_chord_base(c.base)) derived()(c.base);
-      for (auto &i: c.intervals)
-        if (derived().visit_chord_interval(i)) derived()(i);
-    }
+  bool walk_up_from_key_and_time_signature(Ref<ast::key_and_time_signature> kt) {
+    return derived().visit_key_and_time_signature(kt);
   }
+  bool visit_key_and_time_signature(Ref<ast::key_and_time_signature> kt) { return true; }
 
-  void operator()(Ref<ast::interval> i) {
-    if (derived().visit_interval(i)) {
-      derived().pitched(static_cast<Ref<ast::pitched>>(i));
-    }
-  }
-
-  void operator()(Ref<ast::moving_note> mn) {
-    if (derived().visit_moving_note(mn)) {
-      if (derived().visit_moving_note_base(mn.base)) derived()(mn.base);
-      for (auto &mni: mn.intervals)
-        if (derived().visit_moving_note_interval(mni)) derived()(mni);
-    }
-  }
-
-  void operator()(Ref<ast::value_distinction> vd) {
-    derived().value_distinction(vd);
-  }
-
-  void operator()(Ref<ast::hyphen> h) {
-    derived().hyphen(h);
-  }
-
-  void operator()(Ref<ast::tie>) {}
-  void operator()(Ref<ast::tuplet_start>) {}
-  void operator()(Ref<hand_sign>) {}
-  void operator()(Ref<ast::clef>) {}
-  void operator()(Ref<ast::simile>) {}
-  void operator()(Ref<ast::barline>) {}
-  void operator()(Ref<ast::key_and_time_signature>) {}
+#define BEGIN_STATIC_VISITOR(TYPE) \
+  class TYPE : public boost::static_visitor<bool> { \
+    Derived &derived;\
+  public:\
+    TYPE(Derived &derived): derived{derived} {}
+#define CALL_OPERATOR(CLASS, NAME) \
+    result_type \
+    operator()(Ref<CLASS> arg) const { return derived.traverse_##NAME(arg); }
+#define END_STATIC_VISITOR(NAME) } NAME;
+  BEGIN_STATIC_VISITOR(paragraph_element_visitor_type)
+    CALL_OPERATOR(ast::measure, measure)
+    CALL_OPERATOR(ast::key_and_time_signature, key_and_time_signature)
+  END_STATIC_VISITOR(paragraph_element_visitor)
+  BEGIN_STATIC_VISITOR(sign_visitor_type)
+    CALL_OPERATOR(ast::note, note)
+    CALL_OPERATOR(ast::rest, rest)
+    CALL_OPERATOR(ast::chord, chord)
+    CALL_OPERATOR(ast::moving_note, moving_note)
+    CALL_OPERATOR(ast::value_distinction, value_distinction)
+    CALL_OPERATOR(ast::hyphen, hyphen)
+    CALL_OPERATOR(ast::tie, tie)
+    CALL_OPERATOR(ast::tuplet_start, tuplet_start)
+    CALL_OPERATOR(ast::clef, clef)
+    CALL_OPERATOR(ast::simile, simile)
+    CALL_OPERATOR(hand_sign, hand_sign)
+    CALL_OPERATOR(ast::barline, barline)
+  END_STATIC_VISITOR(sign_visitor)
+#undef BEGIN_STATIC_VISITOR
+#undef CALL_OPERATOR
+#undef END_STATIC_VISITOR
 };
 
 template<typename T>

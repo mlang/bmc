@@ -39,6 +39,11 @@ public:
   , key_sig()
   {}
 
+  void operator()(ast::measure &measure) {
+    bool const ok = traverse_measure(measure);
+    BOOST_ASSERT(ok);
+  }
+
   /**
    * \brief Set the current key signature.
    */
@@ -47,33 +52,47 @@ public:
   bool visit_measure(ast::measure &measure) {
     reset_memory();
     signs.clear();
-    visit_all(measure.voices);
-    for (auto &pair: signs) apply_visitor(*this, pair.second);
-    return false;
+
+    return true;
   }
-  bool visit_voice(ast::voice const &) {
+  bool end_of_measure(ast::measure &measure) {
+    for (auto &pair: signs) apply_visitor(sign_visitor, pair.second);
+
+    return true;
+  }
+
+  bool visit_voice(ast::voice &) {
     voice_position = 0;
+
     return true;
   }
-  void partial_measure_visited(ast::partial_measure const &pm) {
+  bool end_of_partial_measure(ast::partial_measure &pm) {
     voice_position += duration(pm);
-  }
-  bool visit_partial_voice(ast::partial_voice const &) {
-    position = voice_position;
+
     return true;
   }
-  bool visit_sign(ast::sign &sign) {
+  bool visit_partial_voice(ast::partial_voice &) {
+    position = voice_position;
+
+    return true;
+  }
+  bool traverse_sign(ast::sign &sign) {
     signs.insert(std::pair<rational const, ast::sign &>{position, sign});
     position += duration(sign);
-    return false;
+
+    return true;
   }
+
   bool visit_note(ast::note &note) {
     note.alter = to_alter(note.acc, note.octave, note.step);
-    return false;
+
+    return true;
   }
+
   bool visit_interval(ast::interval &interval) {
     interval.alter = to_alter(interval.acc, interval.octave, interval.step);
-    return false;
+
+    return true;
   }
 
 private:
@@ -129,7 +148,7 @@ private:
     if (accidental) memory[octave][step] = *accidental;
 
     switch (memory[octave][step]) {
-    default: BOOST_ASSERT(false);
+    default: std::cerr << "mem: " << (accidental? *accidental: 0) << ' ' << memory[octave][step] << std::endl;BOOST_ASSERT(false);
     case natural:      return 0;
     case flat:         return -1;
     case double_flat:  return -2;
