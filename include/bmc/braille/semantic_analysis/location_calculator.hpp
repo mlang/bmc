@@ -10,6 +10,7 @@
 #include <map>
 #include <boost/variant/static_visitor.hpp>
 #include "bmc/braille/ast.hpp"
+#include "bmc/braille/ast/visitor.hpp"
 #include "compiler_pass.hpp"
 #include "bmc/braille/parsing/error_handler.hpp"
 
@@ -22,7 +23,7 @@ namespace bmc { namespace braille {
  */
 template <typename ErrorHandler>
 class location_calculator
-: public boost::static_visitor<void>
+: public ast::visitor<location_calculator<ErrorHandler>>
 , public compiler_pass
 {
   ErrorHandler const& handler;
@@ -34,24 +35,18 @@ public:
   , handler(handler)
   {}
 
-  result_type operator()(ast::measure& measure) const
-  {
-    for (ast::voice& voice: measure.voices) {
-      for (ast::partial_measure& part: voice) {
-        for (ast::partial_voice& partial_voice: part) {
-          std::for_each(partial_voice.begin(), partial_voice.end(),
-                        boost::apply_visitor(*this));
-          (*this)(partial_voice);
-        }
-        (*this)(part);
-      }
-      (*this)(voice);
-    }
-    (*this)(static_cast<ast::locatable&>(measure));
+  using ast::visitor<location_calculator<ErrorHandler>>::traverse_measure;
+  using ast::visitor<location_calculator<ErrorHandler>>::traverse_key_and_time_signature;
+  void operator()(ast::measure& measure) {
+    bool const ok = traverse_measure(measure);
+    BOOST_ASSERT(ok);
+  }
+  void operator()(ast::key_and_time_signature &kt) {
+    bool const ok = traverse_key_and_time_signature(kt);
+    BOOST_ASSERT(ok);
   }
 
-  result_type operator()(ast::locatable& lexeme) const
-  {
+  bool visit_locatable(ast::locatable& lexeme) {
     typedef typename ErrorHandler::iterator_type iterator_type;
     if (lexeme.id >= 0) {
       BOOST_ASSERT(lexeme.id < handler.iters.size());
@@ -59,10 +54,9 @@ public:
       iterator_type const line_start(handler.get_pos(error_position, lexeme.line));
       lexeme.column = std::distance(line_start, error_position) + 1;
     }
-  }
 
-  result_type operator()(ast::barline&) const { }
-  result_type operator()(hand_sign&) const { }
+    return true;
+  }
 };
 
 }}

@@ -55,6 +55,7 @@ public:
 
     return true;
   }
+
   bool end_of_measure(ast::measure &measure) {
     for (auto &pair: signs) apply_visitor(sign_visitor, pair.second);
 
@@ -66,16 +67,19 @@ public:
 
     return true;
   }
+
   bool end_of_partial_measure(ast::partial_measure &pm) {
     voice_position += duration(pm);
 
     return true;
   }
+
   bool visit_partial_voice(ast::partial_voice &) {
     position = voice_position;
 
     return true;
   }
+
   bool traverse_sign(ast::sign &sign) {
     signs.insert(std::pair<rational const, ast::sign &>{position, sign});
     position += duration(sign);

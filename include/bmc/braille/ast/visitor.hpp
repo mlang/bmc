@@ -27,7 +27,7 @@ public:
   template <typename Container>
   bool all_of(Container &c,
               bool (Derived::*fn)(Ref<typename Container::value_type>)) {
-    for (auto &v : c) if (not (derived().*fn)(v)) return false;
+    for (auto &v: c) if (not (derived().*fn)(v)) return false;
     return true;
   }
 
@@ -39,6 +39,19 @@ public:
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
     return derived().visit_##NAME(VAR);                                        \
+  }                                                                            \
+  bool visit_##NAME(Ref<CLASS>) { return true; }                               \
+  bool end_of_##NAME(Ref<CLASS>) { return true; }
+#define LOCATABLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
+    return derived().walk_up_from_##NAME(VAR) and                              \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME) and             \
+           derived().end_of_##NAME(VAR);                                       \
+  }                                                                            \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
+    return derived().walk_up_from_locatable(                                   \
+               static_cast<Ref<ast::locatable>>(VAR)) and                      \
+           derived().visit_##NAME(VAR);                                        \
   }                                                                            \
   bool visit_##NAME(Ref<CLASS>) { return true; }                               \
   bool end_of_##NAME(Ref<CLASS>) { return true; }
@@ -66,10 +79,10 @@ public:
   SIMPLE_CONTAINER(paragraph, ast::paragraph, p, p, paragraph_element)
   SIMPLE_VARIANT(paragraph_element, ast::paragraph_element, pe,
                  paragraph_element_visitor)
-  SIMPLE_CONTAINER(measure, ast::measure, m, m.voices, voice)
-  SIMPLE_CONTAINER(voice, ast::voice, v, v, partial_measure)
-  SIMPLE_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice)
-  SIMPLE_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign)
+  LOCATABLE_CONTAINER(measure, ast::measure, m, m.voices, voice)
+  LOCATABLE_CONTAINER(voice, ast::voice, v, v, partial_measure)
+  LOCATABLE_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice)
+  LOCATABLE_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign)
   SIMPLE_VARIANT(sign, ast::sign, s, sign_visitor)
 
   bool traverse_note(Ref<ast::note> n) {
@@ -79,6 +92,7 @@ public:
     return derived().walk_up_from_rhythmic(
                static_cast<Ref<ast::rhythmic>>(n)) and
            derived().walk_up_from_pitched(static_cast<Ref<ast::pitched>>(n)) and
+           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(n)) and
            derived().visit_note(n);
   }
   bool visit_note(Ref<ast::note>) { return true; }
@@ -89,12 +103,14 @@ public:
   bool walk_up_from_rest(Ref<ast::rest> r) {
     return derived().walk_up_from_rhythmic(
                static_cast<Ref<ast::rhythmic>>(r)) and
+           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(r)) and
            derived().visit_rest(r);
   }
   bool visit_rest(Ref<ast::rest>) { return true; }
 
   SIMPLE_BASE(rhythmic, ast::rhythmic, r)
   SIMPLE_BASE(pitched, ast::pitched, p)
+  SIMPLE_BASE(locatable, ast::locatable, l)
 
   bool traverse_chord(Ref<ast::chord> c) {
     return derived().walk_up_from_chord(c) and traverse_note(c.base) and
@@ -102,7 +118,8 @@ public:
            derived().end_of_chord(c);
   }
   bool walk_up_from_chord(Ref<ast::chord> c) {
-    return derived().visit_chord(c);
+    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(c)) and
+           derived().visit_chord(c);
   }
   bool visit_chord(Ref<ast::chord>) { return true; }
   bool end_of_chord(Ref<ast::chord>) { return true; }
@@ -114,7 +131,8 @@ public:
            derived().end_of_moving_note(mn);
   }
   bool walk_up_from_moving_note(Ref<ast::moving_note> mn) {
-    return derived().visit_moving_note(mn);
+    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(mn)) and
+           derived().visit_moving_note(mn);
   }
   bool visit_moving_note(Ref<ast::moving_note>) { return true; }
   bool end_of_moving_note(Ref<ast::moving_note>) { return true; }
