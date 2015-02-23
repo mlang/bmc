@@ -9,6 +9,7 @@
 
 #include <boost/variant/static_visitor.hpp>
 #include "bmc/braille/ast.hpp"
+#include "bmc/braille/ast/visitor.hpp"
 #include "compiler_pass.hpp"
 
 namespace bmc { namespace braille {
@@ -25,11 +26,13 @@ namespace bmc { namespace braille {
  * \ingroup compilation
  */
 class octave_calculator
-: public boost::static_visitor<bool>
+: public ast::visitor<octave_calculator>
 , public compiler_pass
 {
   ast::note const* prev;
   ::bmc::braille::interval_direction interval_direction;
+  ast::voice const *current_voice;
+  ast::partial_measure const *current_partial_measure;
 
 public:
   octave_calculator(report_error_type const& report_error)
@@ -43,24 +46,24 @@ public:
   void reset()
   { prev = nullptr; interval_direction = braille::interval_direction::down; }
 
-  result_type operator()(ast::measure& measure)
-  {
-    for (ast::voice& voice: measure.voices) {
-      for (ast::partial_measure& part: voice) {
-        for (ast::partial_voice& partial_voice: part) {
-          if (not std::all_of(partial_voice.begin(), partial_voice.end(),
-                              apply_visitor(*this)))
-            return false;
-          if (part.size() > 1) prev = nullptr;
-        }
-        if (voice.size() > 1) prev = nullptr;
-      }
-    }
+  bool operator()(ast::measure &measure) { return traverse_measure(measure); }
+  bool visit_voice(ast::voice &v) {
+    current_voice = &v;
     return true;
   }
-
-  result_type operator()(ast::note& note)
-  {
+  bool visit_partial_measure(ast::partial_measure &pm) {
+    current_partial_measure = &pm;
+    return true;
+  }
+  bool end_of_partial_measure(ast::partial_measure &) {
+    if (current_voice->size() > 1) prev = nullptr;
+    return true;
+  }
+  bool end_of_partial_voice(ast::partial_voice &) {
+    if (current_partial_measure->size() > 1) prev = nullptr;
+    return true;
+  }
+  bool visit_note(ast::note &note) {
     if (note.octave_spec) {
       note.octave = *note.octave_spec;
     } else {
@@ -80,12 +83,12 @@ public:
       }
     }
     prev = &note;
+
     return true;
   }
 
-  result_type operator()(ast::chord& chord)
-  {
-    if ((*this)(chord.base)) {
+  bool traverse_chord(ast::chord& chord) {
+    if (traverse_note(chord.base)) {
       BOOST_ASSERT(not chord.intervals.empty());
       int step = chord.base.step;
       unsigned octave = chord.base.octave;
@@ -106,9 +109,8 @@ public:
     return false;
   }
 
-  result_type operator()(ast::moving_note &chord)
-  {
-    if ((*this)(chord.base)) {
+  bool traverse_moving_note(ast::moving_note &chord) {
+    if (traverse_note(chord.base)) {
       BOOST_ASSERT(not chord.intervals.empty());
       for (auto& interval: chord.intervals) {
         int step = chord.base.step;
@@ -130,13 +132,10 @@ public:
   }
 
   // The note following a clef sign must always have its proper octave mark.
-  result_type operator()(ast::clef &)
-  {
+  bool visit_clef(ast::clef &) {
     prev = nullptr;
     return true;
   }
-
-  template<typename Sign> result_type operator()(Sign &) const { return true; }
 };
 
 }}
