@@ -7,7 +7,7 @@
 #ifndef BMC_BRAILLE_MUSIC_HPP
 #define BMC_BRAILLE_MUSIC_HPP
 
-#include <list>
+#include <vector>
 
 namespace bmc { namespace braille {
 
@@ -20,7 +20,7 @@ enum hand_sign { right_hand, left_hand };
 
 typedef std::pair<unsigned, unsigned> finger_change;
 typedef boost::variant<unsigned, finger_change> fingering;
-typedef std::list<fingering> fingering_list;
+typedef std::vector<fingering> fingering_list;
 
 }}
 
