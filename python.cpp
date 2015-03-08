@@ -7,6 +7,7 @@
 #include "config.hpp"
 #include <boost/spirit/include/qi_parse.hpp>
 #include "bmc/braille/parsing/grammar/score.hpp"
+#include "bmc/braille/reformat.hpp"
 #include "bmc/braille/semantic_analysis.hpp"
 #include "bmc/lilypond.hpp"
 #include "bmc/musicxml.hpp"
@@ -59,6 +60,31 @@ static std::string to_musicxml(std::wstring const &source) {
       std::wcerr << error_handler;
       std::stringstream ss;
       ::bmc::musicxml(ss, score);
+      return ss.str();
+    }
+  }
+  return "";
+}
+
+static std::string reformat(std::wstring const &source) {
+  typedef std::wstring::const_iterator iterator_type;
+
+  iterator_type iter = source.begin();
+  iterator_type const end = source.end();
+  typedef ::bmc::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type error_handler(iter, end);
+  typedef ::bmc::braille::score_grammar<iterator_type> parser_type;
+  parser_type parser(error_handler);
+  boost::spirit::traits::attribute_of<parser_type>::type score;
+
+  bool const success = parse(iter, end, parser, score);
+
+  if (success and iter == end) {
+    ::bmc::braille::compiler<error_handler_type> compile(error_handler);
+    if (compile(score)) {
+      std::wcerr << error_handler;
+      std::stringstream ss;
+      ss << ::bmc::braille::reformat(score);
       return ss.str();
     }
   }
@@ -136,4 +162,5 @@ BOOST_PYTHON_MODULE(_bmc) {
     ;
   def("to_lilypond", &to_lilypond);
   def("to_musicxml", &to_musicxml);
+  def("reformat", &reformat);
 }

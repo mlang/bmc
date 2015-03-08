@@ -31,10 +31,26 @@ public:
     return true;
   }
 
+  template <typename Container, typename Value = typename Container::value_type>
+  bool all_of(Container &c,
+              bool (Derived::*unary)(Ref<Value>),
+              bool (Derived::*binary)(Ref<Value>, Ref<Value>))
+  {
+    auto lhs = c.begin(), end = c.end();
+    if (lhs != end) {
+      if (not (derived().*unary)(*lhs)) return false;
+      for (auto rhs = std::next(lhs); rhs != end; lhs = rhs++)
+        if (not ((derived().*binary)(*lhs, *rhs) and
+                 (derived().*unary)(*rhs)))
+          return false;
+    }
+    return true;
+  }
+
 #define SIMPLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
   bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
     return derived().walk_up_from_##NAME(VAR) and                              \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME) and             \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) and             \
            derived().end_of_##NAME(VAR);                                       \
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
@@ -45,7 +61,7 @@ public:
 #define LOCATABLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
   bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
     return derived().walk_up_from_##NAME(VAR) and                              \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME) and             \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) and             \
            derived().end_of_##NAME(VAR);                                       \
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
@@ -74,15 +90,23 @@ public:
   bool visit_##NAME(Ref<CLASS>) { return true; }
 
   SIMPLE_CONTAINER(score, ast::score, s, s.parts, part)
+  bool between_part(Ref<ast::part>, Ref<ast::part>) { return true; }
   SIMPLE_CONTAINER(part, ast::part, p, p, section)
+  bool between_section(Ref<ast::section>, Ref<ast::section>) { return true; }
   SIMPLE_CONTAINER(section, ast::section, s, s.paragraphs, paragraph)
+  bool between_paragraph(Ref<ast::paragraph>, Ref<ast::paragraph>) { return true; }
   SIMPLE_CONTAINER(paragraph, ast::paragraph, p, p, paragraph_element)
+  bool between_paragraph_element(Ref<ast::paragraph_element>, Ref<ast::paragraph_element>) { return true; }
   SIMPLE_VARIANT(paragraph_element, ast::paragraph_element, pe,
                  paragraph_element_visitor)
   LOCATABLE_CONTAINER(measure, ast::measure, m, m.voices, voice)
+  bool between_voice(Ref<ast::voice>, Ref<ast::voice>) { return true; }
   LOCATABLE_CONTAINER(voice, ast::voice, v, v, partial_measure)
+  bool between_partial_measure(Ref<ast::partial_measure>, Ref<ast::partial_measure>) { return true; }
   LOCATABLE_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice)
+  bool between_partial_voice(Ref<ast::partial_voice>, Ref<ast::partial_voice>) { return true; }
   LOCATABLE_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign)
+  bool between_sign(Ref<ast::sign>, Ref<ast::sign>) { return true; }
   SIMPLE_VARIANT(sign, ast::sign, s, sign_visitor)
 
   bool traverse_note(Ref<ast::note> n) {
@@ -208,6 +232,7 @@ using make_const_ref =
 template <class Derived> using visitor = visitor_base<make_ref, Derived>;
 template <class Derived>
 using const_visitor = visitor_base<make_const_ref, Derived>;
+
 }
 }
 }

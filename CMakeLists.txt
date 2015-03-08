@@ -33,7 +33,7 @@ add_library(bmc_parse SHARED
             partial_voice_sign.cpp simile.cpp tuplet_start.cpp
             measure.cpp score.cpp
             value_disambiguation.cpp value_disambiguator.cpp
-            lilypond.cpp musicxml.cpp
+            lilypond.cpp musicxml.cpp reformat.cpp
            )
 set_target_properties(bmc_parse
                       PROPERTIES
