@@ -10,6 +10,7 @@
 #include <fstream>
 #include <boost/spirit/include/qi_parse.hpp>
 #include "bmc/braille/parsing/grammar/score.hpp"
+#include "bmc/braille/reformat.hpp"
 #include "bmc/braille/semantic_analysis.hpp"
 #include <boost/program_options.hpp>
 
@@ -40,15 +41,17 @@ int bmc2ly( std::wistream &wistream
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
-      if (not musicxml or lilypond) {
+      if (lilypond) {
         ::bmc::lilypond::generator generate(std::cout, true, true, include_locations);
         if (not instrument.empty()) generate.instrument(instrument);
         if (no_tagline) generate.remove_tagline();
         generate(score);
-      }
-      if (musicxml) {
+      } else if (musicxml) {
         ::bmc::musicxml(std::cout, score);
+      } else {
+        std::cout << ::bmc::braille::reformat(score);
       }
+
       return EXIT_SUCCESS;
     } else {
       std::wcerr << "Failed to compile:" << std::endl << error_handler << std::endl;
