@@ -39,15 +39,39 @@ output::fragment octave_sign[] = {
   { U"\u2820\u2820", "" },
 };
 output::fragment const augmentation_dot { U"\u2804", "augmentation dot" };
+output::fragment const finger_sign[] = {
+  { U"\u2801", "" },
+  { U"\u2803", "" },
+  { U"\u2807", "" },
+  { U"\u2802", "" },
+  { U"\u2805", "" },
+};
 output::fragment const partial_voice_separator { U"\u2810\u2802", "" };
 output::fragment const partial_measure_separator { U"\u2828\u2805", "" };
 output::fragment const voice_separator { U"\u2823\u281C", ""};
+output::fragment const slur_sign { U"\u2809", "" };
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
   for (auto &&fragment: o.fragments) len += std::u32string{fragment.unicode}.length();
   return len;
 }
+
+class fingering_print_visitor: public boost::static_visitor<void>
+{
+  output &out;
+public:
+  fingering_print_visitor(output &out): out{out} {}
+
+  result_type operator()(unsigned finger) const {
+    out.fragments.push_back(finger_sign[finger - 1]);
+  }
+  result_type operator()(finger_change const &change) const {
+    (*this)(change.first);
+    out.fragments.push_back(slur_sign);
+    (*this)(change.second);
+  }
+};
 
 struct print_visitor: public ast::const_visitor<print_visitor>
 {
@@ -100,6 +124,9 @@ struct print_visitor: public ast::const_visitor<print_visitor>
       result.fragments.push_back(octave_sign[*n.octave_spec - 1]);
     result.fragments.push_back(note_sign[n.ambiguous_value][n.step]);
     std::fill_n(std::back_inserter(result.fragments), n.dots, augmentation_dot);
+    fingering_print_visitor fingering_printer{result};
+    std::for_each(n.fingers.begin(), n.fingers.end(),
+                  apply_visitor(fingering_printer));
 
     return true;
   }
