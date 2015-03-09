@@ -9,6 +9,12 @@ namespace {
 output::fragment const newline { U"\n", "new line character" };
 output::fragment const guide_dot { U"\u2804", "guide dot" };
 output::fragment const number_sign { U"\u283C", "number sign" };
+output::fragment const rest_sign[] = {
+  { U"\u280D", ""},
+  { U"\u2825", "" },
+  { U"\u2827", "" },
+  { U"\u282D", "" }
+};
 output::fragment const note_sign[][steps_per_octave] = {
   {
     { U"\u283D", "" }, { U"\u2835", "" }, { U"\u282F", "" }, { U"\u283F", "" },
@@ -98,6 +104,13 @@ struct print_visitor: public ast::const_visitor<print_visitor>
     return true;
   }
 
+  bool between_paragraph_element(ast::paragraph_element const &, ast::paragraph_element const &)
+  {
+    result.fragments.push_back(output::fragment{U" ", "space"});
+
+    return true;
+  }
+
   bool between_voice(ast::voice const &, ast::voice const &)
   {
     result.fragments.push_back(voice_separator);
@@ -127,6 +140,13 @@ struct print_visitor: public ast::const_visitor<print_visitor>
     fingering_print_visitor fingering_printer{result};
     std::for_each(n.fingers.begin(), n.fingers.end(),
                   apply_visitor(fingering_printer));
+
+    return true;
+  }
+
+  bool visit_rest(ast::rest const &r) {
+    result.fragments.push_back(rest_sign[r.ambiguous_value]);
+    std::fill_n(std::back_inserter(result.fragments), r.dots, augmentation_dot);
 
     return true;
   }
