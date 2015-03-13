@@ -139,7 +139,8 @@ public:
 struct print_visitor: public ast::const_visitor<print_visitor>
 {
   output result;
-  linebreaking::objects para;
+
+  print_visitor(format_style const &style): style{style} {}
 
   bool visit_part(ast::part const &p)
   {
@@ -166,7 +167,7 @@ struct print_visitor: public ast::const_visitor<print_visitor>
       para.emplace_back(new atom{eom_sign});
     para.emplace_back(new eop{});
 
-    auto breaks = linebreaking::breakpoints(para, {32});
+    auto breaks = linebreaking::breakpoints(para, {style.columns});
     BOOST_ASSERT(not breaks.empty());
     auto i = para.begin();
     for (auto &&j: breaks) {
@@ -277,16 +278,18 @@ struct print_visitor: public ast::const_visitor<print_visitor>
   }
 
 private:
+  format_style const &style;
   int section_n;
   bool last_section;
   bool in_notegroup;
+  linebreaking::objects para;
 };
 
 }
 
 output reformat(ast::score const &score, format_style const &style)
 {
-  print_visitor printer;
+  print_visitor printer{style};
   bool const ok = printer.traverse_score(score);
   BOOST_ASSERT(ok);
   return printer.result;
