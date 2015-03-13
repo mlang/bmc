@@ -1,4 +1,6 @@
 #include <bmc/braille/reformat.hpp>
+
+#include <bmc/braille/linebreaking.hpp>
 #include <bmc/braille/ast/visitor.hpp>
 #include <boost/locale/encoding_utf.hpp>
 
@@ -56,6 +58,7 @@ output::fragment const partial_voice_separator { U"\u2810\u2802", "" };
 output::fragment const partial_measure_separator { U"\u2828\u2805", "" };
 output::fragment const voice_separator { U"\u2823\u281C", ""};
 output::fragment const slur_sign { U"\u2809", "" };
+output::fragment const eom_sign { U"\u2823\u2805", "" };
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
@@ -97,8 +100,9 @@ struct print_visitor: public ast::const_visitor<print_visitor>
     return true;
   }
 
-  bool end_of_paragraph(ast::paragraph const &) {
-    if (last_section) result.fragments.push_back(output::fragment{U"\u2823\u2805", ""});
+  bool end_of_paragraph(ast::paragraph const &)
+  {
+    if (last_section) result.fragments.push_back(eom_sign);
     result.fragments.push_back(newline);
 
     return true;
@@ -132,7 +136,8 @@ struct print_visitor: public ast::const_visitor<print_visitor>
     return true;
   }
 
-  bool visit_note(ast::note const &n) {
+  bool visit_note(ast::note const &n)
+  {
     if (n.octave_spec)
       result.fragments.push_back(octave_sign[*n.octave_spec - 1]);
     result.fragments.push_back(note_sign[n.ambiguous_value][n.step]);

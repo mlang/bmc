@@ -26,7 +26,8 @@ public:
 
   template <typename Container>
   bool all_of(Container &c,
-              bool (Derived::*fn)(Ref<typename Container::value_type>)) {
+              bool (Derived::*fn)(Ref<typename Container::value_type>))
+  {
     for (auto &v: c) if (not (derived().*fn)(v)) return false;
     return true;
   }
@@ -40,8 +41,7 @@ public:
     if (lhs != end) {
       if (not (derived().*unary)(*lhs)) return false;
       for (auto rhs = std::next(lhs); rhs != end; lhs = rhs++)
-        if (not ((derived().*binary)(*lhs, *rhs) and
-                 (derived().*unary)(*rhs)))
+        if (not ((derived().*binary)(*lhs, *rhs) and (derived().*unary)(*rhs)))
           return false;
     }
     return true;
