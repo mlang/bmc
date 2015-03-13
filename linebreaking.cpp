@@ -28,11 +28,11 @@ struct breakpoint {
   , previous{std::move(previous)} {}
 };
 
-  int compute_cost(linebreaking::objects::const_iterator begin,
-		   linebreaking::objects::const_iterator end,
-		   breakpoint const &active, unsigned current_line,
-		   unsigned const &sum_width,
-		   std::vector<unsigned> const &line_lengths)
+int compute_cost(linebreaking::objects::const_iterator begin,
+		 linebreaking::objects::const_iterator end,
+		 breakpoint const &active, unsigned current_line,
+		 unsigned const &sum_width,
+		 std::vector<unsigned> const &line_lengths)
 {
   int width = sum_width - active.total_width;
 
@@ -51,12 +51,13 @@ bool is_forced_break(linebreaking::objects::const_iterator const &i)
   if (auto p = dynamic_cast<linebreaking::penalty const *>(i->get())) {
     return p->value() == -linebreaking::infinity;
   }
+
   return false;
 }
 
 int compute_sum(linebreaking::objects::const_iterator current,
-		  linebreaking::objects::const_iterator end,
-		  unsigned const &sum_width)
+		linebreaking::objects::const_iterator end,
+		unsigned const &sum_width)
 {
   unsigned width = sum_width;
 
