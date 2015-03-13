@@ -81,8 +81,8 @@ void main_loop(linebreaking::objects::const_iterator index,
 {
   auto i = active_nodes.begin(), e = active_nodes.end();
   while (i != e) {
-    std::tuple<std::shared_ptr<breakpoint>, int> candidate{nullptr,
-	linebreaking::infinity};
+    std::shared_ptr<breakpoint> candidate;
+    int candidate_demerits = linebreaking::infinity;
     while (i != e) {
       unsigned current_line = (*i)->line + 1;
       auto slack = compute_cost((*i)->position, index, **i, current_line,
@@ -97,14 +97,16 @@ void main_loop(linebreaking::objects::const_iterator index,
 	  demerits += p->value() * p->value();
 	  if (auto pp = dynamic_cast<linebreaking::penalty const *>((*i)->position->get())) {
 	    if (p->width() and pp->width())
-	      demerits += p->value() + pp->value();
+	      demerits += p->value() * pp->value();
 	  }
 	}
 
 	demerits += (*i)->demerits;
 	
-	if (demerits < std::get<1>(candidate))
-	  candidate = std::make_tuple(*i, demerits);
+	if (demerits < candidate_demerits) {
+	  candidate = *i;
+          candidate_demerits = demerits;
+        }
 
 	++i;
 
@@ -112,13 +114,11 @@ void main_loop(linebreaking::objects::const_iterator index,
       }
     }
 
-    if (std::get<1>(candidate) < linebreaking::infinity) {
+    if (candidate) {
       active_nodes.insert(i, std::make_shared<breakpoint>
-			     (index,
-			      std::get<1>(candidate),
-			      std::get<0>(candidate)->line + 1,
+			     (index, candidate_demerits, candidate->line + 1,
 			      compute_sum(index, objs.end(), sum_width),
-			      std::get<0>(candidate)
+			      candidate
 			     )
                          );
     }
