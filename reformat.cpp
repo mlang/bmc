@@ -8,6 +8,59 @@ namespace bmc { namespace braille {
 
 namespace {
 
+struct atom: public linebreaking::box {
+  output content;
+
+  atom(output const &o) {
+    content.fragments.assign(o.fragments.begin(), o.fragments.end());
+  }
+  atom(std::initializer_list<output::fragment> c) {
+    content.fragments.assign(c.begin(), c.end());
+  }
+
+  int width() const override 
+  {
+    int result = 0;
+    for (auto &&c: content.fragments) result += c.unicode.length();
+    return result;
+  }
+
+  friend std::ostream &operator<<(std::ostream &os, atom const &a) {
+    for (auto &&c: a.content.fragments)
+      os << boost::locale::conv::utf_to_utf<char>(c.unicode);
+
+    return os;
+  }
+};
+
+class whitespace: public linebreaking::glue {
+public:
+  int width() const override { return 1; }
+};
+
+struct newline_opportunity: public linebreaking::penalty {
+  bool hyphen;
+
+  newline_opportunity(bool hyphen): hyphen{hyphen} {}
+
+  int width() const override { return hyphen? 1: 0; }
+  int value() const override { return hyphen? 4: 16; }
+
+  friend std::ostream &operator<<(std::ostream &os, newline_opportunity const &nl) {
+    if (nl.hyphen == 1) os << u8"\u2810";
+    os << std::endl;
+
+    return os;
+  }
+};
+
+class eop: public newline_opportunity {
+public:
+  eop(): newline_opportunity{false} {}
+
+  int value() const override { return -linebreaking::infinity; }
+};
+
 output::fragment const newline { U"\n", "new line character" };
 output::fragment const guide_dot { U"\u2804", "guide dot" };
 output::fragment const number_sign { U"\u283C", "number sign" };
@@ -59,6 +112,7 @@ output::fragment const partial_measure_separator { U"\u2828\u2805", "" };
 output::fragment const voice_separator { U"\u2823\u281C", ""};
 output::fragment const slur_sign { U"\u2809", "" };
 output::fragment const eom_sign { U"\u2823\u2805", "" };
+output::fragment const hyphen_sign { U"\u2810", "hyphen" };
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
@@ -85,6 +139,7 @@ public:
 struct print_visitor: public ast::const_visitor<print_visitor>
 {
   output result;
+  linebreaking::objects para;
 
   bool visit_part(ast::part const &p)
   {
@@ -100,58 +155,107 @@ struct print_visitor: public ast::const_visitor<print_visitor>
     return true;
   }
 
+  bool visit_paragraph(ast::paragraph const &)
+  {
+    return true;
+  }
+
   bool end_of_paragraph(ast::paragraph const &)
   {
-    if (last_section) result.fragments.push_back(eom_sign);
-    result.fragments.push_back(newline);
+    if (last_section)
+      para.emplace_back(new atom{eom_sign});
+    para.emplace_back(new eop{});
 
+    auto breaks = linebreaking::breakpoints(para, {32});
+    BOOST_ASSERT(not breaks.empty());
+    auto i = para.begin();
+    for (auto &&j: breaks) {
+      while (i < j) {
+        if (dynamic_cast<whitespace const *>(i->get())) {
+          result.fragments.push_back(output::fragment{U" ", "space"});
+        } else if (auto a = dynamic_cast<atom const *>(i->get())) {
+          for (auto &&f: a->content.fragments) result.fragments.push_back(f);
+        }
+        ++i;
+      }
+      if (auto nl = dynamic_cast<newline_opportunity const *>(i->get())) {
+        if (nl->hyphen) result.fragments.push_back(hyphen_sign);
+        result.fragments.push_back(newline);
+      } else if (dynamic_cast<whitespace const *>(i->get())) {
+        result.fragments.push_back(newline);
+        ++i;
+      }
+    }
+    while (i < para.end()) {
+      if (dynamic_cast<whitespace const *>(i->get())) {
+        result.fragments.push_back(output::fragment{U" ", "space"});
+      } else if (auto a = dynamic_cast<atom const *>(i->get())) {
+        for (auto &&f: a->content.fragments) result.fragments.push_back(f);
+      }
+      ++i;
+    }
+    result.fragments.push_back(newline);
+    para.clear();
     return true;
   }
 
   bool between_paragraph_element(ast::paragraph_element const &, ast::paragraph_element const &)
   {
-    result.fragments.push_back(output::fragment{U" ", "space"});
+    para.emplace_back(new whitespace{});
 
     return true;
   }
 
   bool between_voice(ast::voice const &, ast::voice const &)
   {
-    result.fragments.push_back(voice_separator);
-
+    para.emplace_back(new atom{voice_separator});
+    para.emplace_back(new newline_opportunity{false});
     return true;
   }
 
   bool between_partial_measure(ast::partial_measure const &, ast::partial_measure const &)
   {
-    result.fragments.push_back(partial_measure_separator);
+    para.emplace_back(new atom{partial_measure_separator});
+    para.emplace_back(new newline_opportunity{false});
 
     return true;
   }
 
   bool between_partial_voice(ast::partial_voice const &, ast::partial_voice const &)
   {
-    result.fragments.push_back(partial_voice_separator);
+    para.emplace_back(new atom{partial_voice_separator});
+    para.emplace_back(new newline_opportunity{false});
+
+    return true;
+  }
+  bool between_sign(ast::sign const &, ast::sign const &)
+  {
+    para.emplace_back(new newline_opportunity{true});
 
     return true;
   }
 
   bool visit_note(ast::note const &n)
   {
+    output res;
     if (n.octave_spec)
-      result.fragments.push_back(octave_sign[*n.octave_spec - 1]);
-    result.fragments.push_back(note_sign[n.ambiguous_value][n.step]);
-    std::fill_n(std::back_inserter(result.fragments), n.dots, augmentation_dot);
-    fingering_print_visitor fingering_printer{result};
+      res.fragments.push_back(octave_sign[*n.octave_spec - 1]);
+    res.fragments.push_back(note_sign[n.ambiguous_value][n.step]);
+    std::fill_n(std::back_inserter(res.fragments), n.dots, augmentation_dot);
+    fingering_print_visitor fingering_printer{res};
     std::for_each(n.fingers.begin(), n.fingers.end(),
                   apply_visitor(fingering_printer));
-
+    para.emplace_back(new atom{res});
     return true;
   }
 
-  bool visit_rest(ast::rest const &r) {
-    result.fragments.push_back(rest_sign[r.ambiguous_value]);
-    std::fill_n(std::back_inserter(result.fragments), r.dots, augmentation_dot);
+  bool visit_rest(ast::rest const &r)
+  {
+    output res;
+    res.fragments.push_back(rest_sign[r.ambiguous_value]);
+    std::fill_n(std::back_inserter(res.fragments), r.dots, augmentation_dot);
+
+    para.emplace_back(new atom{res});
 
     return true;
   }
