@@ -210,6 +210,7 @@ struct print_visitor: public ast::const_visitor<print_visitor>
   {
     para.emplace_back(new atom{voice_separator});
     para.emplace_back(new newline_opportunity{false});
+
     return true;
   }
 
@@ -228,15 +229,23 @@ struct print_visitor: public ast::const_visitor<print_visitor>
 
     return true;
   }
+
   bool between_sign(ast::sign const &, ast::sign const &)
   {
-    para.emplace_back(new newline_opportunity{true});
+    if (not in_notegroup) para.emplace_back(new newline_opportunity{true});
 
     return true;
   }
 
   bool visit_note(ast::note const &n)
   {
+    if (n.notegroup_member == ast::notegroup_member_type::begin or
+        n.notegroup_member == ast::notegroup_member_type::middle) {
+      in_notegroup = true;
+    } else {
+      in_notegroup = false;
+    }
+
     output res;
     if (n.octave_spec)
       res.fragments.push_back(octave_sign[*n.octave_spec - 1]);
@@ -251,6 +260,13 @@ struct print_visitor: public ast::const_visitor<print_visitor>
 
   bool visit_rest(ast::rest const &r)
   {
+    if (r.notegroup_member == ast::notegroup_member_type::begin or
+        r.notegroup_member == ast::notegroup_member_type::middle) {
+      in_notegroup = true;
+    } else {
+      in_notegroup = false;
+    }
+
     output res;
     res.fragments.push_back(rest_sign[r.ambiguous_value]);
     std::fill_n(std::back_inserter(res.fragments), r.dots, augmentation_dot);
@@ -263,6 +279,7 @@ struct print_visitor: public ast::const_visitor<print_visitor>
 private:
   int section_n;
   bool last_section;
+  bool in_notegroup;
 };
 
 }
