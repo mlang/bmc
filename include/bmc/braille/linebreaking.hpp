@@ -15,12 +15,12 @@
 namespace bmc { namespace braille { namespace linebreaking {
 
 struct object {
-public:
   virtual ~object() {}
 };
 
 struct box: public object {
   virtual int width() const = 0;
+  virtual bool is_guide() const = 0;
 };
 
 struct glue: public object {

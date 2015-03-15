@@ -151,7 +151,7 @@ public:
   bool traverse_moving_note(Ref<ast::moving_note> mn) {
     return derived().walk_up_from_moving_note(mn) and
            derived().traverse_note(mn.base) and
-           all_of(mn.intervals, &Derived::traverse_interval) and
+           all_of(mn.intervals, &Derived::traverse_interval, &Derived::between_moving_note_interval) and
            derived().end_of_moving_note(mn);
   }
   bool walk_up_from_moving_note(Ref<ast::moving_note> mn) {
@@ -159,6 +159,7 @@ public:
            derived().visit_moving_note(mn);
   }
   bool visit_moving_note(Ref<ast::moving_note>) { return true; }
+  bool between_moving_note_interval(Ref<ast::interval>, Ref<ast::interval>) { return true; }
   bool end_of_moving_note(Ref<ast::moving_note>) { return true; }
 
   SIMPLE_BASE(interval, ast::interval, i)

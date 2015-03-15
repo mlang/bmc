@@ -38,6 +38,11 @@ int compute_cost(linebreaking::objects::const_iterator begin,
 
   if (auto p = dynamic_cast<linebreaking::penalty const *>(end->get())) {
     width += p->width();
+    if (p->width()) {
+      if (auto b = dynamic_cast<linebreaking::box const *>(std::prev(end)->get())) {
+        if (b->is_guide()) width -= b->width();
+      }
+    }
   }
 
   int const line_length = line_lengths[std::min(std::size_t(current_line),

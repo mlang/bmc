@@ -9,6 +9,8 @@ namespace braille {
 
 namespace {
 
+output::fragment const guide_dot{U"\u2804", "guide dot"};
+
 struct atom: public linebreaking::box {
   output content;
 
@@ -25,16 +27,26 @@ struct atom: public linebreaking::box {
     return result;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, atom const &a) {
-    for (auto &&c: a.content.fragments)
-      os << boost::locale::conv::utf_to_utf<char>(c.unicode);
+  bool is_guide() const override { return false; }
 
-    return os;
+  bool starts_with_one_of_dots_123() const {
+    if (not content.fragments.empty()) {
+      auto const &u = content.fragments.front().unicode;
+      if (not u.empty()) {
+        if (((u[0] | 0X28FF) == 0X28FF) and (u[0] & 7)) return true;
+      }
+    }
+    return false;
   }
 };
 
+struct guide: public atom {
+  guide(): atom{guide_dot} {}
+
+  bool is_guide() const override { return true; }
+};
+
 struct whitespace: public linebreaking::glue {
-public:
   int width() const override { return 1; }
 };
 
@@ -55,8 +67,7 @@ struct newline_opportunity: public linebreaking::penalty {
   }
 };
 
-class eop: public newline_opportunity {
-public:
+struct eop: public newline_opportunity {
   eop(): newline_opportunity{false} {}
 
   int value() const override { return -linebreaking::infinity; }
@@ -64,7 +75,6 @@ public:
 
 output::fragment const newline{U"\n", "new line character"};
 output::fragment const indent_2{U"  ", "indent of two spaces"};
-output::fragment const guide_dot{U"\u2804", "guide dot"};
 output::fragment const number_sign{U"\u283C", "number sign"};
 output::fragment const rest_sign[] = {
   {U"\u280D", ""}, {U"\u2825", ""}, {U"\u2827", ""}, {U"\u282D", ""}};
@@ -123,6 +133,36 @@ output::fragment const eom_sign{U"\u2823\u2805", ""};
 output::fragment const hyphen_sign{U"\u2810", "hyphen"};
 output::fragment const begin_repeat_sign { U"\u2823\u2836", "begin repeat" };
 output::fragment const end_repeat_sign { U"\u2823\u2806", "end repeat" };
+output::fragment const hand_sign[] = {
+  {U"\u2828\u281C", "right hand sign", true},
+  {U"\u2838\u281C", "left hand sign", true}
+};
+output::fragment const flat_sign {U"\u2823", "flat"};
+output::fragment const sharp_sign {U"\u2829", "sharp"};
+output::fragment const upper_digit_sign[10] = {
+  {U"\u281A", "zero" },
+  {U"\u2801", "one"},
+  {U"\u2803", "two"},
+  {U"\u2809", "three"},
+  {U"\u2819", "four"},
+  {U"\u2811", "five"},
+  {U"\u280B", "six"},
+  {U"\u281A", "seven"},
+  {U"\u2813", "eight"},
+  {U"\u280A", "nine"}
+};
+output::fragment const lower_digit_sign[10] = {
+  {U"\u2834", "lower zero"},
+  {U"\u2802", "lower one"},
+  {U"\u2806", "lower two"},
+  {U"\u2812", "lower three"},
+  {U"\u2832", "lower four"},
+  {U"\u2822", "lower five"},
+  {U"\u2816", "lower six"},
+  {U"\u2836", "lower seven"},
+  {U"\u2826", "lower eight"},
+  {U"\u2814", "lower nine"}
+};
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
@@ -152,6 +192,19 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
 
   print_visitor(format_style const &style): style{style} {}
 
+  bool visit_score(ast::score const &s) {
+    std::fill_n(std::back_inserter(result.fragments),
+                std::abs(s.key_sig), s.key_sig < 0? flat_sign: sharp_sign);
+    if (not s.time_sigs.empty()) {
+      result.fragments.push_back(number_sign);
+      result.fragments.push_back(upper_digit_sign[s.time_sigs.front().numerator()]);
+      result.fragments.push_back(lower_digit_sign[s.time_sigs.front().denominator()]);
+    }
+    result.fragments.push_back(newline);
+
+    return true;
+  }
+
   bool visit_part(ast::part const &p) {
     section_n = p.size();
 
@@ -160,22 +213,26 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
 
   bool visit_section(ast::section const &s) {
     last_section = !--section_n;
-
+    staves = s.paragraphs.size();
+    staff = 0;
     return true;
   }
 
   bool visit_paragraph(ast::paragraph const &)
   {
-    para.emplace_back(new atom{indent_2});
+    add_to_para(new atom{indent_2});
 
+    if (staves > 1) {
+      add_to_para(new atom{hand_sign[staff]});
+    }
     return true;
   }
 
   bool end_of_paragraph(ast::paragraph const &) {
-    if (last_section) para.emplace_back(new atom{eom_sign});
-    para.emplace_back(new eop{});
+    if (last_section) add_to_para(new atom{eom_sign});
+    add_to_para(new eop{});
 
-    auto breaks = linebreaking::breakpoints(para, {style.columns});
+    auto const breaks = linebreaking::breakpoints(para, {style.columns});
     BOOST_ASSERT(not breaks.empty());
     auto i = para.begin();
     for (auto &&j: breaks) {
@@ -204,42 +261,45 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       ++i;
     }
     result.fragments.push_back(newline);
+
     para.clear();
+    ++staff;
+
     return true;
   }
 
   bool between_paragraph_element(ast::paragraph_element const &,
                                  ast::paragraph_element const &) {
-    para.emplace_back(new whitespace{});
+    add_to_para(new whitespace{});
 
     return true;
   }
 
   bool between_voice(ast::voice const &, ast::voice const &) {
-    para.emplace_back(new atom{voice_separator});
-    para.emplace_back(new newline_opportunity{false});
+    add_to_para(new atom{voice_separator});
+    add_to_para(new newline_opportunity{false});
 
     return true;
   }
 
   bool between_partial_measure(ast::partial_measure const &,
                                ast::partial_measure const &) {
-    para.emplace_back(new atom{partial_measure_separator});
-    para.emplace_back(new newline_opportunity{false});
+    add_to_para(new atom{partial_measure_separator});
+    add_to_para(new newline_opportunity{false});
 
     return true;
   }
 
   bool between_partial_voice(ast::partial_voice const &,
                              ast::partial_voice const &) {
-    para.emplace_back(new atom{partial_voice_separator});
-    para.emplace_back(new newline_opportunity{false});
+    add_to_para(new atom{partial_voice_separator});
+    add_to_para(new newline_opportunity{false});
 
     return true;
   }
 
   bool between_sign(ast::sign const &, ast::sign const &) {
-    if (not in_notegroup) para.emplace_back(new newline_opportunity{true});
+    if (not in_notegroup) add_to_para(new newline_opportunity{true});
 
     return true;
   }
@@ -251,13 +311,22 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     } else { in_notegroup = false; }
 
     output res;
+    if (n.acc) {
+      switch(*n.acc) {
+      case flat: std::fill_n(std::back_inserter(res.fragments), 1, flat_sign); break;
+      case double_flat: std::fill_n(std::back_inserter(res.fragments), 2, flat_sign); break;
+      case sharp: std::fill_n(std::back_inserter(res.fragments), 1, sharp_sign); break;
+      case double_sharp: std::fill_n(std::back_inserter(res.fragments), 2, sharp_sign); break;
+      default: BOOST_ASSERT(false);
+      }
+    }
     if (n.octave_spec) res.fragments.push_back(octave_sign[*n.octave_spec - 1]);
     res.fragments.push_back(note_sign[n.ambiguous_value][n.step]);
     std::fill_n(std::back_inserter(res.fragments), n.dots, augmentation_dot);
     fingering_print_visitor fingering_printer{res};
     std::for_each(n.fingers.begin(), n.fingers.end(),
                   apply_visitor(fingering_printer));
-    para.emplace_back(new atom{res});
+    add_to_para(new atom{res});
     return true;
   }
 
@@ -272,7 +341,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     res.fragments.push_back(rest_sign[r.ambiguous_value]);
     std::fill_n(std::back_inserter(res.fragments), r.dots, augmentation_dot);
 
-    para.emplace_back(new atom{res});
+    add_to_para(new atom{res});
 
     return true;
   }
@@ -281,10 +350,10 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   {
     switch (b) {
     case ast::begin_repeat:
-      para.emplace_back(new atom{begin_repeat_sign});
+      add_to_para(new atom{begin_repeat_sign});
       break;
     case ast::end_repeat:
-      para.emplace_back(new atom{end_repeat_sign});
+      add_to_para(new atom{end_repeat_sign});
       break;
     default: BOOST_ASSERT(false);
     }
@@ -293,9 +362,28 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   }
 
 private:
+  void add_to_para(linebreaking::object *object) {
+    if (auto a = dynamic_cast<atom *>(object)) {
+      if (a->starts_with_one_of_dots_123()) {
+        atom *box = nullptr;
+        if (not para.empty()) {
+          box = dynamic_cast<atom *>(para.back().get());
+          if (not box and dynamic_cast<newline_opportunity *>(para.back().get())) {
+            box = dynamic_cast<atom *>(para[para.size() - 2].get());
+          }
+        }
+        if (box and box->content.fragments.back().needs_guide_dot)
+          para.emplace_back(new guide{});
+      }
+    }
+    para.emplace_back(object);
+  }
+
   format_style const &style;
   int section_n;
   bool last_section;
+  size_t staves;
+  size_t staff;
   bool in_notegroup;
   linebreaking::objects para;
 };

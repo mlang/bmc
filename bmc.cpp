@@ -22,6 +22,7 @@ namespace {
 int bmc2ly( std::wistream &wistream
           , bool lilypond, bool musicxml
           , bool include_locations, std::string instrument, bool no_tagline
+          , ::bmc::braille::format_style const &style
           ) {
   std::istreambuf_iterator<wchar_t> wcin_begin(wistream.rdbuf()), wcin_end;
   std::wstring source(wcin_begin, wcin_end);
@@ -49,7 +50,7 @@ int bmc2ly( std::wistream &wistream
       } else if (musicxml) {
         ::bmc::musicxml(std::cout, score);
       } else {
-        std::cout << ::bmc::braille::reformat(score);
+        std::cout << ::bmc::braille::reformat(score, style);
       }
 
       return EXIT_SUCCESS;
@@ -73,6 +74,7 @@ int main(int argc, char const *argv[])
   std::string instrument;
   bool locations;
   bool no_tagline = false;
+  ::bmc::braille::format_style style;
   std::vector<std::string> input_files;
 
   options_description desc("Allowed options");
@@ -84,6 +86,7 @@ int main(int argc, char const *argv[])
   ("musicxml", "Produce MusicXML output.")
   ("locations,l", bool_switch(&locations), "Include braille locations in LilyPond output")
   ("no-tagline", bool_switch(&no_tagline)->default_value(false), "Supress LilyPond default tagline")
+  ("width,w", value(&style.columns), "Line width for reformatting")
   ;
   positional_options_description positional_desc;
   positional_desc.add("input-file", -1);
@@ -114,10 +117,10 @@ int main(int argc, char const *argv[])
   bool const do_lilypond { bool(vm.count("lilypond")) }
            , do_musicxml { bool(vm.count("musicxml")) };
   for (auto const &file: input_files) {
-    if (file == "-") status = bmc2ly(std::wcin, do_lilypond, do_musicxml, locations, instrument, no_tagline);
+    if (file == "-") status = bmc2ly(std::wcin, do_lilypond, do_musicxml, locations, instrument, no_tagline, style);
     else {
       std::wifstream f(file);
-      if (f.good()) status = bmc2ly(f, do_lilypond, do_musicxml, locations, instrument, no_tagline);
+      if (f.good()) status = bmc2ly(f, do_lilypond, do_musicxml, locations, instrument, no_tagline, style);
     }
   }
 
