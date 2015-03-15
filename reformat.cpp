@@ -65,7 +65,7 @@ struct newline_opportunity: public linebreaking::penalty {
   newline_opportunity(bool hyphen): hyphen{hyphen} {}
 
   int width() const override { return hyphen? 1: 0; }
-  int value() const override { return hyphen ? 10: 4; }
+  int value() const override { return hyphen ? 8: 5; }
 };
 
 struct eop: public newline_opportunity {
@@ -77,6 +77,7 @@ struct eop: public newline_opportunity {
 output::fragment const newline{U"\n", "new line character"};
 output::fragment const indent_2{U"  ", "indent of two spaces"};
 output::fragment const number_sign{U"\u283C", "number sign"};
+output::fragment const dash_sign {U"\u2824", "dash"};
 output::fragment const rest_sign[] = {
   {U"\u280D", ""}, {U"\u2825", ""}, {U"\u2827", ""}, {U"\u282D", ""}};
 output::fragment const note_sign[][steps_per_octave] = {{{U"\u283D", ""},
@@ -150,7 +151,7 @@ output::fragment const upper_digit_sign[10] = {
   {U"\u2819", "four"},
   {U"\u2811", "five"},
   {U"\u280B", "six"},
-  {U"\u281A", "seven"},
+  {U"\u281B", "seven"},
   {U"\u2813", "eight"},
   {U"\u280A", "nine"}
 };
@@ -232,16 +233,39 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     last_section = !--section_n;
     staves = s.paragraphs.size();
     staff = 0;
+
+    add_to_para(new atom{indent_2});
+    if (s.number) {
+      output tmp;
+      tmp.fragments.push_back(number_sign);
+      for (auto digit: digits(*s.number))
+        tmp.fragments.push_back(upper_digit_sign[digit]);
+      add_to_para(new atom{tmp});
+      add_to_para(new whitespace{});
+    }
+    if (s.range) {
+      output tmp;
+      tmp.fragments.push_back(number_sign);
+      for (auto digit: digits(s.range->first.number))
+        tmp.fragments.push_back(lower_digit_sign[digit]);
+      tmp.fragments.push_back(dash_sign);
+      for (auto digit: digits(s.range->last.number))
+        tmp.fragments.push_back(lower_digit_sign[digit]);
+      add_to_para(new atom{tmp});
+      add_to_para(new whitespace{});
+    }
+
     return true;
   }
 
   bool visit_paragraph(ast::paragraph const &)
   {
-    add_to_para(new atom{indent_2});
+    if (para.empty()) add_to_para(new atom{indent_2});
 
     if (staves > 1) {
       add_to_para(new atom{hand_sign[staff]});
     }
+
     return true;
   }
 

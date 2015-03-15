@@ -96,13 +96,13 @@ void main_loop(linebreaking::objects::const_iterator index,
       if (slack < 0) {
 	active_nodes.erase(i++);
       } else {
-	slack += 1;
 	int demerits = slack * slack;
 	if (auto p = dynamic_cast<linebreaking::penalty const *>(index->get())) {
-	  demerits += p->value() * p->value();
+	  if (p->value() != -linebreaking::infinity)
+            demerits += p->value() * p->value();
 	  if (auto pp = dynamic_cast<linebreaking::penalty const *>((*i)->position->get())) {
 	    if (p->width() and pp->width())
-	      demerits += p->value() * pp->value();
+	      demerits += 10;
 	  }
 	}
 
