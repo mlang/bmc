@@ -128,7 +128,9 @@ output::fragment const finger_sign[] = {
 output::fragment const partial_voice_separator{U"\u2810\u2802", ""};
 output::fragment const partial_measure_separator{U"\u2828\u2805", ""};
 output::fragment const voice_separator{U"\u2823\u281C", ""};
+output::fragment const moving_note_separator {U"\u2820", "moving note separator"};
 output::fragment const slur_sign{U"\u2809", ""};
+output::fragment const simile_sign {U"\u2836", "simile"};
 output::fragment const eom_sign{U"\u2823\u2805", ""};
 output::fragment const hyphen_sign{U"\u2810", "hyphen"};
 output::fragment const begin_repeat_sign { U"\u2823\u2836", "begin repeat" };
@@ -162,6 +164,15 @@ output::fragment const lower_digit_sign[10] = {
   {U"\u2836", "lower seven"},
   {U"\u2826", "lower eight"},
   {U"\u2814", "lower nine"}
+};
+output::fragment const interval_sign[] = {
+  {U"\u280C", "second"},
+  {U"\u282C", "third"},
+  {U"\u283C", "fourth"},
+  {U"\u2814", "fifth"},
+  {U"\u2834", "sixth"},
+  {U"\u2812", "seventh"},
+  {U"\u2824", "octave"}
 };
 
 std::size_t length(output const &o) {
@@ -341,6 +352,34 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     res.fragments.push_back(rest_sign[r.ambiguous_value]);
     std::fill_n(std::back_inserter(res.fragments), r.dots, augmentation_dot);
 
+    add_to_para(new atom{res});
+
+    return true;
+  }
+
+  bool visit_interval(ast::interval const &i)
+  {
+    output res;
+    if (i.octave_spec) res.fragments.push_back(octave_sign[*i.octave_spec - 1]);
+    res.fragments.push_back(interval_sign[i.steps - 1]);
+
+    fingering_print_visitor fingering_printer{res};
+    std::for_each(i.fingers.begin(), i.fingers.end(), apply_visitor(fingering_printer));
+    add_to_para(new atom{res});
+
+    return true;
+  }
+
+  bool between_moving_note_interval(ast::interval const &, ast::interval const &)
+  {
+    add_to_para(new atom{moving_note_separator});
+
+    return true;
+  }
+
+  bool visit_simile(ast::simile const &s) {
+    output res;
+    std::fill_n(std::back_inserter(res.fragments), s.count, simile_sign);
     add_to_para(new atom{res});
 
     return true;
