@@ -131,16 +131,19 @@ output::fragment const partial_voice_separator{U"\u2810\u2802", ""};
 output::fragment const partial_measure_separator{U"\u2828\u2805", ""};
 output::fragment const voice_separator{U"\u2823\u281C", ""};
 output::fragment const moving_note_separator {U"\u2820", "moving note separator"};
-output::fragment const slur_sign{U"\u2809", ""};
+output::fragment const slur_sign{U"\u2809", "slur"};
+output::fragment const tie_sign{U"\u2808\u2809", "tie"};
 output::fragment const simile_sign {U"\u2836", "simile"};
 output::fragment const eom_sign{U"\u2823\u2805", ""};
 output::fragment const hyphen_sign{U"\u2810", "hyphen"};
 output::fragment const begin_repeat_sign { U"\u2823\u2836", "begin repeat" };
 output::fragment const end_repeat_sign { U"\u2823\u2806", "end repeat" };
+output::fragment const end_part_sign {U"\u2823\u2805\u2804", "end part"};
 output::fragment const hand_sign[] = {
   {U"\u2828\u281C", "right hand sign", true},
   {U"\u2838\u281C", "left hand sign", true}
 };
+output::fragment const natural_sign {U"\u2821", "natural"};
 output::fragment const flat_sign {U"\u2823", "flat"};
 output::fragment const sharp_sign {U"\u2829", "sharp"};
 output::fragment const upper_digit_sign[10] = {
@@ -316,6 +319,18 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     return true;
   }
 
+  bool visit_measure(ast::measure const &m) {
+    if (m.ending) {
+      output tmp;
+      tmp.fragments.push_back(number_sign);
+      for (auto digit: digits(*m.ending))
+        tmp.fragments.push_back(lower_digit_sign[digit]);
+      add_to_para(new atom{tmp});
+    }
+
+    return true;
+  }
+
   bool between_voice(ast::voice const &, ast::voice const &) {
     add_to_para(new atom{voice_separator});
     add_to_para(new newline_opportunity{false});
@@ -353,7 +368,8 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
 
     output res;
     if (n.acc) {
-      switch(*n.acc) {
+      switch (*n.acc) {
+      case natural: res.fragments.push_back(natural_sign); break;
       case flat: std::fill_n(std::back_inserter(res.fragments), 1, flat_sign); break;
       case double_flat: std::fill_n(std::back_inserter(res.fragments), 2, flat_sign); break;
       case sharp: std::fill_n(std::back_inserter(res.fragments), 1, sharp_sign); break;
@@ -367,6 +383,13 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     fingering_print_visitor fingering_printer{res};
     std::for_each(n.fingers.begin(), n.fingers.end(),
                   apply_visitor(fingering_printer));
+    if (n.tie) {
+      switch (n.tie->value) {
+      case ast::tie::single:
+        res.fragments.push_back(tie_sign);
+        break;
+      }
+    }
     add_to_para(new atom{res});
     return true;
   }
@@ -438,6 +461,9 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       break;
     case ast::end_repeat:
       add_to_para(new atom{end_repeat_sign});
+      break;
+    case ast::end_part:
+      add_to_para(new atom{end_part_sign});
       break;
     default: BOOST_ASSERT(false);
     }
