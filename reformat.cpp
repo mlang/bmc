@@ -9,6 +9,15 @@ namespace braille {
 
 namespace {
 
+template<typename T> std::vector<T> digits(T n, unsigned base = 10) {
+  std::vector<T> result;
+  while (n) {
+    result.push_back(n % base);
+    n /= base;
+  }
+  return {result.rbegin(), result.rend()};
+}
+
 output::fragment const guide_dot{U"\u2804", "guide dot"};
 
 struct atom: public linebreaking::box {
@@ -57,14 +66,6 @@ struct newline_opportunity: public linebreaking::penalty {
 
   int width() const override { return hyphen? 1: 0; }
   int value() const override { return hyphen ? 10: 4; }
-
-  friend std::ostream &operator<<(std::ostream &os,
-                                  newline_opportunity const &nl) {
-    if (nl.hyphen == 1) os << u8"\u2810";
-    os << std::endl;
-
-    return os;
-  }
 };
 
 struct eop: public newline_opportunity {
@@ -174,6 +175,9 @@ output::fragment const interval_sign[] = {
   {U"\u2812", "seventh"},
   {U"\u2824", "octave"}
 };
+output::fragment const distinct_value_sign {U"\u2823\u2802", "distinct values"};
+output::fragment const small_value_sign {U"\u2820\u2823\u2802", "small values"};
+output::fragment const large_value_sign {U"\u2818\u2823\u2802", "large values"};
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
@@ -208,8 +212,10 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
                 std::abs(s.key_sig), s.key_sig < 0? flat_sign: sharp_sign);
     if (not s.time_sigs.empty()) {
       result.fragments.push_back(number_sign);
-      result.fragments.push_back(upper_digit_sign[s.time_sigs.front().numerator()]);
-      result.fragments.push_back(lower_digit_sign[s.time_sigs.front().denominator()]);
+      for (auto digit: digits(s.time_sigs.front().numerator()))
+        result.fragments.push_back(upper_digit_sign[digit]);
+      for (auto digit: digits(s.time_sigs.front().denominator()))
+        result.fragments.push_back(lower_digit_sign[digit]);
     }
     result.fragments.push_back(newline);
 
@@ -383,6 +389,21 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     add_to_para(new atom{res});
 
     return true;
+  }
+
+  bool visit_value_distinction(ast::value_distinction const &vd) {
+    switch (vd.value) {
+    case ast::value_distinction::distinct:
+      add_to_para(new atom{distinct_value_sign});
+      break;
+    case ast::value_distinction::small_follows:
+      add_to_para(new atom{small_value_sign});
+      break;
+    case ast::value_distinction::large_follows:
+      add_to_para(new atom{large_value_sign});
+      break;
+    default: BOOST_ASSERT(false);
+    }
   }
 
   bool visit_barline(ast::barline const &b)
