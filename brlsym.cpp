@@ -127,6 +127,15 @@ interval_symbols::interval_symbols()
 
 interval_symbols interval_sign;
 
+hand_symbols::hand_symbols()
+{
+  add(L"\u2828\u281C", ast::hand_sign::right_hand)
+     (L"\u2838\u281C", ast::hand_sign::left_hand)
+     ;
+}
+
+hand_symbols hand_sign;
+
 finger_symbols::finger_symbols()
 {
   add(L"⠁", 1)

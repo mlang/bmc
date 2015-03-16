@@ -383,6 +383,14 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     fingering_print_visitor fingering_printer{res};
     std::for_each(n.fingers.begin(), n.fingers.end(),
                   apply_visitor(fingering_printer));
+    for (auto &&s: n.slurs) {
+      switch (s.value) {
+      case ast::slur::single:
+        res.fragments.push_back(slur_sign);
+        break;
+      default: BOOST_ASSERT(false);
+      }
+    }
     if (n.tie) {
       switch (n.tie->value) {
       case ast::tie::single:
@@ -467,6 +475,12 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       break;
     default: BOOST_ASSERT(false);
     }
+
+    return true;
+  }
+
+  bool visit_hand_sign(ast::hand_sign const &h) {
+    add_to_para(new atom{hand_sign[h.value]});
 
     return true;
   }

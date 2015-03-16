@@ -93,6 +93,12 @@ struct tie : locatable
   type value;
 };
 
+struct hand_sign: locatable
+{
+  enum type { right_hand, left_hand };
+  type value;
+};
+
 struct pitched
 {
   boost::optional<accidental> acc;

@@ -270,7 +270,7 @@ public:
   }
   void operator()(braille::ast::clef const &) const {
   }
-  void operator()(braille::hand_sign const &) const {
+  void operator()(braille::ast::hand_sign const &) const {
   }
   void operator()(braille::ast::tie const &) const {
   }

@@ -170,7 +170,7 @@ public:
   SIMPLE_BASE(tuplet_start, ast::tuplet_start, t)
   SIMPLE_BASE(clef, ast::clef, c)
   SIMPLE_BASE(simile, ast::simile, s)
-  SIMPLE_BASE(hand_sign, hand_sign, h)
+  SIMPLE_BASE(hand_sign, ast::hand_sign, h)
   SIMPLE_BASE(barline, ast::barline, b)
 
   bool traverse_key_and_time_signature(Ref<ast::key_and_time_signature> kt) {
@@ -216,7 +216,7 @@ public:
   CALL_OPERATOR(ast::tuplet_start, tuplet_start)
   CALL_OPERATOR(ast::clef, clef)
   CALL_OPERATOR(ast::simile, simile)
-  CALL_OPERATOR(hand_sign, hand_sign)
+  CALL_OPERATOR(ast::hand_sign, hand_sign)
   CALL_OPERATOR(ast::barline, barline)
   END_STATIC_VISITOR(sign_visitor)
 #undef BEGIN_STATIC_VISITOR

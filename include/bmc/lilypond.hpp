@@ -69,7 +69,7 @@ public:
   result_type operator() (braille::ast::barline const&) const;
   result_type operator() (braille::ast::tie const&) const;
   result_type operator() (braille::ast::clef const&) const;
-  result_type operator() (braille::hand_sign const&) const;
+  result_type operator() (braille::ast::hand_sign const&) const;
   result_type operator() (braille::ast::rest const&);
   result_type operator() (braille::ast::note const&);
   result_type operator() (braille::ast::chord const&);

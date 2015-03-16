@@ -277,7 +277,7 @@ generator::operator() (braille::ast::clef const &clef) const
 }
 
 generator::result_type
-generator::operator() (braille::hand_sign const &) const
+generator::operator() (braille::ast::hand_sign const &) const
 {
 }
 

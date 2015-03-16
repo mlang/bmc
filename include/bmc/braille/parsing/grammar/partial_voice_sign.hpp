@@ -38,7 +38,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
   tuplet_start_grammar<Iterator> tuplet_start;
-  boost::spirit::qi::rule<Iterator, braille::hand_sign()> hand_sign;
+  boost::spirit::qi::rule<Iterator, ast::hand_sign()> hand_sign;
   boost::spirit::qi::rule<Iterator, ast::clef()> clef;
   simile_grammar<Iterator> simile;
   boost::spirit::qi::rule<Iterator, unsigned()> dots;

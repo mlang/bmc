@@ -103,8 +103,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   clef = clef_sign > optional_dot;
 
   optional_dot = !dots_123 | brl(3);
-  hand_sign = ((brl(46) >> brl(345)) > optional_dot > attr(braille::right_hand))
-            | ((brl(456) >> brl(345)) > optional_dot > attr(braille::left_hand));
+  hand_sign = braille::hand_sign > optional_dot;
 
   hyphen = brl(5) >> eol;
 #define BMC_LOCATABLE_SET_ID(rule) \

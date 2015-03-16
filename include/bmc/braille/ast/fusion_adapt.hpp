@@ -13,6 +13,9 @@ BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::ast::tie,
   (::bmc::braille::ast::tie::type, value)
 )
+BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::hand_sign,
+  (::bmc::braille::ast::hand_sign::type, value)
+)
 BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::ast::rest,
   (::bmc::braille::ast::value, ambiguous_value)
