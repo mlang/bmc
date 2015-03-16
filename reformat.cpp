@@ -422,11 +422,29 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   bool visit_interval(ast::interval const &i)
   {
     output res;
+    if (i.acc) {
+      switch (*i.acc) {
+      case natural: res.fragments.push_back(natural_sign); break;
+      case flat: std::fill_n(std::back_inserter(res.fragments), 1, flat_sign); break;
+      case double_flat: std::fill_n(std::back_inserter(res.fragments), 2, flat_sign); break;
+      case sharp: std::fill_n(std::back_inserter(res.fragments), 1, sharp_sign); break;
+      case double_sharp: std::fill_n(std::back_inserter(res.fragments), 2, sharp_sign); break;
+      default: BOOST_ASSERT(false);
+      }
+    }
     if (i.octave_spec) res.fragments.push_back(octave_sign[*i.octave_spec - 1]);
     res.fragments.push_back(interval_sign[i.steps - 1]);
 
     fingering_print_visitor fingering_printer{res};
     std::for_each(i.fingers.begin(), i.fingers.end(), apply_visitor(fingering_printer));
+    if (i.tie) {
+      switch (i.tie->value) {
+      case ast::tie::single:
+        res.fragments.push_back(tie_sign);
+        break;
+      }
+    }
+
     add_to_para(new atom{res});
 
     return true;
