@@ -31,7 +31,7 @@ add_custom_command(OUTPUT text.auto.h
                   )
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include/)
-add_library(bmc_ttb SHARED ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
+add_library(bmc_ttb STATIC ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
 set_target_properties(bmc_ttb
                       PROPERTIES
                       VERSION 0.0.1
