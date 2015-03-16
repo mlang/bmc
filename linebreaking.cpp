@@ -8,7 +8,15 @@
 // algebra from Donald E. Knuth and Michael F. Plass.
 //
 // This implementation deliberately skips the shrink and stretch factors,
-// because of the fact that we are dealing with fixed-width text.
+// because we are dealing with fixed-width text.
+// It uses the same underlying dynamic programming algorithm detailed in the
+// original Knuth and Plass paper, calculating demerits in a different way.
+// We are trying to minimize slack and use penalties to score certain newline
+// oppotunities in different ways.  For instance, a newline after a voice or
+// partial measure separator is prefered above a typical music hyphen.
+// Currently, breaking inside a notegroup is supressed completelely.
+// A future implementation could revert to normal note/rest values inside a
+// broken notegroup, while penalizing a break inside a notegroup failry highly.
 
 namespace bmc { namespace braille {
 
@@ -28,11 +36,11 @@ struct breakpoint {
   , previous{std::move(previous)} {}
 };
 
-int compute_cost(linebreaking::objects::const_iterator begin,
-		 linebreaking::objects::const_iterator end,
-		 breakpoint const &active, unsigned current_line,
-		 unsigned const &sum_width,
-		 std::vector<unsigned> const &line_lengths)
+int compute_slack(linebreaking::objects::const_iterator begin,
+                  linebreaking::objects::const_iterator end,
+                  breakpoint const &active, unsigned current_line,
+                  unsigned const &sum_width,
+                  std::vector<unsigned> const &line_lengths)
 {
   int width = sum_width - active.total_width;
 
@@ -90,8 +98,8 @@ void main_loop(linebreaking::objects::const_iterator index,
     int candidate_demerits = linebreaking::infinity;
     while (i != e) {
       unsigned current_line = (*i)->line + 1;
-      auto slack = compute_cost((*i)->position, index, **i, current_line,
-				sum_width, line_lengths);
+      auto slack = compute_slack((*i)->position, index, **i, current_line,
+                                  sum_width, line_lengths);
 
       if (slack < 0) {
 	active_nodes.erase(i++);
