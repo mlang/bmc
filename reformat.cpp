@@ -325,6 +325,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       tmp.fragments.push_back(number_sign);
       for (auto digit: digits(*m.ending))
         tmp.fragments.push_back(lower_digit_sign[digit]);
+      tmp.fragments.back().needs_guide_dot = true;
       add_to_para(new atom{tmp});
     }
 
