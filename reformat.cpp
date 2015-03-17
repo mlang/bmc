@@ -297,6 +297,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       if (auto nl = dynamic_cast<newline_opportunity const *>(i->get())) {
         if (nl->hyphen) result.fragments.push_back(hyphen_sign);
         result.fragments.push_back(newline);
+        if (dynamic_cast<guide const *>(std::next(i)->get())) i += 2;
       } else if (dynamic_cast<whitespace const *>(i->get())) {
         result.fragments.push_back(newline);
         ++i;
