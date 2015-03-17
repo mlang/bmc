@@ -592,6 +592,31 @@ BOOST_AUTO_TEST_CASE(common_factor) {
 }
 
 #include "bmc/musicxml.hpp"
+#include "bmc/braille/reformat.hpp"
+#include <boost/locale/encoding_utf.hpp>
+
+bool test_reformat(bmc::braille::ast::score const &score, unsigned width, std::string const &ly_file, std::string const &musicxml_file) {
+  bmc::braille::format_style style;
+
+  style.columns = width;
+
+  std::stringstream ss;
+  
+  ss << bmc::braille::reformat(score, style);
+
+  BOOST_REQUIRE(not ss.str().empty());
+
+  std::u32string unicode{boost::locale::conv::utf_to_utf<char32_t>(ss.str())};
+  {
+    std::u32string::const_iterator cur = unicode.begin();
+    while (cur != unicode.cend()) {
+      auto next = std::find(cur, unicode.cend(), U'\n');
+      BOOST_REQUIRE_LE(std::distance(cur, next), width);
+      if (cur != unicode.cend()) cur = next + 1;
+    }
+  }
+  return true;
+}
 
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::locale::global(std::locale(""));
@@ -662,6 +687,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  for (unsigned i = 25; i <= 88; ++i)
+    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v01.ly",
+                                DIR "output/bwv988-v01.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
@@ -714,6 +743,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  for (unsigned i = 25; i <= 88; ++i)
+    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v02.ly",
+                                DIR "output/bwv988-v02.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v03) {
@@ -765,6 +798,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  for (unsigned i = 25; i <= 88; ++i)
+    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v03.ly",
+                                DIR "output/bwv988-v03.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v04) {
@@ -814,6 +851,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  for (unsigned i = 25; i <= 88; ++i)
+    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v04.ly",
+                                DIR "output/bwv988-v04.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v05) {
@@ -866,6 +907,10 @@ BOOST_AUTO_TEST_CASE(bwv988_v05) {
     BOOST_REQUIRE(not expected.empty());
     BOOST_CHECK_EQUAL(ss.str(), expected);
   }
+
+  for (unsigned i = 25; i <= 88; ++i)
+    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v05.ly",
+                                DIR "output/bwv988-v05.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v06) {
