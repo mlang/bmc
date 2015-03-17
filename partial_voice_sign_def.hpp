@@ -119,6 +119,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   BMC_LOCATABLE_SET_ID(hyphen);
   BMC_LOCATABLE_SET_ID(tie);
   BMC_LOCATABLE_SET_ID(clef);
+  BMC_LOCATABLE_SET_ID(hand_sign);
 #undef BMC_LOCATABLE_SET_ID
   
   clef.name("clef");
