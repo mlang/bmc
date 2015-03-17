@@ -4,8 +4,7 @@
 #include <bmc/braille/ast/visitor.hpp>
 #include <boost/locale/encoding_utf.hpp>
 
-namespace bmc {
-namespace braille {
+namespace bmc { namespace braille {
 
 namespace {
 
@@ -31,9 +30,10 @@ struct atom: public linebreaking::box {
   }
 
   int width() const override {
-    int result = 0;
-    for (auto &&c: content.fragments) result += c.unicode.length();
-    return result;
+    return std::accumulate(content.fragments.begin(), content.fragments.end(),
+                           0,
+                           [](int total, output::fragment const &fragment)
+                           { return total + fragment.unicode.length(); });
   }
 
   bool is_guide() const override { return false; }
