@@ -76,6 +76,7 @@ struct eop: public newline_opportunity {
 
 output::fragment const newline{U"\n", "new line character"};
 output::fragment const indent_2{U"  ", "indent of two spaces"};
+output::fragment const dot6_sign {U"\u2820", "added by transcriber"};
 output::fragment const number_sign{U"\u283C", "number sign"};
 output::fragment const dash_sign {U"\u2824", "dash"};
 output::fragment const rest_sign[] = {
@@ -267,6 +268,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
 
     if (staves > 1) {
       add_to_para(new atom{hand_sign[staff]});
+      add_to_para(new newline_opportunity{true});
     }
 
     return true;
@@ -411,6 +413,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     } else { in_notegroup = false; }
 
     output res;
+    if (r.by_transcriber) res.fragments.push_back(dot6_sign);
     res.fragments.push_back(rest_sign[r.ambiguous_value]);
     std::fill_n(std::back_inserter(res.fragments), r.dots, augmentation_dot);
 

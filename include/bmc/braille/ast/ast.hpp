@@ -143,6 +143,8 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
 
 struct rest : locatable, rhythmic_data, rhythmic
 {
+  bool by_transcriber;
+
   rest(): locatable(), rhythmic_data(), whole_measure(false) {}
   virtual ~rest();
   bool whole_measure; // filled in by disambiguate.hpp

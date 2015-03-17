@@ -72,7 +72,8 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   stem = stem_sign >> dots >> -tie;
 
-  rest = -brl(6) >> rest_sign >> dots >> -(brl(5) >> brl(14));
+  added_by_transcriber = brl(6) >> attr(true) | attr(false);
+  rest = added_by_transcriber >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
   chord_tied_sign = brl(46) >> brl(14);
   chord = note >> +interval >> (chord_tied_sign >> attr(true) | attr(false));

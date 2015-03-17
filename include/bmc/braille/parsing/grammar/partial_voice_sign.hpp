@@ -30,6 +30,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::sign()> start;
   boost::spirit::qi::rule<Iterator, ast::note()> note;
   boost::spirit::qi::rule<Iterator, ast::stem()> stem;
+  boost::spirit::qi::rule<Iterator, bool()> added_by_transcriber;
   boost::spirit::qi::rule<Iterator, ast::rest()> rest;
   boost::spirit::qi::rule<Iterator, ast::chord()> chord;
   boost::spirit::qi::rule<Iterator, ast::moving_note()> moving_note;

@@ -16,8 +16,8 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::hand_sign,
   (::bmc::braille::ast::hand_sign::type, value)
 )
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::ast::rest,
+BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::rest,
+  (bool, by_transcriber)
   (::bmc::braille::ast::value, ambiguous_value)
   (unsigned, dots)
 )
