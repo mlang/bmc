@@ -77,6 +77,10 @@ struct eop: public newline_opportunity {
 output::fragment const newline{U"\n", "new line character"};
 output::fragment const indent_2{U"  ", "indent of two spaces"};
 output::fragment const dot6_sign {U"\u2820", "added by transcriber"};
+output::fragment const appoggiatura_sign {U"\u2810\u2822", "appoggiatura"};
+output::fragment const mordent_sign {U"\u2810\u2816\u2807", "mordent"};
+output::fragment const staccato_sign {U"\u2826", "staccato"};
+output::fragment const turn_above_or_below_note_sign {U"\u2820\u2832", "turn"};
 output::fragment const number_sign{U"\u283C", "number sign"};
 output::fragment const dash_sign {U"\u2824", "dash"};
 output::fragment const rest_sign[] = {
@@ -370,6 +374,13 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     } else { in_notegroup = false; }
 
     output res;
+    for (auto &&articulation: n.articulations)
+      switch (articulation) {
+      case appoggiatura: res.fragments.push_back(appoggiatura_sign); break;
+      case mordent: res.fragments.push_back(mordent_sign); break;
+      case staccato: res.fragments.push_back(staccato_sign); break;
+      case turn_above_or_below_note: res.fragments.push_back(turn_above_or_below_note_sign); break;
+      }
     if (n.acc) {
       switch (*n.acc) {
       case natural: res.fragments.push_back(natural_sign); break;
