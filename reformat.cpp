@@ -31,9 +31,8 @@ struct atom: public linebreaking::box {
 
   int width() const override {
     return std::accumulate(content.fragments.begin(), content.fragments.end(),
-                           0,
-                           [](int total, output::fragment const &fragment)
-                           { return total + fragment.unicode.length(); });
+                           0, [](int total, output::fragment const &fragment)
+                              { return total + fragment.unicode.length(); });
   }
 
   bool is_guide() const override { return false; }
@@ -42,7 +41,7 @@ struct atom: public linebreaking::box {
     if (not content.fragments.empty()) {
       auto const &u = content.fragments.front().unicode;
       if (not u.empty()) {
-        if (((u[0] | 0X28FF) == 0X28FF) and (u[0] & 7)) return true;
+        return ((u[0] >> 8) == 0X28) and (u[0] & 7);
       }
     }
     return false;
