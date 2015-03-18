@@ -14,7 +14,7 @@
 // We are trying to minimize slack and use penalties to score certain newline
 // oppotunities in different ways.  For instance, a newline after a voice or
 // partial measure separator is prefered above a typical music hyphen.
-// Currently, breaking inside a notegroup is supressed completelely.
+// Currently, breaking inside a notegroup is supressed completely.
 // A future implementation could revert to normal note/rest values inside a
 // broken notegroup, while penalizing a break inside a notegroup failry highly.
 
