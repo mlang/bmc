@@ -149,6 +149,10 @@ To build BMC, run the following commands:
  $ cmake .
  $ make
 
+To execute the test-suite, run:
+
+ $ make check
+
 
 Description of source code components
 -------------------------------------
