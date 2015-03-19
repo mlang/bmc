@@ -95,7 +95,7 @@ However, to support the greatest possible user base (which is mostly blind
 people and people working with them) BMC should also have a graphical user
 interface (GUI) basically resembling a simple editor.  In that GUI, the user
 will open files containing braille music code or create new documents entering
-music manually.  Upon a sepcial keypress or invokation of a menu item the
+music manually.  Upon a special keypress or invocation of a menu item the
 program will try to parse the current document and either report errors sensibly
 or provide some sort of confirmation.  Once the document is successfully parsed,
 several more options will be available, like starting playback or jumping to a
@@ -227,7 +227,7 @@ TODO
     Windows and deal with them in the most flexible way.  Unicode
     is to be prefered internally, always.  Is Unicode Braille supported
     on Windows in the command prompt?  Currently unit test input data is
-    all encoded with UTF-(.  Figure out if this is a problem on Windows.
+    all encoded with UTF-8.  Figure out if this is a problem on Windows.
 * Improve error reporting during parsing: Some useful diagnostics
   are already printed, but in many other cases the parser does not produce
   helpful error messages.  It can be quite hard to start a braille music piece
