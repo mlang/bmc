@@ -73,7 +73,8 @@ bool
 value_disambiguator::end_of_staff() const {
   if (anacrusis and anacrusis->size() > 1) {
     std::wstringstream msg;
-    msg << "Unterminated anacrusis";
+    msg << "Unterminated anacrusis (";
+    msg << anacrusis->size() << ")";
     report_error(anacrusis->get_measure_id(), msg.str());
     return false;
   }
