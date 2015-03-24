@@ -63,6 +63,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
             this, SLOT(currentCharFormatChanged(QTextCharFormat)));
     connect(textEdit, SIGNAL(cursorPositionChanged()),
             this, SLOT(cursorPositionChanged()));
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
     setCentralWidget(textEdit);
     textEdit->setFocus();
@@ -440,9 +441,16 @@ void BrailleMusicEditor::fileCompile() {
     if (compile(score)) {
       ok.play();
       return;
+    } else {
+      fail.play();
+      std::wstringstream ss;
+      ss << errors;
+      QMessageBox::critical(this, tr("Compilation error"), QString::fromStdWString(ss.str()));      
     }
+  } else {
+    fail.play();
+    QMessageBox::critical(this, tr("Parse error"), QString("Failed to parse braille music code."));
   }
-  fail.play();
 }
 
 void BrailleMusicEditor::filePrint()
@@ -533,6 +541,9 @@ void BrailleMusicEditor::currentCharFormatChanged(const QTextCharFormat &format)
 void BrailleMusicEditor::cursorPositionChanged()
 {
     alignmentChanged(textEdit->alignment());
+}
+
+void BrailleMusicEditor::textChanged() {
 }
 
 void BrailleMusicEditor::clipboardDataChanged()
