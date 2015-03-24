@@ -23,10 +23,12 @@
 
 #include "mainwindow.h"
 
+#include <config.hpp>
 #include <bmc/braille/ast.hpp>
 #include <boost/spirit/include/qi_parse.hpp>
 #include <boost/spirit/include/qi_core.hpp>
 #include <bmc/braille/parsing/grammar/score.hpp>
+#include <bmc/braille/semantic_analysis.hpp>
 
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -170,6 +172,7 @@ void BrailleMusicEditor::setupFileActions()
 
     a = new QAction(tr("&Compile"), this);
     a->setPriority(QAction::LowPriority);
+    a->setShortcut(Qt::Key_F8);
     connect(a, SIGNAL(triggered()), this, SLOT(fileCompile()));
     menu->addAction(a);
 
@@ -431,9 +434,13 @@ void BrailleMusicEditor::fileCompile() {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type score;
-  if (parse(begin, end, parser, score)) {
-    ok.play();
-    return;
+  if (parse(begin, end, parser, score) and begin == end) {
+    ::bmc::braille::compiler<error_handler_type> compile(errors);
+
+    if (compile(score)) {
+      ok.play();
+      return;
+    }
   }
   fail.play();
 }
