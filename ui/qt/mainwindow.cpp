@@ -24,6 +24,9 @@
 #include "mainwindow.h"
 
 #include <bmc/braille/ast.hpp>
+#include <boost/spirit/include/qi_parse.hpp>
+#include <boost/spirit/include/qi_core.hpp>
+#include <bmc/braille/parsing/grammar/score.hpp>
 
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -167,7 +170,7 @@ void BrailleMusicEditor::setupFileActions()
 
     a = new QAction(tr("&Compile"), this);
     a->setPriority(QAction::LowPriority);
-    connect(a, SIGNAL(triggered()), &fail, SLOT(play()));
+    connect(a, SIGNAL(triggered()), this, SLOT(fileCompile()));
     menu->addAction(a);
 
     menu->addSeparator();
@@ -416,6 +419,23 @@ bool BrailleMusicEditor::fileSaveAs()
     }
     setCurrentFileName(fn);
     return fileSave();
+}
+
+void BrailleMusicEditor::fileCompile() {
+  std::wstring input{textEdit->toPlainText().toStdWString()};
+  typedef std::wstring::const_iterator iterator_type;
+  iterator_type begin(input.begin());
+  iterator_type const end(input.end());
+  typedef ::bmc::braille::score_grammar<iterator_type> parser_type;
+  typedef ::bmc::braille::error_handler<iterator_type> error_handler_type;
+  error_handler_type errors(begin, end);
+  parser_type parser(errors);
+  boost::spirit::traits::attribute_of<parser_type>::type score;
+  if (parse(begin, end, parser, score)) {
+    ok.play();
+    return;
+  }
+  fail.play();
 }
 
 void BrailleMusicEditor::filePrint()
