@@ -124,16 +124,15 @@ void BrailleMusicEditor::setupFileActions()
 
     QAction *a;
 
-    QIcon newIcon = QIcon::fromTheme("document-new", QIcon(rsrcPath + "/filenew.png"));
-    a = new QAction( newIcon, tr("&New"), this);
+    auto newIcon = QIcon::fromTheme("document-new");
+    a = new QAction(newIcon, tr("&New"), this);
     a->setPriority(QAction::LowPriority);
     a->setShortcut(QKeySequence::New);
     connect(a, SIGNAL(triggered()), this, SLOT(fileNew()));
     tb->addAction(a);
     menu->addAction(a);
 
-    a = new QAction(QIcon::fromTheme("document-open", QIcon(rsrcPath + "/fileopen.png")),
-                    tr("&Open..."), this);
+    a = new QAction(QIcon::fromTheme("document-open"), tr("&Open..."), this);
     a->setShortcut(QKeySequence::Open);
     connect(a, SIGNAL(triggered()), this, SLOT(fileOpen()));
     tb->addAction(a);
@@ -141,7 +140,7 @@ void BrailleMusicEditor::setupFileActions()
 
     menu->addSeparator();
 
-    actionSave = a = new QAction(QIcon::fromTheme("document-save", QIcon(rsrcPath + "/filesave.png")),
+    actionSave = a = new QAction(QIcon::fromTheme("document-save"),
                                  tr("&Save"), this);
     a->setShortcut(QKeySequence::Save);
     connect(a, SIGNAL(triggered()), this, SLOT(fileSave()));
@@ -170,31 +169,31 @@ void BrailleMusicEditor::setupEditActions()
     menuBar()->addMenu(menu);
 
     QAction *a;
-    a = actionUndo = new QAction(QIcon::fromTheme("edit-undo", QIcon(rsrcPath + "/editundo.png")),
+    a = actionUndo = new QAction(QIcon::fromTheme("edit-undo"),
                                               tr("&Undo"), this);
     a->setShortcut(QKeySequence::Undo);
     tb->addAction(a);
     menu->addAction(a);
-    a = actionRedo = new QAction(QIcon::fromTheme("edit-redo", QIcon(rsrcPath + "/editredo.png")),
+    a = actionRedo = new QAction(QIcon::fromTheme("edit-redo"),
                                               tr("&Redo"), this);
     a->setPriority(QAction::LowPriority);
     a->setShortcut(QKeySequence::Redo);
     tb->addAction(a);
     menu->addAction(a);
     menu->addSeparator();
-    a = actionCut = new QAction(QIcon::fromTheme("edit-cut", QIcon(rsrcPath + "/editcut.png")),
+    a = actionCut = new QAction(QIcon::fromTheme("edit-cut"),
                                              tr("Cu&t"), this);
     a->setPriority(QAction::LowPriority);
     a->setShortcut(QKeySequence::Cut);
     tb->addAction(a);
     menu->addAction(a);
-    a = actionCopy = new QAction(QIcon::fromTheme("edit-copy", QIcon(rsrcPath + "/editcopy.png")),
+    a = actionCopy = new QAction(QIcon::fromTheme("edit-copy"),
                                  tr("&Copy"), this);
     a->setPriority(QAction::LowPriority);
     a->setShortcut(QKeySequence::Copy);
     tb->addAction(a);
     menu->addAction(a);
-    a = actionPaste = new QAction(QIcon::fromTheme("edit-paste", QIcon(rsrcPath + "/editpaste.png")),
+    a = actionPaste = new QAction(QIcon::fromTheme("edit-paste"),
                                   tr("&Paste"), this);
     a->setPriority(QAction::LowPriority);
     a->setShortcut(QKeySequence::Paste);
@@ -215,7 +214,7 @@ void BrailleMusicEditor::setupTextActions()
     QMenu *menu = new QMenu(tr("F&ormat"), this);
     menuBar()->addMenu(menu);
 
-    actionTextBold = new QAction(QIcon::fromTheme("format-text-bold", QIcon(rsrcPath + "/textbold.png")),
+    actionTextBold = new QAction(QIcon::fromTheme("format-text-bold"),
                                  tr("&Bold"), this);
     actionTextBold->setShortcut(Qt::CTRL + Qt::Key_B);
     actionTextBold->setPriority(QAction::LowPriority);
@@ -227,8 +226,7 @@ void BrailleMusicEditor::setupTextActions()
     menu->addAction(actionTextBold);
     actionTextBold->setCheckable(true);
 
-    actionTextItalic = new QAction(QIcon::fromTheme("format-text-italic",
-                                                    QIcon(rsrcPath + "/textitalic.png")),
+    actionTextItalic = new QAction(QIcon::fromTheme("format-text-italic"),
                                    tr("&Italic"), this);
     actionTextItalic->setPriority(QAction::LowPriority);
     actionTextItalic->setShortcut(Qt::CTRL + Qt::Key_I);
@@ -240,8 +238,7 @@ void BrailleMusicEditor::setupTextActions()
     menu->addAction(actionTextItalic);
     actionTextItalic->setCheckable(true);
 
-    actionTextUnderline = new QAction(QIcon::fromTheme("format-text-underline",
-                                                       QIcon(rsrcPath + "/textunder.png")),
+    actionTextUnderline = new QAction(QIcon::fromTheme("format-text-underline"),
                                       tr("&Underline"), this);
     actionTextUnderline->setShortcut(Qt::CTRL + Qt::Key_U);
     actionTextUnderline->setPriority(QAction::LowPriority);
@@ -260,28 +257,21 @@ void BrailleMusicEditor::setupTextActions()
 
     // Make sure the alignLeft  is always left of the alignRight
     if (QApplication::isLeftToRight()) {
-        actionAlignLeft = new QAction(QIcon::fromTheme("format-justify-left",
-                                                       QIcon(rsrcPath + "/textleft.png")),
+        actionAlignLeft = new QAction(QIcon::fromTheme("format-justify-left"),
                                       tr("&Left"), grp);
-        actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center",
-                                                         QIcon(rsrcPath + "/textcenter.png")),
+        actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center"),
                                         tr("C&enter"), grp);
-        actionAlignRight = new QAction(QIcon::fromTheme("format-justify-right",
-                                                        QIcon(rsrcPath + "/textright.png")),
+        actionAlignRight = new QAction(QIcon::fromTheme("format-justify-right"),
                                        tr("&Right"), grp);
     } else {
-        actionAlignRight = new QAction(QIcon::fromTheme("format-justify-right",
-                                                        QIcon(rsrcPath + "/textright.png")),
+        actionAlignRight = new QAction(QIcon::fromTheme("format-justify-right"),
                                        tr("&Right"), grp);
-        actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center",
-                                                         QIcon(rsrcPath + "/textcenter.png")),
+        actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center"),
                                         tr("C&enter"), grp);
-        actionAlignLeft = new QAction(QIcon::fromTheme("format-justify-left",
-                                                       QIcon(rsrcPath + "/textleft.png")),
+        actionAlignLeft = new QAction(QIcon::fromTheme("format-justify-left"),
                                       tr("&Left"), grp);
     }
-    actionAlignJustify = new QAction(QIcon::fromTheme("format-justify-fill",
-                                                      QIcon(rsrcPath + "/textjustify.png")),
+    actionAlignJustify = new QAction(QIcon::fromTheme("format-justify-fill"),
                                      tr("&Justify"), grp);
 
     actionAlignLeft->setShortcut(Qt::CTRL + Qt::Key_L);
