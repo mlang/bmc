@@ -99,7 +99,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(clipboardDataChanged()));
 #endif
 
-    QString initialFile = ":/example.html";
+    QString initialFile = ":/examples/bwv988-v01.bmc";
     const QStringList args = QCoreApplication::arguments();
     if (args.count() == 2)
         initialFile = args.at(1);
