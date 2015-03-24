@@ -38,5 +38,7 @@ set_target_properties(bmc_ttb
                       SOVERSION 0.0
                      )
 target_link_libraries(bmc_ttb ${ICU_LIBRARIES})
+add_library(bmc_ttb-static STATIC ttb_translate.c text.auto.h ${BMC_TTB_COMMON_FILES})
+target_link_libraries(bmc_ttb-static ${ICU_LIBRARIES})
 install(TARGETS bmc_ttb DESTINATION lib)
 install(DIRECTORY Tables DESTINATION share/${CMAKE_PROJECT_NAME})

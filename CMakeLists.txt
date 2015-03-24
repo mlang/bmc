@@ -40,6 +40,15 @@ set_target_properties(bmc_parse
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
 target_link_libraries(bmc_parse bmc_ttb xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
+add_library(bmc_parse-static STATIC
+            brlsym.cpp music.cpp ast.cpp
+            numbers.cpp key_signature.cpp time_signature.cpp
+            partial_voice_sign.cpp simile.cpp tuplet_start.cpp
+            measure.cpp score.cpp
+            value_disambiguation.cpp value_disambiguator.cpp
+            lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
+           )
+target_link_libraries(bmc_parse-static bmc_ttb-static xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc bmc.cpp)
 target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
 add_subdirectory(ui)
