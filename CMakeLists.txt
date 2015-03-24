@@ -15,7 +15,6 @@ endif()
 add_subdirectory(doxygen)
 add_subdirectory(xsdcxx-musicxml)
 add_subdirectory(ttb)
-add_subdirectory(ui)
 find_package(PythonLibs REQUIRED)
 find_package(Boost 1.54.0 REQUIRED COMPONENTS program_options python)
 find_package(Threads)
@@ -27,7 +26,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 add_definitions(-std=c++11)
-add_library(bmc_parse STATIC
+add_library(bmc_parse SHARED
             brlsym.cpp music.cpp ast.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
             partial_voice_sign.cpp simile.cpp tuplet_start.cpp
@@ -40,9 +39,10 @@ set_target_properties(bmc_parse
                       VERSION ${bmc_VERSION}
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
-target_link_libraries(bmc_parse bmc_ttb xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(bmc_parse bmc_ttb xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc bmc.cpp)
 target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
+add_subdirectory(ui)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 #add_executable(bmc main.cpp fluidsynth.cpp)
 #find_library(FLUIDSYNTH_LIBRARY fluidsynth)

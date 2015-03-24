@@ -23,6 +23,8 @@
 
 #include "mainwindow.h"
 
+#include <bmc/braille/ast.hpp>
+
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
 #else
@@ -366,7 +368,7 @@ void BrailleMusicEditor::setCurrentFileName(const QString &fileName)
     else
         shownName = QFileInfo(fileName).fileName();
 
-    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Rich Text")));
+    setWindowTitle(tr("%1[*] - %2").arg(shownName).arg(tr("Braille Music")));
     setWindowModified(false);
 }
 
