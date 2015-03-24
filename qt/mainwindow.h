@@ -1,27 +1,85 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef BRAILLE_MUSIC_EDITOR_H
+#define BRAILLE_MUSIC_EDITOR_H
 
 #include <QMainWindow>
+#include <QMap>
+#include <QPointer>
 
-namespace Ui { class MainWindow; }
+QT_BEGIN_NAMESPACE
+class QAction;
+class QTextEdit;
+class QTextCharFormat;
+class QMenu;
+class QPrinter;
+QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class BrailleMusicEditor : public QMainWindow
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+    BrailleMusicEditor(QWidget *parent = 0);
 
-private slots:
-  void on_quitButton_clicked();
-
-  void on_actionOpen_triggered();
-
-  void on_actionSave_triggered();
+protected:
+    virtual void closeEvent(QCloseEvent *e) Q_DECL_OVERRIDE;
 
 private:
-  Ui::MainWindow *ui;
+    void setupFileActions();
+    void setupEditActions();
+    void setupTextActions();
+    bool load(const QString &f);
+    bool maybeSave();
+    void setCurrentFileName(const QString &fileName);
+
+private slots:
+    void fileNew();
+    void fileOpen();
+    bool fileSave();
+    bool fileSaveAs();
+    void filePrint();
+    void filePrintPreview();
+    void filePrintPdf();
+
+    void textBold();
+    void textUnderline();
+    void textItalic();
+    void textFamily(const QString &f);
+    void textSize(const QString &p);
+    void textStyle(int styleIndex);
+    void textColor();
+    void textAlign(QAction *a);
+
+    void currentCharFormatChanged(const QTextCharFormat &format);
+    void cursorPositionChanged();
+
+    void clipboardDataChanged();
+    void about();
+    void printPreview(QPrinter *);
+
+private:
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+    void fontChanged(const QFont &f);
+    void colorChanged(const QColor &c);
+    void alignmentChanged(Qt::Alignment a);
+
+    QAction *actionSave;
+    QAction *actionTextBold;
+    QAction *actionTextUnderline;
+    QAction *actionTextItalic;
+    QAction *actionTextColor;
+    QAction *actionAlignLeft;
+    QAction *actionAlignCenter;
+    QAction *actionAlignRight;
+    QAction *actionAlignJustify;
+    QAction *actionUndo;
+    QAction *actionRedo;
+    QAction *actionCut;
+    QAction *actionCopy;
+    QAction *actionPaste;
+
+    QToolBar *tb;
+    QString fileName;
+    QTextEdit *textEdit;
 };
 
-#endif // MAINWINDOW_H
+#endif // BRAILLE_MUSIC_EDITOR_H
