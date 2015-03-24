@@ -47,7 +47,6 @@ private slots:
     void textItalic();
     void textFamily(const QString &f);
     void textSize(const QString &p);
-    void textStyle(int styleIndex);
     void textColor();
     void textAlign(QAction *a);
 

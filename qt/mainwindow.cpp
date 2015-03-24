@@ -381,7 +381,7 @@ void BrailleMusicEditor::fileNew()
 void BrailleMusicEditor::fileOpen()
 {
     QString fn = QFileDialog::getOpenFileName(this, tr("Open File..."),
-                                              QString(), tr("HTML-Files (*.htm *.html);;All Files (*)"));
+                                              QString(), tr("Braille Music Files (*.bmc);;All Files (*)"));
     if (!fn.isEmpty())
         load(fn);
 }
@@ -403,14 +403,14 @@ bool BrailleMusicEditor::fileSave()
 bool BrailleMusicEditor::fileSaveAs()
 {
     QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."), QString(),
-                                              tr("ODF files (*.odt);;HTML-Files "
-                                                 "(*.htm *.html);;All Files (*)"));
+                                              tr("Braille music files (*.bmc);;LilyPond-Files "
+                                                 "(*.ly);;MusicXML Files (*.xml)"));
     if (fn.isEmpty())
         return false;
-    if (!(fn.endsWith(".odt", Qt::CaseInsensitive)
-          || fn.endsWith(".htm", Qt::CaseInsensitive)
-          || fn.endsWith(".html", Qt::CaseInsensitive))) {
-        fn += ".odt"; // default
+    if (!(fn.endsWith(".bmc", Qt::CaseInsensitive)
+          || fn.endsWith(".ly", Qt::CaseInsensitive)
+          || fn.endsWith(".xml", Qt::CaseInsensitive))) {
+        fn += ".bmc"; // default
     }
     setCurrentFileName(fn);
     return fileSave();
@@ -469,68 +469,6 @@ void BrailleMusicEditor::textSize(const QString &p)
         QTextCharFormat fmt;
         fmt.setFontPointSize(pointSize);
         mergeFormatOnWordOrSelection(fmt);
-    }
-}
-
-void BrailleMusicEditor::textStyle(int styleIndex)
-{
-    QTextCursor cursor = textEdit->textCursor();
-
-    if (styleIndex != 0) {
-        QTextListFormat::Style style = QTextListFormat::ListDisc;
-
-        switch (styleIndex) {
-            default:
-            case 1:
-                style = QTextListFormat::ListDisc;
-                break;
-            case 2:
-                style = QTextListFormat::ListCircle;
-                break;
-            case 3:
-                style = QTextListFormat::ListSquare;
-                break;
-            case 4:
-                style = QTextListFormat::ListDecimal;
-                break;
-            case 5:
-                style = QTextListFormat::ListLowerAlpha;
-                break;
-            case 6:
-                style = QTextListFormat::ListUpperAlpha;
-                break;
-            case 7:
-                style = QTextListFormat::ListLowerRoman;
-                break;
-            case 8:
-                style = QTextListFormat::ListUpperRoman;
-                break;
-        }
-
-        cursor.beginEditBlock();
-
-        QTextBlockFormat blockFmt = cursor.blockFormat();
-
-        QTextListFormat listFmt;
-
-        if (cursor.currentList()) {
-            listFmt = cursor.currentList()->format();
-        } else {
-            listFmt.setIndent(blockFmt.indent() + 1);
-            blockFmt.setIndent(0);
-            cursor.setBlockFormat(blockFmt);
-        }
-
-        listFmt.setStyle(style);
-
-        cursor.createList(listFmt);
-
-        cursor.endEditBlock();
-    } else {
-        // ####
-        QTextBlockFormat bfmt;
-        bfmt.setObjectIndex(-1);
-        cursor.mergeBlockFormat(bfmt);
     }
 }
 
