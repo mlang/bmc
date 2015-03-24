@@ -117,8 +117,8 @@ void BrailleMusicEditor::closeEvent(QCloseEvent *e)
 }
 
 void BrailleMusicEditor::setupSoundEffects() {
-  fail.setSource(QUrl("qrc:///sound/fail.wav"));
-  ok.setSource(QUrl("qrc:///sound/ok.wav"));
+  fail.setSource(QUrl("qrc:///sounds/fail.wav"));
+  ok.setSource(QUrl("qrc:///sounds/ok.wav"));
 }
 
 void BrailleMusicEditor::setupFileActions()
@@ -160,12 +160,15 @@ void BrailleMusicEditor::setupFileActions()
     a->setPriority(QAction::LowPriority);
     connect(a, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
     menu->addAction(a);
+
     menu->addSeparator();
 
     a = new QAction(tr("&Compile"), this);
     a->setPriority(QAction::LowPriority);
     connect(a, SIGNAL(triggered()), &fail, SLOT(play()));
     menu->addAction(a);
+
+    menu->addSeparator();
 
     a = new QAction(tr("&Quit"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_Q);
