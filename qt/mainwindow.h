@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QPointer>
+#include <QSoundEffect>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -24,6 +25,7 @@ protected:
     virtual void closeEvent(QCloseEvent *e) Q_DECL_OVERRIDE;
 
 private:
+    void setupSoundEffects();
     void setupFileActions();
     void setupEditActions();
     void setupTextActions();
@@ -80,6 +82,8 @@ private:
     QToolBar *tb;
     QString fileName;
     QTextEdit *textEdit;
+
+    QSoundEffect ok, fail;
 };
 
 #endif // BRAILLE_MUSIC_EDITOR_H

@@ -31,6 +31,8 @@ const QString rsrcPath = ":/images/win";
 
 BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
 : QMainWindow(parent)
+, ok(this)
+, fail(this)
 {
 #ifdef Q_OS_OSX
     setUnifiedTitleAndToolBarOnMac(true);
@@ -40,6 +42,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
     setupFileActions();
     setupEditActions();
     setupTextActions();
+    setupSoundEffects();
 
     {
         QMenu *helpMenu = new QMenu(tr("Help"), this);
@@ -113,6 +116,11 @@ void BrailleMusicEditor::closeEvent(QCloseEvent *e)
         e->ignore();
 }
 
+void BrailleMusicEditor::setupSoundEffects() {
+  fail.setSource(QUrl("qrc:///sound/fail.wav"));
+  ok.setSource(QUrl("qrc:///sound/ok.wav"));
+}
+
 void BrailleMusicEditor::setupFileActions()
 {
     QToolBar *tb = new QToolBar(this);
@@ -153,6 +161,11 @@ void BrailleMusicEditor::setupFileActions()
     connect(a, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
     menu->addAction(a);
     menu->addSeparator();
+
+    a = new QAction(tr("&Compile"), this);
+    a->setPriority(QAction::LowPriority);
+    connect(a, SIGNAL(triggered()), &fail, SLOT(play()));
+    menu->addAction(a);
 
     a = new QAction(tr("&Quit"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_Q);
