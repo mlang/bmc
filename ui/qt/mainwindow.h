@@ -93,7 +93,7 @@ private:
     QToolBar *tb;
     QString fileName;
     QTextEdit *textEdit;
-    QSvgWidget *svg;
+    QScrollArea *svgScrollArea;
 
     boost::optional<::bmc::braille::ast::score> score;
 

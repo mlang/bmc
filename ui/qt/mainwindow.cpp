@@ -68,14 +68,10 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
             this, SLOT(cursorPositionChanged()));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
-    svg = new QSvgWidget(this);
-    svg->setAccessibleName(tr("Staff notation"));
-    svg->setAccessibleDescription(tr("Displays visual staff notation."));
-    auto scrollArea = new QScrollArea;
-    scrollArea->setWidget(svg);
+    svgScrollArea = new QScrollArea;
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(textEdit);
-    vbox->addWidget(scrollArea);
+    vbox->addWidget(svgScrollArea);
     vbox->setStretch(0, 1);
     vbox->setStretch(1, 2);
 
@@ -501,12 +497,17 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     if (not proc.waitForFinished()) { fail.play(); return; }
     QDir dir(tmpdir.path());
     dir.setNameFilters(QStringList() << "*.svg");
-    for (auto &&f: dir.entryList()) qDebug() << f;
-    QFile svg(QDir(tmpdir.path()).absoluteFilePath("out.preview.svg"));
-    if (svg.exists()) {
-      this->svg->load(svg.fileName());
-      ok.play();
+    QVBoxLayout *vbox = new QVBoxLayout;
+    for (auto &&path: dir.entryList()) {
+      QFile svg(dir.absoluteFilePath(path));
+      if (svg.exists()) {
+        vbox->addWidget(new QSvgWidget(svg.fileName()));
+      }
     }
+    QWidget *widget = new QWidget();
+    widget->setLayout(vbox);
+    svgScrollArea->setWidget(widget);
+    ok.play();
   }
 }
 
