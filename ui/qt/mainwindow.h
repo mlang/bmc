@@ -65,6 +65,8 @@ private slots:
     void about();
     void printPreview(QPrinter *);
     void runLilyPond(bool);
+    void lilypondFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void lilypondError(QProcess::ProcessError error);
 
 signals:
     void scoreAvailable(bool);
@@ -96,6 +98,8 @@ private:
     QScrollArea *svgScrollArea;
 
     boost::optional<::bmc::braille::ast::score> score;
+    QProcess lilypond;
+    QTemporaryDir *tmpdir;
 
     QSoundEffect ok, fail;
 };
