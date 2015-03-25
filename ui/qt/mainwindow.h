@@ -55,7 +55,6 @@ private slots:
     void textFamily(const QString &f);
     void textSize(const QString &p);
     void textColor();
-    void textAlign(QAction *a);
 
     void currentCharFormatChanged(const QTextCharFormat &format);
     void cursorPositionChanged();
@@ -75,17 +74,12 @@ private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
-    void alignmentChanged(Qt::Alignment a);
 
     QAction *actionSave;
     QAction *actionTextBold;
     QAction *actionTextUnderline;
     QAction *actionTextItalic;
     QAction *actionTextColor;
-    QAction *actionAlignLeft;
-    QAction *actionAlignCenter;
-    QAction *actionAlignRight;
-    QAction *actionAlignJustify;
     QAction *actionUndo;
     QAction *actionRedo;
     QAction *actionCut;

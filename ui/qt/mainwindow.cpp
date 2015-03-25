@@ -83,7 +83,6 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   textEdit->setFont(textFont);
   fontChanged(textEdit->font());
   colorChanged(textEdit->textColor());
-  alignmentChanged(textEdit->alignment());
 
   connect(textEdit->document(), SIGNAL(modificationChanged(bool)),
           actionSave, SLOT(setEnabled(bool)));
@@ -294,46 +293,6 @@ void BrailleMusicEditor::setupTextActions() {
   tb->addAction(actionTextUnderline);
   menu->addAction(actionTextUnderline);
   actionTextUnderline->setCheckable(true);
-
-  menu->addSeparator();
-
-  auto grp = new QActionGroup(this);
-  connect(grp, SIGNAL(triggered(QAction *)), this, SLOT(textAlign(QAction *)));
-
-  // Make sure the alignLeft  is always left of the alignRight
-  if (QApplication::isLeftToRight()) {
-    actionAlignLeft =
-      new QAction(QIcon::fromTheme("format-justify-left"), tr("&Left"), grp);
-    actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center"),
-                                    tr("C&enter"), grp);
-    actionAlignRight =
-      new QAction(QIcon::fromTheme("format-justify-right"), tr("&Right"), grp);
-  } else {
-    actionAlignRight =
-      new QAction(QIcon::fromTheme("format-justify-right"), tr("&Right"), grp);
-    actionAlignCenter = new QAction(QIcon::fromTheme("format-justify-center"),
-                                    tr("C&enter"), grp);
-    actionAlignLeft =
-      new QAction(QIcon::fromTheme("format-justify-left"), tr("&Left"), grp);
-  }
-  actionAlignJustify =
-    new QAction(QIcon::fromTheme("format-justify-fill"), tr("&Justify"), grp);
-
-  actionAlignLeft->setShortcut(Qt::CTRL + Qt::Key_L);
-  actionAlignLeft->setCheckable(true);
-  actionAlignLeft->setPriority(QAction::LowPriority);
-  actionAlignCenter->setShortcut(Qt::CTRL + Qt::Key_E);
-  actionAlignCenter->setCheckable(true);
-  actionAlignCenter->setPriority(QAction::LowPriority);
-  actionAlignRight->setShortcut(Qt::CTRL + Qt::Key_R);
-  actionAlignRight->setCheckable(true);
-  actionAlignRight->setPriority(QAction::LowPriority);
-  actionAlignJustify->setShortcut(Qt::CTRL + Qt::Key_J);
-  actionAlignJustify->setCheckable(true);
-  actionAlignJustify->setPriority(QAction::LowPriority);
-
-  tb->addActions(grp->actions());
-  menu->addActions(grp->actions());
 
   menu->addSeparator();
 
@@ -585,17 +544,6 @@ void BrailleMusicEditor::textColor() {
   colorChanged(col);
 }
 
-void BrailleMusicEditor::textAlign(QAction *a) {
-  if (a == actionAlignLeft)
-    textEdit->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
-  else if (a == actionAlignCenter)
-    textEdit->setAlignment(Qt::AlignHCenter);
-  else if (a == actionAlignRight)
-    textEdit->setAlignment(Qt::AlignRight | Qt::AlignAbsolute);
-  else if (a == actionAlignJustify)
-    textEdit->setAlignment(Qt::AlignJustify);
-}
-
 void BrailleMusicEditor::currentCharFormatChanged(
   const QTextCharFormat &format) {
   fontChanged(format.font());
@@ -603,7 +551,6 @@ void BrailleMusicEditor::currentCharFormatChanged(
 }
 
 void BrailleMusicEditor::cursorPositionChanged() {
-  alignmentChanged(textEdit->alignment());
 }
 
 void BrailleMusicEditor::textChanged() {
@@ -644,15 +591,4 @@ void BrailleMusicEditor::colorChanged(const QColor &c) {
   QPixmap pix(16, 16);
   pix.fill(c);
   actionTextColor->setIcon(pix);
-}
-
-void BrailleMusicEditor::alignmentChanged(Qt::Alignment a) {
-  if (a & Qt::AlignLeft)
-    actionAlignLeft->setChecked(true);
-  else if (a & Qt::AlignHCenter)
-    actionAlignCenter->setChecked(true);
-  else if (a & Qt::AlignRight)
-    actionAlignRight->setChecked(true);
-  else if (a & Qt::AlignJustify)
-    actionAlignJustify->setChecked(true);
 }
