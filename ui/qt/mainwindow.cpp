@@ -74,6 +74,9 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(textEdit);
     vbox->addWidget(svg);
+    vbox->setStretch(0, 1);
+    vbox->setStretch(1, 2);
+
     QWidget *central = new QWidget;
     central->setLayout(vbox);
     setCentralWidget(central);
