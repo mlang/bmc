@@ -494,11 +494,14 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     QTemporaryDir tmpdir;
     QProcess proc(this);
     proc.setWorkingDirectory(tmpdir.path());
-    proc.start("lilypond", QStringList() << "-o" << "out" << "-dbackend=svg" << "-dpreview" << "-dno-print-pages" << "-");
+    proc.start("lilypond", QStringList() << "-o" << "out" << "-dbackend=svg" << "-");
     if (not proc.waitForStarted()) { fail.play(); return; }
     proc.write(ss.str().c_str());
     proc.closeWriteChannel();
     if (not proc.waitForFinished()) { fail.play(); return; }
+    QDir dir(tmpdir.path());
+    dir.setNameFilters(QStringList() << "*.svg");
+    for (auto &&f: dir.entryList()) qDebug() << f;
     QFile svg(QDir(tmpdir.path()).absoluteFilePath("out.preview.svg"));
     if (svg.exists()) {
       this->svg->load(svg.fileName());
