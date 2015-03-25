@@ -10,6 +10,8 @@
 #include <QFontDatabase>
 #include <QMenu>
 #include <QMenuBar>
+#include <QProcess>
+#include <QTemporaryDir>
 #include <QTextCodec>
 #include <QTextEdit>
 #include <QToolBar>
@@ -28,6 +30,7 @@
 #include <bmc/braille/parsing/grammar/score.hpp>
 #include <bmc/braille/semantic_analysis.hpp>
 #include <bmc/musicxml.hpp>
+#include <bmc/lilypond.hpp>
 
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -176,7 +179,7 @@ void BrailleMusicEditor::setupFileActions()
     connect(a, SIGNAL(triggered()), this, SLOT(fileCompile()));
     menu->addAction(a);
 
-    a = new QAction(tr("&Export MusicXML"), this);
+    a = new QAction(tr("Export &MusicXML"), this);
     a->setPriority(QAction::LowPriority);
     connect(a, SIGNAL(triggered()), this, SLOT(fileExportMusicXML()));
     a->setEnabled(false);
@@ -189,6 +192,9 @@ void BrailleMusicEditor::setupFileActions()
     a->setShortcut(Qt::CTRL + Qt::Key_Q);
     connect(a, SIGNAL(triggered()), this, SLOT(close()));
     menu->addAction(a);
+
+
+    connect(this, SIGNAL(scoreAvailable(bool)), this, SLOT(runLilyPond(bool)));
 }
 
 void BrailleMusicEditor::setupEditActions()
@@ -461,6 +467,27 @@ void BrailleMusicEditor::fileCompile() {
   }
   this->score = boost::none;
   emit scoreAvailable(false);
+}
+
+void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
+  if (scoreAvailable) {
+    BOOST_ASSERT(this->score);
+    std::stringstream ss;
+    ::bmc::lilypond::generator make_lilypond(ss);
+    make_lilypond(*this->score);
+    QTemporaryDir tmpdir;
+    QProcess proc(this);
+    proc.setWorkingDirectory(tmpdir.path());
+    proc.start("lilypond", QStringList() << "-o" << "out" << "-");
+    if (not proc.waitForStarted()) { fail.play(); return; }
+    proc.write(ss.str().c_str());
+    proc.closeWriteChannel();
+    if (not proc.waitForFinished()) { fail.play(); return; }
+    QFile pdf(QDir(tmpdir.path()).absoluteFilePath("out.pdf"));
+    if (pdf.exists()) {
+      ok.play();
+    }
+  }
 }
 
 void BrailleMusicEditor::fileExportMusicXML() {

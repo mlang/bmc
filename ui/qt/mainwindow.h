@@ -63,6 +63,7 @@ private slots:
     void clipboardDataChanged();
     void about();
     void printPreview(QPrinter *);
+    void runLilyPond(bool);
 
 signals:
     void scoreAvailable(bool);
