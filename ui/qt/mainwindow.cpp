@@ -18,6 +18,7 @@
 #include <QTextCursor>
 #include <QTextDocumentWriter>
 #include <QTextList>
+#include <QVBoxLayout>
 #include <QtDebug>
 #include <QCloseEvent>
 #include <QMessageBox>
@@ -67,7 +68,15 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
             this, SLOT(cursorPositionChanged()));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
-    setCentralWidget(textEdit);
+    svg = new QSvgWidget(this);
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(textEdit);
+    vbox->addWidget(svg);
+    QWidget *central = new QWidget;
+    central->setLayout(vbox);
+    setCentralWidget(central);
+
     textEdit->setFocus();
     setCurrentFileName(QString());
 
@@ -475,16 +484,18 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     std::stringstream ss;
     ::bmc::lilypond::generator make_lilypond(ss);
     make_lilypond(*this->score);
+
     QTemporaryDir tmpdir;
     QProcess proc(this);
     proc.setWorkingDirectory(tmpdir.path());
-    proc.start("lilypond", QStringList() << "-o" << "out" << "-");
+    proc.start("lilypond", QStringList() << "-o" << "out" << "-dbackend=svg" << "-dpreview" << "-dno-print-pages" << "-");
     if (not proc.waitForStarted()) { fail.play(); return; }
     proc.write(ss.str().c_str());
     proc.closeWriteChannel();
     if (not proc.waitForFinished()) { fail.play(); return; }
-    QFile pdf(QDir(tmpdir.path()).absoluteFilePath("out.pdf"));
-    if (pdf.exists()) {
+    QFile svg(QDir(tmpdir.path()).absoluteFilePath("out.preview.svg"));
+    if (svg.exists()) {
+      this->svg->load(svg.fileName());
       ok.play();
     }
   }

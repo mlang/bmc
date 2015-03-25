@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QPointer>
 #include <QSoundEffect>
+#include <QtSvg>
 
 #include <config.hpp>
 #include <bmc/braille/ast/ast.hpp>
@@ -92,6 +93,8 @@ private:
     QToolBar *tb;
     QString fileName;
     QTextEdit *textEdit;
+    QSvgWidget *svg;
+
     boost::optional<::bmc::braille::ast::score> score;
 
     QSoundEffect ok, fail;
