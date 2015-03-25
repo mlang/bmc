@@ -6,6 +6,10 @@
 #include <QPointer>
 #include <QSoundEffect>
 
+#include <config.hpp>
+#include <bmc/braille/ast/ast.hpp>
+#include <boost/optional.hpp>
+
 QT_BEGIN_NAMESPACE
 class QAction;
 class QTextEdit;
@@ -39,6 +43,7 @@ private slots:
     bool fileSave();
     bool fileSaveAs();
     void fileCompile();
+    void fileExportMusicXML();
     void filePrint();
     void filePrintPreview();
     void filePrintPdf();
@@ -58,6 +63,9 @@ private slots:
     void clipboardDataChanged();
     void about();
     void printPreview(QPrinter *);
+
+signals:
+    void scoreAvailable(bool);
 
 private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
@@ -83,6 +91,7 @@ private:
     QToolBar *tb;
     QString fileName;
     QTextEdit *textEdit;
+    boost::optional<::bmc::braille::ast::score> score;
 
     QSoundEffect ok, fail;
 };

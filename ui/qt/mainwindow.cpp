@@ -23,8 +23,6 @@
 
 #include "mainwindow.h"
 
-#include <config.hpp>
-#include <bmc/braille/ast.hpp>
 #include <boost/spirit/include/qi_parse.hpp>
 #include <boost/spirit/include/qi_core.hpp>
 #include <bmc/braille/parsing/grammar/score.hpp>
@@ -175,6 +173,13 @@ void BrailleMusicEditor::setupFileActions()
     a->setPriority(QAction::LowPriority);
     a->setShortcut(Qt::Key_F8);
     connect(a, SIGNAL(triggered()), this, SLOT(fileCompile()));
+    menu->addAction(a);
+
+    a = new QAction(tr("&Export MusicXML"), this);
+    a->setPriority(QAction::LowPriority);
+    connect(a, SIGNAL(triggered()), this, SLOT(fileExportMusicXML()));
+    a->setEnabled(false);
+    connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
     menu->addAction(a);
 
     menu->addSeparator();
@@ -440,6 +445,8 @@ void BrailleMusicEditor::fileCompile() {
 
     if (compile(score)) {
       ok.play();
+      this->score = score;
+      emit scoreAvailable(true);
       return;
     } else {
       fail.play();
@@ -451,6 +458,11 @@ void BrailleMusicEditor::fileCompile() {
     fail.play();
     QMessageBox::critical(this, tr("Parse error"), QString("Failed to parse braille music code."));
   }
+  this->score = boost::none;
+  emit scoreAvailable(false);
+}
+
+void BrailleMusicEditor::fileExportMusicXML() {
 }
 
 void BrailleMusicEditor::filePrint()
