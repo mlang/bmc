@@ -69,7 +69,8 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
     svg = new QSvgWidget(this);
-
+    svg->setAccessibleName(tr("Staff notation"));
+    svg->setAccessibleDescription(tr("Displays visual staff notation."));
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(textEdit);
     vbox->addWidget(svg);
