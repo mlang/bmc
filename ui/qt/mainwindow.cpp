@@ -500,13 +500,12 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     QVBoxLayout *vbox = new QVBoxLayout;
     for (auto &&path: dir.entryList()) {
       QFile svg(dir.absoluteFilePath(path));
-      if (svg.exists()) {
-        vbox->addWidget(new QSvgWidget(svg.fileName()));
-      }
+      if (svg.exists()) vbox->addWidget(new QSvgWidget(svg.fileName()));
     }
     QWidget *widget = new QWidget();
     widget->setLayout(vbox);
     svgScrollArea->setWidget(widget);
+    widget->show();
     ok.play();
   }
 }
