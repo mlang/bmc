@@ -556,6 +556,8 @@ void BrailleMusicEditor::cursorPositionChanged()
 }
 
 void BrailleMusicEditor::textChanged() {
+  this->score = boost::none;
+  emit scoreAvailable(false);
 }
 
 void BrailleMusicEditor::clipboardDataChanged()
