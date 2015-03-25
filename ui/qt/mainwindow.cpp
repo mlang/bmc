@@ -501,6 +501,9 @@ void BrailleMusicEditor::lilypondFinished(int exitCode,
   svgScrollArea->setWidget(widget);
   widget->show();
 
+  // scale svg display to match svgScrollarea width
+  auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
+  widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
   ok.play();
 
   delete tmpdir;
