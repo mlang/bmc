@@ -27,6 +27,7 @@
 #include <boost/spirit/include/qi_core.hpp>
 #include <bmc/braille/parsing/grammar/score.hpp>
 #include <bmc/braille/semantic_analysis.hpp>
+#include <bmc/musicxml.hpp>
 
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -417,8 +418,8 @@ bool BrailleMusicEditor::fileSave()
 bool BrailleMusicEditor::fileSaveAs()
 {
     QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."), QString(),
-                                              tr("Braille music files (*.bmc);;LilyPond-Files "
-                                                 "(*.ly);;MusicXML Files (*.xml)"));
+                 tr("Braille music files (*.bmc);;LilyPond-Files "
+                    "(*.ly);;MusicXML Files (*.xml)"));
     if (fn.isEmpty())
         return false;
     if (!(fn.endsWith(".bmc", Qt::CaseInsensitive)
@@ -463,6 +464,23 @@ void BrailleMusicEditor::fileCompile() {
 }
 
 void BrailleMusicEditor::fileExportMusicXML() {
+    BOOST_ASSERT(this->score);
+
+    std::stringstream ss;
+    ::bmc::musicxml(ss, *this->score);
+    QString fn = QFileDialog::getSaveFileName(this, tr("Export MusicXML..."),
+                                              QString(),
+                 tr("MusicXML files (*.xml)"));
+    if (fn.isEmpty()) return;
+    if (!fn.endsWith(".xml", Qt::CaseInsensitive)) {
+        fn += ".xml"; // default
+    }
+    QFile file(fn);
+    if (!file.open(QIODevice::WriteOnly)) {
+      return;
+    }
+    QTextStream out(&file);
+    out << QString::fromStdString(ss.str());
 }
 
 void BrailleMusicEditor::filePrint()
