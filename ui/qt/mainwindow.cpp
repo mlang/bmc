@@ -3,6 +3,7 @@
 #include <QClipboard>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFontComboBox>
 #include <QFile>
 #include <QFileDialog>
@@ -56,6 +57,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
     menuBar()->addMenu(helpMenu);
     helpMenu->addAction(tr("About"), this, SLOT(about()));
     helpMenu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
+    helpMenu->addAction(tr("&Report a problem..."), this, SLOT(reportBug()));
   }
 
   textEdit = new QTextEdit(this);
@@ -596,6 +598,10 @@ void BrailleMusicEditor::about() {
     tr("This example demonstrates Qt's "
        "rich text editing facilities in action, providing an example "
        "document for you to experiment with."));
+}
+
+void BrailleMusicEditor::reportBug() {
+  QDesktopServices::openUrl(QUrl("mailto:mlang@blind.guru?subject=BMC"));
 }
 
 void BrailleMusicEditor::mergeFormatOnWordOrSelection(

@@ -63,6 +63,7 @@ private slots:
 
     void clipboardDataChanged();
     void about();
+    void reportBug();
     void printPreview(QPrinter *);
     void runLilyPond(bool);
     void lilypondFinished(int exitCode, QProcess::ExitStatus exitStatus);
