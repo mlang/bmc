@@ -45,6 +45,7 @@ private slots:
     bool fileSaveAs();
     void fileCompile();
     void fileExportMusicXML();
+    void fileExportLilyPond();
     void filePrint();
     void filePrintPreview();
     void filePrintPdf();

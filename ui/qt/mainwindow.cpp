@@ -196,6 +196,13 @@ void BrailleMusicEditor::setupFileActions() {
   connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
   menu->addAction(a);
 
+  a = new QAction(tr("Export &LilyPond"), this);
+  a->setPriority(QAction::LowPriority);
+  connect(a, SIGNAL(triggered()), this, SLOT(fileExportLilyPond()));
+  a->setEnabled(false);
+  connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
+  menu->addAction(a);
+
   menu->addSeparator();
 
   a = new QAction(tr("&Quit"), this);
@@ -487,6 +494,24 @@ void BrailleMusicEditor::fileExportMusicXML() {
   if (fn.isEmpty()) return;
   if (!fn.endsWith(".xml", Qt::CaseInsensitive)) {
     fn += ".xml"; // default
+  }
+  QFile file(fn);
+  if (!file.open(QIODevice::WriteOnly)) { return; }
+  QTextStream out(&file);
+  out << QString::fromStdString(ss.str());
+}
+
+void BrailleMusicEditor::fileExportLilyPond() {
+  BOOST_ASSERT(this->score);
+
+  std::stringstream ss;
+  ::bmc::lilypond::generator make_lilypond(ss);
+  make_lilypond(*this->score);
+  QString fn = QFileDialog::getSaveFileName(
+    this, tr("Export LilyPond..."), QString(), tr("LilyPond files (*.ly)"));
+  if (fn.isEmpty()) return;
+  if (!fn.endsWith(".ly", Qt::CaseInsensitive)) {
+    fn += ".ly"; // default
   }
   QFile file(fn);
   if (!file.open(QIODevice::WriteOnly)) { return; }
