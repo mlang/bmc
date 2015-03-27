@@ -13,7 +13,7 @@ class LilyPondSvgWidget : public QSvgWidget {
   Q_OBJECT
 
 signals:
-  void noteClicked(int id);
+  void clicked(int id);
 
 public slots:
   void hilightNote(int id) {

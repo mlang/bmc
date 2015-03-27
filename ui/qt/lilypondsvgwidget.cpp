@@ -62,7 +62,7 @@ void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
 
   for (int i = 0; i < rects.size(); i++) {
     if (rects[i].contains(scaled_x, scaled_y)) {
-      emit noteClicked(i);
+      emit clicked(i);
       break;
     }
   }
