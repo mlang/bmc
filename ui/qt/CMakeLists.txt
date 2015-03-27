@@ -9,6 +9,7 @@ add_executable(bmc-ui
   app.cpp
   mainwindow.cpp mainwindow.h
   lilypondsvgwidget.cpp lilypondsvgwidget.h
+  lilypondsvgcontainer.h
   ${RESOURCES}
 )
 target_link_libraries(bmc-ui Qt5::Widgets Qt5::Multimedia Qt5::Svg Qt5::Xml bmc_parse-static)

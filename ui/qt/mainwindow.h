@@ -13,7 +13,7 @@
 #include <bmc/braille/ast/ast.hpp>
 #include <boost/optional.hpp>
 
-#include "lilypondsvgwidget.h"
+#include "lilypondsvgcontainer.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;

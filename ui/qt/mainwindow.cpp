@@ -459,15 +459,13 @@ void BrailleMusicEditor::lilypondFinished(int exitCode,
   QDir dir(tmpdir->path());
   dir.setNameFilters(QStringList() << "*.svg");
 
-  auto vbox = new QVBoxLayout;
+  QStringList svgFiles;
   for (auto &&path: dir.entryList()) {
     QFile svgFile{dir.absoluteFilePath(path)};
-    auto svgWidget = new LilyPondSvgWidget;
-    svgWidget->load(svgFile.fileName());
-    if (svgFile.exists()) vbox->addWidget(svgWidget);
+    if (svgFile.exists()) svgFiles << svgFile.fileName();
   }
-  auto widget = new QWidget;
-  widget->setLayout(vbox);
+
+  auto widget = new LilyPondSvgContainer{svgFiles};
   svgScrollArea->setWidget(widget);
   widget->show();
 
