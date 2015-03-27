@@ -436,7 +436,7 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
   if (scoreAvailable and not tmpdir) {
     BOOST_ASSERT(this->score);
     std::stringstream ss;
-    ::bmc::lilypond::generator make_lilypond(ss);
+    ::bmc::lilypond::generator make_lilypond(ss, true, true, true);
     make_lilypond(*this->score);
 
     tmpdir = new QTemporaryDir;
