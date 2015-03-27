@@ -22,15 +22,16 @@ void LilyPondSvgWidget::load(const QString filename) {
   int link_id = 0;
 
   for (int i = 0; i < links.size(); i++) {
-    QDomNode n = links.item(i);
-    qDebug() << " a:" << n.attributes().size();
+    QDomElement a = links.item(i).toElement();
 
-    QDomElement p = n.firstChildElement("path");
+    if (a.attribute("href").startsWith("textedit://")) {
+      QDomElement p = a.firstChildElement("path");
 
-    if (p.hasAttribute("transform")) {
-      //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
-      p.setAttribute("id", link_id);
-      link_id++;
+      if (p.hasAttribute("transform")) {
+        //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
+        p.setAttribute("id", link_id);
+        link_id++;
+      }
     }
   }
 
