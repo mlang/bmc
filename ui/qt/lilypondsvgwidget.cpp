@@ -25,12 +25,11 @@ void LilyPondSvgWidget::load(const QString filename) {
     QDomNode n = links.item(i);
     qDebug() << " a:" << n.attributes().size();
 
-    p = n.firstChildElement("path");
+    QDomElement p = n.firstChildElement("path");
 
     if (p.hasAttribute("transform")) {
       //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
       p.setAttribute("id", link_id);
-      ids.insert(QString::number(link_id), &p);
       link_id++;
     }
   }

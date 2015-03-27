@@ -71,10 +71,6 @@ public:
   QList<QRectF> rects;
   QDomDocument doc;
 
-  QHash<QString, QDomElement *> ids;
-
-  QDomElement p;
-
   LilyPondSvgWidget();
 
   void load(const QString filename);
