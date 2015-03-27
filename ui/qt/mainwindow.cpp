@@ -462,7 +462,9 @@ void BrailleMusicEditor::lilypondFinished(int exitCode,
   auto vbox = new QVBoxLayout;
   for (auto &&path: dir.entryList()) {
     QFile svgFile{dir.absoluteFilePath(path)};
-    if (svgFile.exists()) vbox->addWidget(new QSvgWidget{svgFile.fileName()});
+    auto svgWidget = new LilyPondSvgWidget;
+    svgWidget->load(svgFile.fileName());
+    if (svgFile.exists()) vbox->addWidget(svgWidget);
   }
   auto widget = new QWidget;
   widget->setLayout(vbox);
@@ -601,7 +603,7 @@ void BrailleMusicEditor::about() {
 }
 
 void BrailleMusicEditor::reportBug() {
-  QDesktopServices::openUrl(QUrl("mailto:mlang@blind.guru?subject=BMC"));
+  QDesktopServices::openUrl(QUrl{"mailto:mlang@blind.guru?subject=BMC"});
 }
 
 void BrailleMusicEditor::mergeFormatOnWordOrSelection(

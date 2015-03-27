@@ -4,12 +4,16 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QPointer>
+#include <QProcess>
+#include <QScrollArea>
 #include <QSoundEffect>
-#include <QtSvg>
+#include <QTemporaryDir>
 
 #include <config.hpp>
 #include <bmc/braille/ast/ast.hpp>
 #include <boost/optional.hpp>
+
+#include "lilypondsvgwidget.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
