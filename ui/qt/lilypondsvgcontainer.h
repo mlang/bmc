@@ -16,6 +16,11 @@ signals:
 
 public slots:
   void highlight(int id) {
+    for (int i = 0; i < layout()->count(); ++i) {
+      if (LilyPondSvgWidget *widget = qobject_cast<LilyPondSvgWidget *>(layout()->itemAt(i)->widget())) {
+        widget->hilightNote(id);
+      }
+    }
   }
 
 public:
