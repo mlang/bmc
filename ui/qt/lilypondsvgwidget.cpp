@@ -24,11 +24,12 @@ void LilyPondSvgWidget::load(const QString filename) {
   for (int i = 0; i < links.size(); i++) {
     QDomElement a = links.item(i).toElement();
 
-    if (a.attribute("href").startsWith("textedit://")) {
+    if (a.attribute("xlink:href").startsWith("textedit://")) {
       QDomElement p = a.firstChildElement("path");
 
       if (p.hasAttribute("transform")) {
         //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
+        qDebug() << a.attribute("xlink:href");
         p.setAttribute("id", link_id);
         link_id++;
       }
