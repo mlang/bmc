@@ -29,18 +29,29 @@ void LilyPondSvgWidget::load(const QString filename) {
 
       if (p.hasAttribute("transform")) {
         //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
-        qDebug() << a.attribute("xlink:href");
+        QString href = a.attribute("xlink:href");
+        int pos = href.lastIndexOf(':');
+        if (pos > 0) {
+          int last_column = href.mid(pos + 1).toInt();
+          pos = href.lastIndexOf(':', pos - 1);
+          if (pos > 0) {
+            int first_column = href.mid(pos + 1, href.indexOf(':', pos + 1) - pos - 1).toInt();
+            pos = href.lastIndexOf(':', pos - 1);;
+            if (pos > 0) {
+              int line = href.mid(pos + 1, href.indexOf(':', pos + 1) - pos - 1).toInt();
+              qDebug() << href.mid(pos + 1) << " " << line << first_column << last_column;
+              // get_id(line, first_column, last_column);
+            }
+          }
+        }
         p.setAttribute("id", link_id);
         link_id++;
       }
     }
   }
 
-  // qDebug()<<doc.toString();
-
   QByteArray bytearray = doc.toString().toLocal8Bit();
 
-  //   qDebug()<< "loading stuff!!";
   QSvgWidget::load(bytearray);
 
   for (int i = 0; i < link_id; i++) {
