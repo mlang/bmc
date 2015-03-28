@@ -36,7 +36,7 @@ public:
     auto vbox = new QVBoxLayout;
     for (auto &&fileName: svgFiles) {
       auto svgWidget = new LilyPondSvgWidget{lilypondCode};
-      connect(svgWidget, SIGNAL(clicked(int)), this, SLOT(click(id)));
+      connect(svgWidget, SIGNAL(clicked(int)), this, SLOT(click(int)));
       svgWidget->load(fileName);
       vbox->addWidget(svgWidget);
     }

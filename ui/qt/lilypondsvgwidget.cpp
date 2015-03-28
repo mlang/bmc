@@ -8,7 +8,6 @@
 
 LilyPondSvgWidget::LilyPondSvgWidget(QString const &lilypondCode)
 : lilypondCode{lilypondCode}, _oldid(-1) {
-  connect(this, SIGNAL(noteClicked(int)), this, SLOT(hilightNote(int)));
 }
 
 void LilyPondSvgWidget::load(const QString filename) {
