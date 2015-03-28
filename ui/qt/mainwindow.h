@@ -82,9 +82,7 @@ private slots:
     void lilypondFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void lilypondError(QProcess::ProcessError error);
 
-    void goToObject(int id) {
-      qDebug() << "Object" << id << "has been clicked!";
-    }
+    void goToObject(int id);
 
 signals:
     void scoreAvailable(bool);

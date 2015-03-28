@@ -33,6 +33,7 @@
 #include <bmc/braille/semantic_analysis.hpp>
 #include <bmc/musicxml.hpp>
 #include <bmc/lilypond.hpp>
+#include <bmc/braille/ast/visitor.hpp>
 
 #ifdef Q_OS_MAC
 const QString rsrcPath = ":/images/mac";
@@ -130,7 +131,6 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   if (args.count() == 2) initialFile = args.at(1);
 
   if (!load(initialFile)) fileNew();
-  goTo(2, 2);
 }
 
 void BrailleMusicEditor::closeEvent(QCloseEvent *e) {
@@ -487,6 +487,29 @@ void BrailleMusicEditor::lilypondError(QProcess::ProcessError error) {
 
   delete tmpdir;
   tmpdir = nullptr;
+}
+
+void BrailleMusicEditor::goToObject(int id) {
+  qDebug() << "Clicked on object" << id;
+
+  struct finder: public ::bmc::braille::ast::const_visitor<finder> {
+    int target_id, line, column;
+
+    finder(int target_id): target_id{target_id}, line{-1}, column{-1} {}
+
+    bool visit_locatable(::bmc::braille::ast::locatable const &lexeme) {
+      if (lexeme.id == target_id) {
+        line = lexeme.line;
+        column = lexeme.column;
+        return false;
+      }
+      return true;
+    }
+  } find{id};
+
+  if (score and not find.traverse_score(*score)) {
+    goTo(find.line, find.column);
+  }
 }
 
 void BrailleMusicEditor::fileExportMusicXML() {
