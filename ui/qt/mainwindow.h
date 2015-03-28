@@ -8,6 +8,8 @@
 #include <QScrollArea>
 #include <QSoundEffect>
 #include <QTemporaryDir>
+#include <QTextBlock>
+#include <QTextEdit>
 
 #include <config.hpp>
 #include <bmc/braille/ast/ast.hpp>
@@ -17,7 +19,6 @@
 
 QT_BEGIN_NAMESPACE
 class QAction;
-class QTextEdit;
 class QTextCharFormat;
 class QMenu;
 class QPrinter;
@@ -41,6 +42,14 @@ private:
     bool load(const QString &f);
     bool maybeSave();
     void setCurrentFileName(const QString &fileName);
+    void goTo(int line, int column) {
+      QTextBlock block = textEdit->document()->findBlockByLineNumber(line - 1);
+      if (block.isValid()) {
+        QTextCursor cursor = textEdit->textCursor();
+        cursor.setPosition(block.position() + column - 1);
+        textEdit->setTextCursor(cursor);
+      }
+    }
 
 private slots:
     void fileNew();
@@ -73,6 +82,10 @@ private slots:
     void lilypondFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void lilypondError(QProcess::ProcessError error);
 
+    void goToObject(int id) {
+      qDebug() << "Object" << id << "has been clicked!";
+    }
+
 signals:
     void scoreAvailable(bool);
 
@@ -100,6 +113,7 @@ private:
     boost::optional<::bmc::braille::ast::score> score;
     QProcess lilypond;
     QTemporaryDir *tmpdir;
+    QString lilypondCode;
 
     QSoundEffect ok, fail;
 };

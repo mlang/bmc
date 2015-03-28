@@ -6,7 +6,8 @@
 #include <QDebug>
 #include <QApplication>
 
-LilyPondSvgWidget::LilyPondSvgWidget() : _oldid(-1) {
+LilyPondSvgWidget::LilyPondSvgWidget(QString const &lilypondCode)
+: lilypondCode{lilypondCode}, _oldid(-1) {
   connect(this, SIGNAL(noteClicked(int)), this, SLOT(hilightNote(int)));
 }
 
@@ -19,8 +20,8 @@ void LilyPondSvgWidget::load(const QString filename) {
 
   QDomNodeList links = doc.elementsByTagName("a");
 
+  QHash<int, int> ids;
   int link_id = 0;
-
   for (int i = 0; i < links.size(); i++) {
     QDomElement a = links.item(i).toElement();
 
@@ -28,24 +29,24 @@ void LilyPondSvgWidget::load(const QString filename) {
       QDomElement p = a.firstChildElement("path");
 
       if (p.hasAttribute("transform")) {
-        //	    qDebug() << "id:"<<i<<"Child p:"<<p.attribute("transform");
         QString href = a.attribute("xlink:href");
         int pos = href.lastIndexOf(':');
         if (pos > 0) {
-          int last_column = href.mid(pos + 1).toInt();
+          int column = href.mid(pos + 1).toInt();
           pos = href.lastIndexOf(':', pos - 1);
           if (pos > 0) {
-            int first_column = href.mid(pos + 1, href.indexOf(':', pos + 1) - pos - 1).toInt();
+            int character = href.mid(pos + 1, href.indexOf(':', pos + 1) - pos - 1).toInt();
             pos = href.lastIndexOf(':', pos - 1);;
             if (pos > 0) {
               int line = href.mid(pos + 1, href.indexOf(':', pos + 1) - pos - 1).toInt();
-              qDebug() << href.mid(pos + 1) << " " << line << first_column << last_column;
-              // get_id(line, first_column, last_column);
+              int id = find_id(line, character, column);
+              if (id != -1) {
+                p.setAttribute("id", link_id);
+                ids.insert(link_id++, id);
+              }
             }
           }
         }
-        p.setAttribute("id", link_id);
-        link_id++;
       }
     }
   }
@@ -54,11 +55,9 @@ void LilyPondSvgWidget::load(const QString filename) {
 
   QSvgWidget::load(bytearray);
 
-  for (int i = 0; i < link_id; i++) {
-    this->rects.append(this->renderer()->boundsOnElement(QString::number(i)));
-
-    //  qDebug()<< "adding bounds for id "<< i << ":"<<
-    //  r.boundsOnElement(QString::number(i));
+  for (auto i = ids.begin(); i != ids.end(); ++i) {
+    rects.push_back(qMakePair(renderer()->boundsOnElement(QString::number(i.key())),
+                              i.value()));
   }
 }
 
@@ -73,10 +72,25 @@ void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
 
   qDebug() << "scaled:" << scaled_x << "," << scaled_y;
 
-  for (int i = 0; i < rects.size(); i++) {
-    if (rects[i].contains(scaled_x, scaled_y)) {
-      emit clicked(i);
+  for (auto pair: rects) {
+    if (pair.first.contains(scaled_x, scaled_y)) {
+      emit clicked(pair.second);
       break;
     }
   }
+}
+
+int LilyPondSvgWidget::find_id(int line, int character, int column) {
+  if (line > 0) {
+    QString lineText = lilypondCode.section('\n', line - 1, line - 1);
+    int begin = lineText.indexOf("%{");
+    if (begin != -1) {
+      int end = lineText.indexOf("%}", begin);
+      if (end > begin) {
+        begin += 2;
+        return lineText.mid(begin, end - begin).toInt();
+      }
+    }
+  }
+  return -1;
 }

@@ -130,6 +130,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   if (args.count() == 2) initialFile = args.at(1);
 
   if (!load(initialFile)) fileNew();
+  goTo(2, 2);
 }
 
 void BrailleMusicEditor::closeEvent(QCloseEvent *e) {
@@ -450,6 +451,7 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
       return;
     }
     lilypond.write(ss.str().c_str());
+    lilypondCode = QString::fromStdString(ss.str());
     lilypond.closeWriteChannel();
   }
 }
@@ -465,7 +467,8 @@ void BrailleMusicEditor::lilypondFinished(int exitCode,
     if (svgFile.exists()) svgFiles << svgFile.fileName();
   }
 
-  auto widget = new LilyPondSvgContainer{svgFiles};
+  auto widget = new LilyPondSvgContainer{svgFiles, lilypondCode};
+  connect(widget, SIGNAL(clicked(int)), this, SLOT(goToObject(int)));
   svgScrollArea->setWidget(widget);
   widget->show();
 

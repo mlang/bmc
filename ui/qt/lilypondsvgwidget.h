@@ -12,6 +12,10 @@
 class LilyPondSvgWidget : public QSvgWidget {
   Q_OBJECT
 
+private:
+  QString const &lilypondCode;
+  int find_id(int line, int character, int column);
+
 signals:
   void clicked(int id);
 
@@ -68,10 +72,10 @@ private:
   }
 
 public:
-  QList<QRectF> rects;
+  QList<QPair<QRectF, int>> rects;
   QDomDocument doc;
 
-  LilyPondSvgWidget();
+  LilyPondSvgWidget(QString const &lilypondCode);
 
   void load(const QString filename);
   void mouseMoveEvent(QMouseEvent *event) { mousePressEvent(event); }

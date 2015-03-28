@@ -11,6 +11,9 @@ class LilyPondSvgContainer: public QWidget
 {
   Q_OBJECT
 
+private:
+  QString const &lilypondCode;
+
 signals:
   void clicked(int);
 
@@ -28,10 +31,11 @@ private slots:
   void click(int id) { emit clicked(id); }
 
 public:
-  LilyPondSvgContainer(QStringList svgFiles) {
+  LilyPondSvgContainer(QStringList svgFiles, QString const &lilypondCode)
+  : lilypondCode{lilypondCode} {
     auto vbox = new QVBoxLayout;
     for (auto &&fileName: svgFiles) {
-      auto svgWidget = new LilyPondSvgWidget;
+      auto svgWidget = new LilyPondSvgWidget{lilypondCode};
       connect(svgWidget, SIGNAL(clicked(int)), this, SLOT(click(id)));
       svgWidget->load(fileName);
       vbox->addWidget(svgWidget);
