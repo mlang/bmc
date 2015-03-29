@@ -62,6 +62,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   }
 
   textEdit = new QTextEdit(this);
+  textEdit->setWordWrapMode(QTextOption::NoWrap);
   connect(textEdit, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this,
           SLOT(currentCharFormatChanged(QTextCharFormat)));
   connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
