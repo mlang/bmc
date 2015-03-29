@@ -361,6 +361,17 @@ void BrailleMusicEditor::setCurrentFileName(const QString &fileName) {
   setWindowModified(false);
 }
 
+void BrailleMusicEditor::goTo(int line, int column) {
+  QTextBlock block = textEdit->document()->findBlockByLineNumber(line - 1);
+  if (block.isValid()) {
+    QTextCursor cursor = textEdit->textCursor();
+    cursor.setPosition(block.position() + column - 1);
+    textEdit->setTextCursor(cursor);
+    textEdit->ensureCursorVisible();
+    textEdit->setFocus();
+  }
+}
+
 void BrailleMusicEditor::fileNew() {
   if (maybeSave()) {
     textEdit->clear();

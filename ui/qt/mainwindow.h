@@ -42,14 +42,7 @@ private:
     bool load(const QString &f);
     bool maybeSave();
     void setCurrentFileName(const QString &fileName);
-    void goTo(int line, int column) {
-      QTextBlock block = textEdit->document()->findBlockByLineNumber(line - 1);
-      if (block.isValid()) {
-        QTextCursor cursor = textEdit->textCursor();
-        cursor.setPosition(block.position() + column - 1);
-        textEdit->setTextCursor(cursor);
-      }
-    }
+    void goTo(int line, int column);
 
 private slots:
     void fileNew();
