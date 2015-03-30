@@ -17,6 +17,8 @@
 
 #include "lilypondsvgcontainer.h"
 
+#include "OptionsDialog.h"
+
 QT_BEGIN_NAMESPACE
 class QAction;
 class QTextCharFormat;
@@ -38,6 +40,7 @@ private:
     void setupSoundEffects();
     void setupFileActions();
     void setupEditActions();
+    void setupOptionsActions();
     void setupTextActions();
     bool load(const QString &f);
     bool maybeSave();
@@ -62,6 +65,8 @@ private slots:
     void textFamily(const QString &f);
     void textSize(const QString &p);
     void textColor();
+
+    void showOptions();
 
     void currentCharFormatChanged(const QTextCharFormat &format);
     void cursorPositionChanged();
@@ -107,6 +112,8 @@ private:
     QString lilypondCode;
 
     QSoundEffect ok, fail;
+
+    OptionsDialog optionsDialog;
 };
 
 #endif // BRAILLE_MUSIC_EDITOR_H

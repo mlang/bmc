@@ -50,6 +50,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   setToolButtonStyle(Qt::ToolButtonFollowStyle);
   setupFileActions();
   setupEditActions();
+  setupOptionsActions();
   setupTextActions();
   setupSoundEffects();
 
@@ -259,6 +260,18 @@ void BrailleMusicEditor::setupEditActions() {
     actionPaste->setEnabled(md->hasText());
 #endif
 }
+
+void BrailleMusicEditor::setupOptionsActions() {
+
+  auto menu= new QMenu(tr("O&ptions"),this);
+  menuBar()->addMenu(menu);
+  QAction *settings= new QAction(tr("&Settings..."), this);
+connect(settings, SIGNAL(triggered()), this, SLOT(showOptions()));
+ menu->addAction(settings);
+
+  
+}
+
 
 void BrailleMusicEditor::setupTextActions() {
   auto tb = new QToolBar(this);
@@ -539,6 +552,12 @@ void BrailleMusicEditor::fileExportMusicXML() {
   if (!file.open(QIODevice::WriteOnly)) { return; }
   QTextStream out(&file);
   out << QString::fromStdString(ss.str());
+}
+
+
+void BrailleMusicEditor::showOptions()
+{
+  optionsDialog.show();
 }
 
 void BrailleMusicEditor::fileExportLilyPond() {
