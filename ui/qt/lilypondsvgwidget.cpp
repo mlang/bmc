@@ -61,32 +61,30 @@ void LilyPondSvgWidget::load(const QString filename) {
 }
 
 void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
-  qDebug() << "Pos:" << event->pos();
-  qDebug() << "size: " << this->width() << "x" << this->height();
   float factor_x = this->renderer()->viewBoxF().width() / (this->width());
   float factor_y = this->renderer()->viewBoxF().height() / (this->height());
 
   float scaled_x = factor_x * event->x();
   float scaled_y = factor_y * event->y();
 
-  qDebug() << "scaled:" << scaled_x << "," << scaled_y;
-
-  for (auto pair: rects) {
+  for (auto &&pair: rects) {
     if (pair.first.contains(scaled_x, scaled_y)) {
       emit clicked(pair.second);
-      break;
+      return;
     }
   }
 }
 
 int LilyPondSvgWidget::find_id(int line, int character, int column) {
+  static QString const commentBegin = "%{", commentEnd = "%}";
+
   if (line > 0) {
-    QString lineText = lilypondCode.section('\n', line - 1, line - 1);
-    int begin = lineText.indexOf("%{", character);
+    QString const lineText = lilypondCode.section('\n', line - 1, line - 1);
+    int begin = lineText.indexOf(commentBegin, character);
     if (begin != -1) {
-      int end = lineText.indexOf("%}", begin);
+      begin += commentBegin.length();
+      int end = lineText.indexOf(commentEnd, begin);
       if (end > begin) {
-        begin += 2;
         return lineText.mid(begin, end - begin).toInt();
       }
     }
