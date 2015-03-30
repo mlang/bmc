@@ -566,6 +566,16 @@ void BrailleMusicEditor::showOptions()
     }
 }
 
+void BrailleMusicEditor::resizeEvent(QResizeEvent *event) {
+ QMainWindow::resizeEvent(event);
+
+ auto widget=svgScrollArea->widget();
+ if (!widget) return;
+ auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
+ widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
+}
+							   
+
 void BrailleMusicEditor::fileExportLilyPond() {
   BOOST_ASSERT(this->score);
 
