@@ -82,7 +82,7 @@ void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
 int LilyPondSvgWidget::find_id(int line, int character, int column) {
   if (line > 0) {
     QString lineText = lilypondCode.section('\n', line - 1, line - 1);
-    int begin = lineText.indexOf("%{");
+    int begin = lineText.indexOf("%{", character);
     if (begin != -1) {
       int end = lineText.indexOf("%}", begin);
       if (end > begin) {
