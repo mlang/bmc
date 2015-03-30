@@ -17,7 +17,6 @@
 
 #include "lilypondsvgcontainer.h"
 
-#include "OptionsDialog.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -113,7 +112,6 @@ private:
 
     QSoundEffect ok, fail;
 
-    OptionsDialog optionsDialog;
 };
 
 #endif // BRAILLE_MUSIC_EDITOR_H

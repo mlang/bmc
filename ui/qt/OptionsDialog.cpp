@@ -20,7 +20,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
   buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                      | QDialogButtonBox::Cancel);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+      connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -35,18 +35,22 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
 void OptionsDialog::accept() {
 
-  for (int i=0; i< tabs.size();i++)
-    {
-      tabs.at(i)->persistSettings();
-    }
-     settings.sync();
-    QApplication::quit();
-}
+  this->done(QDialog::Accepted);
+ }
 
 void OptionsDialog::reject() {
-  QApplication::quit();
+  this->done(QDialog::Rejected);
 }
 
+
+void OptionsDialog::saveSettings() {
+
+for (int i=0; i< tabs.size();i++)
+  {
+tabs.at(i)->persistSettings();
+}
+settings.sync();
+}
 
 
 

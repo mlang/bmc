@@ -26,6 +26,7 @@
 #include <QMimeData>
 
 #include "mainwindow.h"
+#include "OptionsDialog.h"
 
 #include <boost/spirit/include/qi_parse.hpp>
 #include <boost/spirit/include/qi_core.hpp>
@@ -557,7 +558,12 @@ void BrailleMusicEditor::fileExportMusicXML() {
 
 void BrailleMusicEditor::showOptions()
 {
-  optionsDialog.show();
+  OptionsDialog optionsDialog;
+  int retval=optionsDialog.exec();
+  if (retval == QDialog::Accepted)
+    {
+      optionsDialog.saveSettings();
+    }
 }
 
 void BrailleMusicEditor::fileExportLilyPond() {

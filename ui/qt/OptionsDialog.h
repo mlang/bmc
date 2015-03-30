@@ -79,6 +79,8 @@ class OptionsDialog : public QDialog
 public:
     explicit OptionsDialog(QWidget *parent = 0);
 
+    void saveSettings();
+
 private:
     QTabWidget *tabWidget;
     QDialogButtonBox *buttonBox;
@@ -89,6 +91,7 @@ private:
 public slots:
       void accept();
       void reject();
+      
 
 };
 
