@@ -263,16 +263,12 @@ void BrailleMusicEditor::setupEditActions() {
 }
 
 void BrailleMusicEditor::setupOptionsActions() {
-
-  auto menu= new QMenu(tr("O&ptions"),this);
+  auto menu = new QMenu(tr("O&ptions"), this);
   menuBar()->addMenu(menu);
-  QAction *settings= new QAction(tr("&Settings..."), this);
-connect(settings, SIGNAL(triggered()), this, SLOT(showOptions()));
- menu->addAction(settings);
-
-  
+  QAction *settings = new QAction(tr("&Settings..."), this);
+  connect(settings, SIGNAL(triggered()), this, SLOT(showOptions()));
+  menu->addAction(settings);
 }
-
 
 void BrailleMusicEditor::setupTextActions() {
   auto tb = new QToolBar(this);
@@ -555,26 +551,22 @@ void BrailleMusicEditor::fileExportMusicXML() {
   out << QString::fromStdString(ss.str());
 }
 
-
-void BrailleMusicEditor::showOptions()
-{
+void BrailleMusicEditor::showOptions() {
   OptionsDialog optionsDialog;
-  int retval=optionsDialog.exec();
-  if (retval == QDialog::Accepted)
-    {
-      optionsDialog.saveSettings();
-    }
+  int retval = optionsDialog.exec();
+  if (retval == QDialog::Accepted) { optionsDialog.saveSettings(); }
 }
 
 void BrailleMusicEditor::resizeEvent(QResizeEvent *event) {
- QMainWindow::resizeEvent(event);
+  QMainWindow::resizeEvent(event);
 
- auto widget=svgScrollArea->widget();
- if (!widget) return;
- auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
- widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
+  auto widget = svgScrollArea->widget();
+  if (!widget) return;
+  auto scalefactor =
+    (double)svgScrollArea->viewport()->width() / widget->width();
+  widget->resize(svgScrollArea->viewport()->width(),
+                 (int)(widget->height() * scalefactor));
 }
-							   
 
 void BrailleMusicEditor::fileExportLilyPond() {
   BOOST_ASSERT(this->score);
@@ -650,8 +642,7 @@ void BrailleMusicEditor::currentCharFormatChanged(
   colorChanged(format.foreground().color());
 }
 
-void BrailleMusicEditor::cursorPositionChanged() {
-}
+void BrailleMusicEditor::cursorPositionChanged() {}
 
 void BrailleMusicEditor::textChanged() {
   this->score = boost::none;
