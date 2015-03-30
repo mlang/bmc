@@ -26,7 +26,7 @@
 #include <QMimeData>
 
 #include "mainwindow.h"
-#include "OptionsDialog.h"
+#include "optionsdialog.h"
 
 #include <boost/spirit/include/qi_parse.hpp>
 #include <boost/spirit/include/qi_core.hpp>
