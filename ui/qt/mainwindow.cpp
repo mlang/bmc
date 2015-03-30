@@ -26,6 +26,7 @@
 #include <QMimeData>
 
 #include "mainwindow.h"
+#include "OptionsDialog.h"
 
 #include <boost/spirit/include/qi_parse.hpp>
 #include <boost/spirit/include/qi_core.hpp>
@@ -50,6 +51,7 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   setToolButtonStyle(Qt::ToolButtonFollowStyle);
   setupFileActions();
   setupEditActions();
+  setupOptionsActions();
   setupTextActions();
   setupSoundEffects();
 
@@ -259,6 +261,18 @@ void BrailleMusicEditor::setupEditActions() {
     actionPaste->setEnabled(md->hasText());
 #endif
 }
+
+void BrailleMusicEditor::setupOptionsActions() {
+
+  auto menu= new QMenu(tr("O&ptions"),this);
+  menuBar()->addMenu(menu);
+  QAction *settings= new QAction(tr("&Settings..."), this);
+connect(settings, SIGNAL(triggered()), this, SLOT(showOptions()));
+ menu->addAction(settings);
+
+  
+}
+
 
 void BrailleMusicEditor::setupTextActions() {
   auto tb = new QToolBar(this);
@@ -539,6 +553,17 @@ void BrailleMusicEditor::fileExportMusicXML() {
   if (!file.open(QIODevice::WriteOnly)) { return; }
   QTextStream out(&file);
   out << QString::fromStdString(ss.str());
+}
+
+
+void BrailleMusicEditor::showOptions()
+{
+  OptionsDialog optionsDialog;
+  int retval=optionsDialog.exec();
+  if (retval == QDialog::Accepted)
+    {
+      optionsDialog.saveSettings();
+    }
 }
 
 void BrailleMusicEditor::fileExportLilyPond() {
