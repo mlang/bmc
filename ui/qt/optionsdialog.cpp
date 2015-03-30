@@ -29,10 +29,6 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
   tabWidget->show();
 }
 
-void OptionsDialog::accept() { this->done(QDialog::Accepted); }
-
-void OptionsDialog::reject() { this->done(QDialog::Rejected); }
-
 void OptionsDialog::saveSettings() {
   for (int i = 0; i < tabWidget->count(); i++) {
     qobject_cast<GenericTab *>(tabWidget->widget(i))->persistSettings();

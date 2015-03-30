@@ -67,10 +67,6 @@ private:
   QDialogButtonBox *buttonBox;
 
   QSettings settings;
-
-public slots:
-  void accept();
-  void reject();
 };
 
 #endif // OPTIONSDIALOG_H
