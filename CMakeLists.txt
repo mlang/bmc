@@ -9,8 +9,13 @@ add_subdirectory(doxygen)
 add_subdirectory(xsdcxx-musicxml)
 add_subdirectory(ttb)
 add_subdirectory(ui)
-find_package(PythonLibs REQUIRED)
-find_package(Boost 1.54.0 REQUIRED COMPONENTS program_options python)
+option(bmc_USE_PYTHON "Build components that require Python" ON)
+set(bmc_REQUIRED_BOOST_COMPONENTS program_options)
+if(bmc_USE_PYTHON)
+  find_package(PythonLibs REQUIRED)
+  set(bmc_REQUIRED_BOOST_COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS} python)
+endif(bmc_USE_PYTHON)
+find_package(Boost 1.54.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
 find_package(Threads)
 include_directories(
   ${bmc_BINARY_DIR}
@@ -50,15 +55,16 @@ set_target_properties(bmc_test
                       COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/"
                      )
 target_link_libraries(bmc_test bmc_parse)
-include_directories(${PYTHON_INCLUDE_DIR})
-add_library(pybmc SHARED python.cpp)
-set_target_properties(pybmc PROPERTIES
-  PREFIX ""
-  OUTPUT_NAME "_bmc"
-  LIBRARY_OUTPUT_DIRECTORY python/bmc
-)
-target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} bmc_parse)
-
+if(bmc_USE_PYTHON)
+  include_directories(${PYTHON_INCLUDE_DIR})
+  add_library(pybmc SHARED python.cpp)
+  set_target_properties(pybmc PROPERTIES
+    PREFIX ""
+    OUTPUT_NAME "_bmc"
+    LIBRARY_OUTPUT_DIRECTORY python/bmc
+  )
+  target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} bmc_parse)
+endif(bmc_USE_PYTHON)
 find_package(Boost QUIET COMPONENTS unit_test_framework)
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
   get_target_property(bmc_test_cflags bmc_test COMPILE_DEFINITIONS)
@@ -142,7 +148,9 @@ if(PYTHONINTERP_FOUND)
 endif(PYTHONINTERP_FOUND)
 
 
-add_subdirectory(sphinx)
+if(bmc_USE_PYTHON)
+  add_subdirectory(sphinx)
+endif(bmc_USE_PYTHON)
 
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
