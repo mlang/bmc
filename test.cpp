@@ -667,7 +667,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
     ss << attribute;
     BOOST_REQUIRE(not ss.str().empty());
 
-    std::ifstream ly_file(DIR "input/bwv988-v01.ly.locations.expected");
+    std::ifstream ly_file(DIR "output/bwv988-v01.ly.locations.expected");
     BOOST_REQUIRE(ly_file.good());
     std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
     std::string expected(in_begin, in_end);
