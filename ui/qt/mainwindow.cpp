@@ -70,7 +70,8 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
   connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
 
-  svgScrollArea = new QScrollArea;
+  svgScrollArea = new QScrollArea(this);
+  svgScrollArea->setFocusPolicy(Qt::NoFocus);
   auto vbox = new QVBoxLayout;
   vbox->addWidget(textEdit);
   vbox->addWidget(svgScrollArea);
