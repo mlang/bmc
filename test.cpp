@@ -19,12 +19,11 @@
 #define DIR ""
 #endif
 
-#include <bmc/ttb/ttb.h>
+#include <bmc/braille/text2braille.hpp>
 
 struct text_table
 {
-  text_table() { textTable = compileTextTable(DIR "ttb/Tables/de.ttb"); }
-  ~text_table() { destroyTextTable(textTable); }
+  text_table() { bmc::braille::default_table = "de"; }
 };
 
 BOOST_GLOBAL_FIXTURE(text_table);

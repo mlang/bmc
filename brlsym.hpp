@@ -10,8 +10,7 @@
 #include "config.hpp"
 #include <boost/spirit/include/qi_symbols.hpp>
 #include <bmc/braille/ast/ast.hpp>
-#include <bmc/ttb/ttb.h>
-#include <bmc/ttb/unicode.h>
+#include <bmc/braille/text2braille.hpp>
 
 namespace bmc { namespace braille {
 
@@ -21,7 +20,7 @@ namespace bmc { namespace braille {
 struct tst_braillify {
   template <typename Char>
   Char operator()(Char ch) const {
-    return ch < 0X20? ch: UNICODE_BRAILLE_ROW | (convertCharacterToDots(textTable, ch)&0X3F);
+    return ch < 0X20? ch: 0X2800 | (get_dots_for_character(ch)&0X3F);
   }
 };
 
