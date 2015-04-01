@@ -10,8 +10,11 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
 
   auto lilypondTab = new LilypondTab;
   auto timidityTab = new TimidityTab;
+  auto uisettingsTab = new UISettingsTab();
+  
   qDebug() << "od const";
   tabWidget->addTab(lilypondTab, tr("Lilypond settings"));
+  tabWidget->addTab(uisettingsTab, tr("UI settings"));
   tabWidget->addTab(timidityTab, tr("Timidity settings"));
 
   buttonBox =
@@ -91,4 +94,39 @@ void LilypondTab::persistSettings() {
 
   settings.setValue("lilypond/verbose",
                     (int)(lilypondVerboseCheckbox->checkState()));
+}
+
+
+void UISettingsTab::setup() {
+  persistLayoutCheckBox = new QCheckBox(tr("Persist Layout"));
+  persistLayoutCheckBox->setCheckState(
+    Qt::CheckState(settings.value("ui/persist_layout", Qt::Checked).toInt()));
+
+  persistWindowPosCheckBox = new QCheckBox(tr("Persist Window Position"));
+  persistWindowPosCheckBox->setCheckState(
+    Qt::CheckState(settings.value("ui/persist_window_position", Qt::Checked).toInt()));
+
+  
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(persistLayoutCheckBox);
+  mainLayout->addWidget(persistWindowPosCheckBox);
+  
+   setLayout(mainLayout);
+}
+
+UISettingsTab::UISettingsTab(QWidget *parent) : GenericTab(parent) {
+  setup();
+}
+
+void UISettingsTab::persistSettings() {
+  
+  QSettings settings;
+  
+  settings.beginGroup("ui");
+  
+  settings.setValue("persist_layout",
+                    (int)(persistLayoutCheckBox->checkState()));
+  settings.setValue("persist_window_position",
+                    (int)(persistWindowPosCheckBox->checkState()));
+  
 }

@@ -19,7 +19,7 @@
 #include <QTextCursor>
 #include <QTextDocumentWriter>
 #include <QTextList>
-#include <QVBoxLayout>
+#include <QSplitter>
 #include <QtDebug>
 #include <QCloseEvent>
 #include <QMessageBox>
@@ -72,16 +72,24 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
 
   svgScrollArea = new QScrollArea(this);
   svgScrollArea->setFocusPolicy(Qt::NoFocus);
-  auto vbox = new QVBoxLayout;
+
+  central = new QWidget;
+ 
+  auto vbox = new QSplitter(Qt::Vertical);
   vbox->addWidget(textEdit);
   vbox->addWidget(svgScrollArea);
-  vbox->setStretch(0, 1);
-  vbox->setStretch(1, 2);
 
-  auto central = new QWidget;
-  central->setLayout(vbox);
-  setCentralWidget(central);
-
+  QSettings settings;
+  if ((settings.value("ui/persist_layout",1).toInt()) && (settings.contains("ui/layout_data")) )
+    {
+	  vbox->restoreState(settings.value("ui/layout_data").toByteArray());
+    } else
+    {
+      vbox->setStretchFactor(0, 1);
+      vbox->setStretchFactor(1, 1);
+    }
+  setCentralWidget(vbox);
+ 
   textEdit->setFocus();
   setCurrentFileName(QString());
 
@@ -138,8 +146,20 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
 }
 
 void BrailleMusicEditor::closeEvent(QCloseEvent *e) {
+  
+  QSettings settings;
+  if (settings.value("ui/persist_layout",1).toInt())
+    {
+      settings.beginGroup("ui");
+      settings.setValue("layout_data",(qobject_cast<QSplitter*>)(centralWidget())->saveState());
+      settings.endGroup();
+      settings.sync();
+    }
+
   if (maybeSave())
-    e->accept();
+    {
+      e->accept();
+    }
   else
     e->ignore();
 }

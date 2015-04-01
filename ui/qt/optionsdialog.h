@@ -54,6 +54,24 @@ private:
   QLineEdit *timidityExeEdit;
 };
 
+
+class UISettingsTab : public GenericTab {
+  Q_OBJECT
+
+public:
+  explicit UISettingsTab(QWidget *parent = 0);
+
+  void persistSettings();
+  void setup();
+
+private:
+  QCheckBox *persistLayoutCheckBox;
+  QCheckBox *persistWindowPosCheckBox;
+
+};
+
+
+
 class OptionsDialog : public QDialog {
   Q_OBJECT
 
@@ -68,5 +86,10 @@ private:
 
   QSettings settings;
 };
+
+
+
+
+
 
 #endif // OPTIONSDIALOG_H

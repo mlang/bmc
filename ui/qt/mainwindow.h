@@ -101,6 +101,7 @@ private:
     QAction *actionCopy;
     QAction *actionPaste;
 
+    QWidget *central;
     QToolBar *tb;
     QString fileName;
     QTextEdit *textEdit;
