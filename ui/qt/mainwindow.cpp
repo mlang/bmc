@@ -75,22 +75,19 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   svgScrollArea = new QScrollArea(this);
   svgScrollArea->setFocusPolicy(Qt::NoFocus);
 
-  central = new QWidget;
- 
-  auto vbox = new QSplitter(Qt::Vertical);
-  vbox->addWidget(textEdit);
-  vbox->addWidget(svgScrollArea);
+  auto splitter = new QSplitter(Qt::Vertical);
+  splitter->addWidget(textEdit);
+  splitter->addWidget(svgScrollArea);
 
   QSettings settings;
-  if ((settings.value("ui/persist_layout",1).toInt()) && (settings.contains("ui/layout_data")) )
-    {
-	  vbox->restoreState(settings.value("ui/layout_data").toByteArray());
-    } else
-    {
-      vbox->setStretchFactor(0, 1);
-      vbox->setStretchFactor(1, 1);
+  if (settings.value("ui/persist_layout",1).toInt() &&
+      settings.contains("ui/layout_data")) {
+	  splitter->restoreState(settings.value("ui/layout_data").toByteArray());
+    } else {
+      splitter->setStretchFactor(0, 1);
+      splitter->setStretchFactor(1, 1);
     }
-  setCentralWidget(vbox);
+  setCentralWidget(splitter);
  
   textEdit->setFocus();
   setCurrentFileName(QString());
