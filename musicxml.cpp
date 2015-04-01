@@ -4,9 +4,10 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "bmc/musicxml.hpp"
+#include <bmc/musicxml.hpp>
 #include <xsdcxx-musicxml/musicxml.hpp>
 #include <bmc/braille/ast/visitor.hpp>
+#include <boost/variant/get.hpp>
 
 namespace bmc {
 
