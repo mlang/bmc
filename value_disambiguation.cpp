@@ -698,7 +698,7 @@ partial_voice_interpreter<Function>::large_and_small
 {
   // Skip this sign if it does not result in at least one possible proxy
   auto rest = iterator; ++rest;
-  if (not apply_visitor(large_and_small_visitor<partial_voice_interpreter<Function>>
+  if (not boost::apply_visitor(large_and_small_visitor<partial_voice_interpreter<Function>>
                         { rest, end, stack_begin, stack_end
                         , max_duration, position, state, tuplet, max_threads
                         , *this
