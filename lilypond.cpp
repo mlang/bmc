@@ -518,7 +518,7 @@ namespace {
 struct is_alternative : boost::static_visitor<bool>
 {
   result_type operator() (braille::ast::unfolded::measure const &measure) const
-  { return measure.ending; }
+  { return bool(measure.ending); }
   result_type operator() (braille::ast::key_and_time_signature const&) const
   { return false; }
 };
