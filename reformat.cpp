@@ -189,8 +189,10 @@ output::fragment const large_value_sign {U"\u2818\u2823\u2802", "large values"};
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
-  for (auto &&fragment: o.fragments)
-    len += std::u32string{fragment.unicode}.length();
+  for (auto &&fragment: o.fragments) {
+    auto str = std::u32string{fragment.unicode};
+    len += str.length();
+  }
   return len;
 }
 
