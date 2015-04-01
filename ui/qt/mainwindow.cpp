@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDatabase>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMenuBar>
 #include <QProcess>
@@ -32,6 +33,7 @@
 #include <boost/spirit/include/qi_core.hpp>
 #include <bmc/braille/parsing/grammar/score.hpp>
 #include <bmc/braille/semantic_analysis.hpp>
+#include <bmc/braille/reformat.hpp>
 #include <bmc/musicxml.hpp>
 #include <bmc/lilypond.hpp>
 #include <bmc/braille/ast/visitor.hpp>
@@ -281,6 +283,16 @@ void BrailleMusicEditor::setupEditActions() {
   if (const QMimeData *md = QApplication::clipboard()->mimeData())
     actionPaste->setEnabled(md->hasText());
 #endif
+  menu->addSeparator();
+
+  a = new QAction(tr("&Reformat"), this);
+  a->setPriority(QAction::LowPriority);
+  a->setShortcut(Qt::Key_F9);
+  a->setEnabled(false);
+  connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
+  connect(a, SIGNAL(triggered()), this, SLOT(editReformat()));
+  tb->addAction(a);
+  menu->addAction(a);
 }
 
 void BrailleMusicEditor::setupOptionsActions() {
@@ -614,6 +626,23 @@ void BrailleMusicEditor::filePrintPreview() {}
 void BrailleMusicEditor::printPreview(QPrinter *printer) { Q_UNUSED(printer); }
 
 void BrailleMusicEditor::filePrintPdf() {}
+
+void BrailleMusicEditor::editReformat() {
+  bool ok = false;
+  int columns {
+    QInputDialog::getInt(this, tr("Reformat Braille"),
+                         tr("Line width"), 32, 25, 88, 1, &ok)
+  };
+  if (ok) {
+    bmc::braille::format_style style;
+    style.columns = columns;
+    std::stringstream ss;
+    ss << bmc::braille::reformat(*score, style);
+    textEdit->setPlainText(QString::fromStdString(ss.str()));
+    scoreAvailable(false);
+    fileCompile();
+  }
+}
 
 void BrailleMusicEditor::textBold() {
   QTextCharFormat fmt;

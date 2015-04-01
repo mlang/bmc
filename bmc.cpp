@@ -4,11 +4,10 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include <bmc/ttb/ttb.h>
-
 #include "config.hpp"
 #include <fstream>
 #include <boost/spirit/include/qi_parse.hpp>
+#include <bmc/braille/text2braille.hpp>
 #include "bmc/braille/parsing/grammar/score.hpp"
 #include "bmc/braille/reformat.hpp"
 #include "bmc/braille/semantic_analysis.hpp"
@@ -69,6 +68,7 @@ int bmc2ly( std::wistream &wistream
 int main(int argc, char const *argv[])
 {
   std::locale::global(std::locale(""));
+  bmc::braille::set_default_table_from_locale();
 
   using namespace boost::program_options;
   std::string instrument;
@@ -103,14 +103,6 @@ int main(int argc, char const *argv[])
   if (vm.count("help")) {
     std::cout << desc << std::endl;
     return 0;
-  }
-
-  {
-    char *localeTable = selectTextTable(TABLES_DIRECTORY);
-    if (localeTable) {
-      replaceTextTable(TABLES_DIRECTORY, localeTable);
-      free(localeTable);
-    }
   }
 
   int status = EXIT_SUCCESS;

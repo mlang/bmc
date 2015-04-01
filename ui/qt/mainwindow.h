@@ -58,6 +58,8 @@ private slots:
     void filePrintPreview();
     void filePrintPdf();
 
+    void editReformat();
+
     void textBold();
     void textUnderline();
     void textItalic();

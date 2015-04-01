@@ -34,7 +34,7 @@ dots_123_symbols::dots_123_symbols()
 {
   for (int i = 1; i < 0X40; ++i)
     if (i & 0X07) {
-      wchar_t const pattern[2] = { UNICODE_BRAILLE_ROW | i, 0 };
+      wchar_t const pattern[2] = { 0X2800 | i, 0 };
       add(pattern);
     }
 }
