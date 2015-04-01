@@ -494,6 +494,8 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       break;
     default: BOOST_ASSERT(false);
     }
+
+    return true;
   }
 
   bool visit_barline(ast::barline const &b)
