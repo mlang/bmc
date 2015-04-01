@@ -19,7 +19,7 @@ rational const undotted[8] = {
 rational const &
 value_proxy::undotted_duration() const
 {
-  BOOST_ASSERT(category==large || category==small);
+  BOOST_ASSERT(category==large_value || category==small_value);
   BOOST_ASSERT(value_type >= 0 and value_type < 4);
   return undotted[category | value_type];
 }
@@ -198,7 +198,7 @@ public:
     unsigned tuplet_end;
     bool dyadic_next_position;
     process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
-    new (stack_end) value_proxy(note, small, type, factor);
+    new (stack_end) value_proxy(note, small_value, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
@@ -211,7 +211,7 @@ public:
     unsigned tuplet_end;
     bool dyadic_next_position;
     process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
-    new (stack_end) value_proxy(rest, small, type, factor);
+    new (stack_end) value_proxy(rest, small_value, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
@@ -224,7 +224,7 @@ public:
     unsigned tuplet_end;
     bool dyadic_next_position;
     process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
-    new (stack_end) value_proxy(chord, small, type, factor);
+    new (stack_end) value_proxy(chord, small_value, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
@@ -237,19 +237,19 @@ public:
     unsigned tuplet_end;
     bool dyadic_next_position;
     process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
-    new (stack_end) value_proxy(chord, small, type, factor);
+    new (stack_end) value_proxy(chord, small_value, type, factor);
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
-  [[noreturn]] result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
+  result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
   // A note group must never contain a music hyphen.
-  [[noreturn]] result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
+  result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
-  [[noreturn]] result_type operator()(braille::ast::tuplet_start &) { BOOST_ASSERT(false); }
+  result_type operator()(braille::ast::tuplet_start &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::hand_sign &) {}
   result_type operator()(ast::clef &) {}
   result_type operator()(ast::barline &) {}
-  [[noreturn]] result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
+  result_type operator()(ast::simile const &) { BOOST_ASSERT(false); }
 
   value_proxy *end() const
   {
@@ -441,7 +441,7 @@ public:
                          , ast::value_distinction::large_follows
                          )
                  ) > iterator) {
-        same_category const group(iterator, tail, large);
+        same_category const group(iterator, tail, large_value);
         if (fast_leq(duration(group), max_duration)) {
           recurse(tail, end, stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
@@ -453,7 +453,7 @@ public:
                          , ast::value_distinction::small_follows
                          )
                  ) > iterator) {
-        same_category const group(iterator, tail, small);
+        same_category const group(iterator, tail, small_value);
         if (fast_leq(duration(group), max_duration)) {
           recurse(tail, end, stack_begin, std::copy(group.begin(), group.end(), stack_end),
                   max_duration - duration(group),
@@ -591,7 +591,7 @@ public:
     std::future<void> future;
     if (not is_grace(value)) {
       value_proxy *const next = proxy + 1;
-      if (fast_leq(*new(proxy)value_proxy(value, large, factor), max_duration)) {
+      if (fast_leq(*new(proxy)value_proxy(value, large_value, factor), max_duration)) {
         rational const next_position(position + *proxy);
         // If this is a tuplet end, only accept it if its position makes sense.
         if (not dyadic_next_position or is_dyadic(next_position)) {
@@ -620,7 +620,7 @@ public:
           }
         }
       }
-      if (fast_leq(*new(proxy)value_proxy(value, small, factor), max_duration)) {
+      if (fast_leq(*new(proxy)value_proxy(value, small_value, factor), max_duration)) {
         rational const next_position(position + *proxy);
         if (not dyadic_next_position or is_dyadic(next_position)) {
           proxy->set_tuplet_info(tuplet_begin, tuplet_end);

@@ -27,7 +27,7 @@ namespace value_disambiguation {
  * <code>large</code> spans from whole to eighth note values.
  * <code>small</code> from 16th to 128th note values.
  */
-enum value_category { large = 0, small = 4 };
+enum value_category { large_value = 0, small_value = 4 };
 
 /**
  * \brief A possible interpretation of a value (note, rest or chord).
