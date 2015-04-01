@@ -258,7 +258,7 @@ public:
   : compiler_pass( [&error_handler](int tag, std::wstring const &what)
                    { error_handler(L"Error", what, error_handler.iters[tag]); }
                  )
-  , error_handler{error_handler}
+  , error_handler(error_handler)
   , calculate_locations(report_error, error_handler)
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
