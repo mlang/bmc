@@ -361,12 +361,9 @@ bool BrailleMusicEditor::load(const QString &f) {
   if (!file.open(QFile::ReadOnly)) return false;
 
   QByteArray data = file.readAll();
-  QTextCodec *codec = Qt::codecForHtml(data);
+  QTextCodec *codec = QTextCodec::codecForName("UTF-8");
   QString str = codec->toUnicode(data);
-  if (Qt::mightBeRichText(str)) { textEdit->setHtml(str); } else {
-    str = QString::fromLocal8Bit(data);
-    textEdit->setPlainText(str);
-  }
+  textEdit->setPlainText(str);
 
   setCurrentFileName(f);
   return true;
