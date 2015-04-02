@@ -59,9 +59,6 @@ add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 #add_executable(bmc main.cpp fluidsynth.cpp)
 #find_library(FLUIDSYNTH_LIBRARY fluidsynth)
 #target_link_libraries(bmc bmc_parse ${FLUIDSYNTH_LIBRARY})
-add_definitions(-DHAVE_ICONV_H=1)
-add_definitions(-DHAVE_WCHAR_H=1)
-add_definitions(-DTABLES_DIRECTORY="${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}/Tables")
 
 add_executable(bmc_test test.cpp)
 set_target_properties(bmc_test
