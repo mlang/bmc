@@ -107,39 +107,39 @@ private:
         memory[octave][step] = natural;
       int count = steps_per_octave;
       switch (key_sig) {
-      case  14: memory[octave][B] = double_sharp; if (not --count) break;
-      case  13: memory[octave][E] = double_sharp; if (not --count) break;
-      case  12: memory[octave][A] = double_sharp; if (not --count) break;
-      case  11: memory[octave][D] = double_sharp; if (not --count) break;
-      case  10: memory[octave][G] = double_sharp; if (not --count) break;
-      case   9: memory[octave][C] = double_sharp; if (not --count) break;
-      case   8: memory[octave][F] = double_sharp; if (not --count) break;
+      case  14: memory[octave][B] = double_sharp; if (!--count) break;
+      case  13: memory[octave][E] = double_sharp; if (!--count) break;
+      case  12: memory[octave][A] = double_sharp; if (!--count) break;
+      case  11: memory[octave][D] = double_sharp; if (!--count) break;
+      case  10: memory[octave][G] = double_sharp; if (!--count) break;
+      case   9: memory[octave][C] = double_sharp; if (!--count) break;
+      case   8: memory[octave][F] = double_sharp; if (!--count) break;
 
-      case   7: memory[octave][B] = sharp;        if (not --count) break;
-      case   6: memory[octave][E] = sharp;        if (not --count) break;
-      case   5: memory[octave][A] = sharp;        if (not --count) break;
-      case   4: memory[octave][D] = sharp;        if (not --count) break;
-      case   3: memory[octave][G] = sharp;        if (not --count) break;
-      case   2: memory[octave][C] = sharp;        if (not --count) break;
-      case   1: memory[octave][F] = sharp;        if (not --count) break;
+      case   7: memory[octave][B] = sharp;        if (!--count) break;
+      case   6: memory[octave][E] = sharp;        if (!--count) break;
+      case   5: memory[octave][A] = sharp;        if (!--count) break;
+      case   4: memory[octave][D] = sharp;        if (!--count) break;
+      case   3: memory[octave][G] = sharp;        if (!--count) break;
+      case   2: memory[octave][C] = sharp;        if (!--count) break;
+      case   1: memory[octave][F] = sharp;        if (!--count) break;
 
       case   0: break;
 
-      case -14: memory[octave][F] = double_flat; if (not --count) break;
-      case -13: memory[octave][C] = double_flat; if (not --count) break;
-      case -12: memory[octave][G] = double_flat; if (not --count) break;
-      case -11: memory[octave][D] = double_flat; if (not --count) break;
-      case -10: memory[octave][A] = double_flat; if (not --count) break;
-      case  -9: memory[octave][E] = double_flat; if (not --count) break;
-      case  -8: memory[octave][B] = double_flat; if (not --count) break;
+      case -14: memory[octave][F] = double_flat; if (!--count) break;
+      case -13: memory[octave][C] = double_flat; if (!--count) break;
+      case -12: memory[octave][G] = double_flat; if (!--count) break;
+      case -11: memory[octave][D] = double_flat; if (!--count) break;
+      case -10: memory[octave][A] = double_flat; if (!--count) break;
+      case  -9: memory[octave][E] = double_flat; if (!--count) break;
+      case  -8: memory[octave][B] = double_flat; if (!--count) break;
 
-      case  -7: memory[octave][F] = flat;        if (not --count) break;
-      case  -6: memory[octave][C] = flat;        if (not --count) break;
-      case  -5: memory[octave][G] = flat;        if (not --count) break;
-      case  -4: memory[octave][D] = flat;        if (not --count) break;
-      case  -3: memory[octave][A] = flat;        if (not --count) break;
-      case  -2: memory[octave][E] = flat;        if (not --count) break;
-      case  -1: memory[octave][B] = flat;        if (not --count) break;
+      case  -7: memory[octave][F] = flat;        if (!--count) break;
+      case  -6: memory[octave][C] = flat;        if (!--count) break;
+      case  -5: memory[octave][G] = flat;        if (!--count) break;
+      case  -4: memory[octave][D] = flat;        if (!--count) break;
+      case  -3: memory[octave][A] = flat;        if (!--count) break;
+      case  -2: memory[octave][E] = flat;        if (!--count) break;
+      case  -1: memory[octave][B] = flat;        if (!--count) break;
       }
     }
   }

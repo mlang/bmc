@@ -77,25 +77,25 @@ uint8_t find(char32_t c,
 	     std::pair<char32_t, uint8_t> const (&mapping)[N],
 	     std::pair<char32_t, char32_t> const (&aliases)[M])
 {
-  if (c >= 0X2800 and c <= 0X28FF) return c & 0XFF;
+  if (c >= 0X2800 && c <= 0X28FF) return c & 0XFF;
   auto i = std::lower_bound(std::begin(mapping), std::end(mapping),
 			    std::make_pair(c, 0),
 			    [](std::pair<char32_t, uint8_t> const &lhs,
 			       std::pair<char32_t, uint8_t> const &rhs)
 			    { return lhs.first < rhs.first; });
-  if (i == std::end(mapping) or i->first != c) {
+  if (i == std::end(mapping) || i->first != c) {
     auto j = std::lower_bound(std::begin(aliases), std::end(aliases),
 			      std::make_pair(c, 0),
 			      [](std::pair<char32_t, char32_t> const &lhs,
 				 std::pair<char32_t, char32_t> const &rhs)
 			      { return lhs.first < rhs.first; });
-    if (j != std::end(aliases) and j->first == c) {
+    if (j != std::end(aliases) && j->first == c) {
       i = std::lower_bound(std::begin(mapping), std::end(mapping),
 			   std::make_pair(j->second, 0),
 			   [](std::pair<char32_t, uint8_t> const &lhs,
 			      std::pair<char32_t, uint8_t> const &rhs)
 			   { return lhs.first < rhs.first; });
-      if (i != std::end(mapping) and i->first != j->second)
+      if (i != std::end(mapping) && i->first != j->second)
 	i = std::end(mapping);
     }
   }
@@ -116,7 +116,7 @@ std::string default_table = "brf";
 
 void set_default_table_from_locale () {
   std::string locale{setlocale(LC_CTYPE, NULL)};
-  if (locale == "C" or locale == "POSIX") {
+  if (locale == "C" || locale == "POSIX") {
     default_table = "brf";
   } else {
     auto pos = locale.find(".");

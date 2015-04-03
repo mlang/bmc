@@ -77,14 +77,14 @@ namespace bmc {
       rational
       duration(partial_voice const& partial_voice)
       {
-        // BOOST_ASSERT(not partial_voice.empty());
+        // BOOST_ASSERT(!partial_voice.empty());
         return boost::accumulate(partial_voice, rational());
       }
       inline
       rational
       duration(unfolded::partial_voice const& partial_voice)
       {
-        // BOOST_ASSERT(not partial_voice.empty());
+        // BOOST_ASSERT(!partial_voice.empty());
         return boost::accumulate(partial_voice, rational());
       }
 
@@ -92,14 +92,14 @@ namespace bmc {
       rational
       duration(partial_measure const& partial_measure)
       {
-        BOOST_ASSERT(not partial_measure.empty());
+        BOOST_ASSERT(!partial_measure.empty());
         return duration(partial_measure.front());
       }
       inline
       rational
       duration(unfolded::partial_measure const& partial_measure)
       {
-        BOOST_ASSERT(not partial_measure.empty());
+        BOOST_ASSERT(!partial_measure.empty());
         return duration(partial_measure.front());
       }
     }
@@ -147,14 +147,14 @@ namespace bmc {
       rational
       duration(measure const& measure)
       {
-        BOOST_ASSERT(not measure.voices.empty());
+        BOOST_ASSERT(!measure.voices.empty());
         return duration(measure.voices.front());
       }
       inline
       rational
       duration(unfolded::measure const& measure)
       {
-        BOOST_ASSERT(not measure.voices.empty());
+        BOOST_ASSERT(!measure.voices.empty());
         return duration(measure.voices.front());
       }
 

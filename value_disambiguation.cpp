@@ -20,7 +20,7 @@ rational const &
 value_proxy::undotted_duration() const
 {
   BOOST_ASSERT(category==large_value || category==small_value);
-  BOOST_ASSERT(value_type >= 0 and value_type < 4);
+  BOOST_ASSERT(value_type >= 0 && value_type < 4);
   return undotted[category | value_type];
 }
 
@@ -83,7 +83,7 @@ namespace {
 struct maybe_whole_measure_rest : boost::static_visitor<bool>
 {
   result_type operator()(ast::rest const &rest) const
-  { return rest.ambiguous_value == ast::whole_or_16th and not rest.dots; }
+  { return rest.ambiguous_value == ast::whole_or_16th && !rest.dots; }
   template<typename T> result_type operator()(T const &) const { return false; }
 };
 
@@ -121,9 +121,7 @@ void process_tuplet_info( tuplet_info &tuplet
     }
   }
 
-  if (not tuplet.empty() and
-      not tuplet.back().ttl and
-      not tuplet.back().doubled) {
+  if (!tuplet.empty() && !tuplet.back().ttl && !tuplet.back().doubled) {
     tuplet.pop_back();
   }
 }
@@ -161,12 +159,12 @@ tuplet_end( ast::partial_voice::iterator begin
     if (apply_visitor(ast::is_simile(), *begin)) break;
 
     if (is_tuplet_begin(begin, number, simple, doubled)) {
-      if (in_simple and simple) break;
+      if (in_simple && simple) break;
 
       // This check prevents same-number tuplets to be nested.
       // This is a questionable limitation but helpful to cut on possible
       // interpretations.
-      if (not in_simple and in_number == number) break;
+      if (!in_simple && in_number == number) break;
     }
     ++begin;
   }
@@ -289,11 +287,11 @@ notegroup_end( ast::partial_voice::iterator const &begin
   if (apply_visitor(ast::is_rhythmic(), *begin)) {
     if (apply_visitor(ast::get_ambiguous_value(), *begin) != ast::eighth_or_128th) {
       auto iter = std::next(begin);
-      while (iter != end and
-             apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th and
-             not apply_visitor(ast::is_rest(), *iter) and
-             not apply_visitor(ast::get_augmentation_dots(), *iter) and
-             not apply_visitor(ast::is_hyphen(), *iter))
+      while (iter != end &&
+             apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th &&
+             !apply_visitor(ast::is_rest(), *iter) &&
+             !apply_visitor(ast::get_augmentation_dots(), *iter) &&
+             !apply_visitor(ast::is_hyphen(), *iter))
 	std::advance(iter, 1);
       // A note group is only valid if it consists of at least 3 rhythmic signs
       if (std::distance(begin, iter) > 2) return iter;
@@ -336,11 +334,11 @@ same_category_end( ast::partial_voice::iterator const &begin
 {
   if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
     ast::partial_voice::iterator iter(begin + 1);
-    if (iter != end and apply_visitor(ast::is_rhythmic(), *iter)) {
+    if (iter != end && apply_visitor(ast::is_rhythmic(), *iter)) {
       for (ast::value
            initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
-           iter != end and
-           apply_visitor(ast::is_rhythmic(), *iter) and
+           iter != end &&
+           apply_visitor(ast::is_rhythmic(), *iter) &&
            apply_visitor(ast::get_ambiguous_value(), *iter) == initial;
            ++iter);
       return iter;
@@ -411,16 +409,15 @@ public:
               ) const
   {
     if (iterator == end) {
-      if (not (last_partial_measure and state.exact_match_found
-               and
-               static_cast<bool>(max_duration))) {
+      if (!(last_partial_measure && state.exact_match_found &&
+            static_cast<bool>(max_duration))) {
         yield(stack_begin, stack_end, position - start_position, tuplet);
       }
     } else {
       unsigned tuplet_number = 0;
       bool simple_triplet, tuplet_doubled;
       ast::partial_voice::iterator tail;
-      if (on_beat(position) and
+      if (on_beat(position) &&
           (tail = notegroup_end(iterator, end)) > iterator) {
         {
           notegroup const group(iterator, tail, stack_end, tuplet);
@@ -465,8 +462,8 @@ public:
         tuplet_info t(tuplet);
         unsigned parent_ttl = t.empty()? 0: t.back().ttl;
 
-        if (not t.empty() and t.back().doubled and
-            not tuplet_doubled and t.back().number == tuplet_number) {
+        if (!t.empty() && t.back().doubled &&
+            !tuplet_doubled && t.back().number == tuplet_number) {
           // explicitly terminated doubled tuplet
           t.back().doubled = false;
           t.back().first_tuplet = true;
@@ -474,13 +471,13 @@ public:
           for (; t.back().ttl; --t.back().ttl)
             recurse(tail, end, stack_begin, stack_end, max_duration, position, t);
         } else {
-          if (t.empty() or t.back().ttl > 0) t.emplace_back();
+          if (t.empty() || t.back().ttl > 0) t.emplace_back();
 
           t.back().number = tuplet_number;
           t.back().first_tuplet = true;
           unsigned ttl = count_rhythmic(tail, tuplet_end(tail, end, tuplet_number, simple_triplet));
           // A nested tuplet can not be longer then the tuplet it is contained in.
-          if (parent_ttl and parent_ttl < ttl) ttl = parent_ttl;
+          if (parent_ttl && parent_ttl < ttl) ttl = parent_ttl;
           // Try all possible note counts and ratios.
           if (tuplet_doubled) {
             t.back().doubled = true;
@@ -503,8 +500,8 @@ public:
         large_and_small( iterator, end, stack_begin, stack_end
                        , max_duration, position, tuplet);
 
-        if (stack_begin == stack_end and position == 0 and
-            state.time_signature != 1 and
+        if (stack_begin == stack_end && position == 0 &&
+            state.time_signature != 1 &&
             apply_visitor(maybe_whole_measure_rest(), *iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
           recurse( std::next(iterator), end, stack_begin, std::next(stack_end)
@@ -589,13 +586,13 @@ public:
     process_tuplet_info(tuplet, factor, tuplet_begin, tuplet_end, dyadic_next_position);
     std::unique_ptr<value_proxy[]> new_stack {};
     std::future<void> future;
-    if (not is_grace(value)) {
+    if (!is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (fast_leq(*new(proxy)value_proxy(value, large_value, factor), max_duration)) {
         rational const next_position(position + *proxy);
         // If this is a tuplet end, only accept it if its position makes sense.
-        if (not dyadic_next_position or is_dyadic(next_position)) {
-          if (std::distance(rest, end) >= 10 and state.threads < max_threads) {
+        if (!dyadic_next_position || is_dyadic(next_position)) {
+          if (std::distance(rest, end) >= 10 && state.threads < max_threads) {
             state.threads++;
             new_stack.reset(
               new value_proxy[std::distance(stack_begin, proxy + 1) +
@@ -622,7 +619,7 @@ public:
       }
       if (fast_leq(*new(proxy)value_proxy(value, small_value, factor), max_duration)) {
         rational const next_position(position + *proxy);
-        if (not dyadic_next_position or is_dyadic(next_position)) {
+        if (!dyadic_next_position || is_dyadic(next_position)) {
           proxy->set_tuplet_info(tuplet_begin, tuplet_end);
           interpreter.recurse( rest, end, stack_begin, next
                              , max_duration - *proxy, next_position, tuplet
@@ -636,10 +633,10 @@ public:
   }
   result_type operator()(ast::simile &simile) const
   {
-    if (not position) { // full measure simile
+    if (!position) { // full measure simile
       BOOST_ASSERT(static_cast<bool>(interpreter.last_measure_duration()));
       if (*new(proxy)value_proxy
-          (simile, interpreter.last_measure_duration()) > rational(0) and
+          (simile, interpreter.last_measure_duration()) > rational(0) &&
           fast_leq(static_cast<rational>(*proxy) / rational::int_type(simile.count), max_duration)) {
         rational const duration(static_cast<rational>(*proxy) / rational::int_type(simile.count));
         interpreter.recurse( rest, end, stack_begin, proxy + 1
@@ -663,7 +660,7 @@ public:
         };
         if (fast_leq(*new(proxy)value_proxy(simile, repeated_duration), max_duration)) {
           tuplet_info tuplet{tuplet_ref};
-          if (not tuplet.empty() and tuplet.back().doubled) {
+          if (!tuplet.empty() && tuplet.back().doubled) {
             BOOST_ASSERT(tuplet.back().ttl == 0);
             tuplet.back().first_tuplet = true;
             tuplet.back().ttl = count_rhythmic(rest, tuplet_end(rest, end, tuplet.back().number, true));
@@ -698,7 +695,7 @@ partial_voice_interpreter<Function>::large_and_small
 {
   // Skip this sign if it does not result in at least one possible proxy
   auto rest = iterator; ++rest;
-  if (not boost::apply_visitor(large_and_small_visitor<partial_voice_interpreter<Function>>
+  if (!boost::apply_visitor(large_and_small_visitor<partial_voice_interpreter<Function>>
                         { rest, end, stack_begin, stack_end
                         , max_duration, position, state, tuplet, max_threads
                         , *this
@@ -933,7 +930,7 @@ interpretations( std::vector<ast::voice>::iterator const &begin
     , length, zero, state
     , [&](proxied_voice &&p, rational const &position)
       {
-        if ((not state.exact_match_found) or (position == length)) {
+        if (!state.exact_match_found || position == length) {
           proxied_measure candidate { };
           candidate.push_back(std::make_shared<proxied_voice>(std::move(p)));
           interpretations(next, end, dt_begin, dt_end, std::move(candidate), position, state, yield);
@@ -948,7 +945,7 @@ interpretations( std::vector<ast::voice>::iterator const &begin
 rational const &
 proxied_measure::harmonic_mean()
 {
-  if (not mean) {
+  if (!mean) {
     // Avoid expensive (and unneeded) gcd in rational::operator+=
     rational::int_type n=0, d=1, count=0;
     for (const_reference voice: *this)
@@ -984,7 +981,7 @@ Tuple best_harmonic_mean(Iterator first, Iterator last, unsigned int threads)
 
   if (threads > 1) {
     auto const size = std::distance(first, last);
-    while (threads > 1 and std::size_t(size / threads) < MinItemsPerThread) threads--;
+    while (threads > 1 && std::size_t(size / threads) < MinItemsPerThread) threads--;
 
     auto const chunk_size = size / threads--;
     while (threads--) {
@@ -1056,10 +1053,10 @@ measure_interpretations::measure_interpretations
   , time_signature, *this
   , [&](proxied_measure &&p, rational const &length)
     {
-      if (not exact_match_found or length == time_signature) {
+      if (!exact_match_found || length == time_signature) {
         std::lock_guard<std::mutex> lock { mutex };
 
-        if (not exact_match_found and length == time_signature) {
+        if (!exact_match_found && length == time_signature) {
           // We found the first intepretation matching the time signature.
           // So this is not an anacrusis.  Drop accumulated (incomplete)
           // interpretations and continue more efficiently.
@@ -1072,12 +1069,12 @@ measure_interpretations::measure_interpretations
   );
 
   // Drop interpretations with a significant lower harmonic mean.
-  if (exact_match_found and size() > 1) {
+  if (exact_match_found && size() > 1) {
     auto best = best_harmonic_mean<5000>(begin(), end(), 4);
     if (std::get<1>(best)) {
       auto const margin = std::get<0>(best)->harmonic_mean() * rational{3, 4};
       erase(partition(begin(), end(), [&margin](reference measure) {
-        return not fast_leq(measure.harmonic_mean(), margin);
+        return !fast_leq(measure.harmonic_mean(), margin);
       }), end());
     }
   }

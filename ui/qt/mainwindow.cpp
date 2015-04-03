@@ -458,7 +458,7 @@ void BrailleMusicEditor::fileCompile() {
   error_handler_type errors(begin, end);
   parser_type parser(errors);
   boost::spirit::traits::attribute_of<parser_type>::type score;
-  if (parse(begin, end, parser, score) and begin == end) {
+  if (parse(begin, end, parser, score) && begin == end) {
     ::bmc::braille::compiler<error_handler_type> compile(errors);
 
     if (compile(score)) {
@@ -483,7 +483,7 @@ void BrailleMusicEditor::fileCompile() {
 }
 
 void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
-  if (scoreAvailable and not tmpdir) {
+  if (scoreAvailable && !tmpdir) {
     BOOST_ASSERT(this->score);
     std::stringstream ss;
     ::bmc::lilypond::generator make_lilypond(ss, true, true, true);
@@ -558,7 +558,7 @@ void BrailleMusicEditor::goToObject(int id) {
     }
   } find{id};
 
-  if (score and not find.traverse_score(*score)) {
+  if (score && !find.traverse_score(*score)) {
     goTo(find.line, find.column);
   }
 }

@@ -22,9 +22,8 @@ value_disambiguator::operator()(ast::measure& measure)
   value_disambiguation::measure_interpretations
   interpretations(measure, time_signature, prev_duration, prev_doubled_tuplets);
 
-  if (not interpretations.contains_complete_measure() and
-      not interpretations.empty()) {
-    if (not anacrusis) {
+  if (!interpretations.contains_complete_measure() && !interpretations.empty()) {
+    if (!anacrusis) {
       anacrusis = interpretations;
       prev_duration = 0;
       prev_doubled_tuplets.clear();
@@ -71,14 +70,14 @@ value_disambiguator::operator()(ast::measure& measure)
 
 bool
 value_disambiguator::end_of_staff() const {
-  if (anacrusis and anacrusis->size() > 1) {
+  if (anacrusis && anacrusis->size() > 1) {
     std::wstringstream msg;
     msg << "Unterminated anacrusis (";
     msg << anacrusis->size() << ")";
     report_error(anacrusis->get_measure_id(), msg.str());
     return false;
   }
-  if (anacrusis and not anacrusis->empty()) anacrusis->front().accept();
+  if (anacrusis && !anacrusis->empty()) anacrusis->front().accept();
   return true;
 }
 

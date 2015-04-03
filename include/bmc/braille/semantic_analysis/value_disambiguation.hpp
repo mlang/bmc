@@ -255,7 +255,7 @@ using proxied_partial_measure = std::vector<proxied_partial_voice::shared_ptr>;
 inline rational duration(proxied_partial_measure const &voices)
 {
   rational value;
-  if (not voices.empty()) {
+  if (!voices.empty()) {
     value = duration(voices.front());
 #if !defined(NDEBUG)
     for (auto voice = std::next(voices.begin()); voice != voices.end(); ++voice)
@@ -329,7 +329,7 @@ public:
 inline rational duration(proxied_measure const &voices)
 {
   rational value;
-  if (not voices.empty()) {
+  if (!voices.empty()) {
     value = duration(voices.front());
 #if !defined(NDEBUG)
     for (proxied_measure::const_iterator
@@ -388,8 +388,8 @@ public:
 
   bool completes_uniquely(measure_interpretations const &other) const
   {
-    BOOST_ASSERT(not this->exact_match_found);
-    BOOST_ASSERT(not other.exact_match_found);
+    BOOST_ASSERT(!this->exact_match_found);
+    BOOST_ASSERT(!other.exact_match_found);
     BOOST_ASSERT(this->time_signature == other.time_signature);
     std::size_t matches = 0;
     for (const_reference lhs: *this)

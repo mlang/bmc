@@ -37,13 +37,13 @@ int bmc2ly( std::wistream &wistream
 
   bool const success = parse(iter, end, parser, score);
 
-  if (success and iter == end) {
+  if (success && iter == end) {
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
       if (lilypond) {
         ::bmc::lilypond::generator generate(std::cout, true, true, include_locations);
-        if (not instrument.empty()) generate.instrument(instrument);
+        if (!instrument.empty()) generate.instrument(instrument);
         if (no_tagline) generate.remove_tagline();
         generate(score);
       } else if (musicxml) {

@@ -104,7 +104,7 @@ namespace bmc {
         , expected(distinction) {}
 
         result_type operator() (value_distinction const& distinction) const
-        { return not check? true: distinction.value == expected; }
+        { return !check? true: distinction.value == expected; }
 
         template <class Sign>
         result_type operator()(Sign const &) const

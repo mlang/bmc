@@ -67,11 +67,11 @@ namespace bmc { namespace braille {
       iterator_type line_start = first;
       while (i != err_pos) {
         bool eol = false;
-        if (i != err_pos and *i == '\r') {
+        if (i != err_pos && *i == '\r') {
           eol = true;
           line_start = ++i;
         }
-        if (i != err_pos and *i == '\n') {
+        if (i != err_pos && *i == '\n') {
           eol = true;
           line_start = ++i;
         }
@@ -83,7 +83,7 @@ namespace bmc { namespace braille {
     string_type get_line(iterator_type line_start) const
     {
       iterator_type line_end = line_start;
-      for (; line_end != last and (*line_end != '\r' and *line_end != '\n');
+      for (; line_end != last && (*line_end != '\r' && *line_end != '\n');
            ++line_end);
       return string_type(line_start, line_end);
     }

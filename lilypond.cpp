@@ -94,7 +94,7 @@ generator::operator() ( braille::ast::unfolded::part const &part
   indent = "    ";
   if (keyboard) {
     os << indent << "\\new PianoStaff ";
-    if (not default_instrument.empty())
+    if (!default_instrument.empty())
       os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
     os << "<<" << std::endl;
     indent += "  ";
@@ -107,7 +107,7 @@ generator::operator() ( braille::ast::unfolded::part const &part
       case 1: os << "= \"LH\" "; break;
       }
     }
-    if (not keyboard and not default_instrument.empty())
+    if (!keyboard && !default_instrument.empty())
       os << "\\with {midiInstrument = #\"" << default_instrument << "\"} ";
     os << "{" << std::endl;
 
@@ -124,14 +124,14 @@ generator::operator() ( braille::ast::unfolded::part const &part
       os << indent << "  "; ly_key(score.key_sig); os << std::endl;
     }
 
-    if (not score.time_sigs.empty())
+    if (!score.time_sigs.empty())
       os << indent << "  " << "\\time" << " " << score.time_sigs.front() << std::endl;
 
     unsigned int measure_number = 1;
-    if (not part[staff_index].empty()) {
+    if (!part[staff_index].empty()) {
       rational first_measure_duration(duration(part[staff_index].front()));
-      if ((score.time_sigs.empty() and first_measure_duration != 1) or
-          (not score.time_sigs.empty() and score.time_sigs.front() != first_measure_duration)) {
+      if ((score.time_sigs.empty() && first_measure_duration != 1) ||
+          (!score.time_sigs.empty() && score.time_sigs.front() != first_measure_duration)) {
         os << indent << "  "; ly_partial(first_measure_duration); os << std::endl;
         measure_number = 0; // count from zero if we are dealing with upbeat
       }
@@ -160,7 +160,7 @@ generator::operator() ( braille::ast::unfolded::part const &part
         braille::ast::unfolded::staff_element const&
         next_measure = part[staff_index][measure_index + 1];
         repeat_info next_repeat(next_measure);
-        if (this_repeat.end and next_repeat.begin) {
+        if (this_repeat.end && next_repeat.begin) {
           os << " " << "\\bar \":|:\"" << " ";
           barcheck = false;
         } else if (next_repeat.begin) {
@@ -168,7 +168,7 @@ generator::operator() ( braille::ast::unfolded::part const &part
           barcheck = false;
         }
       }
-      if (barcheck and this_repeat.end) {
+      if (barcheck && this_repeat.end) {
         os << " " << "\\bar \":|\"" << " ";
         barcheck = false;
       }
@@ -326,7 +326,7 @@ generator::operator() (braille::ast::note const &note)
   ly_pitch_step(note.step);
   ly_accidental(note.alter);
   ly_octave(note.octave);
-  if (grace and note.type == zero) {
+  if (grace && note.type == zero) {
     switch (note.ambiguous_value) {
     case braille::ast::whole_or_16th: os << "16"; break;
     case braille::ast::half_or_32th: os << "32"; break;
@@ -482,7 +482,7 @@ generator::ly_key(key_signature const &key) const
 void
 generator::ly_rhythm(braille::ast::rhythmic_data const &rhythm)
 {
-  if (rhythm.type != last_type or rhythm.dots != last_dots) {
+  if (rhythm.type != last_type || rhythm.dots != last_dots) {
     os << rhythm.type.denominator();
     if (rhythm.type.numerator() != 1) os << '*' << rhythm.type.numerator();
     std::fill_n(std::ostream_iterator<char>(os), rhythm.dots, '.');
@@ -572,8 +572,8 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
   std::size_t i;
   for (i = index; i < staff.size(); ++i) {
     // If this is a time sig followed by a alternative begin, make the time sig part of the alternative
-    if (i+1 < staff.size() and
-        not apply_visitor(is_measure(), staff[i]) and
+    if (i+1 < staff.size() &&
+        !apply_visitor(is_measure(), staff[i]) &&
         apply_visitor(is_alternative(), staff[i+1])) {
       alternatives.emplace_back();
       indices = &alternatives.back();
@@ -587,7 +587,7 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
       indices = &alternatives.back();
     }
     // Is this the start of *another* repeated section?
-    if (i > index and apply_visitor(has_barline(braille::ast::begin_repeat), staff[i])) {
+    if (i > index && apply_visitor(has_barline(braille::ast::begin_repeat), staff[i])) {
       break;
     }
     if (indices) indices->push_back(i);
@@ -596,7 +596,7 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
     }
   }
 
-  if (not alternatives.empty()) {
+  if (!alternatives.empty()) {
     // We found a section of repeated music with alternative endings.
     os << indent << "  " << "\\repeat volta " << alternatives.size() << " {" << std::endl;
     for (std::size_t measure_index = index;
@@ -612,7 +612,7 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
         braille::ast::unfolded::staff_element const&
         next_measure = staff[measure_index + 1];
         repeat_info next_repeat(next_measure);
-        if (this_repeat.end and next_repeat.begin) {
+        if (this_repeat.end && next_repeat.begin) {
           os << " " << "\\bar \":|:\"" << " ";
           barcheck = false;
         } else if (next_repeat.begin) {
@@ -620,7 +620,7 @@ generator::process_repeat_with_alternatives( braille::ast::unfolded::staff const
           barcheck = false;
         }
       }
-      if (barcheck and this_repeat.end) {
+      if (barcheck && this_repeat.end) {
         os << " " << "\\bar \":|\"" << " ";
         barcheck = false;
       }
