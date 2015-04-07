@@ -493,9 +493,8 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     lilypond.setWorkingDirectory(tmpdir->path());
     QSettings settings;
     lilypond.start(settings.value("lilypond/executable").toString(),
-                   QStringList() << "-o" << "out" << "-dbackend=svg"
-                                             << "-");
-    if (not lilypond.waitForStarted()) {
+                   QStringList() << "-o" << "out" << "-dbackend=svg" << "-");
+    if (!lilypond.waitForStarted()) {
       fail.play();
       delete tmpdir;
       tmpdir = nullptr;
@@ -509,27 +508,31 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
 
 void BrailleMusicEditor::lilypondFinished(int exitCode,
                                           QProcess::ExitStatus exitStatus) {
-  QDir dir(tmpdir->path());
-  dir.setNameFilters(QStringList() << "*.svg");
+  if (exitStatus == QProcess::NormalExit) {
+    QDir dir(tmpdir->path());
+    dir.setNameFilters(QStringList() << "*.svg");
 
-  QStringList svgFiles;
-  for (auto &&path: dir.entryList()) {
-    QFile svgFile{dir.absoluteFilePath(path)};
-    if (svgFile.exists()) svgFiles << svgFile.fileName();
+    QStringList svgFiles;
+    for (auto &&path: dir.entryList()) {
+      QFile svgFile{dir.absoluteFilePath(path)};
+      if (svgFile.exists()) svgFiles << svgFile.fileName();
+    }
+
+    auto widget = new LilyPondSvgContainer{svgFiles, lilypondCode};
+    connect(widget, SIGNAL(clicked(int)), this, SLOT(goToObject(int)));
+    svgScrollArea->setWidget(widget);
+    widget->show();
+
+    // scale svg display to match svgScrollarea width
+    auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
+    widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
+    ok.play();
+
+    delete tmpdir;
+    tmpdir = nullptr;
+  } else {
+    lilypondError(QProcess::Crashed);
   }
-
-  auto widget = new LilyPondSvgContainer{svgFiles, lilypondCode};
-  connect(widget, SIGNAL(clicked(int)), this, SLOT(goToObject(int)));
-  svgScrollArea->setWidget(widget);
-  widget->show();
-
-  // scale svg display to match svgScrollarea width
-  auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
-  widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
-  ok.play();
-
-  delete tmpdir;
-  tmpdir = nullptr;
 }
 
 void BrailleMusicEditor::lilypondError(QProcess::ProcessError error) {
