@@ -491,6 +491,7 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
 
     tmpdir = new QTemporaryDir;
     lilypond.setWorkingDirectory(tmpdir->path());
+    lilypond.setProcessChannelMode(QProcess::ForwardedChannels);
     QSettings settings;
     lilypond.start(settings.value("lilypond/executable").toString(),
                    QStringList() << "-o" << "out" << "-dbackend=svg" << "-");
