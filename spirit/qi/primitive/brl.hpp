@@ -45,6 +45,7 @@ namespace bmc { namespace braille {
               ) const
     {
       boost::spirit::qi::skip_over(first, last, skipper);
+      if (first == last) return false;
       if (*first < 0X20) return false;
       unsigned char
       d = get_dots_for_character(*first) & 0X3F;
