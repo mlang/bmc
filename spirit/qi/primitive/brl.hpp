@@ -8,8 +8,7 @@
 #define BRL_HPP
 
 #include <boost/spirit/include/qi_parse.hpp>
-#include <bmc/ttb/ttb.h>
-#include <bmc/ttb/brldots.h>
+#include <bmc/braille/text2braille.hpp>
 
 // definition the place holder
 namespace bmc { namespace braille { BOOST_SPIRIT_TERMINAL_EX(brl) }}
@@ -46,9 +45,10 @@ namespace bmc { namespace braille {
               ) const
     {
       boost::spirit::qi::skip_over(first, last, skipper);
+      if (first == last) return false;
       if (*first < 0X20) return false;
       unsigned char
-      d = convertCharacterToDots(textTable, *first) & ~(BRL_DOT7 | BRL_DOT8);
+      d = get_dots_for_character(*first) & 0X3F;
       if (d == dots) {
         ++first;
         return true;

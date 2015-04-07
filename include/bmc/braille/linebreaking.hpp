@@ -27,7 +27,7 @@ struct glue: public object {
   virtual int width() const = 0;
 };
 
-int constexpr infinity = std::numeric_limits<int>::max() - 1;
+int const infinity = std::numeric_limits<int>::max() - 1;
 
 struct penalty: public object {
   virtual int width() const = 0;

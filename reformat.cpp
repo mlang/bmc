@@ -38,10 +38,10 @@ struct atom: public linebreaking::box {
   bool is_guide() const override { return false; }
 
   bool starts_with_one_of_dots_123() const {
-    if (not content.fragments.empty()) {
+    if (!content.fragments.empty()) {
       auto const &u = content.fragments.front().unicode;
-      if (not u.empty()) {
-        return ((u[0] >> 8) == 0X28) and (u[0] & 7);
+      if (!u.empty()) {
+        return ((u[0] >> 8) == 0X28) && (u[0] & 7);
       }
     }
     return false;
@@ -189,8 +189,10 @@ output::fragment const large_value_sign {U"\u2818\u2823\u2802", "large values"};
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
-  for (auto &&fragment: o.fragments)
-    len += std::u32string{fragment.unicode}.length();
+  for (auto &&fragment: o.fragments) {
+    auto str = std::u32string{fragment.unicode};
+    len += str.length();
+  }
   return len;
 }
 
@@ -218,7 +220,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   bool visit_score(ast::score const &s) {
     std::fill_n(std::back_inserter(result.fragments),
                 std::abs(s.key_sig), s.key_sig < 0? flat_sign: sharp_sign);
-    if (not s.time_sigs.empty()) {
+    if (!s.time_sigs.empty()) {
       result.fragments.push_back(number_sign);
       for (auto digit: digits(s.time_sigs.front().numerator()))
         result.fragments.push_back(upper_digit_sign[digit]);
@@ -282,7 +284,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     add_to_para(new eop{});
 
     auto const breaks = linebreaking::breakpoints(para, {style.columns});
-    BOOST_ASSERT(not breaks.empty());
+    BOOST_ASSERT(!breaks.empty());
     auto i = para.begin();
     for (auto &&j: breaks) {
       while (i < j) {
@@ -362,13 +364,13 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   }
 
   bool between_sign(ast::sign const &, ast::sign const &) {
-    if (not in_notegroup) add_to_para(new newline_opportunity{true});
+    if (!in_notegroup) add_to_para(new newline_opportunity{true});
 
     return true;
   }
 
   bool visit_note(ast::note const &n) {
-    if (n.notegroup_member == ast::notegroup_member_type::begin or
+    if (n.notegroup_member == ast::notegroup_member_type::begin ||
         n.notegroup_member == ast::notegroup_member_type::middle) {
       in_notegroup = true;
     } else { in_notegroup = false; }
@@ -418,7 +420,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
 
   bool visit_rest(ast::rest const &r)
   {
-    if (r.notegroup_member == ast::notegroup_member_type::begin or
+    if (r.notegroup_member == ast::notegroup_member_type::begin ||
         r.notegroup_member == ast::notegroup_member_type::middle) {
       in_notegroup = true;
     } else { in_notegroup = false; }
@@ -492,6 +494,8 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
       break;
     default: BOOST_ASSERT(false);
     }
+
+    return true;
   }
 
   bool visit_barline(ast::barline const &b)
@@ -523,13 +527,13 @@ private:
     if (auto a = dynamic_cast<atom *>(object)) {
       if (a->starts_with_one_of_dots_123()) {
         atom *box = nullptr;
-        if (not para.empty()) {
+        if (!para.empty()) {
           box = dynamic_cast<atom *>(para.back().get());
-          if (not box and dynamic_cast<newline_opportunity *>(para.back().get())) {
+          if (!box && dynamic_cast<newline_opportunity *>(para.back().get())) {
             box = dynamic_cast<atom *>(para[para.size() - 2].get());
           }
         }
-        if (box and box->content.fragments.back().needs_guide_dot)
+        if (box && box->content.fragments.back().needs_guide_dot)
           para.emplace_back(new guide{});
       }
     }

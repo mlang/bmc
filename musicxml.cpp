@@ -4,9 +4,10 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include "bmc/musicxml.hpp"
+#include <bmc/musicxml.hpp>
 #include <xsdcxx-musicxml/musicxml.hpp>
 #include <bmc/braille/ast/visitor.hpp>
+#include <boost/variant/get.hpp>
 
 namespace bmc {
 
@@ -153,8 +154,8 @@ fingering(braille::fingering_list const &fingers) {
 bool is_anacrusis(braille::ast::unfolded::measure const &measure,
                   braille::ast::score const &score) {
   return
-  (not score.time_sigs.empty() and (duration(measure) != score.time_sigs.front())) or
-  (score.time_sigs.empty() and duration(measure) != 1);
+  (!score.time_sigs.empty() && (duration(measure) != score.time_sigs.front())) ||
+  (score.time_sigs.empty() && duration(measure) != 1);
 }
 
 class starts_with_anacrusis_visitor : public boost::static_visitor<bool> {
@@ -167,7 +168,7 @@ public:
   {}
 
   result_type operator()(braille::ast::unfolded::measure const &measure) {
-    result_type result { active and is_anacrusis(measure, brl_score) };
+    result_type result { active && is_anacrusis(measure, brl_score) };
 
     active = false;
 
@@ -182,7 +183,7 @@ public:
 bool starts_with_anacrusis(braille::ast::unfolded::part const &part,
                            braille::ast::score const &score) {
   starts_with_anacrusis_visitor visitor { score };
-  BOOST_ASSERT(not part.empty());
+  BOOST_ASSERT(!part.empty());
   auto staff = part.front();
 
   return std::any_of(staff.begin(), staff.end(), boost::apply_visitor(visitor));
@@ -220,7 +221,7 @@ public:
 
     current_measure = &measures[measure_number - 1];
 
-    if (implicit and measure_number == 1) {
+    if (implicit && measure_number == 1) {
       current_measure->implicit(::musicxml::yes_no::yes);
     }
 
@@ -290,7 +291,7 @@ private:
     xml_note.staff(staff_number);
 
     auto xml_fingers = fingering(note.fingers);
-    if (not xml_fingers.empty()) {
+    if (!xml_fingers.empty()) {
       ::musicxml::technical xml_technical { };
       xml_technical.fingering(xml_fingers);
       ::musicxml::notations xml_notations { };
@@ -395,7 +396,7 @@ private:
       xml_note.staff(staff_number);
 
       auto xml_fingers = fingering(interval.fingers);
-      if (not xml_fingers.empty()) {
+      if (!xml_fingers.empty()) {
         ::musicxml::technical xml_technical { };
         xml_technical.fingering(xml_fingers);
         ::musicxml::notations xml_notations { };
@@ -446,7 +447,7 @@ private:
       xml_note.staff(staff_number);
 
       auto xml_fingers = fingering(interval.fingers);
-      if (not xml_fingers.empty()) {
+      if (!xml_fingers.empty()) {
         ::musicxml::technical xml_technical { };
         xml_technical.fingering(xml_fingers);
         ::musicxml::notations xml_notations { };
@@ -493,7 +494,7 @@ public:
 
     global_attributes.divisions(boost::rational_cast<double>(divisions));
     global_attributes.key().push_back(xml(brl_score.key_sig));
-    if (not brl_score.time_sigs.empty())
+    if (!brl_score.time_sigs.empty())
       global_attributes.time().push_back(xml(brl_score.time_sigs.front()));
 
     unsigned c { 1 };

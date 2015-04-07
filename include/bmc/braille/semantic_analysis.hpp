@@ -57,8 +57,8 @@ public:
 
   result_type operator() (ast::simile const &simile)
   {
-    if (not duration(target)) {
-      if (prev_unfolded_measure and voice_count == 1) {
+    if (!duration(target)) {
+      if (prev_unfolded_measure && voice_count == 1) {
         prev_unfolded_measure->count += simile.count - 1;
         return sign_conversion_result::full_measure_simile;
       } else if (prev_unfolded_measure) {
@@ -194,8 +194,8 @@ public:
 
     for (ast::section &section: part) {
       ast::paragraph &paragraph = section.paragraphs[staff_index];
-      if (not std::all_of( std::begin(paragraph), std::end(paragraph)
-			 , apply_visitor(*this)))
+      if (!std::all_of( std::begin(paragraph), std::end(paragraph)
+	              , apply_visitor(*this)))
 	return false;
     }
 
@@ -258,7 +258,7 @@ public:
   : compiler_pass( [&error_handler](int tag, std::wstring const &what)
                    { error_handler(L"Error", what, error_handler.iters[tag]); }
                  )
-  , error_handler{error_handler}
+  , error_handler(error_handler)
   , calculate_locations(report_error, error_handler)
   , calculate_octaves(report_error)
   , disambiguate_values(report_error)
@@ -269,12 +269,12 @@ public:
 
   result_type operator()(ast::score& score)
   {
-    if (not score.time_sigs.empty()) global_time_signature = score.time_sigs.front();
+    if (!score.time_sigs.empty()) global_time_signature = score.time_sigs.front();
 
     {
       std::vector<std::future<bool>> staves;
       for (ast::part &part: score.parts) {
-        if (not part.empty()) {
+        if (!part.empty()) {
           std::size_t const staff_count{part.front().paragraphs.size()};
           for (std::size_t staff_index = 0; staff_index < staff_count;
                ++staff_index) {
@@ -290,8 +290,8 @@ public:
           }
         }
       }
-      if (not all_of( begin(staves), end(staves)
-                    , mem_fun_ref(&std::future<bool>::get)))
+      if (!all_of( begin(staves), end(staves)
+                 , mem_fun_ref(&std::future<bool>::get)))
         return false;
     }
 
@@ -302,7 +302,7 @@ public:
   {
     for (ast::part const &part: score.parts) {
       score.unfolded_part.emplace_back();
-      if (not unfold(part, score.unfolded_part.back())) return false;
+      if (!unfold(part, score.unfolded_part.back())) return false;
     }
     return true;
   }
@@ -310,7 +310,7 @@ public:
                      , ast::unfolded::part &target
                      )
   {
-    BOOST_ASSERT(not source.empty());
+    BOOST_ASSERT(!source.empty());
     size_t const staves{source.front().paragraphs.size()};
     BOOST_ASSERT(std::all_of(std::next(source.begin()), source.end(),
                              [staves](ast::section const &section) -> bool {
@@ -320,14 +320,14 @@ public:
     for (ast::section const &section: source) {
       int i = 0;
       for (ast::paragraph const &paragraph: section.paragraphs) {
-        if (not unfold(paragraph, target.at(i++))) return false;
+        if (!unfold(paragraph, target.at(i++))) return false;
       }
     }
 
     std::size_t staff_nr = 0;
     for (ast::unfolded::staff &staff: target) {
       doubling_decoder undouble(report_error);
-      if (not std::all_of(staff.begin(), staff.end(), apply_visitor(undouble)))
+      if (!std::all_of(staff.begin(), staff.end(), apply_visitor(undouble)))
         return false;
       staff_nr += 1;
     }

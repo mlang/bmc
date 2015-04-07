@@ -68,11 +68,11 @@ public:
       note.octave = *note.octave_spec;
     } else {
       if (prev) {
-        if ((note.step == C and (prev->step == B or prev->step == A)) or
-            (note.step == D and prev->step == B)) {
+        if ((note.step == C && (prev->step == B || prev->step == A)) ||
+            (note.step == D && prev->step == B)) {
           note.octave = prev->octave + 1;
-        } else if ((note.step == B and (prev->step == C or prev->step == D)) or
-                   (note.step == A and prev->step == C)) {
+        } else if ((note.step == B && (prev->step == C || prev->step == D)) ||
+                   (note.step == A && prev->step == C)) {
           note.octave = prev->octave - 1;
         } else {
           note.octave = prev->octave;
@@ -89,7 +89,7 @@ public:
 
   bool traverse_chord(ast::chord& chord) {
     if (traverse_note(chord.base)) {
-      BOOST_ASSERT(not chord.intervals.empty());
+      BOOST_ASSERT(!chord.intervals.empty());
       int step = chord.base.step;
       unsigned octave = chord.base.octave;
       for (auto& interval: chord.intervals) {
@@ -111,7 +111,7 @@ public:
 
   bool traverse_moving_note(ast::moving_note &chord) {
     if (traverse_note(chord.base)) {
-      BOOST_ASSERT(not chord.intervals.empty());
+      BOOST_ASSERT(!chord.intervals.empty());
       for (auto& interval: chord.intervals) {
         int step = chord.base.step;
         unsigned octave = chord.base.octave;

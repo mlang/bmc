@@ -35,14 +35,12 @@ public:
   , handler(handler)
   {}
 
-  using ast::visitor<location_calculator<ErrorHandler>>::traverse_measure;
-  using ast::visitor<location_calculator<ErrorHandler>>::traverse_key_and_time_signature;
   void operator()(ast::measure& measure) {
-    bool const ok = traverse_measure(measure);
+    bool const ok = this->traverse_measure(measure);
     BOOST_ASSERT(ok);
   }
   void operator()(ast::key_and_time_signature &kt) {
-    bool const ok = traverse_key_and_time_signature(kt);
+    bool const ok = this->traverse_key_and_time_signature(kt);
     BOOST_ASSERT(ok);
   }
 

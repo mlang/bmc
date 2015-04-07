@@ -28,7 +28,7 @@ public:
   bool all_of(Container &c,
               bool (Derived::*fn)(Ref<typename Container::value_type>))
   {
-    for (auto &v: c) if (not (derived().*fn)(v)) return false;
+    for (auto &v: c) if (!(derived().*fn)(v)) return false;
     return true;
   }
 
@@ -39,9 +39,9 @@ public:
   {
     auto lhs = c.begin(), end = c.end();
     if (lhs != end) {
-      if (not (derived().*unary)(*lhs)) return false;
+      if (!(derived().*unary)(*lhs)) return false;
       for (auto rhs = std::next(lhs); rhs != end; lhs = rhs++)
-        if (not ((derived().*binary)(*lhs, *rhs) and (derived().*unary)(*rhs)))
+        if (!((derived().*binary)(*lhs, *rhs) && (derived().*unary)(*rhs)))
           return false;
     }
     return true;
@@ -49,8 +49,8 @@ public:
 
 #define SIMPLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
   bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) and                              \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) and             \
+    return derived().walk_up_from_##NAME(VAR) &&                            \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) && \
            derived().end_of_##NAME(VAR);                                       \
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
@@ -60,20 +60,20 @@ public:
   bool end_of_##NAME(Ref<CLASS>) { return true; }
 #define LOCATABLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
   bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) and                              \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) and             \
+    return derived().walk_up_from_##NAME(VAR) &&                              \
+           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) && \
            derived().end_of_##NAME(VAR);                                       \
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
     return derived().walk_up_from_locatable(                                   \
-               static_cast<Ref<ast::locatable>>(VAR)) and                      \
+               static_cast<Ref<ast::locatable>>(VAR)) &&                      \
            derived().visit_##NAME(VAR);                                        \
   }                                                                            \
   bool visit_##NAME(Ref<CLASS>) { return true; }                               \
   bool end_of_##NAME(Ref<CLASS>) { return true; }
 #define SIMPLE_VARIANT(NAME, CLASS, VAR, VISITOR)                              \
   bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) and                              \
+    return derived().walk_up_from_##NAME(VAR) &&                               \
            apply_visitor(derived().VISITOR, VAR);                              \
   }                                                                            \
   bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
@@ -114,9 +114,9 @@ public:
   }
   bool walk_up_from_note(Ref<ast::note> n) {
     return derived().walk_up_from_rhythmic(
-               static_cast<Ref<ast::rhythmic>>(n)) and
-           derived().walk_up_from_pitched(static_cast<Ref<ast::pitched>>(n)) and
-           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(n)) and
+               static_cast<Ref<ast::rhythmic>>(n)) &&
+           derived().walk_up_from_pitched(static_cast<Ref<ast::pitched>>(n)) &&
+           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(n)) &&
            derived().visit_note(n);
   }
   bool visit_note(Ref<ast::note>) { return true; }
@@ -126,8 +126,8 @@ public:
   }
   bool walk_up_from_rest(Ref<ast::rest> r) {
     return derived().walk_up_from_rhythmic(
-               static_cast<Ref<ast::rhythmic>>(r)) and
-           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(r)) and
+               static_cast<Ref<ast::rhythmic>>(r)) &&
+           derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(r)) &&
            derived().visit_rest(r);
   }
   bool visit_rest(Ref<ast::rest>) { return true; }
@@ -137,25 +137,25 @@ public:
   SIMPLE_BASE(locatable, ast::locatable, l)
 
   bool traverse_chord(Ref<ast::chord> c) {
-    return derived().walk_up_from_chord(c) and traverse_note(c.base) and
-           all_of(c.intervals, &Derived::traverse_interval) and
+    return derived().walk_up_from_chord(c) && traverse_note(c.base) &&
+           all_of(c.intervals, &Derived::traverse_interval) &&
            derived().end_of_chord(c);
   }
   bool walk_up_from_chord(Ref<ast::chord> c) {
-    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(c)) and
+    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(c)) &&
            derived().visit_chord(c);
   }
   bool visit_chord(Ref<ast::chord>) { return true; }
   bool end_of_chord(Ref<ast::chord>) { return true; }
 
   bool traverse_moving_note(Ref<ast::moving_note> mn) {
-    return derived().walk_up_from_moving_note(mn) and
-           derived().traverse_note(mn.base) and
-           all_of(mn.intervals, &Derived::traverse_interval, &Derived::between_moving_note_interval) and
+    return derived().walk_up_from_moving_note(mn) &&
+           derived().traverse_note(mn.base) &&
+           all_of(mn.intervals, &Derived::traverse_interval, &Derived::between_moving_note_interval) &&
            derived().end_of_moving_note(mn);
   }
   bool walk_up_from_moving_note(Ref<ast::moving_note> mn) {
-    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(mn)) and
+    return derived().walk_up_from_locatable(static_cast<Ref<ast::locatable>>(mn)) &&
            derived().visit_moving_note(mn);
   }
   bool visit_moving_note(Ref<ast::moving_note>) { return true; }

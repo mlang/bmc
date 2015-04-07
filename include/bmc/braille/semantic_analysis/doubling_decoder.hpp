@@ -47,13 +47,14 @@ public:
     for (ast::unfolded::voice &voice: measure.voices) {
       std::vector<std::size_t> measure_part_voices;
       for (ast::unfolded::partial_measure &partial_measure: voice) {
-        if (not partial_measure.empty()) {
+        if (!partial_measure.empty()) {
           measure_part_voices.push_back(0);
           for (ast::unfolded::partial_voice &partial_voice: partial_measure) {
             current = &states[full_voice_nr + measure_part_voices.back()];
 
-            if (not std::all_of(partial_voice.begin(), partial_voice.end(),
-                                apply_visitor(*this))) return false;
+            if (!std::all_of(partial_voice.begin(), partial_voice.end(),
+                             apply_visitor(*this)))
+              return false;
 
             measure_part_voices.back() += 1;
           }
@@ -96,7 +97,7 @@ public:
     if (note.slurs.empty()) {
       if (current->slur_doubled) {
         current->slur_notes.push_back(&note);
-      } else if (not current->slur_notes.empty()) {
+      } else if (!current->slur_notes.empty()) {
         current->slur_notes.front()->slur_member = ast::slur_member_type::begin;
         for (auto i = std::next(current->slur_notes.begin());
              i != current->slur_notes.end(); ++i)
@@ -108,7 +109,7 @@ public:
       current->slur_notes.push_back(&note);
       if (current->slur_doubled) current->slur_doubled = false;
     } else if (doubled_slur) {
-      if (not current->slur_notes.empty()) {
+      if (!current->slur_notes.empty()) {
         report_error(note.id, L"Starting doubled slur while already active");
         return false;
       }

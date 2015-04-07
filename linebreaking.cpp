@@ -77,8 +77,8 @@ int compute_sum(linebreaking::objects::const_iterator current,
   for (auto i = current; i != end; ++i) {
     if (auto g = dynamic_cast<linebreaking::glue const *>(i->get())) {
       width += g->width();
-    } else if (dynamic_cast<linebreaking::box const *>(i->get()) or
-	       (i > current and is_forced_break(i))) {
+    } else if (dynamic_cast<linebreaking::box const *>(i->get()) ||
+	       (i > current && is_forced_break(i))) {
       break;
     }
   }
@@ -109,7 +109,7 @@ void main_loop(linebreaking::objects::const_iterator index,
 	  if (p->value() != -linebreaking::infinity)
             demerits += p->value() * p->value();
 	  if (auto pp = dynamic_cast<linebreaking::penalty const *>((*i)->position->get())) {
-	    if (p->width() and pp->width())
+	    if (p->width() && pp->width())
 	      demerits += 10;
 	  }
 	}
@@ -123,7 +123,7 @@ void main_loop(linebreaking::objects::const_iterator index,
 
 	++i;
 
-	if (i != e and (*i)->line >= current_line) break;
+	if (i != e && (*i)->line >= current_line) break;
       }
     }
 
@@ -152,7 +152,7 @@ linebreaking::breakpoints(objects const &objs, std::vector<unsigned> const &line
     if (auto b = dynamic_cast<box const *>(i->get())) {
       sum_width += b->width();
     } else if (auto g = dynamic_cast<glue const *>(i->get())) {
-      if (i != begin and dynamic_cast<box const *>(std::prev(i)->get())) {
+      if (i != begin && dynamic_cast<box const *>(std::prev(i)->get())) {
 	main_loop(i, objs, active_nodes, sum_width, line_lengths);
       }
       sum_width += g->width();
@@ -164,7 +164,7 @@ linebreaking::breakpoints(objects const &objs, std::vector<unsigned> const &line
   }
 
   std::deque<objects::const_iterator> breaks;
-  if (not active_nodes.empty()) {
+  if (!active_nodes.empty()) {
     for (auto ptr = *std::min_element(active_nodes.begin(), active_nodes.end(),
 				      [](std::shared_ptr<breakpoint> const &lhs,
 					 std::shared_ptr<breakpoint> const &rhs)
