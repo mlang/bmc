@@ -449,7 +449,13 @@ bool BrailleMusicEditor::fileSaveAs() {
 }
 
 void BrailleMusicEditor::fileCompile() {
-  std::wstring input{textEdit->toPlainText().toStdWString()};
+  std::wstring input;
+#if !defined(MSVC)
+  input = textEdit->toPlainText().toStdWString();
+#else
+  // MSVC crashes if we attempt to use toStdWString.
+  input = (wchar_t const *)textEdit->toPlainText().utf16();
+#endif
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
