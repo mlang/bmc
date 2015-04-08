@@ -45,7 +45,7 @@ const QString rsrcPath = ":/images/win";
 #endif
 
 BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
-: QMainWindow(parent), ok(this), fail(this), lilypond(this), tmpdir(nullptr) {
+: QMainWindow(parent), ok(this), fail(this), lilypond(this) {
 #ifdef Q_OS_OSX
   setUnifiedTitleAndToolBarOnMac(true);
 #endif
@@ -132,10 +132,11 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
           this, SLOT(clipboardDataChanged()));
 #endif
 
+  connect(&lilypond, SIGNAL(started()), this, SLOT(lilyPondStarted()));
   connect(&lilypond, SIGNAL(finished(int, QProcess::ExitStatus)),
-          this, SLOT(lilypondFinished(int, QProcess::ExitStatus)));
+          this, SLOT(lilyPondFinished(int, QProcess::ExitStatus)));
   connect(&lilypond, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(lilypondError(QProcess::ProcessError)));
+          this, SLOT(lilyPondError(QProcess::ProcessError)));
 
   QString initialFile = ":/examples/bwv988-v01.bmc";
   const QStringList args = QCoreApplication::arguments();
@@ -489,31 +490,28 @@ void BrailleMusicEditor::fileCompile() {
 }
 
 void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
-  if (scoreAvailable && !tmpdir) {
+  if (scoreAvailable) {
     BOOST_ASSERT(this->score);
-    std::stringstream ss;
-    ::bmc::lilypond::generator make_lilypond(ss, true, true, true);
-    make_lilypond(*this->score);
 
-    tmpdir = new QTemporaryDir;
+    tmpdir.reset(new QTemporaryDir);
     lilypond.setWorkingDirectory(tmpdir->path());
     lilypond.setProcessChannelMode(QProcess::ForwardedChannels);
     QSettings settings;
     lilypond.start(settings.value("lilypond/executable", "lilypond").toString(),
                    QStringList() << "-o" << "out" << "-dbackend=svg" << "-");
-    if (!lilypond.waitForStarted()) {
-      fail.play();
-      delete tmpdir;
-      tmpdir = nullptr;
-      return;
-    }
-    lilypond.write(ss.str().c_str());
-    lilypondCode = QString::fromStdString(ss.str());
-    lilypond.closeWriteChannel();
   }
 }
 
-void BrailleMusicEditor::lilypondFinished(int exitCode,
+void BrailleMusicEditor::lilyPondStarted() {
+  std::stringstream ss;
+  ::bmc::lilypond::generator make_lilypond(ss, true, true, true);
+  make_lilypond(*this->score);
+  lilypond.write(ss.str().c_str());
+  lilypondCode = QString::fromStdString(ss.str());
+  lilypond.closeWriteChannel();
+}
+
+void BrailleMusicEditor::lilyPondFinished(int exitCode,
                                           QProcess::ExitStatus exitStatus) {
   if (exitStatus == QProcess::NormalExit) {
     QDir dir(tmpdir->path());
@@ -534,20 +532,15 @@ void BrailleMusicEditor::lilypondFinished(int exitCode,
     auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
     widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
     ok.play();
-
-    delete tmpdir;
-    tmpdir = nullptr;
   } else {
-    lilypondError(QProcess::Crashed);
+    lilyPondError(QProcess::Crashed);
   }
 }
 
-void BrailleMusicEditor::lilypondError(QProcess::ProcessError error) {
+void BrailleMusicEditor::lilyPondError(QProcess::ProcessError error) {
   QMessageBox::critical(this, tr("LilyPond failed"),
                         tr("There was an error during execution of Lilypond."));
 
-  delete tmpdir;
-  tmpdir = nullptr;
 }
 
 void BrailleMusicEditor::goToObject(int id) {

@@ -77,9 +77,11 @@ private slots:
     void about();
     void reportBug();
     void printPreview(QPrinter *);
+
     void runLilyPond(bool);
-    void lilypondFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void lilypondError(QProcess::ProcessError error);
+    void lilyPondStarted();
+    void lilyPondFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void lilyPondError(QProcess::ProcessError error);
 
     void goToObject(int id);
 
@@ -110,7 +112,7 @@ private:
 
     boost::optional<::bmc::braille::ast::score> score;
     QProcess lilypond;
-    QTemporaryDir *tmpdir;
+    QScopedPointer<QTemporaryDir> tmpdir;
     QString lilypondCode;
 
     QSoundEffect ok, fail;
