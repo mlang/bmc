@@ -7,6 +7,7 @@
 #ifndef BMC_MUSIC_HPP
 #define BMC_MUSIC_HPP
 
+#include <cstdint>
 #include <boost/config.hpp>
 #include "bmc/math.hpp"
 
