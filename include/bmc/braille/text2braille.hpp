@@ -1,6 +1,7 @@
 #ifndef BMC_BRAILLE_TEXT2BRAILLE_HPP_INCLUDED
 #define BMC_BRAILLE_TEXT2BRAILLE_HPP_INCLUDED
 
+#include <cstdint>
 #include <string>
 
 namespace bmc { namespace braille {

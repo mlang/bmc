@@ -37,7 +37,7 @@ enum value
 
 struct locatable
 {
-  ssize_t id = -1;
+  int id = -1;
   int line, column;
 };
 
@@ -59,8 +59,8 @@ struct rhythmic_data
 {
   ast::value ambiguous_value = unknown;
   unsigned dots = 0;
-  rational type = {}; // filled in by value_disambiguation.hpp
-  rational factor = rational{1};
+  rational type = rational(); // filled in by value_disambiguation.hpp
+  rational factor = rational(1);
   notegroup_member_type notegroup_member = notegroup_member_type::none; // filled in by value_disambiguation.hpp
   slur_member_type slur_member = slur_member_type::none;
   std::vector<rational> tuplet_begin;

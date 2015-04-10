@@ -290,9 +290,6 @@ public:
 
   proxied_measure() = default;
   proxied_measure(proxied_measure const &) = default;
-  proxied_measure(proxied_measure &&) = default;
-  proxied_measure &operator=(proxied_measure &&) = default;
-  proxied_measure &operator=(proxied_measure const &) = default;
 
   /** @brief Harmonic mean of all contained rhythmic values.
    *
@@ -365,7 +362,7 @@ operator<<(std::basic_ostream<Char> &os, proxied_measure const &measure)
 
 class measure_interpretations: std::vector<proxied_measure>, public global_state
 {
-  ssize_t id;
+  int id;
 
 public:
   typedef std::vector<proxied_measure> base_type;
@@ -398,7 +395,7 @@ public:
     return matches == 1;
   }
 
-  ssize_t get_measure_id() const { return id; }
+  int get_measure_id() const { return id; }
 
   using base_type::begin;
   using base_type::clear;

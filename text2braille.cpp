@@ -9,9 +9,9 @@
 namespace {
 
 #define BEGIN_MAPPING(name) \
-std::pair<char32_t, uint8_t> constexpr name##_mappings[] = {
+std::pair<char32_t, uint8_t> const name##_mappings[] = {
 #define BEGIN_ALIASES(name) \
-std::pair<char32_t, char32_t> constexpr name##_aliases[] = {
+std::pair<char32_t, char32_t> const name##_aliases[] = {
 
 #define BRLTTY_TEXT_TABLE_CHARACTER(unicode, braille, isPrimary, name) \
   { unicode, braille },

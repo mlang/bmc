@@ -68,7 +68,7 @@ public:
       }
     } else {
       ast::unfolded::partial_voice repeated {
-        std::next(target.begin(), ssize_t(simile_start)), target.end()
+        std::next(target.begin(), simile_start), target.end()
       };
       if (duration(repeated) == (simile.duration / rational::int_type(simile.count))) {
         for (unsigned i = 0; i < simile.count; ++i)
