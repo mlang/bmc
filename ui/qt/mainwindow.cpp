@@ -1,6 +1,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QCloseEvent>
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDesktopServices>
@@ -12,19 +13,18 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMenuBar>
-#include <QProcess>
-#include <QTemporaryDir>
-#include <QTextCodec>
-#include <QTextEdit>
-#include <QToolBar>
-#include <QTextCursor>
-#include <QTextDocumentWriter>
-#include <QTextList>
-#include <QSplitter>
-#include <QtDebug>
-#include <QCloseEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QProcess>
+#include <QSplitter>
+#include <QTemporaryDir>
+#include <QTextCodec>
+#include <QTextCursor>
+#include <QTextDocumentWriter>
+#include <QTextEdit>
+#include <QTextList>
+#include <QToolBar>
+#include <QtDebug>
 
 #include "mainwindow.h"
 #include "optionsdialog.h"
