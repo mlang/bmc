@@ -17,7 +17,11 @@ template<typename T> std::vector<T> digits(T n, unsigned base = 10) {
   return {result.rbegin(), result.rend()};
 }
 
-output::fragment const guide_dot{U"\u2804", "guide dot"};
+inline std::u32string utf8toucs4(char const *utf8) {
+  return boost::locale::conv::utf_to_utf<char32_t>(utf8);
+}
+
+output::fragment const guide_dot{utf8toucs4("\u2804"), "guide dot"};
 
 struct atom: public linebreaking::box {
   output content;
@@ -73,119 +77,121 @@ struct eop: public newline_opportunity {
   int value() const override { return -linebreaking::infinity; }
 };
 
-output::fragment const newline{U"\n", "new line character"};
-output::fragment const indent_2{U"  ", "indent of two spaces"};
-output::fragment const dot6_sign {U"\u2820", "added by transcriber"};
-output::fragment const appoggiatura_sign {U"\u2810\u2822", "appoggiatura"};
-output::fragment const mordent_sign {U"\u2810\u2816\u2807", "mordent"};
-output::fragment const staccato_sign {U"\u2826", "staccato"};
-output::fragment const turn_above_or_below_note_sign {U"\u2820\u2832", "turn"};
-output::fragment const number_sign{U"\u283C", "number sign"};
-output::fragment const dash_sign {U"\u2824", "dash"};
+output::fragment const newline{utf8toucs4("\n"), "new line character"};
+output::fragment const indent_2{utf8toucs4("  "), "indent of two spaces"};
+output::fragment const dot6_sign {utf8toucs4("\u2820"), "added by transcriber"};
+output::fragment const appoggiatura_sign {utf8toucs4("\u2810\u2822"), "appoggiatura"};
+output::fragment const mordent_sign {utf8toucs4("\u2810\u2816\u2807"), "mordent"};
+output::fragment const staccato_sign {utf8toucs4("\u2826"), "staccato"};
+output::fragment const turn_above_or_below_note_sign {utf8toucs4("\u2820\u2832"), "turn"};
+output::fragment const number_sign{utf8toucs4("\u283C"), "number sign"};
+output::fragment const dash_sign {utf8toucs4("\u2824"), "dash"};
 output::fragment const rest_sign[] = {
-  {U"\u280D", ""}, {U"\u2825", ""}, {U"\u2827", ""}, {U"\u282D", ""}};
-output::fragment const note_sign[][steps_per_octave] = {{{U"\u283D", ""},
-                                                         {U"\u2835", ""},
-                                                         {U"\u282F", ""},
-                                                         {U"\u283F", ""},
-                                                         {U"\u2837", ""},
-                                                         {U"\u282E", ""},
-                                                         {U"\u283E", ""}},
-                                                        {{U"\u281D", ""},
-                                                         {U"\u2815", ""},
-                                                         {U"\u280F", ""},
-                                                         {U"\u281F", ""},
-                                                         {U"\u2817", ""},
-                                                         {U"\u280E", ""},
-                                                         {U"\u281E", ""}},
-                                                        {{U"\u2839", ""},
-                                                         {U"\u2831", ""},
-                                                         {U"\u282B", ""},
-                                                         {U"\u283B", ""},
-                                                         {U"\u2833", ""},
-                                                         {U"\u282A", ""},
-                                                         {U"\u283A", ""}},
-                                                        {{U"\u2819", ""},
-                                                         {U"\u2811", ""},
-                                                         {U"\u280B", ""},
-                                                         {U"\u281B", ""},
-                                                         {U"\u2813", ""},
-                                                         {U"\u280A", ""},
-                                                         {U"\u281A", ""}}};
+  {utf8toucs4("\u280D"), ""}, {utf8toucs4("\u2825"), ""},
+  {utf8toucs4("\u2827"), ""}, {utf8toucs4("\u282D"), ""}};
+output::fragment const note_sign[][steps_per_octave] = {
+  {{utf8toucs4("\u283D"), ""},
+   {utf8toucs4("\u2835"), ""},
+   {utf8toucs4("\u282F"), ""},
+   {utf8toucs4("\u283F"), ""},
+   {utf8toucs4("\u2837"), ""},
+   {utf8toucs4("\u282E"), ""},
+   {utf8toucs4("\u283E"), ""}},
+  {{utf8toucs4("\u281D"), ""},
+   {utf8toucs4("\u2815"), ""},
+   {utf8toucs4("\u280F"), ""},
+   {utf8toucs4("\u281F"), ""},
+   {utf8toucs4("\u2817"), ""},
+   {utf8toucs4("\u280E"), ""},
+   {utf8toucs4("\u281E"), ""}},
+  {{utf8toucs4("\u2839"), ""},
+   {utf8toucs4("\u2831"), ""},
+   {utf8toucs4("\u282B"), ""},
+   {utf8toucs4("\u283B"), ""},
+   {utf8toucs4("\u2833"), ""},
+   {utf8toucs4("\u282A"), ""},
+   {utf8toucs4("\u283A"), ""}},
+  {{utf8toucs4("\u2819"), ""},
+   {utf8toucs4("\u2811"), ""},
+   {utf8toucs4("\u280B"), ""},
+   {utf8toucs4("\u281B"), ""},
+   {utf8toucs4("\u2813"), ""},
+   {utf8toucs4("\u280A"), ""},
+   {utf8toucs4("\u281A"), ""}}};
 output::fragment octave_sign[] = {
-  {U"\u2808\u2808", "subcontra octave sign"},
-  {U"\u2808", ""},
-  {U"\u2818", ""},
-  {U"\u2838", ""},
-  {U"\u2810", ""},
-  {U"\u2828", ""},
-  {U"\u2830", ""},
-  {U"\u2820", ""},
-  {U"\u2820\u2820", ""},
+  {utf8toucs4("\u2808\u2808"), "subcontra octave sign"},
+  {utf8toucs4("\u2808"), ""},
+  {utf8toucs4("\u2818"), ""},
+  {utf8toucs4("\u2838"), ""},
+  {utf8toucs4("\u2810"), ""},
+  {utf8toucs4("\u2828"), ""},
+  {utf8toucs4("\u2830"), ""},
+  {utf8toucs4("\u2820"), ""},
+  {utf8toucs4("\u2820\u2820"), ""},
 };
-output::fragment const augmentation_dot{U"\u2804", "augmentation dot"};
+output::fragment const augmentation_dot{utf8toucs4("\u2804"), "augmentation dot"};
 output::fragment const finger_sign[] = {
-  {U"\u2801", ""},
-  {U"\u2803", ""},
-  {U"\u2807", ""},
-  {U"\u2802", ""},
-  {U"\u2805", ""},
+  {utf8toucs4("\u2801"), ""},
+  {utf8toucs4("\u2803"), ""},
+  {utf8toucs4("\u2807"), ""},
+  {utf8toucs4("\u2802"), ""},
+  {utf8toucs4("\u2805"), ""},
 };
-output::fragment const partial_voice_separator{U"\u2810\u2802", ""};
-output::fragment const partial_measure_separator{U"\u2828\u2805", ""};
-output::fragment const voice_separator{U"\u2823\u281C", ""};
-output::fragment const moving_note_separator {U"\u2820", "moving note separator"};
-output::fragment const slur_sign{U"\u2809", "slur"};
-output::fragment const tie_sign{U"\u2808\u2809", "tie"};
-output::fragment const simile_sign {U"\u2836", "simile"};
-output::fragment const eom_sign{U"\u2823\u2805", ""};
-output::fragment const hyphen_sign{U"\u2810", "hyphen"};
-output::fragment const begin_repeat_sign { U"\u2823\u2836", "begin repeat" };
-output::fragment const end_repeat_sign { U"\u2823\u2806", "end repeat" };
-output::fragment const end_part_sign {U"\u2823\u2805\u2804", "end part"};
+output::fragment const partial_voice_separator{utf8toucs4("\u2810\u2802"), ""};
+output::fragment const partial_measure_separator{utf8toucs4("\u2828\u2805"), ""};
+output::fragment const voice_separator{utf8toucs4("\u2823\u281C"), ""};
+output::fragment const moving_note_separator {utf8toucs4("\u2820"), "moving note separator"};
+output::fragment const slur_sign{utf8toucs4("\u2809"), "slur"};
+output::fragment const tie_sign{utf8toucs4("\u2808\u2809"), "tie"};
+output::fragment const simile_sign {utf8toucs4("\u2836"), "simile"};
+output::fragment const eom_sign{utf8toucs4("\u2823\u2805"), ""};
+output::fragment const hyphen_sign{utf8toucs4("\u2810"), "hyphen"};
+output::fragment const begin_repeat_sign {utf8toucs4("\u2823\u2836"), "begin repeat" };
+output::fragment const end_repeat_sign {utf8toucs4("\u2823\u2806"), "end repeat" };
+output::fragment const end_part_sign {utf8toucs4("\u2823\u2805\u2804"), "end part"};
 output::fragment const hand_sign[] = {
-  {U"\u2828\u281C", "right hand sign", true},
-  {U"\u2838\u281C", "left hand sign", true}
+  {utf8toucs4("\u2828\u281C"), "right hand sign", true},
+  {utf8toucs4("\u2838\u281C"), "left hand sign", true}
 };
-output::fragment const natural_sign {U"\u2821", "natural"};
-output::fragment const flat_sign {U"\u2823", "flat"};
-output::fragment const sharp_sign {U"\u2829", "sharp"};
+output::fragment const natural_sign {utf8toucs4("\u2821"), "natural"};
+output::fragment const flat_sign {utf8toucs4("\u2823"), "flat"};
+output::fragment const sharp_sign {utf8toucs4("\u2829"), "sharp"};
 output::fragment const upper_digit_sign[10] = {
-  {U"\u281A", "zero" },
-  {U"\u2801", "one"},
-  {U"\u2803", "two"},
-  {U"\u2809", "three"},
-  {U"\u2819", "four"},
-  {U"\u2811", "five"},
-  {U"\u280B", "six"},
-  {U"\u281B", "seven"},
-  {U"\u2813", "eight"},
-  {U"\u280A", "nine"}
+  {utf8toucs4("\u281A"), "zero" },
+  {utf8toucs4("\u2801"), "one"},
+  {utf8toucs4("\u2803"), "two"},
+  {utf8toucs4("\u2809"), "three"},
+  {utf8toucs4("\u2819"), "four"},
+  {utf8toucs4("\u2811"), "five"},
+  {utf8toucs4("\u280B"), "six"},
+  {utf8toucs4("\u281B"), "seven"},
+  {utf8toucs4("\u2813"), "eight"},
+  {utf8toucs4("\u280A"), "nine"}
 };
 output::fragment const lower_digit_sign[10] = {
-  {U"\u2834", "lower zero"},
-  {U"\u2802", "lower one"},
-  {U"\u2806", "lower two"},
-  {U"\u2812", "lower three"},
-  {U"\u2832", "lower four"},
-  {U"\u2822", "lower five"},
-  {U"\u2816", "lower six"},
-  {U"\u2836", "lower seven"},
-  {U"\u2826", "lower eight"},
-  {U"\u2814", "lower nine"}
+  {utf8toucs4("\u2834"), "lower zero"},
+  {utf8toucs4("\u2802"), "lower one"},
+  {utf8toucs4("\u2806"), "lower two"},
+  {utf8toucs4("\u2812"), "lower three"},
+  {utf8toucs4("\u2832"), "lower four"},
+  {utf8toucs4("\u2822"), "lower five"},
+  {utf8toucs4("\u2816"), "lower six"},
+  {utf8toucs4("\u2836"), "lower seven"},
+  {utf8toucs4("\u2826"), "lower eight"},
+  {utf8toucs4("\u2814"), "lower nine"}
 };
 output::fragment const interval_sign[] = {
-  {U"\u280C", "second"},
-  {U"\u282C", "third"},
-  {U"\u283C", "fourth"},
-  {U"\u2814", "fifth"},
-  {U"\u2834", "sixth"},
-  {U"\u2812", "seventh"},
-  {U"\u2824", "octave"}
+  {utf8toucs4("\u280C"), "second"},
+  {utf8toucs4("\u282C"), "third"},
+  {utf8toucs4("\u283C"), "fourth"},
+  {utf8toucs4("\u2814"), "fifth"},
+  {utf8toucs4("\u2834"), "sixth"},
+  {utf8toucs4("\u2812"), "seventh"},
+  {utf8toucs4("\u2824"), "octave"}
 };
-output::fragment const distinct_value_sign {U"\u2823\u2802", "distinct values"};
-output::fragment const small_value_sign {U"\u2820\u2823\u2802", "small values"};
-output::fragment const large_value_sign {U"\u2818\u2823\u2802", "large values"};
+output::fragment const distinct_value_sign {utf8toucs4("\u2823\u2802"), "distinct values"};
+output::fragment const small_value_sign {utf8toucs4("\u2820\u2823\u2802"), "small values"};
+output::fragment const large_value_sign {utf8toucs4("\u2818\u2823\u2802"), "large values"};
 
 std::size_t length(output const &o) {
   std::size_t len = 0;
@@ -289,7 +295,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     for (auto &&j: breaks) {
       while (i < j) {
         if (dynamic_cast<whitespace const *>(i->get())) {
-          result.fragments.push_back(output::fragment{U" ", "space"});
+          result.fragments.push_back(output::fragment{utf8toucs4(" "), "space"});
         } else if (auto a = dynamic_cast<atom const *>(i->get())) {
           for (auto &&f: a->content.fragments) result.fragments.push_back(f);
         }
@@ -306,7 +312,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     }
     while (i < para.end()) {
       if (dynamic_cast<whitespace const *>(i->get())) {
-        result.fragments.push_back(output::fragment{U" ", "space"});
+        result.fragments.push_back(output::fragment{utf8toucs4(" "), "space"});
       } else if (auto a = dynamic_cast<atom const *>(i->get())) {
         for (auto &&f: a->content.fragments) result.fragments.push_back(f);
       }
