@@ -412,14 +412,12 @@ void BrailleMusicEditor::goTo(int line, int column) {
 
 void BrailleMusicEditor::showEmptySVG()
 {
-   QStringList defaultFile;
-    defaultFile << ":/images/empty.svg";
-      auto widget = new LilyPondSvgContainer{defaultFile,""};
-    svgScrollArea->setWidget(widget);
-    widget->show();
+  auto widget = new QSvgWidget{":/images/empty.svg"};
+  svgScrollArea->setWidget(widget);
+  widget->show();
 
-    auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
-    widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
+  auto scalefactor = (double)svgScrollArea->viewport()->width()/widget->width();
+  widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
 }
 
 void BrailleMusicEditor::fileNew() {

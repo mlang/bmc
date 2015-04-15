@@ -3,9 +3,9 @@
   <qresource prefix="/">
     <file>./sounds/ok.wav</file>
     <file>./sounds/fail.wav</file>
+    <file>./images/empty.svg</file>
 
     <file alias="examples/bwv988-v01.bmc">../../input/bwv988-v01.bmc</file>
-    <file alias="images/empty.svg">./images/empty.svg</file>
   </qresource>
 </RCC>
 
