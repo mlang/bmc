@@ -45,7 +45,8 @@ private:
     bool maybeSave();
     void setCurrentFileName(const QString &fileName);
     void goTo(int line, int column);
-
+    void showEmptySVG();
+    
 private slots:
     void fileNew();
     void fileOpen();
