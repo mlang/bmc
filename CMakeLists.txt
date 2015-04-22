@@ -53,7 +53,7 @@ add_library(bmc_parse-static STATIC
            )
 target_link_libraries(bmc_parse-static xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc bmc.cpp)
-target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse)
+target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse-static)
 add_subdirectory(ui)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 #add_executable(bmc main.cpp fluidsynth.cpp)
