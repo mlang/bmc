@@ -4,7 +4,6 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
-#include <bmc/ttb/ttb.h>
 
 #include "config.hpp"
 #include <fstream>
@@ -12,6 +11,7 @@
 #include <boost/locale/encoding_utf.hpp>
 #include "bmc/braille/parsing/grammar/score.hpp"
 #include "bmc/braille/semantic_analysis.hpp"
+#include "bmc/braille/text2braille.hpp"
 #include <boost/program_options.hpp>
 
 #include "bmc/lilypond.hpp"
@@ -35,7 +35,7 @@ std::string hash(std::string const &string)
 cgicc::option table_option(std::string const &id, cgicc::Cgicc const &cgi) {
   cgicc::option o(id);
   o.set("value", id);
-  if (cgi.getElement("table") != cgi.getElements().end() and
+  if (cgi.getElement("table") != cgi.getElements().end() &&
       cgi.getElement("table")->getValue() == id)
     o.set("selected", "selected");
   return o;
@@ -135,7 +135,7 @@ std::ostream &table_select(std::ostream &os, cgicc::Cgicc const &cgi) {
 cgicc::option instrument_option(std::string const &instrument, cgicc::Cgicc const &cgi) {
   cgicc::option o(instrument);
   o.set("value", instrument);
-  if (cgi.getElement("instrument") != cgi.getElements().end() and
+  if (cgi.getElement("instrument") != cgi.getElements().end() &&
       cgi.getElement("instrument")->getValue() == instrument)
     o.set("selected", "selected");
   return o;
@@ -158,7 +158,7 @@ int main()
   cgicc::Cgicc cgi;
 
   if (cgi.getElement("table") != cgi.getElements().end()) {
-    replaceTextTable(TABLES_DIRECTORY, cgi.getElement("table")->getValue().c_str());
+    bmc::braille::default_table = cgi.getElement("table")->getValue();
   }
 
   cgicc::textarea music_input(cgi("music"));
@@ -181,7 +181,7 @@ int main()
 
     bool const success = parse(iter, end, parser, score);
 
-    if (success and iter == end) {
+    if (success && iter == end) {
       ::bmc::braille::compiler<error_handler_type> compile(error_handler);
       if (compile(score)) {
         prefix = hash(braille->getValue());
@@ -192,7 +192,7 @@ int main()
         std::ofstream ly(dir + prefix + ".ly");
         ::bmc::lilypond::generator generate(ly, true, true, false);
         generate.remove_tagline();
-        if (not cgi("instrument").empty())
+        if (!cgi("instrument").empty())
           generate.instrument(cgi("instrument"));
         generate(score);
         ly.close();        
@@ -203,8 +203,7 @@ int main()
       }
     }
   }
-  if (not prefix.empty() and
-      cgi.getElement("type") != cgi.getElements().end()) {
+  if (!prefix.empty() && cgi.getElement("type") != cgi.getElements().end()) {
     if (cgi.getElement("type")->getValue() == "play") {
       std::ifstream midi_file("/tmp/bmc.cgi/" + prefix + ".midi");
       if (midi_file.good()) {
@@ -214,7 +213,7 @@ int main()
       }
     }
   }
-  if (not cgi("hash").empty()) {
+  if (!cgi("hash").empty()) {
     if (cgi.getElement("type")->getValue() == "png") {
       std::ifstream png_file("/tmp/bmc.cgi/" + cgi("hash") + ".png");
       if (png_file.good()) {
@@ -252,7 +251,7 @@ int main()
                             << cgicc::p() << std::endl;
     std::cout << cgicc::p("To allow for several parts in a single score, music always needs to end with a final bar sign.") << std::endl;
   }
-  if (not cgi("music").empty() and prefix.empty()) {
+  if (!cgi("music").empty() && prefix.empty()) {
     std::cout << cgicc::p("Unable to translate braille music, try again.").set("class", "error") << std::endl;
     std::cout << cgicc::p() << "The "
                             << cgicc::a("tutorial").set("href", "https://bmc.branchable.com/tutorial/")
@@ -265,12 +264,12 @@ int main()
             << cgicc::label("Enter braille music: ").set("for", "music");
   std::cout << music_input << cgicc::div();
   std::cout << cgicc::input().set("type", "submit").set("value", "Transcribe to print");
-  if (not prefix.empty()) {
+  if (!prefix.empty()) {
     instrument_select(std::cout, cgi);
     std::cout << cgicc::input().set("type", "submit").set("name", "type").set("value", "play");
   }
   std::cout << cgicc::form();
-  if (not prefix.empty()) {
+  if (!prefix.empty()) {
     std::string alt;
     std::ifstream ly("/tmp/bmc.cgi/" + prefix + ".ly");
     if (ly.good()) {
