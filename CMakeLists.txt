@@ -90,11 +90,11 @@ if(bmc_USE_PYTHON)
   string(REGEX REPLACE "^${PYTHON_PREFIX}/" "" PYTHON_SITE_DIR "${PYTHON_SITE_DIR}")
 
   install(TARGETS pybmc
-    LIBRARY DESTINATION ${PYTHON_SITE_DIR}/bmc
+    LIBRARY DESTINATION lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/dist-packages/bmc
     COMPONENT library
   )
   install(FILES python/bmc/__init__.py python/bmc/sphinx.py
-    DESTINATION ${PYTHON_SITE_DIR}/bmc
+    DESTINATION lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/dist-packages/bmc
     COMPONENT library
   )
 
