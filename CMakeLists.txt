@@ -75,6 +75,29 @@ if(bmc_USE_PYTHON)
     LIBRARY_OUTPUT_DIRECTORY python/bmc
   )
   target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} bmc_parse)
+  execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -c
+            "import site, sys; sys.stdout.write(site.PREFIXES[-1])"
+    OUTPUT_VARIABLE PYTHON_PREFIX
+  )
+  file ( TO_CMAKE_PATH "${PYTHON_PREFIX}" PYTHON_PREFIX )
+  execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -c
+            "import site, sys; sys.stdout.write(site.getsitepackages()[-1])"
+    OUTPUT_VARIABLE PYTHON_SITE_DIR
+  )
+  file(TO_CMAKE_PATH "${PYTHON_SITE_DIR}" PYTHON_SITE_DIR)
+  string(REGEX REPLACE "^${PYTHON_PREFIX}/" "" PYTHON_SITE_DIR "${PYTHON_SITE_DIR}")
+
+  install(TARGETS pybmc
+    LIBRARY DESTINATION ${PYTHON_SITE_DIR}/bmc
+    COMPONENT library
+  )
+  install(FILES python/bmc/__init__.py python/bmc/sphinx.py
+    DESTINATION ${PYTHON_SITE_DIR}/bmc
+    COMPONENT library
+  )
+
 endif(bmc_USE_PYTHON)
 find_package(Boost QUIET COMPONENTS unit_test_framework)
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)

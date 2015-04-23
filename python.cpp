@@ -28,7 +28,7 @@ static std::string to_lilypond(std::wstring const &source) {
 
   bool const success = parse(iter, end, parser, score);
 
-  if (success and iter == end) {
+  if (success && iter == end) {
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
@@ -54,7 +54,7 @@ static std::string to_musicxml(std::wstring const &source) {
 
   bool const success = parse(iter, end, parser, score);
 
-  if (success and iter == end) {
+  if (success && iter == end) {
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
@@ -79,7 +79,7 @@ static std::string reformat(std::wstring const &source) {
 
   bool const success = parse(iter, end, parser, score);
 
-  if (success and iter == end) {
+  if (success && iter == end) {
     ::bmc::braille::compiler<error_handler_type> compile(error_handler);
     if (compile(score)) {
       std::wcerr << error_handler;
