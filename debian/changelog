@@ -1,0 +1,5 @@
+bmc (0.0.1-1) UNRELEASED; urgency=low
+
+  * Initial Debian Packaging.
+
+ -- Mario Lang <mlang@debian.org>  Thu, 23 Apr 2015 14:02:31 +0200

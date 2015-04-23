@@ -1,0 +1,18 @@
+Source: bmc
+Maintainer: Mario Lang <mlang@debian.org>
+Priority: extra
+Standards-Version: 3.9.6
+Build-Depends: cmake,
+               debhelper (>= 9),
+               libboost-dev, libboost-program-options-dev, libboost-python-dev, libboost-test-dev,
+               qtbase5-dev, libqt5svg5-dev, qtmultimedia5-dev, libqt5xml5,
+               libxerces-c-dev,
+               lilypond,
+               python3-dev, python3-sphinx,
+               xsdcxx
+
+Package: bmc
+Architecture: any
+Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}, lilypond
+Description: Braille Music Compiler
+
