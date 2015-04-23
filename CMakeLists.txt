@@ -15,6 +15,7 @@ option(bmc_USE_PYTHON "Build components that require Python" ON)
 set(bmc_REQUIRED_BOOST_COMPONENTS program_options)
 if(bmc_USE_PYTHON)
   find_package(PythonLibs REQUIRED)
+  find_package(PythonInterp)
   set(bmc_REQUIRED_BOOST_COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS} python)
 endif(bmc_USE_PYTHON)
 find_package(Boost 1.54.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
@@ -90,14 +91,13 @@ if(bmc_USE_PYTHON)
   string(REGEX REPLACE "^${PYTHON_PREFIX}/" "" PYTHON_SITE_DIR "${PYTHON_SITE_DIR}")
 
   install(TARGETS pybmc
-    LIBRARY DESTINATION lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/dist-packages/bmc
+    LIBRARY DESTINATION ${PYTHON_SITE_DIR}/bmc
     COMPONENT library
   )
   install(FILES python/bmc/__init__.py python/bmc/sphinx.py
-    DESTINATION lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/dist-packages/bmc
+    DESTINATION ${PYTHON_SITE_DIR}/bmc
     COMPONENT library
   )
-
 endif(bmc_USE_PYTHON)
 find_package(Boost QUIET COMPONENTS unit_test_framework)
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
@@ -169,7 +169,6 @@ find_package(PkgConfig)
     target_link_libraries(bmc.cgi bmc_parse ${CGICC_LIBRARIES})
   endif(CGICC_FOUND)
 
-find_package(PythonInterp)
 if(PYTHONINTERP_FOUND)
   execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c" "import music21;"
                   RESULT_VARIABLE music21_NOTFOUND ERROR_QUIET)
