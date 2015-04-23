@@ -1,4 +1,4 @@
-bmc (0.0.1-1) UNRELEASED; urgency=low
+bmc (0.0.1-0) UNRELEASED; urgency=low
 
   * Initial Debian Packaging.
 
