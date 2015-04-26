@@ -28,7 +28,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 add_definitions(-std=c++11)
-add_library(bmc_parse SHARED
+add_library(braillemusic SHARED
             text2braille.cpp
             brlsym.cpp music.cpp ast.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
@@ -37,13 +37,13 @@ add_library(bmc_parse SHARED
             value_disambiguation.cpp value_disambiguator.cpp
             lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
            )
-set_target_properties(bmc_parse
+set_target_properties(braillemusic
                       PROPERTIES
                       VERSION ${bmc_VERSION}
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
-target_link_libraries(bmc_parse xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
-add_library(bmc_parse-static STATIC
+target_link_libraries(braillemusic xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
+add_library(braillemusic-static STATIC
             text2braille.cpp
             brlsym.cpp music.cpp ast.cpp
             numbers.cpp key_signature.cpp time_signature.cpp
@@ -52,21 +52,21 @@ add_library(bmc_parse-static STATIC
             value_disambiguation.cpp value_disambiguator.cpp
             lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
            )
-target_link_libraries(bmc_parse-static xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(braillemusic-static xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
 add_executable(bmc bmc.cpp)
-target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} bmc_parse-static)
+target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} braillemusic-static)
 add_subdirectory(ui)
 add_definitions(-DSOUNDFONT_PATH="/usr/share/sounds/sf2/FluidR3_GM.sf2")
 #add_executable(bmc main.cpp fluidsynth.cpp)
 #find_library(FLUIDSYNTH_LIBRARY fluidsynth)
-#target_link_libraries(bmc bmc_parse ${FLUIDSYNTH_LIBRARY})
+#target_link_libraries(bmc braillemusic ${FLUIDSYNTH_LIBRARY})
 
 add_executable(bmc_test test.cpp)
 set_target_properties(bmc_test
                       PROPERTIES
                       COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${PROJECT_SOURCE_DIR}/"
                      )
-target_link_libraries(bmc_test bmc_parse)
+target_link_libraries(bmc_test braillemusic)
 if(bmc_USE_PYTHON)
   include_directories(${PYTHON_INCLUDE_DIR})
   add_library(pybmc SHARED python.cpp)
@@ -75,7 +75,7 @@ if(bmc_USE_PYTHON)
     OUTPUT_NAME "_bmc"
     LIBRARY_OUTPUT_DIRECTORY python/bmc
   )
-  target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} bmc_parse)
+  target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} braillemusic)
   execute_process(
     COMMAND ${PYTHON_EXECUTABLE} -c
             "import site, sys; sys.stdout.write(site.PREFIXES[-1])"
@@ -158,7 +158,7 @@ add_custom_target(check
                  )
 
 install(TARGETS bmc DESTINATION bin)
-install(TARGETS bmc_parse DESTINATION lib)
+install(TARGETS braillemusic DESTINATION lib)
 install(DIRECTORY ${bmc_SOURCE_DIR}/include/bmc DESTINATION include/bmc)
 
 find_package(PkgConfig)
@@ -166,7 +166,7 @@ find_package(PkgConfig)
   if(CGICC_FOUND)
     include_directories(${CGICC_INCLUDE_DIRS})
     add_executable(bmc.cgi cgi.cpp)
-    target_link_libraries(bmc.cgi bmc_parse ${CGICC_LIBRARIES})
+    target_link_libraries(bmc.cgi braillemusic ${CGICC_LIBRARIES})
   endif(CGICC_FOUND)
 
 if(PYTHONINTERP_FOUND)

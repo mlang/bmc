@@ -13,5 +13,9 @@ add_executable(bmc-ui
   optionsdialog.cpp optionsdialog.h
   ${RESOURCES}
 )
-target_link_libraries(bmc-ui Qt5::Widgets Qt5::Multimedia Qt5::Svg Qt5::Xml bmc_parse-static)
+target_link_libraries(bmc-ui
+  Qt5::Widgets Qt5::Multimedia Qt5::Svg Qt5::Xml
+  braillemusic-static
+)
+install(TARGETS bmc-ui DESTINATION bin)
 
