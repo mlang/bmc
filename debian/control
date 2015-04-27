@@ -16,3 +16,27 @@ Architecture: any
 Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}, lilypond
 Description: Braille Music Compiler
 
+Package: libbraillemusic0.0
+Section: libs
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A library for transcription of braille music code
+
+Package: libbraillemusic-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A library for transcription of braille music code (development files)
+
+Package: libxsdcxx-musicxml0
+Section: libs
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A C++ library for working with MusicXML documents
+
+Package: libxsdcxx-musicxml-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A C++ library for working with MusicXML documents (development files)
+
