@@ -109,7 +109,7 @@ struct pitched
   boost::optional<ast::tie> tie;
 };
 
-struct stem : rhythmic
+struct stem final : rhythmic
 {
   rational type;
   unsigned dots;
@@ -125,7 +125,7 @@ struct stem : rhythmic
   rational get_type() const override { return type; }
 };
 
-struct note : locatable, rhythmic_data, rhythmic, pitched
+struct note final : locatable, rhythmic_data, rhythmic, pitched
 {
   std::vector<articulation> articulations;
   std::vector<slur> slurs;
@@ -141,7 +141,7 @@ struct note : locatable, rhythmic_data, rhythmic, pitched
   rational get_type() const override { return type; }
 };
 
-struct rest : locatable, rhythmic_data, rhythmic
+struct rest final : locatable, rhythmic_data, rhythmic
 {
   bool by_transcriber;
 
@@ -163,7 +163,7 @@ struct interval : locatable, pitched
   fingering_list fingers;
 };
 
-struct chord : locatable, rhythmic
+struct chord final : locatable, rhythmic
 {
   note base;
   std::vector<interval> intervals;
@@ -193,7 +193,7 @@ struct chord : locatable, rhythmic
  *  hymns.  Complications of fingering, phrasing and nuances render it
  *  unsuitable for instrumental music in general.
  */
-struct moving_note : locatable, rhythmic
+struct moving_note final : locatable, rhythmic
 {
   note base;
   std::vector<interval> intervals;
