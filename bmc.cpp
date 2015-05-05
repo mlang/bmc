@@ -53,9 +53,8 @@ int bmc2ly( std::wistream &wistream
       }
 
       return EXIT_SUCCESS;
-    } else {
-      std::wcerr << "Failed to compile:" << std::endl << error_handler << std::endl;
     }
+    std::wcerr << "Failed to compile:" << std::endl << error_handler << std::endl;
   } else {
     std::wcerr << "Failed to Parse:" << std::endl << source << std::endl;
   }

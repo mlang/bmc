@@ -80,12 +80,10 @@ value_proxy::accept() const
 
 namespace {
 
-struct maybe_whole_measure_rest : boost::static_visitor<bool>
-{
-  result_type operator()(ast::rest const &rest) const
-  { return rest.ambiguous_value == ast::whole_or_16th && !rest.dots; }
-  template<typename T> result_type operator()(T const &) const { return false; }
-};
+bool maybe_whole_measure_rest(ast::sign const &sign) {
+  auto rest = boost::get<ast::rest>(&sign);
+  return rest && rest->ambiguous_value == ast::whole_or_16th && !rest->dots;
+}
 
 struct tuplet_level {
   unsigned number = 1;
@@ -144,7 +142,13 @@ is_tuplet_begin( ast::partial_voice::iterator const &iterator
                , unsigned &number, bool &simple, bool &doubled
                )
 {
-  return apply_visitor(ast::is_tuplet_start(number, doubled, simple), *iterator);
+  if (auto tuplet_start = boost::get<ast::tuplet_start>(&*iterator)) {
+    number = tuplet_start->number();
+    simple = tuplet_start->simple_triplet();
+    doubled = tuplet_start->doubled();
+    return true;
+  }
+  return false;
 }
 
 ast::partial_voice::iterator
@@ -501,8 +505,7 @@ public:
                        , max_duration, position, tuplet);
 
         if (stack_begin == stack_end && position == 0 &&
-            state.time_signature != 1 &&
-            apply_visitor(maybe_whole_measure_rest(), *iterator)) {
+            state.time_signature != 1 && maybe_whole_measure_rest(*iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
           recurse( std::next(iterator), end, stack_begin, std::next(stack_end)
                  , zero, position + state.time_signature, tuplet);

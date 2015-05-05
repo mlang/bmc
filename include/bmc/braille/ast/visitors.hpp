@@ -111,31 +111,6 @@ namespace bmc {
         { return false; }
       };
 
-      class is_tuplet_start : public boost::static_visitor<bool>
-      {
-        unsigned &number;
-        bool &doubled;
-        bool &simple_triplet;
-      public:
-        is_tuplet_start(unsigned &number, bool &doubled, bool &simple_triplet)
-        : number{number}
-        , doubled{doubled}
-        , simple_triplet{simple_triplet}
-        {}
-
-        result_type operator() (tuplet_start const& tuplet) const
-        {
-          number = tuplet.number();
-          doubled = tuplet.doubled();
-          simple_triplet = tuplet.simple_triplet();
-          return true;
-        }
-
-        template <class T>
-        result_type operator()(T const &) const
-        { return false; }
-      };
-
       struct is_hyphen : boost::static_visitor<bool>
       {
         template <typename T>

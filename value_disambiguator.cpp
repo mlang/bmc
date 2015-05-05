@@ -28,17 +28,17 @@ value_disambiguator::operator()(ast::measure& measure)
       prev_duration = 0;
       prev_doubled_tuplets.clear();
       return true;
-    } else {
-      if (anacrusis->completes_uniquely(interpretations)) {
-        for (auto& lhs: *anacrusis) {
-          for (auto& rhs: interpretations) {
-            if (duration(lhs) + duration(rhs) == time_signature) {
-              lhs.accept(), rhs.accept();
-              prev_duration = duration(rhs);
-              prev_doubled_tuplets = rhs.get_doubled_tuplets();
-              anacrusis.reset();
-              return true;
-            }
+    }
+
+    if (anacrusis->completes_uniquely(interpretations)) {
+      for (auto& lhs: *anacrusis) {
+        for (auto& rhs: interpretations) {
+          if (duration(lhs) + duration(rhs) == time_signature) {
+            lhs.accept(), rhs.accept();
+            prev_duration = duration(rhs);
+            prev_doubled_tuplets = rhs.get_doubled_tuplets();
+            anacrusis.reset();
+            return true;
           }
         }
       }

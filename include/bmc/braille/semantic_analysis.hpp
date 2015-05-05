@@ -58,10 +58,11 @@ public:
   result_type operator() (ast::simile const &simile)
   {
     if (!duration(target)) {
-      if (prev_unfolded_measure && voice_count == 1) {
-        prev_unfolded_measure->count += simile.count - 1;
-        return sign_conversion_result::full_measure_simile;
-      } else if (prev_unfolded_measure) {
+      if (prev_unfolded_measure) {
+        if (voice_count == 1) {
+          prev_unfolded_measure->count += simile.count - 1;
+          return sign_conversion_result::full_measure_simile;
+        }
         target.insert( target.end()
                      , prev_unfolded_measure->voices[voice_index][partial_measure_index][partial_voice_index].begin()
                      , prev_unfolded_measure->voices[voice_index][partial_measure_index][partial_voice_index].end());
