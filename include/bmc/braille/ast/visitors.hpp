@@ -8,6 +8,7 @@
 #define BMC_AST_VISITORS_HPP
 
 #include "bmc/braille/ast/ast.hpp"
+#include <boost/variant/get.hpp>
 #include <boost/variant/static_visitor.hpp>
 
 namespace bmc {
@@ -58,13 +59,6 @@ namespace bmc {
         result_type operator()(value_distinction const&) const { return 0; }
       };
 
-      struct is_rest : boost::static_visitor<bool>
-      {
-        template <typename T>
-        result_type operator()(T const&) const
-        { return std::is_same<rest, T>::value; }
-      };
-
       struct is_rhythmic : boost::static_visitor<bool>
       {
         template <typename T>
@@ -84,12 +78,9 @@ namespace bmc {
       inline bool is_grace(ast::chord const &chord) { return is_grace(chord.base); }
       inline bool is_grace(ast::moving_note &chord) { return is_grace(chord.base); }
 
-      struct is_simile : boost::static_visitor<bool>
-      {
-        template <typename T>
-        result_type operator()(T const&) const
-        { return std::is_same<simile, T>::value; }
-      };
+      inline bool is_hyphen(sign const &s) { return boost::get<ast::hyphen>(&s); }
+      inline bool is_rest  (sign const &s) { return boost::get<ast::rest  >(&s); }
+      inline bool is_simile(sign const &s) { return boost::get<ast::simile>(&s); }
 
       class is_value_distinction : public boost::static_visitor<bool>
       {
@@ -109,13 +100,6 @@ namespace bmc {
         template <class Sign>
         result_type operator()(Sign const &) const
         { return false; }
-      };
-
-      struct is_hyphen : boost::static_visitor<bool>
-      {
-        template <typename T>
-        result_type operator()(T const&) const
-        { return std::is_same<hyphen, T>::value; }
       };
     }
   }

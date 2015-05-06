@@ -160,7 +160,7 @@ tuplet_end( ast::partial_voice::iterator begin
   unsigned number;
   bool doubled, simple;
   while (begin != end) {
-    if (apply_visitor(ast::is_simile(), *begin)) break;
+    if (ast::is_simile(*begin)) break;
 
     if (is_tuplet_begin(begin, number, simple, doubled)) {
       if (in_simple && simple) break;
@@ -293,9 +293,9 @@ notegroup_end( ast::partial_voice::iterator const &begin
       auto iter = std::next(begin);
       while (iter != end &&
              apply_visitor(ast::get_ambiguous_value(), *iter) == ast::eighth_or_128th &&
-             !apply_visitor(ast::is_rest(), *iter) &&
+             !ast::is_rest(*iter) &&
              !apply_visitor(ast::get_augmentation_dots(), *iter) &&
-             !apply_visitor(ast::is_hyphen(), *iter))
+             !ast::is_hyphen(*iter))
 	std::advance(iter, 1);
       // A note group is only valid if it consists of at least 3 rhythmic signs
       if (std::distance(begin, iter) > 2) return iter;

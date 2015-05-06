@@ -120,10 +120,8 @@ BOOST_AUTO_TEST_CASE(measure_test1) {
   BOOST_CHECK_EQUAL(attribute.voices[0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[0][0][0].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(::bmc::braille::ast::is_rest(),
-                            attribute.voices[0][0][0][0]));
-  BOOST_CHECK(apply_visitor(::bmc::braille::ast::is_rest(),
-                            attribute.voices[0][0][0][1]));
+  BOOST_CHECK(::bmc::braille::ast::is_rest(attribute.voices[0][0][0][0]));
+  BOOST_CHECK(::bmc::braille::ast::is_rest(attribute.voices[0][0][0][1]));
 }
 
 BOOST_AUTO_TEST_CASE(measure_test2) {
@@ -147,10 +145,8 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_REQUIRE_EQUAL(attribute.voices[1][1].size(), std::size_t(2));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][0].size(), std::size_t(1));
   BOOST_CHECK_EQUAL(attribute.voices[1][1][1].size(), std::size_t(2));
-  BOOST_CHECK(apply_visitor(::bmc::braille::ast::is_rest(),
-                            attribute.voices[1][0][0][0]));
-  BOOST_CHECK(apply_visitor(::bmc::braille::ast::is_rest(),
-                            attribute.voices[1][1][1][0]));
+  BOOST_CHECK(::bmc::braille::ast::is_rest(attribute.voices[1][0][0][0]));
+  BOOST_CHECK(::bmc::braille::ast::is_rest(attribute.voices[1][1][1][0]));
 }
 
 #include "bmc/braille/semantic_analysis.hpp"
