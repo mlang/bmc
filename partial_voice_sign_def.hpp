@@ -103,7 +103,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   clef = clef_sign > optional_dot;
 
-  optional_dot = !dots_123 | brl(3);
+  optional_dot = !dots_123 | (brl(3) > &dots_123);
   hand_sign = braille::hand_sign > optional_dot;
 
   hyphen = brl(5) >> eol;

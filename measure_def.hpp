@@ -50,9 +50,9 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
   using boost::phoenix::at_c;
   boost::spirit::eol_type eol;
 
-  full_measure_in_accord = brl(126) >> brl(345) >> -+eol;
-  partial_measure_sign = brl(46) >> brl(13) >> -+eol;
-  partial_measure_in_accord = brl(5) >> brl(2) >> -+eol;
+  full_measure_in_accord = brl(126) >> brl(345) >> *eol;
+  partial_measure_sign = brl(46) >> brl(13) >> *eol;
+  partial_measure_in_accord = brl(5) >> brl(2) >> *eol;
 
   optional_dot = (!dots_123) | (&(brl(3) >> dots_123) > brl(3));
   ending = (brl(3456) >> lower_digit_sign) > optional_dot;
