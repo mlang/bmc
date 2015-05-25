@@ -7,6 +7,7 @@
 #ifndef BMC_BRAILLE_MUSIC_HPP
 #define BMC_BRAILLE_MUSIC_HPP
 
+#include <boost/variant/variant.hpp>
 #include <vector>
 
 namespace bmc { namespace braille {
