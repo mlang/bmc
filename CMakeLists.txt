@@ -12,7 +12,7 @@ endif(bmc_USE_DOXYGEN)
 add_subdirectory(xsdcxx-musicxml)
 include_directories(${XSDCXX_INCLUDE_DIR})
 option(bmc_USE_PYTHON "Build components that require Python" ON)
-set(bmc_REQUIRED_BOOST_COMPONENTS program_options)
+set(bmc_REQUIRED_BOOST_COMPONENTS program_options system)
 if(bmc_USE_PYTHON)
   find_package(PythonLibs REQUIRED)
   find_package(PythonInterp)
@@ -27,7 +27,7 @@ include_directories(
   ${bmc_SOURCE_DIR}/xsdcxx-musicxml
   ${Boost_INCLUDE_DIRS}
 )
-add_definitions(-std=c++11)
+add_definitions(-std=c++14)
 add_library(braillemusic SHARED
             text2braille.cpp
             brlsym.cpp music.cpp ast.cpp
@@ -184,6 +184,9 @@ endif(PYTHONINTERP_FOUND)
 if(bmc_USE_PYTHON)
   add_subdirectory(sphinx)
 endif(bmc_USE_PYTHON)
+
+add_executable(x3_tests x3_tests.cpp text2braille.cpp parser.cpp)
+target_link_libraries(x3_tests ${Boost_SYSTEM_LIBRARY})
 
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
