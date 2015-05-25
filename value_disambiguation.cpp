@@ -16,16 +16,14 @@ rational const undotted[8] = {
   rational{1, 16}, rational{1, 32}, rational{1, 64}, rational{1, 128}
 };
 
-rational const &
-value_proxy::undotted_duration() const
+rational const &value_proxy::undotted_duration() const
 {
   BOOST_ASSERT(category==large_value || category==small_value);
   BOOST_ASSERT(value_type >= 0 && value_type < 4);
   return undotted[category | value_type];
 }
 
-rational
-value_proxy::calculate_duration(unsigned dots) const
+rational value_proxy::calculate_duration(unsigned dots) const
 {
   rational result{undotted_duration()};
   if (dots) result *= augmentation_dots_factor(dots);
@@ -33,8 +31,7 @@ value_proxy::calculate_duration(unsigned dots) const
   return result;
 }
 
-void
-value_proxy::accept() const
+void value_proxy::accept() const
 {
   switch (type) {
   case ptr_type::note:
