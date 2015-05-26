@@ -18,8 +18,11 @@ using boost::spirit::x3::repeat;
 using boost::spirit::x3::rule;
 using boost::spirit::x3::unused_type;
 
-template <typename Encoding, template<typename> typename Op = std::equal_to>
-struct brl_parser : char_parser<brl_parser<Encoding>>
+template < typename Encoding
+         , template<typename> typename BinaryPredicate = std::equal_to
+         , uint8_t Mask = 0XFF
+         >
+struct brl_parser : char_parser<brl_parser<Encoding, BinaryPredicate, Mask>>
 {
   using attribute_type = unused_type;
   using char_type = typename Encoding::char_type;
@@ -30,34 +33,65 @@ struct brl_parser : char_parser<brl_parser<Encoding>>
   : dots(0)
   {
     while (decimal_dots) {
-      auto digit = decimal_dots % 10;
+      auto const digit = decimal_dots % 10;
       BOOST_ASSERT((digit > 0) && (digit < 9));
       BOOST_ASSERT(dots ^ (1 << (digit - 1)));
       dots |= 1 << (digit - 1);
       decimal_dots /= 10;
     }
+    BOOST_ASSERT(!(~Mask & dots));
   }
 
   template <typename Char, typename Context>
   bool test(Char ch, Context const& context) const
   {
     return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch))
-        && Op<uint8_t>{}(get_dots_for_character(ch), dots);
+        && BinaryPredicate<uint8_t>{}(get_dots_for_character(ch) & Mask, dots);
   }
 
   uint8_t dots;
 };
 
-inline brl_parser<char_encoding::unicode, std::equal_to>
+inline brl_parser<char_encoding::unicode, std::equal_to, 0X3F>
 brl(unsigned decimal_dots)
 {
-  return {decimal_dots};
+  return { decimal_dots };
 }
 
-inline brl_parser<char_encoding::unicode, std::bit_and>
+inline auto brl(unsigned decimal_dots1, unsigned decimal_dots2)
+-> decltype(brl(decimal_dots1) >> brl(decimal_dots2))
+{
+  return brl(decimal_dots1) >> brl(decimal_dots2);
+}
+
+inline auto brl(unsigned a, unsigned b, unsigned c)
+-> decltype(brl(a, b) >> brl(c))
+{
+  return brl(a, b) >> brl(c);
+}
+
+inline auto brl(unsigned a, unsigned b, unsigned c, unsigned d)
+-> decltype(brl(a, b, c) >> brl(d))
+{
+  return brl(a, b, c) >> brl(d);
+}
+
+inline brl_parser<char_encoding::unicode, std::bit_and, 0X3F>
 brl_mask(unsigned decimal_dots)
 {
-  return {decimal_dots};
+  return { decimal_dots };
+}
+
+inline brl_parser<char_encoding::unicode, std::equal_to, 0X1B>
+brl_1245(unsigned decimal_dots)
+{
+  return { decimal_dots };
+}
+
+inline brl_parser<char_encoding::unicode, std::equal_to, 0X24>
+brl_36(unsigned decimal_dots)
+{
+  return { decimal_dots };
 }
 
 rule<struct upper_digit, unsigned> const upper_digit = "upper_digit";
@@ -69,7 +103,8 @@ rule<struct time_signature, ast::time_signature> const time_signature = "time_si
 rule<struct upper_number_as_negative, unsigned> const upper_number_as_negative = "upper_number_as_negative";
 struct key_signature;
 rule<struct key_signature, ast::key_signature> const key_signature = "key_signature";
-rule<struct dots, unsigned> const dots = "dots";
+rule<struct augmentation_dots, unsigned> const augmentation_dots = "augmentation_dots";
+rule<struct note, ast::note> const note = "note";
 
 auto const upper_digit_def = brl(245)  >> attr(0)
                            | brl(1)    >> attr(1)
@@ -94,46 +129,95 @@ auto const lower_digit_def = brl(356)  >> attr(0)
                            | brl(35)   >> attr(9)
                            ;
 
-auto set_zero = [](auto& ctx){ _attr(ctx) = 0; };
-auto accumulate = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) + _attr(ctx); };
-auto const upper_number_def = eps[set_zero] >> +upper_digit[accumulate];
-auto const lower_number_def = eps[set_zero] >> +lower_digit[accumulate];
+auto assign_0 = [](auto& ctx){ _attr(ctx) = 0; };
+auto multiply_by_10_plus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) + _attr(ctx); };
+auto const upper_number_def = eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr];
+auto const lower_number_def = eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr];
 
 auto const number_sign = brl(3456);
 auto const time_signature_def = number_sign >> upper_number >> lower_number
-                              | brl(46) >> attr(4) >> attr(4)
-                              | brl(456) >> attr(4) >> attr(4)
+                              | brl(46)     >> attr(4)      >> attr(4)
+                              | brl(456)    >> attr(4)      >> attr(4)
                               ;
 
 auto const sharp_sign = brl(146);
 auto const flat_sign = brl(126);
-auto const negative_accumulate = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) - _attr(ctx); };
+auto multiply_by_10_minus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) - _attr(ctx); };
 auto const upper_number_as_negative_def =
-  eps[set_zero] >> +upper_digit[negative_accumulate];
+  eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr];
 auto const key_signature_def =
-    sharp_sign >> sharp_sign >> sharp_sign >> attr(3)
-  | flat_sign  >> flat_sign  >> flat_sign  >> attr(-3)
-  | sharp_sign >> sharp_sign               >> attr(2)
-  | flat_sign  >> flat_sign                >> attr(-2)
-  | sharp_sign                             >> attr(1)
-  | flat_sign                              >> attr(-1)
-  | number_sign                            >> upper_number             >> sharp_sign
-  | number_sign                            >> upper_number_as_negative >> flat_sign
-  | eps                                    >> attr(0)
+    repeat(3)[sharp_sign] >> attr(3)
+  | repeat(3)[flat_sign]  >> attr(-3)
+  | repeat(2)[sharp_sign] >> attr(2)
+  | repeat(2)[flat_sign]  >> attr(-2)
+  | sharp_sign            >> attr(1)
+  | flat_sign             >> attr(-1)
+  | number_sign           >> upper_number             >> sharp_sign
+  | number_sign           >> upper_number_as_negative >> flat_sign
+  | eps                   >> attr(0)
   ;
 
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
-auto const add_one = [](auto& ctx) { _val(ctx) += 1; };
-auto const dots_def = eps[set_zero] >> *brl(3)[add_one];
+auto plus_1 = [](auto& ctx) { _val(ctx) += 1; };
+auto const augmentation_dots_def = eps[assign_0] >> *brl(3)[plus_1];
+
+auto const natural_sign = brl(16);
+
+auto const accidental =
+    repeat(3)[sharp_sign] >> attr(triple_sharp)
+  | repeat(3)[flat_sign]  >> attr(triple_flat)
+  | repeat(2)[sharp_sign] >> attr(double_sharp)
+  | repeat(2)[flat_sign]  >> attr(double_flat)
+  | sharp_sign            >> attr(sharp)
+  | flat_sign             >> attr(flat)
+  | natural_sign          >> attr(natural)
+  ;
+
+auto const octave =
+    brl(4, 4) >> attr(1)
+  | brl(4)    >> attr(2)
+  | brl(45)   >> attr(3)
+  | brl(456)  >> attr(4)
+  | brl(5)    >> attr(5)
+  | brl(46)   >> attr(6)
+  | brl(56)   >> attr(7)
+  | brl(6)    >> attr(8)
+  | brl(6, 6) >> attr(9)
+  ;
+
+auto const step =
+    &brl_1245(145)  >> attr(C)
+  | &brl_1245(15)   >> attr(D)
+  | &brl_1245(124)  >> attr(E)
+  | &brl_1245(1245) >> attr(F)
+  | &brl_1245(125)  >> attr(G)
+  | &brl_1245(24)   >> attr(A)
+  | &brl_1245(245)  >> attr(B)
+  ;
+
+auto const value =
+    brl_36(36) >> attr(ast::whole_or_16th)
+  | brl_36(3)  >> attr(ast::half_or_32th)
+  | brl_36(6)  >> attr(ast::quarter_or_64th)
+  | brl_36(0)  >> attr(ast::eighth_or_128th)
+  ;
+
+auto const note_def =
+    -accidental
+ >> -octave
+ >> step >> value
+ >> augmentation_dots
+  ;
 
 struct key_signature : annotate_on_success {};
 struct time_signature : annotate_on_success {};
+struct note : annotate_on_success {};
 
 BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
   time_signature, key_signature,
-  dots
+  augmentation_dots, note
 )
 
 template <typename Iterator, typename Parser, typename Context = parser::unused_type>
@@ -155,7 +239,7 @@ parse_with_error_handler(Iterator &first, Iterator const &last, Parser const &p,
   }
 
   if (success)
-    return std::make_tuple(std::move(attribute), std::move(error_handler));
+    return std::make_tuple(attribute, std::move(error_handler));
 
   return std::make_tuple(boost::none, std::move(error_handler));
 }
@@ -180,6 +264,16 @@ auto parse_key_signature(std::u32string const& input,
   auto iter = input.begin();
   return parser::parse_with_error_handler(
     iter, input.end(), parser::key_signature, out, filename, full_match);
+}
+
+auto parse_note(std::u32string const& input,
+  std::ostream &out, std::string filename, bool full_match
+) -> parser::result_t<parser::ast::note,
+                      std::remove_reference<decltype(input)>::type::const_iterator>
+{
+  auto iter = input.begin();
+  return parser::parse_with_error_handler(
+    iter, input.end(), parser::note, out, filename, full_match);
 }
 
 }}

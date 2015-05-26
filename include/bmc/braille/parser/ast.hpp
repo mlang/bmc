@@ -54,7 +54,7 @@ struct rhythmic_storage
 class rhythmic
 {
 protected:
-  virtual ~rhythmic();
+  virtual ~rhythmic() {};
 public:
   virtual rational as_rational() const = 0;
   virtual unsigned get_dots() const = 0;
