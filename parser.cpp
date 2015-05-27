@@ -13,7 +13,9 @@ using boost::spirit::x3::attr;
 using boost::spirit::x3::traits::attribute_of;
 namespace char_encoding = boost::spirit::char_encoding;
 using boost::spirit::x3::char_parser;
+using boost::spirit::x3::eol;
 using boost::spirit::x3::eps;
+using boost::spirit::x3::matches;
 using boost::spirit::x3::repeat;
 using boost::spirit::x3::rule;
 using boost::spirit::x3::unused_type;
@@ -105,6 +107,13 @@ struct key_signature;
 rule<struct key_signature, ast::key_signature> const key_signature = "key_signature";
 rule<struct augmentation_dots, unsigned> const augmentation_dots = "augmentation_dots";
 rule<struct note, ast::note> const note = "note";
+rule<struct moving_note, ast::moving_note> const moving_note = "moving_note";
+rule<struct chord, ast::chord> const chord = "chord";
+rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
+rule<struct partial_voice, ast::partial_voice> const partial_voice = "partial_voice";
+rule<struct partial_measure, ast::partial_measure> const partial_measure = "partial_measure";
+rule<struct voice, ast::voice> const voice = "voice";
+rule<struct measure, ast::measure> const measure = "measure";
 
 auto const upper_digit_def = brl(245)  >> attr(0)
                            | brl(1)    >> attr(1)
@@ -218,14 +227,87 @@ auto const note_def =
  >> augmentation_dots
   ;
 
+auto const interval_sign =
+    brl(34)   >> attr(second)
+  | brl(346)  >> attr(third)
+  | brl(3456) >> attr(fourth)
+  | brl(35)   >> attr(fifth)
+  | brl(356)  >> attr(sixth)
+  | brl(25)   >> attr(seventh)
+  | brl(36)   >> attr(bmc::octave)
+  ;
+
+struct interval;
+rule<struct parser::interval, ast::interval> const interval = "interval";
+
+auto const interval_def =
+    -accidental
+ >> -octave
+ >> interval_sign
+  ;
+
+BOOST_SPIRIT_DEFINE(interval)
+
+rule<struct moving_note_intervals, std::vector<ast::interval>> const
+moving_note_intervals = "moving_note_intervals";
+
+auto const moving_note_intervals_def = interval >> +(brl(6) >> interval);
+
+BOOST_SPIRIT_DEFINE(moving_note_intervals)
+
+auto const moving_note_def = note >> moving_note_intervals;
+
+auto const all_intervals_tied = brl(46) >> brl(14);
+
+auto const chord_def =
+    note
+ >> +interval
+ >> matches[all_intervals_tied]
+  ;
+
+auto const partial_voice_sign_def =
+    moving_note
+  | chord
+  | note
+  ;
+
+auto const partial_voice_def = +partial_voice_sign;
+auto const partial_voice_separator = brl(5) >> brl(2) >> *eol;
+auto const partial_measure_def = partial_voice % partial_voice_separator;
+auto const partial_measure_separator = brl(46) >> brl(13) >> *eol;
+auto const voice_def = partial_measure % partial_measure_separator;
+
+rule<class ending, unsigned> const ending = "ending";
+auto const ending_def = number_sign >> lower_number >> optional_dot;
+
+rule<struct voices, std::vector<ast::voice>> const voices = "voices";
+
+auto const voice_separator = brl(126) >> brl(345) >> *eol;
+auto const voices_def = voice >> *(voice_separator >> voice);
+
+BOOST_SPIRIT_DEFINE(ending, voices)
+
+auto const measure_def =
+    -ending
+ >> voices
+  ;
+
 struct key_signature : annotate_on_success {};
 struct time_signature : annotate_on_success {};
 struct note : annotate_on_success {};
+struct moving_note : annotate_on_success {};
+struct chord : annotate_on_success {};
+struct partial_voice : annotate_on_success {};
+struct partial_measure : annotate_on_success {};
+struct voice : annotate_on_success {};
+struct measure : annotate_on_success {};
 
 BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
   time_signature, key_signature,
-  augmentation_dots, note
+  augmentation_dots,
+  note, moving_note, chord,
+  partial_voice_sign, partial_voice, partial_measure, voice, measure
 )
 
 template <typename Iterator, typename Parser, typename Context = parser::unused_type>
@@ -247,7 +329,7 @@ parse_with_error_handler(Iterator &first, Iterator const &last, Parser const &p,
   }
 
   if (success)
-    return std::make_tuple(attribute, std::move(error_handler));
+    return std::make_pair(std::move(attribute), std::move(error_handler));
 
   return std::make_tuple(boost::none, std::move(error_handler));
 }
@@ -282,6 +364,16 @@ auto parse_note(std::u32string const& input,
   auto iter = input.begin();
   return parser::parse_with_error_handler(
     iter, input.end(), parser::note, out, filename, full_match);
+}
+
+auto parse_measure(std::u32string const& input,
+  std::ostream &out, std::string filename, bool full_match
+) -> parser::result_t<parser::ast::measure,
+                      std::remove_reference<decltype(input)>::type::const_iterator>
+{
+  auto iter = input.begin();
+  return parser::parse_with_error_handler(
+    iter, input.end(), parser::measure, out, filename, full_match);
 }
 
 }}

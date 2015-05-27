@@ -111,7 +111,7 @@ struct note final : position_tagged, rhythmic_storage, rhythmic, pitched
   fingering_list fingers;
   std::vector<stem> extra_stems;
 
-  note(): position_tagged(), rhythmic_storage(), pitched() {}
+//  note(): position_tagged(), rhythmic_storage(), pitched() {}
   rational as_rational() const override
   { return type * augmentation_dots_factor(dots) * factor; }
   unsigned get_dots() const override { return dots; }
@@ -123,8 +123,8 @@ struct rest final : position_tagged, rhythmic_storage, rhythmic
 {
   bool by_transcriber;
 
-  rest(): position_tagged(), rhythmic_storage(), whole_measure(false) {}
-  virtual ~rest();
+  //rest(): position_tagged(), rhythmic_storage(), whole_measure(false) {}
+  virtual ~rest() {};
 
   bool whole_measure; // filled in by disambiguate.hpp
 
@@ -209,6 +209,7 @@ public:
   : simple_triplet_{true}, doubled_{doubled} {}
   tuplet_start(unsigned number, bool doubled)
   : simple_triplet_{false}, doubled_{doubled}, number_{number} {}
+  tuplet_start(tuplet_start const &) = default;
 
   unsigned number() const { return simple_triplet_? 3: number_; }
   bool simple_triplet() const { return simple_triplet_; }
@@ -227,6 +228,7 @@ public:
   clef(): sign_{type::G} {}
   clef(type sign): sign_{sign} {}
   clef(type sign, unsigned line): sign_{sign}, line_{line} {}
+  clef(clef const &) = default;
 
   type sign() const { return sign_; }
   unsigned line() const {
@@ -249,7 +251,13 @@ struct sign : variant<
 , value_distinction, hyphen, tie, tuplet_start
 , hand_sign, clef, simile, barline
 >
-{};
+{
+  sign() : variant{} {}
+  sign(sign const& sign) : variant(sign) {}
+  sign &operator=(sign const &s) { base_type::operator=(s); return *this; }
+  using base_type::base_type;
+  using base_type::operator=;
+};
 
 struct partial_voice : position_tagged, std::vector<sign> {};
 struct partial_measure : position_tagged, std::vector<partial_voice> {};
