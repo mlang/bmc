@@ -131,20 +131,27 @@ auto const lower_digit_def = brl(356)  >> attr(0)
 
 auto assign_0 = [](auto& ctx){ _attr(ctx) = 0; };
 auto multiply_by_10_plus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) + _attr(ctx); };
-auto const upper_number_def = eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr];
-auto const lower_number_def = eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr];
+
+auto const upper_number_def =
+    eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr];
+auto const lower_number_def =
+    eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr];
 
 auto const number_sign = brl(3456);
-auto const time_signature_def = number_sign >> upper_number >> lower_number
-                              | brl(46)     >> attr(4)      >> attr(4)
-                              | brl(456)    >> attr(4)      >> attr(4)
-                              ;
+auto const time_signature_def =
+    number_sign >> upper_number >> lower_number
+  | brl(46)     >> attr(4)      >> attr(4)
+  | brl(456)    >> attr(4)      >> attr(4)
+  ;
 
 auto const sharp_sign = brl(146);
 auto const flat_sign = brl(126);
+
 auto multiply_by_10_minus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) - _attr(ctx); };
+
 auto const upper_number_as_negative_def =
   eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr];
+
 auto const key_signature_def =
     repeat(3)[sharp_sign] >> attr(3)
   | repeat(3)[flat_sign]  >> attr(-3)
@@ -160,6 +167,7 @@ auto const key_signature_def =
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
 auto plus_1 = [](auto& ctx) { _val(ctx) += 1; };
+
 auto const augmentation_dots_def = eps[assign_0] >> *brl(3)[plus_1];
 
 auto const natural_sign = brl(16);
