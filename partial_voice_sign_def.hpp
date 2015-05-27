@@ -46,6 +46,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   boost::spirit::_2_type _2;
   boost::spirit::_val_type _val;
   boost::spirit::attr_type attr;
+  boost::spirit::matches_type matches;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
 
@@ -72,7 +73,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   stem = stem_sign >> dots >> -tie;
 
-  added_by_transcriber = brl(6) >> attr(true) | attr(false);
+  added_by_transcriber = matches[brl(6)];
   rest = added_by_transcriber >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
   chord_tied_sign = brl(46) >> brl(14);
