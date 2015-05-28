@@ -253,7 +253,7 @@ struct sign : variant<
 >
 {
   sign() : variant{} {}
-  sign(sign const& sign) : variant(sign) {}
+  sign(sign const& sign) : variant(sign.get()) {}
   sign &operator=(sign const &s) { base_type::operator=(s); return *this; }
   using base_type::base_type;
   using base_type::operator=;
@@ -278,9 +278,34 @@ struct key_and_time_signature : position_tagged
 struct paragraph_element : variant<
   measure, key_and_time_signature
 >
-{};
+{
+  paragraph_element() = default;
+  paragraph_element(paragraph_element const& pe)
+  : variant{pe.get()} {}
+  paragraph_element &operator=(paragraph_element const& pe)
+  { base_type::operator=(pe); return *this; }
 
-struct paragraph : position_tagged, std::vector<paragraph_element> {};
+  using base_type::base_type;
+  using base_type::operator=;
+};
+
+struct paragraph : position_tagged, std::vector<paragraph_element> {
+  paragraph() = default;
+  paragraph(paragraph const& p) : std::vector<paragraph_element>{p.begin(), p.end()} {}
+  paragraph(paragraph_element const &pe)
+  {
+    push_back(pe);
+  }
+
+  paragraph &operator=(paragraph const &p)
+  {
+    assign(p.begin(), p.end());
+    return *this;
+  }
+
+  using std::vector<paragraph_element>::vector;
+  using std::vector<paragraph_element>::operator=;
+};
 
 struct measure_specification : position_tagged
 {
@@ -313,6 +338,39 @@ struct score {
 };
 
 }}}}
+
+namespace boost {
+
+inline std::ostream &operator<<(std::ostream &os, optional<bmc::accidental> acc)
+{
+  if (acc) os << int(*acc);
+  else os << "no_acc";
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, optional<unsigned int> oct)
+{
+  if (oct) os << int(*oct);
+  else os << "no_oct";
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, optional<bmc::braille::parser::ast::key_and_time_signature> ts)
+{
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, optional<bmc::braille::parser::ast::measure_range> mr)
+{
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, bmc::braille::parser::ast::paragraph &p)
+{
+  return os;
+}
+
+}
 
 #endif
 

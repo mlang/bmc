@@ -1,3 +1,5 @@
+//#define BOOST_SPIRIT_X3_DEBUG
+
 #include <bmc/braille/parser/ast_adapted.hpp>
 #include <bmc/braille/parser/parser.hpp>
 #include <boost/spirit/home/support/char_encoding/unicode.hpp>
@@ -15,6 +17,7 @@ namespace char_encoding = boost::spirit::char_encoding;
 using boost::spirit::x3::char_parser;
 using boost::spirit::x3::eol;
 using boost::spirit::x3::eps;
+using boost::spirit::x3::inf;
 using boost::spirit::x3::matches;
 using boost::spirit::x3::repeat;
 using boost::spirit::x3::rule;
@@ -48,6 +51,7 @@ struct brl_parser : char_parser<brl_parser<Encoding, BinaryPredicate, Mask>>
   bool test(Char ch, Context const& context) const
   {
     return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch))
+        && !encoding::iscntrl(ch)
         && BinaryPredicate<uint8_t>{}(get_dots_for_character(ch) & Mask, dots);
   }
 
@@ -101,19 +105,41 @@ rule<struct lower_digit, unsigned> const lower_digit = "lower_digit";
 rule<struct upper_number, unsigned> const upper_number = "upper_number";
 rule<struct lower_number, unsigned> const lower_number = "lower_number";
 struct time_signature;
-rule<struct time_signature, ast::time_signature> const time_signature = "time_signature";
-rule<struct upper_number_as_negative, unsigned> const upper_number_as_negative = "upper_number_as_negative";
+rule<struct time_signature, ast::time_signature> const
+time_signature = "time_signature";
+rule<struct upper_number_as_negative, unsigned> const
+upper_number_as_negative = "upper_number_as_negative";
 struct key_signature;
-rule<struct key_signature, ast::key_signature> const key_signature = "key_signature";
-rule<struct augmentation_dots, unsigned> const augmentation_dots = "augmentation_dots";
+rule<struct key_signature, ast::key_signature> const
+key_signature = "key_signature";
+rule<struct augmentation_dots, unsigned> const
+augmentation_dots = "augmentation_dots";
 rule<struct note, ast::note> const note = "note";
 rule<struct moving_note, ast::moving_note> const moving_note = "moving_note";
 rule<struct chord, ast::chord> const chord = "chord";
 rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
-rule<struct partial_voice, ast::partial_voice> const partial_voice = "partial_voice";
-rule<struct partial_measure, ast::partial_measure> const partial_measure = "partial_measure";
+rule<struct partial_voice, ast::partial_voice> const
+partial_voice = "partial_voice";
+rule<struct partial_measure, ast::partial_measure> const
+partial_measure = "partial_measure";
 rule<struct voice, ast::voice> const voice = "voice";
 rule<struct measure, ast::measure> const measure = "measure";
+rule<struct key_and_time_signature, ast::key_and_time_signature> const
+key_and_time_signature = "key_and_time_signature";
+rule<struct paragraph_element, ast::paragraph_element> const
+paragraph_element = "paragraph_element";
+rule<struct paragraph, ast::paragraph> const paragraph = "paragraph";
+rule<struct measure_specification, ast::measure_specification> const
+measure_specification = "measure_specification";
+rule<struct measure_range, ast::measure_range> const
+measure_range = "measure_range";
+rule<struct section_number, ast::section::number_type> const
+section_number = "section_number";
+rule<struct solo_section, ast::section> const solo_section = "solo_section";
+rule<struct last_solo_section, ast::section> const
+last_solo_section = "last_solo_section";
+rule<struct solo_part, ast::part> const solo_part = "solo_part";
+rule<struct score, ast::score> const score = "score";
 
 auto const upper_digit_def = brl(245)  >> attr(0)
                            | brl(1)    >> attr(1)
@@ -142,11 +168,15 @@ auto assign_0 = [](auto& ctx){ _attr(ctx) = 0; };
 auto multiply_by_10_plus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) + _attr(ctx); };
 
 auto const upper_number_def =
-    eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr];
+    eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr]
+    ;
+
 auto const lower_number_def =
-    eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr];
+    eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr]
+    ;
 
 auto const number_sign = brl(3456);
+
 auto const time_signature_def =
     number_sign >> upper_number >> lower_number
   | brl(46)     >> attr(4)      >> attr(4)
@@ -159,9 +189,10 @@ auto const flat_sign = brl(126);
 auto multiply_by_10_minus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) - _attr(ctx); };
 
 auto const upper_number_as_negative_def =
-  eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr];
+    eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr]
+    ;
 
-auto const key_signature_def =
+auto const fifths =
     repeat(3)[sharp_sign] >> attr(3)
   | repeat(3)[flat_sign]  >> attr(-3)
   | repeat(2)[sharp_sign] >> attr(2)
@@ -173,11 +204,14 @@ auto const key_signature_def =
   | eps                   >> attr(0)
   ;
 
+auto const key_signature_def = fifths;
+
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
 auto plus_1 = [](auto& ctx) { _val(ctx) += 1; };
 
-auto const augmentation_dots_def = eps[assign_0] >> *brl(3)[plus_1];
+auto const augmentation_dots_def =
+    eps[assign_0] >> *brl(3)[plus_1];
 
 auto const natural_sign = brl(16);
 
@@ -238,7 +272,7 @@ auto const interval_sign =
   ;
 
 struct interval;
-rule<struct parser::interval, ast::interval> const interval = "interval";
+rule<struct interval, ast::interval> const interval = "interval";
 
 auto const interval_def =
     -accidental
@@ -248,14 +282,7 @@ auto const interval_def =
 
 BOOST_SPIRIT_DEFINE(interval)
 
-rule<struct moving_note_intervals, std::vector<ast::interval>> const
-moving_note_intervals = "moving_note_intervals";
-
-auto const moving_note_intervals_def = interval >> +(brl(6) >> interval);
-
-BOOST_SPIRIT_DEFINE(moving_note_intervals)
-
-auto const moving_note_def = note >> moving_note_intervals;
+auto const moving_note_def = note >> (interval % brl(6));
 
 auto const all_intervals_tied = brl(46) >> brl(14);
 
@@ -280,34 +307,89 @@ auto const voice_def = partial_measure % partial_measure_separator;
 rule<class ending, unsigned> const ending = "ending";
 auto const ending_def = number_sign >> lower_number >> optional_dot;
 
-rule<struct voices, std::vector<ast::voice>> const voices = "voices";
-
 auto const voice_separator = brl(126) >> brl(345) >> *eol;
-auto const voices_def = voice >> *(voice_separator >> voice);
 
-BOOST_SPIRIT_DEFINE(ending, voices)
+BOOST_SPIRIT_DEFINE(ending)
 
 auto const measure_def =
     -ending
- >> voices
+ >> (voice % voice_separator)
   ;
+
+auto const key_and_time_signature_def = key_signature >> time_signature;
+
+auto const whitespace = brl(0);
+auto const paragraph_element_def = key_and_time_signature | measure;
+auto const paragraph_def = paragraph_element % (whitespace | eol);
+auto const measure_specification_def = lower_number >> -(number_sign >> lower_number);
+auto const measure_range_def =
+    number_sign
+ >> measure_specification
+ >> brl(36)
+  > measure_specification
+  ;
+
+auto const section_number_def = number_sign >> upper_number;
+
+auto const indent = repeat(2, inf)[whitespace];
+rule<struct initial_key_and_time_signature, ast::key_and_time_signature> const
+initial_key_and_time_signature = "initial_key_and_time_signature";
+
+auto const initial_key_and_time_signature_def =
+    *whitespace >> key_and_time_signature >> *whitespace >> eol
+  ;
+
+BOOST_SPIRIT_DEFINE(initial_key_and_time_signature)
+
+auto const solo_section_def =
+    -initial_key_and_time_signature
+ >> -indent
+ >> -(section_number >> whitespace)
+ >> -(measure_range >> whitespace)
+ >> paragraph;
+  ;
+
+auto const eom = brl(126, 13) >> !brl(3);
+auto const left_hand_sign = brl(46, 345) > optional_dot;
+auto const right_hand_sign = brl(456, 345) > optional_dot;
+
+auto const last_solo_section_def =
+    -initial_key_and_time_signature
+ >> -indent
+ >> -(section_number >> whitespace)
+ >> -(measure_range >> whitespace)
+ >> paragraph
+ >> eom
+  ;
+
+auto const solo_part_def = *(solo_section >> eol) > last_solo_section;
+
+auto const part = solo_part;
+
+auto const score_def = (part % repeat(2, inf)[eol]) >> *eol;
 
 struct key_signature : annotate_on_success {};
 struct time_signature : annotate_on_success {};
 struct note : annotate_on_success {};
+struct interval : annotate_on_success {};
 struct moving_note : annotate_on_success {};
 struct chord : annotate_on_success {};
 struct partial_voice : annotate_on_success {};
 struct partial_measure : annotate_on_success {};
 struct voice : annotate_on_success {};
 struct measure : annotate_on_success {};
+struct score : annotate_on_success, report_on_error {};
 
 BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
   time_signature, key_signature,
   augmentation_dots,
   note, moving_note, chord,
-  partial_voice_sign, partial_voice, partial_measure, voice, measure
+  partial_voice_sign, partial_voice, partial_measure, voice,
+  measure, key_and_time_signature, paragraph_element,
+  paragraph, section_number, measure_specification, measure_range,
+  solo_section, last_solo_section, solo_part,
+  score
 )
 
 template <typename Iterator, typename Parser, typename Context = parser::unused_type>
@@ -374,6 +456,16 @@ auto parse_measure(std::u32string const& input,
   auto iter = input.begin();
   return parser::parse_with_error_handler(
     iter, input.end(), parser::measure, out, filename, full_match);
+}
+
+auto parse_score(std::u32string const& input,
+  std::ostream &out, std::string filename, bool full_match
+) -> parser::result_t<parser::ast::score,
+                      std::remove_reference<decltype(input)>::type::const_iterator>
+{
+  auto iter = input.begin();
+  return parser::parse_with_error_handler(
+    iter, input.end(), parser::score, out, filename, full_match);
 }
 
 }}

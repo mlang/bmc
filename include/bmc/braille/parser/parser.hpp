@@ -36,6 +36,11 @@ auto parse_measure(std::u32string const& input,
 ) -> parser::result_t<parser::ast::measure,
                       std::remove_reference<decltype(input)>::type::const_iterator>;
 
+auto parse_score(std::u32string const& input,
+  std::ostream &out, std::string filename = "<INPUT>", bool full_match = true
+) -> parser::result_t<parser::ast::score,
+                      std::remove_reference<decltype(input)>::type::const_iterator>;
+
 }}
 
 #endif

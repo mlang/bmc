@@ -55,4 +55,37 @@ BOOST_FUSION_ADAPT_STRUCT(
   (std::vector<::bmc::braille::parser::ast::voice>, voices)
 )
 
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::key_and_time_signature,
+  (::bmc::braille::parser::ast::key_signature, key)
+  (::bmc::braille::parser::ast::time_signature, time)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::measure_specification,
+  (::bmc::braille::parser::ast::measure_specification::number_type, number)
+  (boost::optional<::bmc::braille::parser::ast::measure_specification::number_type>, alternative)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::measure_range,
+  (::bmc::braille::parser::ast::measure_specification, first)
+  (::bmc::braille::parser::ast::measure_specification, last)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::section,
+  (boost::optional<::bmc::braille::parser::ast::key_and_time_signature>, key_and_time_sig)
+  (boost::optional<::bmc::braille::parser::ast::section::number_type>, number)
+  (boost::optional<::bmc::braille::parser::ast::measure_range>, range)
+  (std::vector<::bmc::braille::parser::ast::paragraph>, paragraphs)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::score,
+//(::bmc::braille::parser::ast::key_signature, key_sig)
+//(std::vector<::bmc::braille::parser::ast::time_signature>, time_sigs)
+  (std::vector<::bmc::braille::parser::ast::part>, parts)
+)
+
 #endif

@@ -55,3 +55,37 @@ BOOST_AUTO_TEST_CASE(note_1)
   test_note(U"2$y.", bmc::flat, bmc::C, bmc::braille::parser::ast::whole_or_16th);
 }
 
+BOOST_AUTO_TEST_CASE(score_1)
+{
+  std::u32string const input = U"!y2k";
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(score_2)
+{
+  std::u32string const input = 
+    U"  #a !y rr 8888\n"
+    U"44442k\n"
+    ;
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
+}
+
+BOOST_AUTO_TEST_CASE(score_3)
+{
+  std::u32string const input =
+    U"  #a #,-: !y rr 8888\n"
+    U"  #b #/-? !z 88882k\n"
+    ;
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
+  BOOST_REQUIRE_EQUAL(ast->parts[0].size(), 2);
+}
+
