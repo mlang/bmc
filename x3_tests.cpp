@@ -89,3 +89,17 @@ BOOST_AUTO_TEST_CASE(score_3)
   BOOST_REQUIRE_EQUAL(ast->parts[0].size(), 2);
 }
 
+BOOST_AUTO_TEST_CASE(score_4)
+{
+  std::u32string const input =
+    U"  #a #,-: $`!y rr 88882k\n"
+    U"  _`>z 8888 rr2k\n"
+    ;
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
+  BOOST_REQUIRE_EQUAL(ast->parts[0].size(), 1);
+  BOOST_REQUIRE_EQUAL(ast->parts[0][0].paragraphs.size(), 2);
+}
+

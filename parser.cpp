@@ -139,6 +139,12 @@ rule<struct solo_section, ast::section> const solo_section = "solo_section";
 rule<struct last_solo_section, ast::section> const
 last_solo_section = "last_solo_section";
 rule<struct solo_part, ast::part> const solo_part = "solo_part";
+
+rule<struct keyboard_section, ast::section> const keyboard_section = "keyboard_section";
+rule<struct last_keyboard_section, ast::section> const
+last_keyboard_section = "last_keyboard_section";
+rule<struct keyboard_part, ast::part> const keyboard_part = "keyboard_part";
+
 rule<struct score, ast::score> const score = "score";
 
 auto const upper_digit_def = brl(245)  >> attr(0)
@@ -331,7 +337,10 @@ auto const measure_range_def =
 
 auto const section_number_def = number_sign >> upper_number;
 
-auto const indent = repeat(2, inf)[whitespace];
+rule<struct indent> const indent = "indent";
+auto const indent_def = repeat(2, inf)[whitespace];
+BOOST_SPIRIT_DEFINE(indent)
+
 rule<struct initial_key_and_time_signature, ast::key_and_time_signature> const
 initial_key_and_time_signature = "initial_key_and_time_signature";
 
@@ -349,9 +358,17 @@ auto const solo_section_def =
  >> paragraph;
   ;
 
-auto const eom = brl(126, 13) >> !brl(3);
-auto const left_hand_sign = brl(46, 345) > optional_dot;
-auto const right_hand_sign = brl(456, 345) > optional_dot;
+rule<struct eom> const eom = "eom";
+auto const eom_def = brl(126, 13) >> !brl(3);
+BOOST_SPIRIT_DEFINE(eom)
+
+rule<struct left_hand_sign> const left_hand_sign = "left_hand_sign";
+auto const left_hand_sign_def = brl(456, 345) > optional_dot;
+BOOST_SPIRIT_DEFINE(left_hand_sign)
+
+rule<struct right_hand_sign> const right_hand_sign = "right_hand_sign";
+auto const right_hand_sign_def = brl(46, 345) > optional_dot;
+BOOST_SPIRIT_DEFINE(right_hand_sign)
 
 auto const last_solo_section_def =
     -initial_key_and_time_signature
@@ -364,7 +381,55 @@ auto const last_solo_section_def =
 
 auto const solo_part_def = *(solo_section >> eol) > last_solo_section;
 
-auto const part = solo_part;
+rule<struct keyboard_section_body, std::vector<ast::paragraph>> const
+keyboard_section_body = "keyboard_section_body";
+
+auto const keyboard_section_body_def =
+    right_hand_sign
+ >> paragraph
+ >> eol
+ >> indent
+ >> left_hand_sign
+ >> paragraph
+  ;
+
+BOOST_SPIRIT_DEFINE(keyboard_section_body)
+
+auto const keyboard_section_def =
+    -initial_key_and_time_signature
+ >> indent
+ >> -(section_number >> whitespace)
+ >> -(measure_range >> whitespace)
+ >> keyboard_section_body
+  ;
+
+rule<struct last_keyboard_section_body, std::vector<ast::paragraph>> const
+last_keyboard_section_body = "last_keyboard_section_body";
+
+auto const last_keyboard_section_body_def =
+    right_hand_sign
+ >> paragraph
+ >> eom
+ >> eol
+ >> indent
+ >> left_hand_sign
+ >> paragraph
+ >> eom
+  ;
+
+BOOST_SPIRIT_DEFINE(last_keyboard_section_body)
+
+auto const last_keyboard_section_def =
+    -initial_key_and_time_signature
+ >> indent
+ >> -(section_number >> whitespace)
+ >> -(measure_range >> whitespace)
+ >> last_keyboard_section_body
+  ;
+
+auto const keyboard_part_def = *(keyboard_section >> eol) >> last_keyboard_section;
+
+auto const part = keyboard_part | solo_part;
 
 auto const score_def = (part % repeat(2, inf)[eol]) >> *eol;
 
@@ -388,6 +453,7 @@ BOOST_SPIRIT_DEFINE(
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
+  keyboard_section, last_keyboard_section, keyboard_part,
   solo_section, last_solo_section, solo_part,
   score
 )
