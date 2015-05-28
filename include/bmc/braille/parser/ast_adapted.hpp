@@ -50,6 +50,17 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::value_distinction,
+  (::bmc::braille::parser::ast::value_distinction::type, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::simile,
+  (boost::optional<unsigned>, octave_spec)
+  (unsigned, count)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::measure,
   (boost::optional<unsigned>, ending)
   (std::vector<::bmc::braille::parser::ast::voice>, voices)

@@ -64,22 +64,14 @@ brl(unsigned decimal_dots)
   return { decimal_dots };
 }
 
-inline auto brl(unsigned decimal_dots1, unsigned decimal_dots2)
--> decltype(brl(decimal_dots1) >> brl(decimal_dots2))
+inline auto brl(unsigned a, unsigned b)
 {
-  return brl(decimal_dots1) >> brl(decimal_dots2);
+  return brl(a) >> brl(b);
 }
 
 inline auto brl(unsigned a, unsigned b, unsigned c)
--> decltype(brl(a, b) >> brl(c))
 {
-  return brl(a, b) >> brl(c);
-}
-
-inline auto brl(unsigned a, unsigned b, unsigned c, unsigned d)
--> decltype(brl(a, b, c) >> brl(d))
-{
-  return brl(a, b, c) >> brl(d);
+  return brl(a) >> brl(b) >> brl(c);
 }
 
 inline brl_parser<char_encoding::unicode, std::bit_and, 0X3F>
@@ -117,6 +109,9 @@ augmentation_dots = "augmentation_dots";
 rule<struct note, ast::note> const note = "note";
 rule<struct moving_note, ast::moving_note> const moving_note = "moving_note";
 rule<struct chord, ast::chord> const chord = "chord";
+rule<struct value_distinction, ast::value_distinction> const
+value_distinction = "value_distinction";
+rule<struct simile, ast::simile> const simile = "simile";
 rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
 rule<struct partial_voice, ast::partial_voice> const
 partial_voice = "partial_voice";
@@ -139,12 +134,10 @@ rule<struct solo_section, ast::section> const solo_section = "solo_section";
 rule<struct last_solo_section, ast::section> const
 last_solo_section = "last_solo_section";
 rule<struct solo_part, ast::part> const solo_part = "solo_part";
-
 rule<struct keyboard_section, ast::section> const keyboard_section = "keyboard_section";
 rule<struct last_keyboard_section, ast::section> const
 last_keyboard_section = "last_keyboard_section";
 rule<struct keyboard_part, ast::part> const keyboard_part = "keyboard_part";
-
 rule<struct score, ast::score> const score = "score";
 
 auto const upper_digit_def = brl(245)  >> attr(0)
@@ -170,16 +163,22 @@ auto const lower_digit_def = brl(356)  >> attr(0)
                            | brl(35)   >> attr(9)
                            ;
 
-auto assign_0 = [](auto& ctx){ _attr(ctx) = 0; };
-auto multiply_by_10_plus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) + _attr(ctx); };
+auto assign_0 = [](auto& ctx)
+{
+  _attr(ctx) = 0;
+};
+auto multiply_by_10_plus_attr = [](auto& ctx)
+{
+  _val(ctx) = 10 * _val(ctx) + _attr(ctx);
+};
 
 auto const upper_number_def =
     eps[assign_0] >> +upper_digit[multiply_by_10_plus_attr]
-    ;
+  ;
 
 auto const lower_number_def =
     eps[assign_0] >> +lower_digit[multiply_by_10_plus_attr]
-    ;
+  ;
 
 auto const number_sign = brl(3456);
 
@@ -192,11 +191,14 @@ auto const time_signature_def =
 auto const sharp_sign = brl(146);
 auto const flat_sign = brl(126);
 
-auto multiply_by_10_minus_attr = [](auto& ctx) { _val(ctx) = 10 * _val(ctx) - _attr(ctx); };
+auto multiply_by_10_minus_attr = [](auto& ctx)
+{
+  _val(ctx) = 10 * _val(ctx) - _attr(ctx);
+};
 
 auto const upper_number_as_negative_def =
     eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr]
-    ;
+  ;
 
 auto const fifths =
     repeat(3)[sharp_sign] >> attr(3)
@@ -214,10 +216,14 @@ auto const key_signature_def = fifths;
 
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
-auto plus_1 = [](auto& ctx) { _val(ctx) += 1; };
+auto plus_1 = [](auto& ctx)
+{
+  _val(ctx) += 1;
+};
 
 auto const augmentation_dots_def =
-    eps[assign_0] >> *brl(3)[plus_1];
+    eps[assign_0] >> *brl(3)[plus_1]
+  ;
 
 auto const natural_sign = brl(16);
 
@@ -293,41 +299,78 @@ auto const moving_note_def = note >> (interval % brl(6));
 auto const all_intervals_tied = brl(46) >> brl(14);
 
 auto const chord_def =
-    note
- >> +interval
- >> matches[all_intervals_tied]
+    note >> +interval >> matches[all_intervals_tied]
+  ;
+
+auto const value_distinction_def =
+    brl(126, 2)     >> attr(ast::value_distinction::distinct)
+  | brl(6, 126, 2)  >> attr(ast::value_distinction::small_follows)
+  | brl(45, 126, 2) >> attr(ast::value_distinction::large_follows)
+  ;
+
+auto const simile_def =
+    -octave
+ >> ( brl(2356, 2356, 2356) >> attr(3)
+    | brl(2356, 2356)       >> attr(2)
+    | brl(2356)             >> ( ( number_sign > upper_number )
+                               | attr(1)
+                               )
+    )
   ;
 
 auto const partial_voice_sign_def =
     moving_note
   | chord
   | note
+  | value_distinction
+  | simile
   ;
 
-auto const partial_voice_def = +partial_voice_sign;
+auto const partial_voice_def =
+    +partial_voice_sign
+  ;
+
 auto const partial_voice_separator = brl(5) >> brl(2) >> *eol;
-auto const partial_measure_def = partial_voice % partial_voice_separator;
+
+auto const partial_measure_def =
+    partial_voice % partial_voice_separator
+  ;
+
 auto const partial_measure_separator = brl(46) >> brl(13) >> *eol;
-auto const voice_def = partial_measure % partial_measure_separator;
+
+auto const voice_def =
+    partial_measure % partial_measure_separator
+  ;
 
 rule<class ending, unsigned> const ending = "ending";
 auto const ending_def = number_sign >> lower_number >> optional_dot;
+BOOST_SPIRIT_DEFINE(ending)
 
 auto const voice_separator = brl(126) >> brl(345) >> *eol;
 
-BOOST_SPIRIT_DEFINE(ending)
-
 auto const measure_def =
-    -ending
- >> (voice % voice_separator)
+    -ending >> (voice % voice_separator)
   ;
 
-auto const key_and_time_signature_def = key_signature >> time_signature;
+auto const key_and_time_signature_def =
+    key_signature >> time_signature
+  ;
 
 auto const whitespace = brl(0);
-auto const paragraph_element_def = key_and_time_signature | measure;
-auto const paragraph_def = paragraph_element % (whitespace | eol);
-auto const measure_specification_def = lower_number >> -(number_sign >> lower_number);
+auto const paragraph_element_def =
+    key_and_time_signature
+  | measure
+  ;
+
+auto const paragraph_def =
+    paragraph_element % (whitespace | eol)
+  ;
+
+auto const measure_specification_def =
+    lower_number
+ >> -(number_sign >> lower_number)
+  ;
+
 auto const measure_range_def =
     number_sign
  >> measure_specification
@@ -335,7 +378,9 @@ auto const measure_range_def =
   > measure_specification
   ;
 
-auto const section_number_def = number_sign >> upper_number;
+auto const section_number_def =
+    number_sign >> upper_number
+  ;
 
 rule<struct indent> const indent = "indent";
 auto const indent_def = repeat(2, inf)[whitespace];
@@ -343,11 +388,9 @@ BOOST_SPIRIT_DEFINE(indent)
 
 rule<struct initial_key_and_time_signature, ast::key_and_time_signature> const
 initial_key_and_time_signature = "initial_key_and_time_signature";
-
 auto const initial_key_and_time_signature_def =
     *whitespace >> key_and_time_signature >> *whitespace >> eol
   ;
-
 BOOST_SPIRIT_DEFINE(initial_key_and_time_signature)
 
 auto const solo_section_def =
@@ -383,7 +426,6 @@ auto const solo_part_def = *(solo_section >> eol) > last_solo_section;
 
 rule<struct keyboard_section_body, std::vector<ast::paragraph>> const
 keyboard_section_body = "keyboard_section_body";
-
 auto const keyboard_section_body_def =
     right_hand_sign
  >> paragraph
@@ -392,7 +434,6 @@ auto const keyboard_section_body_def =
  >> left_hand_sign
  >> paragraph
   ;
-
 BOOST_SPIRIT_DEFINE(keyboard_section_body)
 
 auto const keyboard_section_def =
@@ -405,7 +446,6 @@ auto const keyboard_section_def =
 
 rule<struct last_keyboard_section_body, std::vector<ast::paragraph>> const
 last_keyboard_section_body = "last_keyboard_section_body";
-
 auto const last_keyboard_section_body_def =
     right_hand_sign
  >> paragraph
@@ -416,7 +456,6 @@ auto const last_keyboard_section_body_def =
  >> paragraph
  >> eom
   ;
-
 BOOST_SPIRIT_DEFINE(last_keyboard_section_body)
 
 auto const last_keyboard_section_def =
@@ -427,11 +466,19 @@ auto const last_keyboard_section_def =
  >> last_keyboard_section_body
   ;
 
-auto const keyboard_part_def = *(keyboard_section >> eol) >> last_keyboard_section;
+auto const keyboard_part_def =
+    *(keyboard_section >> eol) >> last_keyboard_section
+  ;
 
-auto const part = keyboard_part | solo_part;
+auto const part =
+    keyboard_part
+  | solo_part
+  ;
 
-auto const score_def = (part % repeat(2, inf)[eol]) >> *eol;
+auto const score_def =
+    (part % repeat(2, inf)[eol])
+ >> *eol
+  ;
 
 struct key_signature : annotate_on_success {};
 struct time_signature : annotate_on_success {};
@@ -439,6 +486,8 @@ struct note : annotate_on_success {};
 struct interval : annotate_on_success {};
 struct moving_note : annotate_on_success {};
 struct chord : annotate_on_success {};
+struct value_distinction : annotate_on_success {};
+struct simile : annotate_on_success {};
 struct partial_voice : annotate_on_success {};
 struct partial_measure : annotate_on_success {};
 struct voice : annotate_on_success {};
@@ -449,7 +498,7 @@ BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
   time_signature, key_signature,
   augmentation_dots,
-  note, moving_note, chord,
+  note, moving_note, chord, value_distinction, simile,
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
