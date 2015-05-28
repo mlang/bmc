@@ -16,6 +16,13 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::clef,
+  (::bmc::braille::parser::ast::clef::type, sign)
+  (::boost::optional<unsigned>, line)
+  (bool, other_staff)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::note,
 //(std::vector<::bmc::articulation>, articulations)
   (boost::optional<::bmc::accidental>, acc)
@@ -27,6 +34,13 @@ BOOST_FUSION_ADAPT_STRUCT(
 //(::bmc::braille::fingering_list, fingers)
 //(boost::optional<::bmc::braille::ast::tie>, tie)
 //(std::vector<::bmc::braille::ast::stem>, extra_stems)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::rest,
+  (bool, by_transcriber)
+  (::bmc::braille::parser::ast::ambiguous_value, ambiguous_value)
+  (unsigned, dots)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -52,6 +66,10 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::value_distinction,
   (::bmc::braille::parser::ast::value_distinction::type, value)
+)
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::tie,
+  (::bmc::braille::parser::ast::tie::type, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

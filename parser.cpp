@@ -104,13 +104,16 @@ upper_number_as_negative = "upper_number_as_negative";
 struct key_signature;
 rule<struct key_signature, ast::key_signature> const
 key_signature = "key_signature";
+rule<struct clef, ast::clef> const clef = "clef";
 rule<struct augmentation_dots, unsigned> const
 augmentation_dots = "augmentation_dots";
 rule<struct note, ast::note> const note = "note";
+rule<struct rest, ast::rest> const rest = "rest";
 rule<struct moving_note, ast::moving_note> const moving_note = "moving_note";
 rule<struct chord, ast::chord> const chord = "chord";
 rule<struct value_distinction, ast::value_distinction> const
 value_distinction = "value_distinction";
+rule<struct tie, ast::tie> const tie = "tie";
 rule<struct simile, ast::simile> const simile = "simile";
 rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
 rule<struct partial_voice, ast::partial_voice> const
@@ -216,6 +219,24 @@ auto const key_signature_def = fifths;
 
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
+auto const clef_def =
+    brl(345)
+ >> ( brl(34)   >> attr(ast::clef::type::G)
+    | brl(346)  >> attr(ast::clef::type::C)
+    | brl(3456) >> attr(ast::clef::type::F)
+    )
+ >> -( brl(4)   >> attr(1)
+     | brl(45)  >> attr(2)
+     | brl(456) >> attr(3)
+     | brl(5)   >> attr(4)
+     | brl(46)  >> attr(5)
+     )
+ >> ( brl(456)  >> attr(false)
+    | brl(46)   >> attr(true)
+    )
+  > optional_dot
+  ;
+
 auto plus_1 = [](auto& ctx)
 {
   _val(ctx) += 1;
@@ -273,6 +294,26 @@ auto const note_def =
  >> augmentation_dots
   ;
 
+auto const rest_def =
+    matches[brl(6)]
+ >> ( brl(134)  >> attr(ast::whole_or_16th)
+    | brl(136)  >> attr(ast::half_or_32th)
+    | brl(1236) >> attr(ast::quarter_or_64th)
+    | brl(1346) >> attr(ast::eighth_or_128th)
+    )
+ >> augmentation_dots
+  ;
+
+auto const single_tie = brl(4, 14);
+auto const chord_tie = brl(46, 14);
+auto const arpeggio_tie = brl(5, 14);
+
+auto const tie_def =
+    single_tie   >> attr(ast::tie::single)
+  | chord_tie    >> attr(ast::tie::chord)
+  | arpeggio_tie >> attr(ast::tie::arpeggio)
+  ;
+
 auto const interval_sign =
     brl(34)   >> attr(second)
   | brl(346)  >> attr(third)
@@ -296,10 +337,8 @@ BOOST_SPIRIT_DEFINE(interval)
 
 auto const moving_note_def = note >> (interval % brl(6));
 
-auto const all_intervals_tied = brl(46) >> brl(14);
-
 auto const chord_def =
-    note >> +interval >> matches[all_intervals_tied]
+    note >> +interval >> matches[chord_tie]
   ;
 
 auto const value_distinction_def =
@@ -319,10 +358,8 @@ auto const simile_def =
   ;
 
 auto const partial_voice_sign_def =
-    moving_note
-  | chord
-  | note
-  | value_distinction
+    moving_note | chord | note | rest
+  | value_distinction | tie
   | simile
   ;
 
@@ -330,13 +367,13 @@ auto const partial_voice_def =
     +partial_voice_sign
   ;
 
-auto const partial_voice_separator = brl(5) >> brl(2) >> *eol;
+auto const partial_voice_separator = brl(5, 2) >> *eol;
 
 auto const partial_measure_def =
     partial_voice % partial_voice_separator
   ;
 
-auto const partial_measure_separator = brl(46) >> brl(13) >> *eol;
+auto const partial_measure_separator = brl(46, 13) >> *eol;
 
 auto const voice_def =
     partial_measure % partial_measure_separator
@@ -346,7 +383,7 @@ rule<class ending, unsigned> const ending = "ending";
 auto const ending_def = number_sign >> lower_number >> optional_dot;
 BOOST_SPIRIT_DEFINE(ending)
 
-auto const voice_separator = brl(126) >> brl(345) >> *eol;
+auto const voice_separator = brl(126, 345) >> *eol;
 
 auto const measure_def =
     -ending >> (voice % voice_separator)
@@ -406,12 +443,10 @@ auto const eom_def = brl(126, 13) >> !brl(3);
 BOOST_SPIRIT_DEFINE(eom)
 
 rule<struct left_hand_sign> const left_hand_sign = "left_hand_sign";
-auto const left_hand_sign_def = brl(456, 345) > optional_dot;
-BOOST_SPIRIT_DEFINE(left_hand_sign)
-
 rule<struct right_hand_sign> const right_hand_sign = "right_hand_sign";
+auto const left_hand_sign_def = brl(456, 345) > optional_dot;
 auto const right_hand_sign_def = brl(46, 345) > optional_dot;
-BOOST_SPIRIT_DEFINE(right_hand_sign)
+BOOST_SPIRIT_DEFINE(left_hand_sign, right_hand_sign)
 
 auto const last_solo_section_def =
     -initial_key_and_time_signature
@@ -481,12 +516,15 @@ auto const score_def =
   ;
 
 struct key_signature : annotate_on_success {};
+struct clef : annotate_on_success {};
 struct time_signature : annotate_on_success {};
 struct note : annotate_on_success {};
+struct rest : annotate_on_success {};
 struct interval : annotate_on_success {};
 struct moving_note : annotate_on_success {};
 struct chord : annotate_on_success {};
 struct value_distinction : annotate_on_success {};
+struct tie : annotate_on_success {};
 struct simile : annotate_on_success {};
 struct partial_voice : annotate_on_success {};
 struct partial_measure : annotate_on_success {};
@@ -496,9 +534,9 @@ struct score : annotate_on_success, report_on_error {};
 
 BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
-  time_signature, key_signature,
+  time_signature, key_signature, clef,
   augmentation_dots,
-  note, moving_note, chord, value_distinction, simile,
+  note, rest, moving_note, chord, value_distinction, tie, simile,
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
