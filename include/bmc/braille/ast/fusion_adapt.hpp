@@ -6,6 +6,13 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::ast::clef,
+  (::bmc::braille::ast::clef::type, sign)
+  (::boost::optional<unsigned>, line)
+  (bool, other_staff)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::ast::slur,
   (::bmc::braille::ast::slur::type, value)
 )

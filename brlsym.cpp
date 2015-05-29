@@ -226,25 +226,5 @@ stem_symbols::stem_symbols()
 
 stem_symbols stem_sign;
 
-clef_symbols::clef_symbols()
-{
-  using ast::clef;
-  add(L"\u281C\u280C\u2807", clef(clef::type::G))
-     (L"\u281C\u280C\u2805", clef(clef::type::G).staff(1))
-     (L"\u281C\u280C\u2808\u2807", clef(clef::type::G, 1))
-     (L"\u281C\u282C\u2807", clef(clef::type::C))
-     (L"\u281C\u282C\u2808\u2807", clef(clef::type::C, 1))
-     (L"\u281C\u282C\u2818\u2807", clef(clef::type::C, 2))
-     (L"\u281C\u282C\u2810\u2807", clef(clef::type::C, 4))
-     (L"\u281C\u282C\u2828\u2807", clef(clef::type::C, 5))
-     (L"\u281C\u283C\u2807", clef(clef::type::F))
-     (L"\u281C\u283C\u2838\u2807", clef(clef::type::F, 3))
-     (L"\u281C\u283C\u2828\u2807", clef(clef::type::F, 5))
-     (L"\u281C\u283C\u2805", clef(clef::type::F).staff(0U))
-     ;
-}
-
-clef_symbols clef_sign;
-
 }}
 

@@ -268,8 +268,8 @@ generator::operator() (braille::ast::clef const &clef) const
     { "soprano", "mezzosoprano", "C", "tenor", "baritone" },       // C-clef
     { nullptr, nullptr, "varbaritone", "F", "subbass" }            // F-clef
   };
-  BOOST_ASSERT(clef.line() > 0);
-  if (char const *name = lily_clef[std::size_t(clef.sign())][clef.line() - 1])
+  BOOST_ASSERT(clef.staff_line() > 0);
+  if (char const *name = lily_clef[std::size_t(clef.sign)][clef.staff_line() - 1])
     std::cout << "\\clef" << ' ' << name;
   else {
     std::cerr << "Unable to transcribe clef to LilyPond" << std::endl;
