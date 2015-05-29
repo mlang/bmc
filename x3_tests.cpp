@@ -18,9 +18,15 @@ BOOST_AUTO_TEST_CASE(time_signature_1)
   std::u32string const input(U"#ab(");
   auto result = bmc::braille::parse_time_signature(input, std::cout);
   auto &ast = std::get<0>(result);
+  auto const &error_handler = std::get<1>(result);
   BOOST_REQUIRE(ast);
   BOOST_CHECK_EQUAL(ast->numerator, 12);
   BOOST_CHECK_EQUAL(ast->denominator, 8);
+  auto const position = error_handler.position_of(*ast);
+  BOOST_CHECK(!position.empty());
+  BOOST_CHECK(position.begin() == input.begin());
+  BOOST_CHECK(position.end() == input.end());
+  std::cout << ast->id_first << ' ' << ast->id_last << std::endl;
   //BOOST_CHECK_EQUAL(*ast, bmc::rational(3, 2));
 }
 
