@@ -71,6 +71,10 @@ BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::tie,
   (::bmc::braille::parser::ast::tie::type, value)
 )
+BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::hand_sign,
+  (::bmc::braille::parser::ast::hand_sign::type, value)
+)
 
 BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::simile,

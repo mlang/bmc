@@ -1,5 +1,3 @@
-//#define BOOST_SPIRIT_X3_DEBUG
-
 #include <bmc/braille/parser/ast_adapted.hpp>
 #include <bmc/braille/parser/parser.hpp>
 #include <boost/spirit/home/support/char_encoding/unicode.hpp>
@@ -19,6 +17,7 @@ using boost::spirit::x3::eol;
 using boost::spirit::x3::eps;
 using boost::spirit::x3::inf;
 using boost::spirit::x3::matches;
+using boost::spirit::x3::omit;
 using boost::spirit::x3::repeat;
 using boost::spirit::x3::rule;
 using boost::spirit::x3::unused_type;
@@ -115,6 +114,7 @@ rule<struct value_distinction, ast::value_distinction> const
 value_distinction = "value_distinction";
 rule<struct tie, ast::tie> const tie = "tie";
 rule<struct simile, ast::simile> const simile = "simile";
+rule<struct hand_sign, ast::hand_sign> const hand_sign = "hand_sign";
 rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
 rule<struct partial_voice, ast::partial_voice> const
 partial_voice = "partial_voice";
@@ -358,9 +358,9 @@ auto const simile_def =
   ;
 
 auto const partial_voice_sign_def =
-    moving_note | chord | note | rest
+    moving_note | chord | note | rest | simile
   | value_distinction | tie
-  | simile
+  | hand_sign
   ;
 
 auto const partial_voice_def =
@@ -442,11 +442,20 @@ rule<struct eom> const eom = "eom";
 auto const eom_def = brl(126, 13) >> !brl(3);
 BOOST_SPIRIT_DEFINE(eom)
 
-rule<struct left_hand_sign> const left_hand_sign = "left_hand_sign";
-rule<struct right_hand_sign> const right_hand_sign = "right_hand_sign";
-auto const left_hand_sign_def = brl(456, 345) > optional_dot;
-auto const right_hand_sign_def = brl(46, 345) > optional_dot;
+rule<struct left_hand_sign, ast::hand_sign::type> const left_hand_sign = "left_hand_sign";
+rule<struct right_hand_sign, ast::hand_sign::type> const right_hand_sign = "right_hand_sign";
+auto const left_hand_sign_def =
+    (brl(456, 345) > optional_dot) >> attr(ast::hand_sign::left_hand)
+  ;
+auto const right_hand_sign_def =
+    (brl(46, 345) > optional_dot) >> attr(ast::hand_sign::right_hand)
+  ;
 BOOST_SPIRIT_DEFINE(left_hand_sign, right_hand_sign)
+
+auto const hand_sign_def =
+    right_hand_sign
+  | left_hand_sign
+  ;
 
 auto const last_solo_section_def =
     -initial_key_and_time_signature
@@ -462,11 +471,11 @@ auto const solo_part_def = *(solo_section >> eol) > last_solo_section;
 rule<struct keyboard_section_body, std::vector<ast::paragraph>> const
 keyboard_section_body = "keyboard_section_body";
 auto const keyboard_section_body_def =
-    right_hand_sign
+    omit[right_hand_sign]
  >> paragraph
  >> eol
  >> indent
- >> left_hand_sign
+ >> omit[left_hand_sign]
  >> paragraph
   ;
 BOOST_SPIRIT_DEFINE(keyboard_section_body)
@@ -482,12 +491,12 @@ auto const keyboard_section_def =
 rule<struct last_keyboard_section_body, std::vector<ast::paragraph>> const
 last_keyboard_section_body = "last_keyboard_section_body";
 auto const last_keyboard_section_body_def =
-    right_hand_sign
+    omit[right_hand_sign]
  >> paragraph
  >> eom
  >> eol
  >> indent
- >> left_hand_sign
+ >> omit[left_hand_sign]
  >> paragraph
  >> eom
   ;
@@ -526,6 +535,7 @@ struct chord : annotate_on_success {};
 struct value_distinction : annotate_on_success {};
 struct tie : annotate_on_success {};
 struct simile : annotate_on_success {};
+struct hand_sign : annotate_on_success {};
 struct partial_voice : annotate_on_success {};
 struct partial_measure : annotate_on_success {};
 struct voice : annotate_on_success {};
@@ -537,7 +547,7 @@ BOOST_SPIRIT_DEFINE(
   time_signature, key_signature, clef,
   augmentation_dots,
   note, rest, moving_note, chord, simile,
-  value_distinction, tie,
+  value_distinction, tie, hand_sign,
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
