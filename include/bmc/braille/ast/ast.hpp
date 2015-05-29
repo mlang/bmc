@@ -241,33 +241,21 @@ public:
   bool doubled() const { return doubled_; }
 };
 
-class clef : public locatable
+struct clef : locatable
 {
-public:
   enum class type { G, C, F };
-private:
-  type sign_;
-  boost::optional<unsigned> line_;
-  boost::optional<unsigned> staff_;
-public:
-  clef(): sign_{type::G} {}
-  clef(type sign): sign_{sign} {}
-  clef(type sign, unsigned line): sign_{sign}, line_{line} {}
+  type sign;
+  boost::optional<unsigned> line;
+  bool other_staff;
 
-  type sign() const { return sign_; }
-  unsigned line() const {
-    if (line_) return *line_;
-    switch(sign_) {
+  unsigned staff_line() const {
+    if (line) return *line;
+    switch(sign) {
     case type::G: return 2;
     case type::F: return 4;
     case type::C: return 3;
     }
   }
-  clef &staff(boost::optional<unsigned> const &n) {
-    staff_ = n;
-    return *this;
-  }
-  boost::optional<unsigned> const &staff() const { return staff_; }
 };
 
 typedef boost::variant< note, rest, chord, moving_note

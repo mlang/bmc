@@ -46,6 +46,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   boost::spirit::_2_type _2;
   boost::spirit::_val_type _val;
   boost::spirit::attr_type attr;
+  boost::spirit::matches_type matches;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;
 
@@ -72,7 +73,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   stem = stem_sign >> dots >> -tie;
 
-  added_by_transcriber = brl(6) >> attr(true) | attr(false);
+  added_by_transcriber = matches[brl(6)];
   rest = added_by_transcriber >> rest_sign >> dots >> -(brl(5) >> brl(14));
 
   chord_tied_sign = brl(46) >> brl(14);
@@ -101,7 +102,23 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   dots = eps[_val = 0] >> *(brl(3)[_val += 1]);
 
-  clef = clef_sign > optional_dot;
+  clef =
+    brl(345)
+ >> ( brl(34)   >> attr(ast::clef::type::G)
+    | brl(346)  >> attr(ast::clef::type::C)
+    | brl(3456) >> attr(ast::clef::type::F)
+    )
+ >> -( brl(4)   >> attr(1)
+     | brl(45)  >> attr(2)
+     | brl(456) >> attr(3)
+     | brl(5)   >> attr(4)
+     | brl(46)  >> attr(5)
+     )
+ >> ( brl(123)  >> attr(false)
+    | brl(13)   >> attr(true)
+    )
+  > optional_dot
+  ;
 
   optional_dot = !dots_123 | (brl(3) > &dots_123);
   hand_sign = braille::hand_sign > optional_dot;
