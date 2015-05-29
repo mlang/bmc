@@ -231,8 +231,8 @@ auto const clef_def =
      | brl(5)   >> attr(4)
      | brl(46)  >> attr(5)
      )
- >> ( brl(456)  >> attr(false)
-    | brl(46)   >> attr(true)
+ >> ( brl(123)  >> attr(false)
+    | brl(13)   >> attr(true)
     )
   > optional_dot
   ;
