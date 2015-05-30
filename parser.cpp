@@ -3,7 +3,6 @@
 #include <boost/spirit/home/support/char_encoding/unicode.hpp>
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
-#include <iostream>
 
 namespace bmc { namespace braille { namespace parser {
 
@@ -173,6 +172,7 @@ auto assign_0 = [](auto& ctx)
 {
   _attr(ctx) = 0;
 };
+
 auto multiply_by_10_plus_attr = [](auto& ctx)
 {
   _val(ctx) = 10 * _val(ctx) + _attr(ctx);
@@ -213,8 +213,9 @@ auto const fifths =
   | repeat(2)[flat_sign]  >> attr(-2)
   | sharp_sign            >> attr(1)
   | flat_sign             >> attr(-1)
-  | number_sign           >> upper_number             >> sharp_sign
-  | number_sign           >> upper_number_as_negative >> flat_sign
+  | number_sign           >> ( upper_number             >> sharp_sign
+                             | upper_number_as_negative >> flat_sign
+                             )
   | eps                   >> attr(0)
   ;
 
