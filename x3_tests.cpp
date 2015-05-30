@@ -1,3 +1,4 @@
+#include <bmc/braille/parser/ast_visitor.hpp>
 #include <bmc/braille/parser/parser.hpp>
 #define BOOST_TEST_MODULE bmc_test
 #if defined(BOOST_TEST_DYN_LINK)
@@ -107,5 +108,22 @@ BOOST_AUTO_TEST_CASE(score_4)
   BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
   BOOST_REQUIRE_EQUAL(ast->parts[0].size(), 1);
   BOOST_REQUIRE_EQUAL(ast->parts[0][0].paragraphs.size(), 2);
+}
+
+BOOST_AUTO_TEST_CASE(visitor_1)
+{
+  class visitor : public bmc::braille::parser::ast::const_visitor<visitor>
+  {
+    std::size_t count = 0;
+  public:
+    bool visit_rhythmic(bmc::braille::parser::ast::rhythmic const& rhythmic)
+    {
+      return true;
+    }
+    std::size_t get_count() const { return count; }
+  } count_rhythmic;
+  bmc::braille::parser::ast::score s;
+  BOOST_REQUIRE(count_rhythmic.traverse_score(s));
+  BOOST_CHECK_EQUAL(count_rhythmic.get_count(), 0);
 }
 
