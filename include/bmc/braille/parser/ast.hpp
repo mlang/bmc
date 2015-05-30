@@ -199,21 +199,11 @@ struct barline : position_tagged
   type value;
 };
 
-class tuplet_start : public position_tagged
+struct tuplet_start : position_tagged
 {
-  bool simple_triplet_;
-  bool doubled_;
-  unsigned number_;
-public:
-  tuplet_start(bool doubled = false)
-  : simple_triplet_{true}, doubled_{doubled} {}
-  tuplet_start(unsigned number, bool doubled)
-  : simple_triplet_{false}, doubled_{doubled}, number_{number} {}
-  tuplet_start(tuplet_start const &) = default;
-
-  unsigned number() const { return simple_triplet_? 3: number_; }
-  bool simple_triplet() const { return simple_triplet_; }
-  bool doubled() const { return doubled_; }
+  unsigned number;
+  bool simple_triplet;
+  bool doubled;
 };
 
 struct clef : public position_tagged

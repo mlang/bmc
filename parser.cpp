@@ -3,6 +3,7 @@
 #include <boost/spirit/home/support/char_encoding/unicode.hpp>
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/support/utility/annotate_on_success.hpp>
+#include <iostream>
 
 namespace bmc { namespace braille { namespace parser {
 
@@ -20,6 +21,7 @@ using boost::spirit::x3::matches;
 using boost::spirit::x3::omit;
 using boost::spirit::x3::repeat;
 using boost::spirit::x3::rule;
+using boost::spirit::x3::with;
 using boost::spirit::x3::unused_type;
 
 template < typename Encoding
@@ -113,6 +115,7 @@ rule<struct chord, ast::chord> const chord = "chord";
 rule<struct value_distinction, ast::value_distinction> const
 value_distinction = "value_distinction";
 rule<struct tie, ast::tie> const tie = "tie";
+rule<struct tuplet_start, ast::tuplet_start> const tuplet_start = "tuplet_start";
 rule<struct simile, ast::simile> const simile = "simile";
 rule<struct hand_sign, ast::hand_sign> const hand_sign = "hand_sign";
 rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
@@ -314,6 +317,30 @@ auto const tie_def =
   | arpeggio_tie >> attr(ast::tie::arpeggio)
   ;
 
+struct number_tag {};
+rule<struct doubled_tuplet_number, unsigned> const
+doubled_tuplet_number = "doubled_tuplet_number";
+auto const doubled_tuplet_number_def = []{
+  unsigned number;
+  return with<number_tag>(number)[
+      number_sign
+   >> lower_number[([](auto &ctx){ get<number_tag>(ctx) = _attr(ctx); })]
+   >> number_sign
+   >> lower_number[
+        ([](auto &ctx){ _pass(ctx) = (get<number_tag>(ctx) == _attr(ctx)); })
+      ]
+   >> brl(3)[([](auto &ctx){ _val(ctx) = get<number_tag>(ctx); })]
+  ];
+}();
+BOOST_SPIRIT_DEFINE(doubled_tuplet_number)
+
+auto const tuplet_start_def =
+    brl(23, 23) >> attr(3)                >> attr(true) >> attr(true)
+  | brl(23)     >> attr(3)                >> attr(true) >> attr(false)
+  | doubled_tuplet_number                 >> attr(false) >> attr(true)
+  | number_sign >> lower_number >> brl(3) >> attr(false) >> attr(false)
+  ;
+
 auto const interval_sign =
     brl(34)   >> attr(second)
   | brl(346)  >> attr(third)
@@ -359,7 +386,7 @@ auto const simile_def =
 
 auto const partial_voice_sign_def =
     moving_note | chord | note | rest | simile
-  | value_distinction | tie
+  | value_distinction | tie | tuplet_start
   | hand_sign
   ;
 
@@ -547,7 +574,7 @@ BOOST_SPIRIT_DEFINE(
   time_signature, key_signature, clef,
   augmentation_dots,
   note, rest, moving_note, chord, simile,
-  value_distinction, tie, hand_sign,
+  value_distinction, tie, tuplet_start, hand_sign,
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
