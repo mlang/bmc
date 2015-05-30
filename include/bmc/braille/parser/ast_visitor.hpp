@@ -28,7 +28,9 @@ public:
   bool all_of(Container &c,
               bool (Derived::*fn)(Ref<typename Container::value_type>))
   {
-    for (auto &v: c) if (!(derived().*fn)(v)) return false;
+    for (Ref<typename Container::value_type> v: c)
+      if (!(derived().*fn)(v))
+        return false;
     return true;
   }
 
@@ -47,66 +49,67 @@ public:
     return true;
   }
 
-#define SIMPLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
-  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) &&                            \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) && \
-           derived().end_of_##NAME(VAR);                                       \
-  }                                                                            \
-  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
-    return derived().visit_##NAME(VAR);                                        \
-  }                                                                            \
-  bool visit_##NAME(Ref<CLASS>) { return true; }                               \
+#define SIMPLE_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME, ELEMENT_CLASS)      \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                               \
+    return derived().walk_up_from_##NAME(VAR) &&                                       \
+           all_of(ACCESSOR,                                                            \
+                  &Derived::traverse_##ELEMENT_NAME,                                   \
+                  &Derived::between_##ELEMENT_NAME) &&                                 \
+           derived().end_of_##NAME(VAR);                                               \
+  }                                                                                    \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                           \
+    return derived().visit_##NAME(VAR);                                                \
+  }                                                                                    \
+  bool visit_##NAME(Ref<CLASS>) { return true; }                                       \
+  bool between_##ELEMENT_NAME(Ref<ELEMENT_CLASS>, Ref<ELEMENT_CLASS>) { return true; } \
   bool end_of_##NAME(Ref<CLASS>) { return true; }
-#define POSITION_TAGGED_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME)             \
-  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) &&                              \
-           all_of(ACCESSOR, &Derived::traverse_##ELEMENT_NAME, &Derived::between_##ELEMENT_NAME) && \
-           derived().end_of_##NAME(VAR);                                       \
-  }                                                                            \
-  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
-    return derived().walk_up_from_position_tagged(                                   \
-               static_cast<Ref<ast::position_tagged>>(VAR)) &&                      \
-           derived().visit_##NAME(VAR);                                        \
-  }                                                                            \
-  bool visit_##NAME(Ref<CLASS>) { return true; }                               \
+
+#define POSITION_TAGGED_CONTAINER(NAME, CLASS, VAR, ACCESSOR, ELEMENT_NAME, ELEMENT_CLASS)            \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                               \
+    return derived().walk_up_from_##NAME(VAR) &&                                       \
+           all_of(ACCESSOR,                                                            \
+                  &Derived::traverse_##ELEMENT_NAME,                                   \
+                  &Derived::between_##ELEMENT_NAME) &&                                 \
+           derived().end_of_##NAME(VAR);                                               \
+  }                                                                                    \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                           \
+    return derived().walk_up_from_position_tagged(                                     \
+               static_cast<Ref<ast::position_tagged>>(VAR)) &&                         \
+           derived().visit_##NAME(VAR);                                                \
+  }                                                                                    \
+  bool visit_##NAME(Ref<CLASS>) { return true; }                                       \
+  bool between_##ELEMENT_NAME(Ref<ELEMENT_CLASS>, Ref<ELEMENT_CLASS>) { return true; } \
   bool end_of_##NAME(Ref<CLASS>) { return true; }
-#define SIMPLE_VARIANT(NAME, CLASS, VAR, VISITOR)                              \
-  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR) &&                               \
-           apply_visitor(derived().VISITOR, VAR);                              \
-  }                                                                            \
-  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
-    return derived().visit_##NAME(VAR);                                        \
-  }                                                                            \
-  bool visit_##NAME(Ref<CLASS>) { return true; }
-#define SIMPLE_BASE(NAME, CLASS, VAR)                                          \
-  bool traverse_##NAME(Ref<CLASS> VAR) {                                       \
-    return derived().walk_up_from_##NAME(VAR);                                 \
-  }                                                                            \
-  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                   \
-    return derived().visit_##NAME(VAR);                                        \
-  }                                                                            \
+
+#define SIMPLE_VARIANT(NAME, CLASS, VAR, VISITOR)                                      \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                               \
+    return derived().walk_up_from_##NAME(VAR) &&                                       \
+           apply_visitor(derived().VISITOR, VAR);                                      \
+  }                                                                                    \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                           \
+    return derived().visit_##NAME(VAR);                                                \
+  }                                                                                    \
   bool visit_##NAME(Ref<CLASS>) { return true; }
 
-  SIMPLE_CONTAINER(score, ast::score, s, s.parts, part)
-  bool between_part(Ref<ast::part>, Ref<ast::part>) { return true; }
-  SIMPLE_CONTAINER(part, ast::part, p, p, section)
-  bool between_section(Ref<ast::section>, Ref<ast::section>) { return true; }
-  SIMPLE_CONTAINER(section, ast::section, s, s.paragraphs, paragraph)
-  bool between_paragraph(Ref<ast::paragraph>, Ref<ast::paragraph>) { return true; }
-  SIMPLE_CONTAINER(paragraph, ast::paragraph, p, p, paragraph_element)
-  bool between_paragraph_element(Ref<ast::paragraph_element>, Ref<ast::paragraph_element>) { return true; }
+#define SIMPLE_BASE(NAME, CLASS, VAR)                                                  \
+  bool traverse_##NAME(Ref<CLASS> VAR) {                                               \
+    return derived().walk_up_from_##NAME(VAR);                                         \
+  }                                                                                    \
+  bool walk_up_from_##NAME(Ref<CLASS> VAR) {                                           \
+    return derived().visit_##NAME(VAR);                                                \
+  }                                                                                    \
+  bool visit_##NAME(Ref<CLASS>) { return true; }
+
+  SIMPLE_CONTAINER(score, ast::score, s, s.parts, part, ast::part)
+  SIMPLE_CONTAINER(part, ast::part, p, p, section, ast::section)
+  SIMPLE_CONTAINER(section, ast::section, s, s.paragraphs, paragraph, ast::paragraph)
+  SIMPLE_CONTAINER(paragraph, ast::paragraph, p, p, paragraph_element, ast::paragraph_element)
   SIMPLE_VARIANT(paragraph_element, ast::paragraph_element, pe,
                  paragraph_element_visitor)
-  POSITION_TAGGED_CONTAINER(measure, ast::measure, m, m.voices, voice)
-  bool between_voice(Ref<ast::voice>, Ref<ast::voice>) { return true; }
-  POSITION_TAGGED_CONTAINER(voice, ast::voice, v, v, partial_measure)
-  bool between_partial_measure(Ref<ast::partial_measure>, Ref<ast::partial_measure>) { return true; }
-  POSITION_TAGGED_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice)
-  bool between_partial_voice(Ref<ast::partial_voice>, Ref<ast::partial_voice>) { return true; }
-  POSITION_TAGGED_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign)
-  bool between_sign(Ref<ast::sign>, Ref<ast::sign>) { return true; }
+  POSITION_TAGGED_CONTAINER(measure, ast::measure, m, m.voices, voice, ast::voice)
+  POSITION_TAGGED_CONTAINER(voice, ast::voice, v, v, partial_measure, ast::partial_measure)
+  POSITION_TAGGED_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice, ast::partial_voice)
+  POSITION_TAGGED_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign, ast::sign)
   SIMPLE_VARIANT(sign, ast::sign, s, sign_visitor)
 
   bool traverse_note(Ref<ast::note> n) {
@@ -185,6 +188,7 @@ public:
   }
 
 #undef SIMPLE_CONTAINER
+#undef POSITION_TAGGED_CONTAINER
 #undef SIMPLE_VARIANT
 #undef SIMPLE_BASE
 
