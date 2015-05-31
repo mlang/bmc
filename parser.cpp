@@ -472,15 +472,12 @@ auto const solo_section_def =
 
 auto const eom = brl(126, 13) >> !brl(3);
 
-rule<struct left_hand_sign, ast::hand_sign::type> const left_hand_sign = "left_hand_sign";
-rule<struct right_hand_sign, ast::hand_sign::type> const right_hand_sign = "right_hand_sign";
-auto const left_hand_sign_def =
+auto const left_hand_sign =
     (brl(456, 345) > optional_dot) >> attr(ast::hand_sign::left_hand)
   ;
-auto const right_hand_sign_def =
+auto const right_hand_sign =
     (brl(46, 345) > optional_dot) >> attr(ast::hand_sign::right_hand)
   ;
-BOOST_SPIRIT_DEFINE(left_hand_sign, right_hand_sign)
 
 auto const hand_sign_def =
     right_hand_sign
