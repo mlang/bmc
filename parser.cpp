@@ -415,9 +415,7 @@ auto const voice_def =
     partial_measure % partial_measure_separator
   ;
 
-rule<class ending, unsigned> const ending = "ending";
-auto const ending_def = number_sign >> lower_number >> optional_dot;
-BOOST_SPIRIT_DEFINE(ending)
+auto const ending = number_sign >> lower_number >> optional_dot;
 
 auto const voice_separator = brl(126, 345) >> *eol;
 
