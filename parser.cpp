@@ -207,12 +207,16 @@ auto const upper_number_as_negative_def =
   ;
 
 auto const fifths =
-    repeat(3)[sharp_sign] >> attr(3)
-  | repeat(3)[flat_sign]  >> attr(-3)
-  | repeat(2)[sharp_sign] >> attr(2)
-  | repeat(2)[flat_sign]  >> attr(-2)
-  | sharp_sign            >> attr(1)
-  | flat_sign             >> attr(-1)
+    sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(3)
+                                  |               attr(2)
+                                  )
+                  |                               attr(1)
+                  )
+  | flat_sign >> ( flat_sign >> ( flat_sign >> attr(-3)
+                                |              attr(-2)
+                                )
+                 |                             attr(-1)
+                 )
   | number_sign           >> ( upper_number             >> sharp_sign
                              | upper_number_as_negative >> flat_sign
                              )
@@ -253,13 +257,17 @@ auto const augmentation_dots_def =
 auto const natural_sign = brl(16);
 
 auto const accidental =
-    repeat(3)[sharp_sign] >> attr(triple_sharp)
-  | repeat(3)[flat_sign]  >> attr(triple_flat)
-  | repeat(2)[sharp_sign] >> attr(double_sharp)
-  | repeat(2)[flat_sign]  >> attr(double_flat)
-  | sharp_sign            >> attr(sharp)
-  | flat_sign             >> attr(flat)
-  | natural_sign          >> attr(natural)
+    sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(triple_sharp)
+                                  |               attr(double_sharp)
+                                  )
+                  |                               attr(sharp)
+                  )
+  | flat_sign >> ( flat_sign >> ( flat_sign >> attr(triple_flat)
+                                |              attr(double_flat)
+                                )
+                 |                             attr(flat)
+                 )
+  | natural_sign                            >> attr(natural)
   ;
 
 auto const octave =
