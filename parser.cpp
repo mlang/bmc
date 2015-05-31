@@ -455,9 +455,7 @@ auto const section_number_def =
     number_sign >> upper_number
   ;
 
-rule<struct indent> const indent = "indent";
-auto const indent_def = repeat(2, inf)[whitespace];
-BOOST_SPIRIT_DEFINE(indent)
+auto const indent = repeat(2, inf)[whitespace];
 
 rule<struct initial_key_and_time_signature, ast::key_and_time_signature> const
 initial_key_and_time_signature = "initial_key_and_time_signature";
@@ -474,9 +472,7 @@ auto const solo_section_def =
  >> paragraph;
   ;
 
-rule<struct eom> const eom = "eom";
-auto const eom_def = brl(126, 13) >> !brl(3);
-BOOST_SPIRIT_DEFINE(eom)
+auto const eom = brl(126, 13) >> !brl(3);
 
 rule<struct left_hand_sign, ast::hand_sign::type> const left_hand_sign = "left_hand_sign";
 rule<struct right_hand_sign, ast::hand_sign::type> const right_hand_sign = "right_hand_sign";
