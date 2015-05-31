@@ -208,19 +208,14 @@ auto const upper_number_as_negative_def =
 
 auto const fifths =
     sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(3)
-                                  |               attr(2)
-                                  )
-                  |                               attr(1)
-                  )
-  | flat_sign >> ( flat_sign >> ( flat_sign >> attr(-3)
-                                |              attr(-2)
-                                )
-                 |                             attr(-1)
-                 )
-  | number_sign           >> ( upper_number             >> sharp_sign
-                             | upper_number_as_negative >> flat_sign
-                             )
-  | eps                   >> attr(0)
+                                  |               attr(2)                 )
+                  |                               attr(1)                 )
+  | flat_sign  >> ( flat_sign  >> ( flat_sign  >> attr(-3)
+                                  |               attr(-2)                )
+                  |                               attr(-1)                )
+  | number_sign                >> ( upper_number             >> sharp_sign
+                                  | upper_number_as_negative >> flat_sign )
+  |                                 attr(0)
   ;
 
 auto const key_signature_def = fifths;
@@ -258,16 +253,12 @@ auto const natural_sign = brl(16);
 
 auto const accidental =
     sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(triple_sharp)
-                                  |               attr(double_sharp)
-                                  )
-                  |                               attr(sharp)
-                  )
-  | flat_sign >> ( flat_sign >> ( flat_sign >> attr(triple_flat)
-                                |              attr(double_flat)
-                                )
-                 |                             attr(flat)
-                 )
-  | natural_sign                            >> attr(natural)
+                                  |               attr(double_sharp) )
+                  |                               attr(sharp)        )
+  | flat_sign  >> ( flat_sign  >> ( flat_sign  >> attr(triple_flat)
+                                  |               attr(double_flat) )
+                  |                               attr(flat)        )
+  | natural_sign                               >> attr(natural)
   ;
 
 auto const octave =
