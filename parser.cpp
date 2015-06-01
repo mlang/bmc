@@ -107,6 +107,8 @@ key_signature = "key_signature";
 rule<struct clef, ast::clef> const clef = "clef";
 rule<struct augmentation_dots, unsigned> const
 augmentation_dots = "augmentation_dots";
+struct fingering;
+rule<struct fingering, ast::fingering> const fingering = "fingering";
 rule<struct note, ast::note> const note = "note";
 rule<struct rest, ast::rest> const rest = "rest";
 rule<struct moving_note, ast::moving_note> const moving_note = "moving_note";
@@ -290,11 +292,25 @@ auto const value =
   | brl_36(0)  >> attr(ast::eighth_or_128th)
   ;
 
+auto const finger =
+    brl(1)   >> attr(1)
+  | brl(12)  >> attr(2)
+  | brl(123) >> attr(3)
+  | brl(2)   >> attr(4)
+  | brl(13)  >> attr(5)
+  ;
+
+auto const fingering_def =
+    +finger >> -(brl(36) >> +finger)
+  | *finger
+  ;
+
 auto const note_def =
     -accidental
  >> -octave
  >> step >> value
  >> augmentation_dots
+ >> fingering
   ;
 
 auto const rest_def =
@@ -358,6 +374,7 @@ auto const interval_def =
     -accidental
  >> -octave
  >> interval_sign
+ >> fingering
   ;
 
 BOOST_SPIRIT_DEFINE(interval)
@@ -545,6 +562,7 @@ auto const score_def =
 struct key_signature : annotate_on_success {};
 struct clef : annotate_on_success {};
 struct time_signature : annotate_on_success {};
+struct fingering : annotate_on_success {};
 struct note : annotate_on_success {};
 struct rest : annotate_on_success {};
 struct interval : annotate_on_success {};
@@ -563,7 +581,7 @@ struct score : annotate_on_success, report_on_error {};
 BOOST_SPIRIT_DEFINE(
   upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
   time_signature, key_signature, clef,
-  augmentation_dots,
+  augmentation_dots, fingering,
   note, rest, moving_note, chord, simile,
   value_distinction, tie, tuplet_start, hand_sign,
   partial_voice_sign, partial_voice, partial_measure, voice,

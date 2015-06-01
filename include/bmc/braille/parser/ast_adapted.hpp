@@ -38,7 +38,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (::bmc::braille::parser::ast::ambiguous_value, ambiguous_value)
   (unsigned, dots)
 //(std::vector<::bmc::braille::ast::slur>, slurs)
-//(::bmc::braille::fingering_list, fingers)
+  (::bmc::braille::parser::ast::fingering, fingers)
 //(boost::optional<::bmc::braille::ast::tie>, tie)
 //(std::vector<::bmc::braille::ast::stem>, extra_stems)
 )
@@ -55,7 +55,7 @@ BOOST_FUSION_ADAPT_STRUCT(
   (boost::optional<::bmc::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
   (::bmc::interval, steps)
-//(::bmc::braille::fingering_list, fingers)
+  (::bmc::braille::parser::ast::fingering, fingers)
 //(boost::optional<::bmc::braille::ast::tie>, tie)
 )
 BOOST_FUSION_ADAPT_STRUCT(

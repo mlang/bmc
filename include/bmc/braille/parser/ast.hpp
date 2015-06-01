@@ -104,11 +104,13 @@ struct stem final : rhythmic
   rational get_type() const override { return type; }
 };
 
+struct fingering : position_tagged, std::vector<std::vector<unsigned>> {};
+
 struct note final : position_tagged, rhythmic_storage, rhythmic, pitched
 {
   std::vector<articulation> articulations;
   std::vector<slur> slurs;
-  fingering_list fingers;
+  fingering fingers;
   std::vector<stem> extra_stems;
 
 //  note(): position_tagged(), rhythmic_storage(), pitched() {}
@@ -140,7 +142,7 @@ struct rest final : position_tagged, rhythmic_storage, rhythmic
 struct interval : position_tagged, pitched
 {
   ::bmc::interval steps;
-  fingering_list fingers;
+  fingering fingers;
 };
 
 struct chord final : position_tagged, rhythmic
