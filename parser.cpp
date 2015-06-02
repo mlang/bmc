@@ -463,12 +463,9 @@ auto const section_number_def =
 
 auto const indent = repeat(2, inf)[whitespace];
 
-rule<struct initial_key_and_time_signature, ast::key_and_time_signature> const
-initial_key_and_time_signature = "initial_key_and_time_signature";
-auto const initial_key_and_time_signature_def =
+auto const initial_key_and_time_signature =
     *whitespace >> key_and_time_signature >> *whitespace >> eol
   ;
-BOOST_SPIRIT_DEFINE(initial_key_and_time_signature)
 
 auto const solo_section_def =
     -initial_key_and_time_signature
