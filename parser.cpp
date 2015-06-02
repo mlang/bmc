@@ -379,7 +379,14 @@ auto const interval_def =
 
 BOOST_SPIRIT_DEFINE(interval)
 
-auto const moving_note_def = note >> (interval % brl(6));
+rule<struct moving_note_intervals, std::vector<ast::interval>> const
+moving_note_intervals = "moving_note_intervals";
+auto const moving_note_intervals_def =
+    interval >> repeat(1, 2)[brl(6) >> interval]
+  ;
+BOOST_SPIRIT_DEFINE(moving_note_intervals)
+
+auto const moving_note_def = note >> moving_note_intervals;
 
 auto const chord_def =
     note >> +interval >> matches[chord_tie]
