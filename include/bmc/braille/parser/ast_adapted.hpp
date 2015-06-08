@@ -31,7 +31,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::note,
-//(std::vector<::bmc::articulation>, articulations)
+  (std::vector<::bmc::articulation>, articulations)
   (boost::optional<::bmc::accidental>, acc)
   (boost::optional<unsigned>, octave_spec)
   (::bmc::diatonic_step, step)

@@ -74,6 +74,11 @@ inline auto brl(unsigned a, unsigned b, unsigned c)
   return brl(a) >> brl(b) >> brl(c);
 }
 
+inline auto brl(unsigned a, unsigned b, unsigned c, unsigned d)
+{
+  return brl(a) >> brl(b) >> brl(c) >> brl(d);
+}
+
 inline brl_parser<char_encoding::unicode, std::bit_and, 0X3F>
 brl_mask(unsigned decimal_dots)
 {
@@ -251,6 +256,28 @@ auto const augmentation_dots_def =
     eps[assign_0] >> *brl(3)[plus_1]
   ;
 
+auto const articulation =
+    brl(26) >> attr(short_appoggiatura)
+  | brl(5, 26) >> attr(appoggiatura)
+  | brl(236) >> attr(staccato)
+  | brl(6, 236) >> attr(staccatissimo)
+  | brl(5, 236) >> attr(mezzo_staccato)
+  | brl(456, 236) >> attr(agogic_accent)
+  | brl(46, 236) >> attr(accent)
+  | brl(256) >> attr(turn_between_notes)
+  | brl(6, 256) >> attr(turn_above_or_below_note)
+  | brl(256, 123) >> attr(inverted_turn_between_notes)
+  | brl(6, 256, 123) >> attr(inverted_turn_above_or_below_note)
+  | brl(5, 235) >> attr(short_trill)
+  | brl(56, 235) >> attr(extended_short_trill)
+  | brl(5, 235, 123) >> attr(mordent)
+  | brl(56, 235, 123) >> attr(extended_mordent)
+  | brl(345, 13) >> attr(arpeggio_up)
+  | brl(5, 345, 13) >> attr(arpeggio_up_multi_staff)
+  | brl(345, 13, 13) >> attr(arpeggio_down)
+  | brl(5, 345, 13, 13) >> attr(arpeggio_down_multi_staff)
+  ;
+
 auto const natural_sign = brl(16);
 
 auto const accidental =
@@ -306,7 +333,8 @@ auto const fingering_def =
   ;
 
 auto const note_def =
-    -accidental
+    *articulation
+ >> -accidental
  >> -octave
  >> step >> value
  >> augmentation_dots
