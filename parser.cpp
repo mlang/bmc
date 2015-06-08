@@ -125,12 +125,6 @@ rule<struct tuplet_start, ast::tuplet_start> const tuplet_start = "tuplet_start"
 rule<struct simile, ast::simile> const simile = "simile";
 rule<struct hand_sign, ast::hand_sign> const hand_sign = "hand_sign";
 rule<struct barline, ast::barline> const barline = "barline";
-rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "partial_voice_sign";
-rule<struct partial_voice, ast::partial_voice> const
-partial_voice = "partial_voice";
-rule<struct partial_measure, ast::partial_measure> const
-partial_measure = "partial_measure";
-rule<struct voice, ast::voice> const voice = "voice";
 rule<struct measure, ast::measure> const measure = "measure";
 rule<struct key_and_time_signature, ast::key_and_time_signature> const
 key_and_time_signature = "key_and_time_signature";
@@ -256,24 +250,24 @@ auto const augmentation_dots_def =
   ;
 
 auto const articulation =
-    brl(26) >> attr(short_appoggiatura)
-  | brl(5, 26) >> attr(appoggiatura)
-  | brl(236) >> attr(staccato)
-  | brl(6, 236) >> attr(staccatissimo)
-  | brl(5, 236) >> attr(mezzo_staccato)
-  | brl(456, 236) >> attr(agogic_accent)
-  | brl(46, 236) >> attr(accent)
-  | brl(256) >> attr(turn_between_notes)
-  | brl(6, 256) >> attr(turn_above_or_below_note)
-  | brl(256, 123) >> attr(inverted_turn_between_notes)
-  | brl(6, 256, 123) >> attr(inverted_turn_above_or_below_note)
-  | brl(5, 235) >> attr(short_trill)
-  | brl(56, 235) >> attr(extended_short_trill)
-  | brl(5, 235, 123) >> attr(mordent)
-  | brl(56, 235, 123) >> attr(extended_mordent)
-  | brl(345, 13) >> attr(arpeggio_up)
-  | brl(5, 345, 13) >> attr(arpeggio_up_multi_staff)
-  | brl(345, 13, 13) >> attr(arpeggio_down)
+    brl(26)             >> attr(short_appoggiatura)
+  | brl(5, 26)          >> attr(appoggiatura)
+  | brl(236)            >> attr(staccato)
+  | brl(6, 236)         >> attr(staccatissimo)
+  | brl(5, 236)         >> attr(mezzo_staccato)
+  | brl(456, 236)       >> attr(agogic_accent)
+  | brl(46, 236)        >> attr(accent)
+  | brl(256)            >> attr(turn_between_notes)
+  | brl(6, 256)         >> attr(turn_above_or_below_note)
+  | brl(256, 123)       >> attr(inverted_turn_between_notes)
+  | brl(6, 256, 123)    >> attr(inverted_turn_above_or_below_note)
+  | brl(5, 235)         >> attr(short_trill)
+  | brl(56, 235)        >> attr(extended_short_trill)
+  | brl(5, 235, 123)    >> attr(mordent)
+  | brl(56, 235, 123)   >> attr(extended_mordent)
+  | brl(345, 13)        >> attr(arpeggio_up)
+  | brl(5, 345, 13)     >> attr(arpeggio_up_multi_staff)
+  | brl(345, 13, 13)    >> attr(arpeggio_down)
   | brl(5, 345, 13, 13) >> attr(arpeggio_down_multi_staff)
   ;
 
@@ -435,27 +429,17 @@ auto const simile_def =
     )
   ;
 
-auto const partial_voice_sign_def =
+auto const partial_voice_sign =
     moving_note | chord | note | rest | simile
   | value_distinction | tie | tuplet_start
   | hand_sign | barline
   ;
 
-auto const partial_voice_def =
-    +partial_voice_sign
-  ;
-
-auto const partial_voice_separator = brl(5, 2) >> *eol;
-
-auto const partial_measure_def =
-    partial_voice % partial_voice_separator
-  ;
-
+auto const partial_voice             = +partial_voice_sign;
+auto const partial_voice_separator   = brl(5, 2) >> *eol;
+auto const partial_measure           = partial_voice % partial_voice_separator;
 auto const partial_measure_separator = brl(46, 13) >> *eol;
-
-auto const voice_def =
-    partial_measure % partial_measure_separator
-  ;
+auto const voice                     = partial_measure % partial_measure_separator;
 
 auto const ending = number_sign >> lower_number >> optional_dot;
 
@@ -622,7 +606,6 @@ BOOST_SPIRIT_DEFINE(
   augmentation_dots, fingering,
   note, rest, moving_note, chord, simile,
   value_distinction, tie, tuplet_start, hand_sign, barline,
-  partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
   keyboard_section, last_keyboard_section, keyboard_part,
