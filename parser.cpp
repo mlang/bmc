@@ -124,7 +124,8 @@ rule<struct tie, ast::tie> const tie = "tie";
 rule<struct tuplet_start, ast::tuplet_start> const tuplet_start = "tuplet_start";
 rule<struct simile, ast::simile> const simile = "simile";
 rule<struct hand_sign, ast::hand_sign> const hand_sign = "hand_sign";
-rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "sign";
+rule<struct barline, ast::barline> const barline = "barline";
+rule<struct partial_voice_sign, ast::sign> const partial_voice_sign = "partial_voice_sign";
 rule<struct partial_voice, ast::partial_voice> const
 partial_voice = "partial_voice";
 rule<struct partial_measure, ast::partial_measure> const
@@ -437,7 +438,7 @@ auto const simile_def =
 auto const partial_voice_sign_def =
     moving_note | chord | note | rest | simile
   | value_distinction | tie | tuplet_start
-  | hand_sign
+  | hand_sign | barline
   ;
 
 auto const partial_voice_def =
@@ -522,6 +523,12 @@ auto const hand_sign_def =
   | left_hand_sign
   ;
 
+auto const barline_def =
+    brl(126, 2356)   >> attr(ast::barline::begin_repeat)
+  | brl(126, 23)     >> attr(ast::barline::end_repeat)
+  | brl(126, 13, 3)  >> attr(ast::barline::end_part)
+  ;
+
 auto const last_solo_section_def =
     -initial_key_and_time_signature
  >> -indent
@@ -602,6 +609,7 @@ struct value_distinction : annotate_on_success {};
 struct tie : annotate_on_success {};
 struct simile : annotate_on_success {};
 struct hand_sign : annotate_on_success {};
+struct barline : annotate_on_success {};
 struct partial_voice : annotate_on_success {};
 struct partial_measure : annotate_on_success {};
 struct voice : annotate_on_success {};
@@ -613,7 +621,7 @@ BOOST_SPIRIT_DEFINE(
   time_signature, key_signature, clef,
   augmentation_dots, fingering,
   note, rest, moving_note, chord, simile,
-  value_distinction, tie, tuplet_start, hand_sign,
+  value_distinction, tie, tuplet_start, hand_sign, barline,
   partial_voice_sign, partial_voice, partial_measure, voice,
   measure, key_and_time_signature, paragraph_element,
   paragraph, section_number, measure_specification, measure_range,
@@ -632,11 +640,10 @@ parse_with_error_handler(Iterator &first, Iterator const &last, Parser const &p,
 
   typename attribute_of<Parser, Context>::type attribute;
   bool success = parse(first, last,
-    boost::spirit::x3::with<parser::error_handler_tag>(ref(error_handler))[p],
-    attribute);
+    with<error_handler_tag>(ref(error_handler))[p], attribute);
 
   if (success && first != last && full_match) {
-    error_handler(first, "Error! Expected end of input here: ");
+    error_handler(first, "Error! Expected end of input here:");
     success = false;
   }
 

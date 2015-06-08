@@ -84,6 +84,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+  ::bmc::braille::parser::ast::barline,
+  (::bmc::braille::parser::ast::barline::type, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
   ::bmc::braille::parser::ast::simile,
   (boost::optional<unsigned>, octave_spec)
   (unsigned, count)
