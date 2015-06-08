@@ -594,9 +594,6 @@ struct tie : annotate_on_success {};
 struct simile : annotate_on_success {};
 struct hand_sign : annotate_on_success {};
 struct barline : annotate_on_success {};
-struct partial_voice : annotate_on_success {};
-struct partial_measure : annotate_on_success {};
-struct voice : annotate_on_success {};
 struct measure : annotate_on_success {};
 struct score : annotate_on_success, report_on_error {};
 

@@ -238,9 +238,9 @@ struct sign : variant<
   using base_type::operator=;
 };
 
-struct partial_voice : position_tagged, std::vector<sign> {};
-struct partial_measure : position_tagged, std::vector<partial_voice> {};
-struct voice : position_tagged, std::vector<partial_measure> {};
+struct partial_voice : std::vector<sign> {};
+struct partial_measure : std::vector<partial_voice> {};
+struct voice : std::vector<partial_measure> {};
 
 struct measure : position_tagged
 {

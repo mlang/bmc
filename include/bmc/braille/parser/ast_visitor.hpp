@@ -107,9 +107,9 @@ public:
   SIMPLE_VARIANT(paragraph_element, ast::paragraph_element, pe,
                  paragraph_element_visitor)
   POSITION_TAGGED_CONTAINER(measure, ast::measure, m, m.voices, voice, ast::voice)
-  POSITION_TAGGED_CONTAINER(voice, ast::voice, v, v, partial_measure, ast::partial_measure)
-  POSITION_TAGGED_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice, ast::partial_voice)
-  POSITION_TAGGED_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign, ast::sign)
+  SIMPLE_CONTAINER(voice, ast::voice, v, v, partial_measure, ast::partial_measure)
+  SIMPLE_CONTAINER(partial_measure, ast::partial_measure, pm, pm, partial_voice, ast::partial_voice)
+  SIMPLE_CONTAINER(partial_voice, ast::partial_voice, pv, pv, sign, ast::sign)
   SIMPLE_VARIANT(sign, ast::sign, s, sign_visitor)
 
   bool traverse_note(Ref<ast::note> n) {
