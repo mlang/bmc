@@ -47,6 +47,24 @@ BOOST_AUTO_TEST_CASE(key_signature_1)
   test_key_signature(U"#d2", -4);
 }
 
+BOOST_AUTO_TEST_CASE(key_and_time_signature_1)
+{
+  auto test_key_and_time_signature = [](std::u32string input, int fifths, int numerator, int denominator)
+  {
+    auto result = bmc::braille::parse_key_and_time_signature(input, std::cout);
+    auto &ast = std::get<0>(result);
+    BOOST_REQUIRE(ast);
+    BOOST_CHECK_EQUAL(ast->key.fifths, fifths);
+    BOOST_CHECK_EQUAL(ast->time.numerator, numerator);
+    BOOST_CHECK_EQUAL(ast->time.denominator, denominator);
+  };
+  test_key_and_time_signature(U"#d/", 0, 4, 4);
+  test_key_and_time_signature(U"3#c/", 1, 3, 4);
+  test_key_and_time_signature(U"2#f(", -1, 6, 8);
+  test_key_and_time_signature(U"#d3#d/", 4, 4, 4);
+  test_key_and_time_signature(U"#d2#d/", -4, 4, 4);
+}
+
 BOOST_AUTO_TEST_CASE(note_1)
 {
   auto test_note = [](std::u32string input, boost::optional<bmc::accidental> acc, bmc::diatonic_step step, bmc::braille::parser::ast::ambiguous_value value)
@@ -118,6 +136,7 @@ BOOST_AUTO_TEST_CASE(visitor_1)
   public:
     bool visit_rhythmic(bmc::braille::parser::ast::rhythmic const& rhythmic)
     {
+      count++;
       return true;
     }
     std::size_t get_count() const { return count; }
@@ -125,5 +144,16 @@ BOOST_AUTO_TEST_CASE(visitor_1)
   bmc::braille::parser::ast::score s;
   BOOST_REQUIRE(count_rhythmic.traverse_score(s));
   BOOST_CHECK_EQUAL(count_rhythmic.get_count(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(tuplet_start_1)
+{
+  std::u32string const input = U"#=#=.!ydddddd==#=.=2k";
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE_EQUAL(ast->parts.size(), 1);
+  BOOST_REQUIRE_EQUAL(ast->parts[0].size(), 1);
+  BOOST_REQUIRE_EQUAL(ast->parts[0][0].paragraphs.size(), 1);
 }
 

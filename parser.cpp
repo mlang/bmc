@@ -196,9 +196,9 @@ auto const lower_number_def =
 auto const number_sign = brl(3456);
 
 auto const time_signature_def =
-    number_sign >> upper_number >> lower_number
-  | brl(46)     >> attr(4)      >> attr(4)
-  | brl(456)    >> attr(4)      >> attr(4)
+    number_sign  >> upper_number >> lower_number
+  | brl(46, 14)  >> attr(4)      >> attr(4)
+  | brl(456, 14) >> attr(4)      >> attr(4)
   ;
 
 auto const sharp_sign = brl(146);
@@ -213,7 +213,7 @@ auto const upper_number_as_negative_def =
     eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr]
   ;
 
-auto const fifths =
+auto const key_signature_def =
     sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(3)
                                   |               attr(2)                 )
                   |                               attr(1)                 )
@@ -224,8 +224,6 @@ auto const fifths =
                                   | upper_number_as_negative >> flat_sign )
   |                                 attr(0)
   ;
-
-auto const key_signature_def = fifths;
 
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
 
@@ -678,6 +676,16 @@ auto parse_note(std::u32string const& input,
   auto iter = input.begin();
   return parser::parse_with_error_handler(
     iter, input.end(), parser::note, out, filename, full_match);
+}
+
+auto parse_key_and_time_signature(std::u32string const& input,
+  std::ostream &out, std::string filename, bool full_match
+) -> parser::result_t<parser::ast::key_and_time_signature,
+                      std::remove_reference<decltype(input)>::type::const_iterator>
+{
+  auto iter = input.begin();
+  return parser::parse_with_error_handler(
+    iter, input.end(), parser::key_and_time_signature, out, filename, full_match);
 }
 
 auto parse_measure(std::u32string const& input,
