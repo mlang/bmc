@@ -7,6 +7,7 @@
 #ifndef BMC_MATH_HPP
 #define BMC_MATH_HPP
 
+#include <boost/integer/common_factor_rt.hpp>
 #include <boost/rational.hpp>
 
 namespace boost {
@@ -54,7 +55,7 @@ namespace boost {
     return positive? result: reciprocal(result);
   }
 
-  namespace math {
+  namespace integer {
     template <typename IntType>
     struct gcd_evaluator< rational<IntType> >
     {
