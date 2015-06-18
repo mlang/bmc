@@ -13,6 +13,7 @@ using boost::spirit::x3::attr;
 using boost::spirit::x3::traits::attribute_of;
 namespace char_encoding = boost::spirit::char_encoding;
 using boost::spirit::x3::char_parser;
+using boost::spirit::x3::eoi;
 using boost::spirit::x3::eol;
 using boost::spirit::x3::eps;
 using boost::spirit::x3::inf;
@@ -24,7 +25,7 @@ using boost::spirit::x3::with;
 using boost::spirit::x3::unused_type;
 
 template < typename Encoding
-         , template<typename> typename BinaryPredicate = std::equal_to
+         , template<class> class BinaryPredicate = std::equal_to
          , uint8_t Mask = 0XFF
          >
 struct brl_parser : char_parser<brl_parser<Encoding, BinaryPredicate, Mask>>
@@ -40,8 +41,9 @@ struct brl_parser : char_parser<brl_parser<Encoding, BinaryPredicate, Mask>>
     while (decimal_dots) {
       auto const digit = decimal_dots % 10;
       BOOST_ASSERT((digit > 0) && (digit < 9));
-      BOOST_ASSERT(dots ^ (1 << (digit - 1)));
-      dots |= 1 << (digit - 1);
+      auto const bit = 1 << (digit - 1);
+      BOOST_ASSERT(dots ^ bit);
+      dots |= bit;
       decimal_dots /= 10;
     }
     BOOST_ASSERT(!(~Mask & dots));
@@ -51,7 +53,7 @@ struct brl_parser : char_parser<brl_parser<Encoding, BinaryPredicate, Mask>>
   bool test(Char ch, Context const& context) const
   {
     return ((sizeof(Char) <= sizeof(char_type)) || encoding::ischar(ch))
-        && !encoding::iscntrl(ch)
+        && encoding::isprint(ch)
         && BinaryPredicate<uint8_t>{}(get_dots_for_character(ch) & Mask, dots);
   }
 
@@ -421,18 +423,23 @@ auto const value_distinction_def =
 
 auto const simile_def =
     -octave
- >> ( brl(2356, 2356, 2356) >> attr(3)
-    | brl(2356, 2356)       >> attr(2)
-    | brl(2356)             >> ( ( number_sign > upper_number )
-                               | attr(1)
-                               )
-    )
+ >> brl(2356) >> ( brl(2356) >> ( brl(2356) >> attr(3)
+                                |              attr(2)       )
+                 | ( number_sign             > upper_number )
+                 |                             attr(1)       )
   ;
 
 auto const partial_voice_sign =
-    moving_note | chord | note | rest | simile
-  | value_distinction | tie | tuplet_start
-  | hand_sign | barline
+    moving_note
+  | chord
+  | note
+  | rest
+  | simile
+  | value_distinction
+  | tie
+  | tuplet_start
+  | hand_sign
+  | barline
   ;
 
 auto const partial_voice             = +partial_voice_sign;
@@ -440,18 +447,13 @@ auto const partial_voice_separator   = brl(5, 2) >> *eol;
 auto const partial_measure           = partial_voice % partial_voice_separator;
 auto const partial_measure_separator = brl(46, 13) >> *eol;
 auto const voice                     = partial_measure % partial_measure_separator;
+auto const voice_separator           = brl(126, 345) >> *eol;
 
 auto const ending = number_sign >> lower_number >> optional_dot;
 
-auto const voice_separator = brl(126, 345) >> *eol;
+auto const measure_def = -ending >> (voice % voice_separator);
 
-auto const measure_def =
-    -ending >> (voice % voice_separator)
-  ;
-
-auto const key_and_time_signature_def =
-    key_signature >> time_signature
-  ;
+auto const key_and_time_signature_def = key_signature >> time_signature;
 
 auto const whitespace = brl(0);
 auto const paragraph_element_def =
@@ -459,9 +461,7 @@ auto const paragraph_element_def =
   | measure
   ;
 
-auto const paragraph_def =
-    paragraph_element % (whitespace | eol)
-  ;
+auto const paragraph_def = paragraph_element % (whitespace | eol);
 
 auto const measure_specification_def =
     lower_number
@@ -475,9 +475,7 @@ auto const measure_range_def =
   > measure_specification
   ;
 
-auto const section_number_def =
-    number_sign >> upper_number
-  ;
+auto const section_number_def = number_sign >> upper_number;
 
 auto const indent = repeat(2, inf)[whitespace];
 
@@ -498,6 +496,7 @@ auto const eom = brl(126, 13) >> !brl(3);
 auto const left_hand_sign =
     (brl(456, 345) > optional_dot) >> attr(ast::hand_sign::left_hand)
   ;
+
 auto const right_hand_sign =
     (brl(46, 345) > optional_dot) >> attr(ast::hand_sign::right_hand)
   ;
@@ -576,7 +575,7 @@ auto const part =
   ;
 
 auto const score_def =
-    (part % repeat(2, inf)[eol])
+    (part % (repeat(2, inf)[eol] >> !eoi))
  >> *eol
   ;
 
