@@ -7,6 +7,7 @@
 #include "bmc/lilypond.hpp"
 #include <algorithm>
 #include <iterator>
+#include <iostream>
 
 namespace bmc { namespace lilypond {
 
@@ -443,27 +444,33 @@ generator::ly_clef(std::string const& clef) const
 
 namespace {
 
-class print_fingering: public boost::static_visitor<std::ostream &>
+class print_fingering: public boost::static_visitor<>
 {
   std::ostream &os;
 public:
   print_fingering(std::ostream &os): os(os) {}
   result_type operator() (braille::finger_change const &change) const
   {
-    return os << "^\\markup { \\finger \"" 
-              << change.first << " - " << change.second
-              << "\" }";
+    os << "^\\markup { \\finger \"" 
+       << change.first << " - " << change.second
+       << "\" }";
+
+    return;
   }
   result_type operator() (unsigned finger) const
-  { return os << "-" << finger; }
+  {
+    os << "-" << finger;
+
+    return;
+  }
 };
 
-}
+} // namespace
 
 void
 generator::ly_finger(braille::fingering_list const &fingers) const
 {
-  print_fingering write_to_stream(os);
+  print_fingering const write_to_stream(os);
   for_each(fingers.begin(), fingers.end(), apply_visitor(write_to_stream));
 }
 

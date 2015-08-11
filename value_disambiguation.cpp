@@ -503,7 +503,7 @@ public:
 
         if (stack_begin == stack_end && position == 0 &&
             state.time_signature != 1 && maybe_whole_measure_rest(*iterator)) {
-          *stack_end = value_proxy(boost::get<ast::rest&>(*iterator), state.time_signature);
+          *stack_end = value_proxy(boost::get<ast::rest>(*iterator), state.time_signature);
           recurse( std::next(iterator), end, stack_begin, std::next(stack_end)
                  , zero, position + state.time_signature, tuplet);
         }

@@ -581,9 +581,9 @@ BOOST_AUTO_TEST_CASE(score_multiple_time_sigs) {
 
 BOOST_AUTO_TEST_CASE(common_factor) {
   ::bmc::rational const a(1, 4), b(1, 8), c(1, 12), d(1, 24);
-  BOOST_CHECK_EQUAL(boost::math::gcd(a, b), b);
-  BOOST_CHECK_EQUAL(boost::math::gcd(b, c), d);
-  BOOST_CHECK_EQUAL(boost::math::lcm(b, c), a);
+  BOOST_CHECK_EQUAL(boost::integer::gcd(a, b), b);
+  BOOST_CHECK_EQUAL(boost::integer::gcd(b, c), d);
+  BOOST_CHECK_EQUAL(boost::integer::lcm(b, c), a);
 }
 
 #include "bmc/musicxml.hpp"

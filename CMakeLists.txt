@@ -18,7 +18,7 @@ if(bmc_USE_PYTHON)
   find_package(PythonInterp)
   set(bmc_REQUIRED_BOOST_COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS} python)
 endif(bmc_USE_PYTHON)
-find_package(Boost 1.54.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
+find_package(Boost 1.58.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
 find_package(Threads)
 include_directories(
   ${bmc_BINARY_DIR}
