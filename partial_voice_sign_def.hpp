@@ -44,6 +44,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   ::bmc::braille::brl_type brl;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
+  boost::spirit::_3_type _3;
   boost::spirit::_val_type _val;
   boost::spirit::attr_type attr;
   boost::spirit::matches_type matches;
@@ -127,7 +128,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
                                 annotation_function(error_handler.ranges)\
-                                (_val, _1, _2))
+                                (_val, _1, _3))
   BMC_LOCATABLE_SET_ID(note);
   BMC_LOCATABLE_SET_ID(rest);
   BMC_LOCATABLE_SET_ID(interval);

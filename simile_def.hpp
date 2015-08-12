@@ -35,6 +35,7 @@ simile_grammar<Iterator>::simile_grammar(error_handler<Iterator>& error_handler)
   boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
   boost::spirit::_2_type _2;
+  boost::spirit::_3_type _3;
   boost::spirit::_val_type _val;
   using boost::phoenix::at_c;
 
@@ -49,7 +50,7 @@ simile_grammar<Iterator>::simile_grammar(error_handler<Iterator>& error_handler)
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
                                 annotation_function(error_handler.ranges)\
-                                (_val, _1, _2))
+                                (_val, _1, _3))
   BMC_LOCATABLE_SET_ID(start);
 #undef BMC_LOCATABLE_SET_ID
 }
