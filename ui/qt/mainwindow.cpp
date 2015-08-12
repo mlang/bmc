@@ -564,8 +564,8 @@ void BrailleMusicEditor::goToObject(int id) {
 
     bool visit_locatable(::bmc::braille::ast::locatable const &lexeme) {
       if (lexeme.id == target_id) {
-        line = lexeme.line;
-        column = lexeme.column;
+        line = lexeme.begin_line;
+        column = lexeme.begin_column;
         return false;
       }
       return true;

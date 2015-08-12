@@ -11,6 +11,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <boost/range/iterator_range.hpp>
 
 namespace bmc { namespace braille {
 
@@ -95,7 +96,7 @@ namespace bmc { namespace braille {
     }
 
     iterator_type first, last;
-    std::vector<iterator_type> iters;
+    std::vector<boost::iterator_range<iterator_type>> ranges;
     std::shared_ptr<std::vector<string_type>> messages;
   };
 

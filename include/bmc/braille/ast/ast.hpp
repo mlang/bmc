@@ -38,7 +38,7 @@ enum value
 struct locatable
 {
   int id = -1;
-  int line, column;
+  int begin_line, begin_column, end_line, end_column;
 };
 
 enum class notegroup_member_type: uint8_t {

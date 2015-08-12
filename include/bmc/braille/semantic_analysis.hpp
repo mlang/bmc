@@ -257,7 +257,7 @@ public:
           , ::bmc::time_signature const& time_signature = ::bmc::time_signature(4, 4)
           )
   : compiler_pass( [&error_handler](int tag, std::wstring const &what)
-                   { error_handler(L"Error", what, error_handler.iters[tag]); }
+                   { error_handler(L"Error", what, error_handler.ranges[tag].begin()); }
                  )
   , error_handler(error_handler)
   , calculate_locations(report_error, error_handler)

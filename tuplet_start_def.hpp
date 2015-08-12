@@ -47,7 +47,7 @@ tuplet_start_grammar<Iterator>::tuplet_start_grammar(error_handler<Iterator>& er
 
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
-                                annotation_function(error_handler.iters)\
+                                annotation_function(error_handler.ranges)\
                                 (_val, _1, _2))
   BMC_LOCATABLE_SET_ID(start);
 #undef BMC_LOCATABLE_SET_ID

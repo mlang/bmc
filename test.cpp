@@ -155,8 +155,8 @@ BOOST_AUTO_TEST_CASE(measure_test2) {
   BOOST_CHECK_EQUAL(boost::apply_visitor(::bmc::braille::ast::get_line(), sign), line);\
   BOOST_CHECK_EQUAL(boost::apply_visitor(::bmc::braille::ast::get_column(), sign), column)
 #define BMC_CHECK_LOCATABLE_LOCATION(locatable, LINE, COLUMN) \
-  BOOST_CHECK_EQUAL(locatable.line, LINE);\
-  BOOST_CHECK_EQUAL(locatable.column, COLUMN)
+  BOOST_CHECK_EQUAL(locatable.begin_line, LINE);\
+  BOOST_CHECK_EQUAL(locatable.begin_column, COLUMN)
 
 BOOST_AUTO_TEST_CASE(measure_interpretations_test1) {
   std::wstring const input(L"_r72`v$k_t!,v!5");
@@ -271,8 +271,8 @@ BOOST_AUTO_TEST_CASE(compiler_test1) {
   BOOST_CHECK(attribute.voices[0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0].size() == 1);
   BOOST_CHECK(attribute.voices[0][0][0].size() == 9);
-  BOOST_CHECK_EQUAL(errors.iters.size(), std::size_t(31));
-  BOOST_CHECK(errors.iters[0] == input.begin());
+  BOOST_CHECK_EQUAL(errors.ranges.size(), std::size_t(31));
+  BOOST_CHECK(errors.ranges[0].begin() == input.begin());
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(boost::apply_visitor(get_type(), attribute.voices[0][0][0][0]), ::bmc::rational(1, 16));

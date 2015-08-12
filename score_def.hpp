@@ -132,7 +132,7 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
 
 #define BMC_LOCATABLE_SET_ID(rule) \
   boost::spirit::qi::on_success(rule,\
-                                annotation_function(error_handler.iters)\
+                                annotation_function(error_handler.ranges)\
                                 (_val, _1, _2))
   BMC_LOCATABLE_SET_ID(measure_specification);
   BMC_LOCATABLE_SET_ID(measure_range);

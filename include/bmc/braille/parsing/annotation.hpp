@@ -20,18 +20,18 @@ struct annotation
   template <typename>
   struct result { typedef void type; };
 
-  std::vector<Iterator>& iters;
-  annotation(std::vector<Iterator>& iters)
-  : iters(iters)
+  std::vector<boost::iterator_range<Iterator>>& ranges;
+  annotation(std::vector<boost::iterator_range<Iterator>>& ranges)
+  : ranges(ranges)
   {
   }
 
   void operator()( ast::locatable& ast
-                 , Iterator begin, Iterator /*end*/
+                 , Iterator begin, Iterator end
                  ) const
   {
-    std::size_t id = iters.size();
-    iters.push_back(begin);
+    std::size_t id = ranges.size();
+    ranges.emplace_back(begin, end);
     ast.id = id;
   }
 };
