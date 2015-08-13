@@ -67,10 +67,12 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
 
   textEdit = new QTextEdit(this);
   textEdit->setWordWrapMode(QTextOption::NoWrap);
-  connect(textEdit, SIGNAL(currentCharFormatChanged(QTextCharFormat)), this,
-          SLOT(currentCharFormatChanged(QTextCharFormat)));
-  connect(textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChanged()));
-  connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
+  connect(textEdit, &QTextEdit::currentCharFormatChanged,
+          this, &BrailleMusicEditor::currentCharFormatChanged);
+  connect(textEdit, &QTextEdit::cursorPositionChanged,
+          this, &BrailleMusicEditor::cursorPositionChanged);
+  connect(textEdit, &QTextEdit::textChanged,
+          this, &BrailleMusicEditor::textChanged);
 
   svgScrollArea = new QScrollArea(this);
   svgScrollArea->setFocusPolicy(Qt::NoFocus);
@@ -98,45 +100,46 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   fontChanged(textEdit->font());
   colorChanged(textEdit->textColor());
 
-  connect(textEdit->document(), SIGNAL(modificationChanged(bool)),
-          actionSave, SLOT(setEnabled(bool)));
-  connect(textEdit->document(), SIGNAL(modificationChanged(bool)),
-          this, SLOT(setWindowModified(bool)));
-  connect(textEdit->document(), SIGNAL(undoAvailable(bool)),
-          actionUndo, SLOT(setEnabled(bool)));
-  connect(textEdit->document(), SIGNAL(redoAvailable(bool)),
-          actionRedo, SLOT(setEnabled(bool)));
+  connect(textEdit->document(), &QTextDocument::modificationChanged,
+          actionSave, &QAction::setEnabled);
+  connect(textEdit->document(), &QTextDocument::modificationChanged,
+          this, &BrailleMusicEditor::setWindowModified);
+  connect(textEdit->document(), &QTextDocument::undoAvailable,
+          actionUndo, &QAction::setEnabled);
+  connect(textEdit->document(), &QTextDocument::redoAvailable,
+          actionRedo, &QAction::setEnabled);
 
   setWindowModified(textEdit->document()->isModified());
   actionSave->setEnabled(textEdit->document()->isModified());
   actionUndo->setEnabled(textEdit->document()->isUndoAvailable());
   actionRedo->setEnabled(textEdit->document()->isRedoAvailable());
 
-  connect(actionUndo, SIGNAL(triggered()), textEdit, SLOT(undo()));
-  connect(actionRedo, SIGNAL(triggered()), textEdit, SLOT(redo()));
+  connect(actionUndo, &QAction::triggered, textEdit, &QTextEdit::undo);
+  connect(actionRedo, &QAction::triggered, textEdit, &QTextEdit::redo);
 
   actionCut->setEnabled(false);
   actionCopy->setEnabled(false);
 
-  connect(actionCut, SIGNAL(triggered()), textEdit, SLOT(cut()));
-  connect(actionCopy, SIGNAL(triggered()), textEdit, SLOT(copy()));
-  connect(actionPaste, SIGNAL(triggered()), textEdit, SLOT(paste()));
+  connect(actionCut, &QAction::triggered, textEdit, &QTextEdit::cut);
+  connect(actionCopy, &QAction::triggered, textEdit, &QTextEdit::copy);
+  connect(actionPaste, &QAction::triggered, textEdit, &QTextEdit::paste);
 
-  connect(textEdit, SIGNAL(copyAvailable(bool)),
-          actionCut, SLOT(setEnabled(bool)));
-  connect(textEdit, SIGNAL(copyAvailable(bool)),
-          actionCopy, SLOT(setEnabled(bool)));
+  connect(textEdit, &QTextEdit::copyAvailable, actionCut, &QAction::setEnabled);
+  connect(textEdit, &QTextEdit::copyAvailable, actionCopy, &QAction::setEnabled);
 
 #ifndef QT_NO_CLIPBOARD
   connect(QApplication::clipboard(), SIGNAL(dataChanged()),
           this, SLOT(clipboardDataChanged()));
 #endif
 
-  connect(&lilypond, SIGNAL(started()), this, SLOT(lilyPondStarted()));
-  connect(&lilypond, SIGNAL(finished(int, QProcess::ExitStatus)),
-          this, SLOT(lilyPondFinished(int, QProcess::ExitStatus)));
-  connect(&lilypond, SIGNAL(error(QProcess::ProcessError)),
-          this, SLOT(lilyPondError(QProcess::ProcessError)));
+  connect(&lilypond, &QProcess::started,
+          this, &BrailleMusicEditor::lilyPondStarted);
+  connect(&lilypond, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>
+                     (&QProcess::finished),
+          this, &BrailleMusicEditor::lilyPondFinished);
+  connect(&lilypond, static_cast<void (QProcess::*)(QProcess::ProcessError)>
+                     (&QProcess::error),
+          this, &BrailleMusicEditor::lilyPondError);
 
   QString initialFile = ":/examples/bwv988-v01.bmc";
   const QStringList args = QCoreApplication::arguments();
@@ -183,13 +186,13 @@ void BrailleMusicEditor::setupFileActions() {
   a = new QAction(newIcon, tr("&New"), this);
   a->setPriority(QAction::LowPriority);
   a->setShortcut(QKeySequence::New);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileNew()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileNew);
   tb->addAction(a);
   menu->addAction(a);
 
   a = new QAction(QIcon::fromTheme("document-open"), tr("&Open..."), this);
   a->setShortcut(QKeySequence::Open);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileOpen()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileOpen);
   tb->addAction(a);
   menu->addAction(a);
 
@@ -198,14 +201,14 @@ void BrailleMusicEditor::setupFileActions() {
   actionSave = a =
     new QAction(QIcon::fromTheme("document-save"), tr("&Save"), this);
   a->setShortcut(QKeySequence::Save);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileSave()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileSave);
   a->setEnabled(false);
   tb->addAction(a);
   menu->addAction(a);
 
   a = new QAction(tr("Save &As..."), this);
   a->setPriority(QAction::LowPriority);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileSaveAs);
   menu->addAction(a);
 
   menu->addSeparator();
@@ -213,19 +216,19 @@ void BrailleMusicEditor::setupFileActions() {
   a = new QAction(tr("&Compile"), this);
   a->setPriority(QAction::LowPriority);
   a->setShortcut(Qt::Key_F8);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileCompile()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileCompile);
   menu->addAction(a);
 
   a = new QAction(tr("Export &MusicXML"), this);
   a->setPriority(QAction::LowPriority);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileExportMusicXML()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileExportMusicXML);
   a->setEnabled(false);
   connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
   menu->addAction(a);
 
   a = new QAction(tr("Export &LilyPond"), this);
   a->setPriority(QAction::LowPriority);
-  connect(a, SIGNAL(triggered()), this, SLOT(fileExportLilyPond()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileExportLilyPond);
   a->setEnabled(false);
   connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
   menu->addAction(a);
@@ -234,10 +237,11 @@ void BrailleMusicEditor::setupFileActions() {
 
   a = new QAction(tr("&Quit"), this);
   a->setShortcut(Qt::CTRL + Qt::Key_Q);
-  connect(a, SIGNAL(triggered()), this, SLOT(close()));
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::close);
   menu->addAction(a);
 
-  connect(this, SIGNAL(scoreAvailable(bool)), this, SLOT(runLilyPond(bool)));
+  connect(this, &BrailleMusicEditor::scoreAvailable,
+          this, &BrailleMusicEditor::runLilyPond);
 }
 
 void BrailleMusicEditor::setupEditActions() {
@@ -287,8 +291,8 @@ void BrailleMusicEditor::setupEditActions() {
   a->setPriority(QAction::LowPriority);
   a->setShortcut(Qt::Key_F9);
   a->setEnabled(false);
-  connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
-  connect(a, SIGNAL(triggered()), this, SLOT(editReformat()));
+  connect(this, &BrailleMusicEditor::scoreAvailable, a, &QAction::setEnabled);
+  connect(a, &QAction::triggered, this, &BrailleMusicEditor::editReformat);
   tb->addAction(a);
   menu->addAction(a);
 }

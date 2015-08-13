@@ -20,8 +20,10 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox, &QDialogButtonBox::accepted,
+          this, &OptionsDialog::accept);
+  connect(buttonBox, &QDialogButtonBox::rejected,
+          this, &OptionsDialog::reject);
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addWidget(tabWidget);
