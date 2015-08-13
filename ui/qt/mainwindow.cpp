@@ -536,12 +536,16 @@ void BrailleMusicEditor::lilyPondFinished(int exitCode,
 
     auto widget = new LilyPondSvgContainer{svgFiles, lilypondCode};
     connect(widget, SIGNAL(clicked(int)), this, SLOT(goToObject(int)));
+    connect(widget, SIGNAL(noteHovered(int)), this, SLOT(highlightObject(int)));
     svgScrollArea->setWidget(widget);
+    widget->setMouseTracking(true);
     widget->show();
 
     // scale svg display to match svgScrollarea width
-    auto scalefactor=(double)svgScrollArea->viewport()->width()/widget->width();
-    widget->resize(svgScrollArea->viewport()->width(),(int)(widget->height()*scalefactor));
+    auto scalefactor =
+      (double)svgScrollArea->viewport()->width() / widget->width();
+    widget->resize(svgScrollArea->viewport()->width(),
+                   (int)(widget->height() * scalefactor));
     ok.play();
   } else {
     lilyPondError(QProcess::Crashed);
@@ -572,8 +576,60 @@ void BrailleMusicEditor::goToObject(int id) {
     }
   } find{id};
 
-  if (score && !find.traverse_score(*score)) {
-    goTo(find.line, find.column);
+  if (score && !find.traverse_score(*score)) { goTo(find.line, find.column); }
+  // this->highlightObject(id);
+}
+
+void BrailleMusicEditor::highlightObject(int id) {
+  QList<QTextEdit::ExtraSelection> selections;
+
+  if (id == -1) // remove highlighting
+  {
+    textEdit->setExtraSelections(selections);
+    textEdit->show();
+    return;
+  }
+
+  struct finder : public ::bmc::braille::ast::const_visitor<finder> {
+    int target_id, beg_line, beg_column, end_line, end_column;
+
+    finder(int target_id)
+    : target_id{target_id}
+    , beg_line{-1}
+    , beg_column{-1}
+    , end_line{-1}
+    , end_column{-1} {}
+
+    bool visit_locatable(::bmc::braille::ast::locatable const &lexeme) {
+      if (lexeme.id == target_id) {
+        beg_line = lexeme.begin_line;
+        beg_column = lexeme.begin_column;
+        end_line = lexeme.end_line;
+        end_column = lexeme.end_column;
+
+        return false;
+      }
+      return true;
+    }
+  } find{id};
+
+  if (score && find.traverse_score(*score) == false) {
+    QTextCharFormat format;
+    format.setBackground(QBrush(QColor(230, 230, 255)));
+    QTextBlock block =
+      textEdit->document()->findBlockByLineNumber(find.beg_line - 1);
+    if (block.isValid()) {
+      QTextCursor cursor = textEdit->textCursor();
+      cursor.setPosition(block.position() + find.beg_column - 1);
+      cursor.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor,
+                          find.beg_line - find.end_line);
+      cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor,
+                          find.end_column - find.beg_column);
+      QTextEdit::ExtraSelection sel = {cursor, format};
+      selections.append(sel);
+    }
+    textEdit->setExtraSelections(selections);
+    textEdit->show();
   }
 }
 

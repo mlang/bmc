@@ -85,9 +85,9 @@ private slots:
     void lilyPondError(QProcess::ProcessError error);
 
     void goToObject(int id);
-
+    void highlightObject(int id);
 signals:
-    void scoreAvailable(bool);
+  void scoreAvailable(bool);
 
 private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);

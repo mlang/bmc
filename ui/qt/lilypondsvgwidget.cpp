@@ -60,6 +60,33 @@ void LilyPondSvgWidget::load(const QString filename) {
   }
 }
 
+void LilyPondSvgWidget::mouseMoveEvent(QMouseEvent *event) {
+  float factor_x = this->renderer()->viewBoxF().width() / (this->width());
+  float factor_y = this->renderer()->viewBoxF().height() / (this->height());
+
+  float scaled_x = factor_x * event->x();
+  float scaled_y = factor_y * event->y();
+
+  for (auto &&pair : rects) {
+    if (pair.first.contains(scaled_x, scaled_y)) {
+      // ok, over a note
+
+      if (!(pair.second == this->_oldid)) { // new note
+        this->_oldid = pair.second;
+        emit noteHovered(pair.second);
+
+        return;
+      }
+
+    } else {
+      if (!(this->_oldid == -1)) {
+        this->_oldid = -1;
+        emit noteHovered(-1);
+      }
+    }
+  }
+}
+
 void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
   float factor_x = this->renderer()->viewBoxF().width() / (this->width());
   float factor_y = this->renderer()->viewBoxF().height() / (this->height());
@@ -67,7 +94,7 @@ void LilyPondSvgWidget::mousePressEvent(QMouseEvent *event) {
   float scaled_x = factor_x * event->x();
   float scaled_y = factor_y * event->y();
 
-  for (auto &&pair: rects) {
+  for (auto &&pair : rects) {
     if (pair.first.contains(scaled_x, scaled_y)) {
       emit clicked(pair.second);
       return;

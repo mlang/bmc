@@ -16,6 +16,7 @@ private:
 
 signals:
   void clicked(int);
+  void noteHovered(int);
 
 public slots:
   void highlight(int id) {
@@ -29,16 +30,22 @@ public slots:
 
 private slots:
   void click(int id) { emit clicked(id); }
+  void noteHover(int id) { emit noteHovered(id); }
 
 public:
   LilyPondSvgContainer(QStringList svgFiles, QString const &lilypondCode)
   : lilypondCode{lilypondCode} {
     auto vbox = new QVBoxLayout;
-    for (auto &&fileName: svgFiles) {
+    for (auto &&fileName : svgFiles) {
       auto svgWidget = new LilyPondSvgWidget{lilypondCode};
-      connect(svgWidget, SIGNAL(clicked(int)), this, SLOT(click(int)));
+      connect(svgWidget, &LilyPondSvgWidget::clicked,
+              this, &LilyPondSvgContainer::click);
+      connect(svgWidget, &LilyPondSvgWidget::noteHovered,
+              this, &LilyPondSvgContainer::noteHover);
+
       svgWidget->load(fileName);
       vbox->addWidget(svgWidget);
+      svgWidget->setMouseTracking(true);
     }
     setLayout(vbox);
   }
