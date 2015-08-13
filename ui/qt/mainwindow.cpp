@@ -54,7 +54,6 @@ BrailleMusicEditor::BrailleMusicEditor(QWidget *parent)
   setupFileActions();
   setupEditActions();
   setupOptionsActions();
-  setupTextActions();
   setupSoundEffects();
 
   {
@@ -303,61 +302,6 @@ void BrailleMusicEditor::setupOptionsActions() {
   QAction *settings = new QAction(tr("&Settings..."), this);
   connect(settings, SIGNAL(triggered()), this, SLOT(showOptions()));
   menu->addAction(settings);
-}
-
-void BrailleMusicEditor::setupTextActions() {
-  auto tb = new QToolBar(this);
-  tb->setWindowTitle(tr("Format Actions"));
-  addToolBar(tb);
-
-  auto menu = new QMenu(tr("F&ormat"), this);
-  menuBar()->addMenu(menu);
-
-  actionTextBold =
-    new QAction(QIcon::fromTheme("format-text-bold"), tr("&Bold"), this);
-  actionTextBold->setShortcut(Qt::CTRL + Qt::Key_B);
-  actionTextBold->setPriority(QAction::LowPriority);
-  QFont bold;
-  bold.setBold(true);
-  actionTextBold->setFont(bold);
-  connect(actionTextBold, SIGNAL(triggered()), this, SLOT(textBold()));
-  tb->addAction(actionTextBold);
-  menu->addAction(actionTextBold);
-  actionTextBold->setCheckable(true);
-
-  actionTextItalic =
-    new QAction(QIcon::fromTheme("format-text-italic"), tr("&Italic"), this);
-  actionTextItalic->setPriority(QAction::LowPriority);
-  actionTextItalic->setShortcut(Qt::CTRL + Qt::Key_I);
-  QFont italic;
-  italic.setItalic(true);
-  actionTextItalic->setFont(italic);
-  connect(actionTextItalic, SIGNAL(triggered()), this, SLOT(textItalic()));
-  tb->addAction(actionTextItalic);
-  menu->addAction(actionTextItalic);
-  actionTextItalic->setCheckable(true);
-
-  actionTextUnderline = new QAction(QIcon::fromTheme("format-text-underline"),
-                                    tr("&Underline"), this);
-  actionTextUnderline->setShortcut(Qt::CTRL + Qt::Key_U);
-  actionTextUnderline->setPriority(QAction::LowPriority);
-  QFont underline;
-  underline.setUnderline(true);
-  actionTextUnderline->setFont(underline);
-  connect(actionTextUnderline, SIGNAL(triggered()), this,
-          SLOT(textUnderline()));
-  tb->addAction(actionTextUnderline);
-  menu->addAction(actionTextUnderline);
-  actionTextUnderline->setCheckable(true);
-
-  menu->addSeparator();
-
-  QPixmap pix(16, 16);
-  pix.fill(Qt::black);
-  actionTextColor = new QAction(pix, tr("&Color..."), this);
-  connect(actionTextColor, SIGNAL(triggered()), this, SLOT(textColor()));
-  tb->addAction(actionTextColor);
-  menu->addAction(actionTextColor);
 }
 
 bool BrailleMusicEditor::load(const QString &f) {
@@ -714,23 +658,6 @@ void BrailleMusicEditor::editReformat() {
   }
 }
 
-void BrailleMusicEditor::textBold() {
-  QTextCharFormat fmt;
-  fmt.setFontWeight(actionTextBold->isChecked() ? QFont::Bold : QFont::Normal);
-  mergeFormatOnWordOrSelection(fmt);
-}
-
-void BrailleMusicEditor::textUnderline() {
-  QTextCharFormat fmt;
-  fmt.setFontUnderline(actionTextUnderline->isChecked());
-  mergeFormatOnWordOrSelection(fmt);
-}
-
-void BrailleMusicEditor::textItalic() {
-  QTextCharFormat fmt;
-  fmt.setFontItalic(actionTextItalic->isChecked());
-  mergeFormatOnWordOrSelection(fmt);
-}
 
 void BrailleMusicEditor::textFamily(const QString &f) {
   QTextCharFormat fmt;
@@ -745,21 +672,6 @@ void BrailleMusicEditor::textSize(const QString &p) {
     fmt.setFontPointSize(pointSize);
     mergeFormatOnWordOrSelection(fmt);
   }
-}
-
-void BrailleMusicEditor::textColor() {
-  QColor col = QColorDialog::getColor(textEdit->textColor(), this);
-  if (!col.isValid()) return;
-  QTextCharFormat fmt;
-  fmt.setForeground(col);
-  mergeFormatOnWordOrSelection(fmt);
-  colorChanged(col);
-}
-
-void BrailleMusicEditor::currentCharFormatChanged(
-  const QTextCharFormat &format) {
-  fontChanged(format.font());
-  colorChanged(format.foreground().color());
 }
 
 void BrailleMusicEditor::cursorPositionChanged() {}
@@ -797,13 +709,9 @@ void BrailleMusicEditor::mergeFormatOnWordOrSelection(
 }
 
 void BrailleMusicEditor::fontChanged(const QFont &f) {
-  actionTextBold->setChecked(f.bold());
-  actionTextItalic->setChecked(f.italic());
-  actionTextUnderline->setChecked(f.underline());
 }
 
 void BrailleMusicEditor::colorChanged(const QColor &c) {
   QPixmap pix(16, 16);
   pix.fill(c);
-  actionTextColor->setIcon(pix);
 }
