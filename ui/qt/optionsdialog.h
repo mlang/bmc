@@ -67,10 +67,12 @@ public:
 private:
   QCheckBox *persistLayoutCheckBox;
   QCheckBox *persistWindowPosCheckBox;
-
+  QPushButton *highlightingColorPushButton;
+  QColor *highlightingColor;
+  QPixmap *highlightingPixmap;
+private slots:
+  void showColorChooser();
 };
-
-
 
 class OptionsDialog : public QDialog {
   Q_OBJECT

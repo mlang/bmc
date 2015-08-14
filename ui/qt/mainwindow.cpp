@@ -528,6 +528,7 @@ void BrailleMusicEditor::goToObject(int id) {
 
 void BrailleMusicEditor::highlightObject(int id) {
   QList<QTextEdit::ExtraSelection> selections;
+  QSettings settings;
 
   if (id == -1) // remove highlighting
   {
@@ -559,9 +560,15 @@ void BrailleMusicEditor::highlightObject(int id) {
     }
   } find{id};
 
+  QColor highlightingColor(230, 230, 250);
+
+  if (auto rgba = settings.value("ui/highlighting_color").toUInt()) {
+    highlightingColor.setRgba(rgba);
+  }
+
   if (score && find.traverse_score(*score) == false) {
     QTextCharFormat format;
-    format.setBackground(QBrush(QColor(230, 230, 255)));
+    format.setBackground(QBrush(highlightingColor));
     QTextBlock block =
       textEdit->document()->findBlockByLineNumber(find.beg_line - 1);
     if (block.isValid()) {
