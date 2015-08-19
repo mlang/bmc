@@ -118,9 +118,9 @@ BOOST_PYTHON_MODULE(_bmc) {
     .def(repr(self))
     ;
   implicitly_convertible<::bmc::rational::int_type, ::bmc::rational>();
-  def("gcd", &boost::math::gcd<::bmc::rational>, args("a", "b"),
+  def("gcd", &boost::integer::gcd<::bmc::rational>, args("a", "b"),
       "Compute the greatest common divisor of two rational numbers.");
-  def("lcm", &boost::math::lcm<::bmc::rational>, args("a", "b"),
+  def("lcm", &boost::integer::lcm<::bmc::rational>, args("a", "b"),
       "Compute the least common multiple of two rational numbers.");
 
   class_<::bmc::time_signature, bases<::bmc::rational> >("time_signature",
