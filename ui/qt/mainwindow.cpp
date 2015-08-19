@@ -218,16 +218,18 @@ void BrailleMusicEditor::setupFileActions() {
 
   a = new QAction(tr("Export &MusicXML"), this);
   a->setPriority(QAction::LowPriority);
-  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileExportMusicXML);
+  connect(a, &QAction::triggered, this,
+          &BrailleMusicEditor::fileExportMusicXML);
   a->setEnabled(false);
-  connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
+  connect(this, &BrailleMusicEditor::scoreAvailable, a, &QAction::setEnabled);
   menu->addAction(a);
 
   a = new QAction(tr("Export &LilyPond"), this);
   a->setPriority(QAction::LowPriority);
-  connect(a, &QAction::triggered, this, &BrailleMusicEditor::fileExportLilyPond);
+  connect(a, &QAction::triggered, this,
+          &BrailleMusicEditor::fileExportLilyPond);
   a->setEnabled(false);
-  connect(this, SIGNAL(scoreAvailable(bool)), a, SLOT(setEnabled(bool)));
+  connect(this, &BrailleMusicEditor::scoreAvailable, a, &QAction::setEnabled);
   menu->addAction(a);
 
   menu->addSeparator();
@@ -481,8 +483,10 @@ void BrailleMusicEditor::lilyPondFinished(int exitCode,
     }
 
     auto widget = new LilyPondSvgContainer{svgFiles, lilypondCode};
-    connect(widget, SIGNAL(clicked(int)), this, SLOT(goToObject(int)));
-    connect(widget, SIGNAL(noteHovered(int)), this, SLOT(highlightObject(int)));
+    connect(widget, &LilyPondSvgContainer::clicked, this,
+            &BrailleMusicEditor::goToObject);
+    connect(widget, &LilyPondSvgContainer::noteHovered, this,
+            &BrailleMusicEditor::highlightObject);
     svgScrollArea->setWidget(widget);
     widget->setMouseTracking(true);
     widget->show();
