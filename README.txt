@@ -131,7 +131,7 @@ Getting the source
 ------------------
 
 
- $ git clone http://github.com/mlang/bmc
+ $ git clone --recursive http://github.com/mlang/bmc
 
 
 Building (on UNIX)
