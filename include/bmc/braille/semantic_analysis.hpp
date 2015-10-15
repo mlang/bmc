@@ -205,8 +205,8 @@ public:
 
   result_type operator()(ast::measure& measure)
   {
-    if (disambiguate_values(measure))
-      if (calculate_octaves(measure)) {
+    if (calculate_octaves(measure)) {
+      if (disambiguate_values(measure))
         calculate_alterations(measure);
         calculate_locations(measure);
         return true;
