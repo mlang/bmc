@@ -29,7 +29,7 @@ struct atom: public linebreaking::box {
   atom(output const &o) {
     content.fragments.assign(o.fragments.begin(), o.fragments.end());
   }
-  atom(std::initializer_list<output::fragment> c) {
+  atom(std::initializer_list<output::fragment> const& c) {
     content.fragments.assign(c.begin(), c.end());
   }
 
@@ -245,7 +245,7 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
   }
 
   bool visit_section(ast::section const &s) {
-    last_section = !--section_n;
+    last_section = !bool(--section_n);
     staves = s.paragraphs.size();
     staff = 0;
 
