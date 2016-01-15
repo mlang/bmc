@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 REQUIRED Core Multimedia Svg Widgets Xml)
-add_definitions(-std=c++11)
 qt5_add_resources(RESOURCES app.qrc)
 add_executable(bmc-ui
   app.cpp
@@ -13,6 +12,7 @@ add_executable(bmc-ui
   optionsdialog.cpp optionsdialog.h
   ${RESOURCES}
 )
+target_compile_features(bmc-ui PRIVATE cxx_range_for)
 target_link_libraries(bmc-ui
   Qt5::Widgets Qt5::Multimedia Qt5::Svg Qt5::Xml
   braillemusic-static
