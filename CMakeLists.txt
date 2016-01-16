@@ -41,8 +41,8 @@ set_target_properties(braillemusic
                       VERSION ${bmc_VERSION}
                       SOVERSION ${bmc_VERSION_MAJOR}.${bmc_VERSION_MINOR}
                      )
-target_link_libraries(braillemusic xsdcxx-musicxml ${CMAKE_THREAD_LIBS_INIT})
-target_compile_features(braillemusic PRIVATE cxx_final)
+target_link_libraries(braillemusic xsdcxx-musicxml Threads::Threads)
+target_compile_features(braillemusic PRIVATE cxx_range_for cxx_final)
 add_library(braillemusic-static STATIC
             text2braille.cpp
             brlsym.cpp music.cpp ast.cpp
@@ -52,7 +52,9 @@ add_library(braillemusic-static STATIC
             value_disambiguation.cpp value_disambiguator.cpp
             lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
            )
-target_link_libraries(braillemusic-static xsdcxx-musicxml-static ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(braillemusic-static
+  xsdcxx-musicxml-static Threads::Threads
+)
 target_compile_features(braillemusic-static PRIVATE cxx_final)
 add_executable(bmc bmc.cpp)
 target_link_libraries(bmc ${Boost_PROGRAM_OPTIONS_LIBRARY} braillemusic-static)
