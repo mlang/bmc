@@ -76,6 +76,7 @@ if(bmc_USE_PYTHON)
     OUTPUT_NAME "_bmc"
     LIBRARY_OUTPUT_DIRECTORY python/bmc
   )
+  target_compile_features(pybmc PRIVATE cxx_auto_type cxx_range_for)
   target_link_libraries(pybmc ${Boost_PYTHON_LIBRARY} braillemusic)
   execute_process(
     COMMAND ${PYTHON_EXECUTABLE} -c
