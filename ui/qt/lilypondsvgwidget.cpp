@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QDebug>
 #include <QApplication>
+#include <QString>
+#include <QByteArray>
 
 LilyPondSvgWidget::LilyPondSvgWidget(QString const &lilypondCode)
 : lilypondCode{lilypondCode}, _oldid(-1) {
@@ -50,7 +52,7 @@ void LilyPondSvgWidget::load(const QString filename) {
     }
   }
 
-  QByteArray bytearray = doc.toString().toLocal8Bit();
+  QByteArray bytearray = doc.toByteArray();
 
   QSvgWidget::load(bytearray);
 

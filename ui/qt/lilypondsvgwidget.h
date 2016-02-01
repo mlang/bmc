@@ -61,7 +61,7 @@ private:
           paths.item(i).toElement().setAttribute("fill", this->_oldFillStyle);
         }
 
-        QByteArray bytearray = doc.toString().toLocal8Bit();
+		QByteArray bytearray = doc.toByteArray();
 
         //      qDebug()<< "reloading stuff!!";
         QSvgWidget::load(bytearray);
