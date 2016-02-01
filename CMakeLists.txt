@@ -2,9 +2,26 @@ cmake_minimum_required(VERSION 3.4.1)
 project(bmc VERSION 0.0.1 LANGUAGES CXX)
 add_definitions(-DBMC_VERSION="${bmc_VERSION}")
 option(bmc_USE_DOXYGEN "Use Doxygen to generate C++ class documentation" OFF)
+
+
+if(MSVC)
+option(BUILD_STATIC "Build static binary" ON)
+	if(BUILD_STATIC)
+	message("Building static binary")
+	foreach(flag_var 
+		CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
+		if (${flag_var} MATCHES "/MD")
+			string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		endif(${flag_var} MATCHES "/MD")
+	endforeach(flag_var)
+	endif()
+endif()
+
+
 if(bmc_USE_DOXYGEN)
   add_subdirectory(doxygen)
 endif(bmc_USE_DOXYGEN)
+
 add_subdirectory(xsdcxx-musicxml)
 include_directories(${XSDCXX_INCLUDE_DIR})
 option(bmc_USE_PYTHON "Build components that require Python" ON)
@@ -14,7 +31,7 @@ if(bmc_USE_PYTHON)
   find_package(PythonInterp)
   set(bmc_REQUIRED_BOOST_COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS} python)
 endif(bmc_USE_PYTHON)
-find_package(Boost 1.58.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
+find_package(Boost 1.54.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
 find_package(Threads)
 include_directories(
   ${bmc_BINARY_DIR}
@@ -23,6 +40,15 @@ include_directories(
   ${bmc_SOURCE_DIR}/xsdcxx-musicxml
   ${Boost_INCLUDE_DIRS}
 )
+
+target_include_directories(xsdcxx-musicxml-static PUBLIC ${Boost_INCLUDE_DIRS})
+#target_include_directories(xsdbin PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(dtdbin PUBLIC ${Boost_INCLUDE_DIRS})
+#target_include_directories( PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(xsdcxx-musicxml PUBLIC ${Boost_INCLUDE_DIRS})
+
+
+message("Boost inluce dir " ${Boost_INCLUDE_DIRS} " " ${INCLUDE_DIRECTORIES})
 add_library(braillemusic SHARED
             text2braille.cpp
             brlsym.cpp music.cpp ast.cpp
@@ -48,6 +74,11 @@ add_library(braillemusic-static STATIC
             value_disambiguation.cpp value_disambiguator.cpp
             lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
            )
+		   
+target_include_directories(braillemusic-static PUBLIC ${Boost_INCLUDE_DIRS})
+target_include_directories(braillemusic PUBLIC ${Boost_INCLUDE_DIRS})
+
+		   
 target_link_libraries(braillemusic-static
   xsdcxx-musicxml-static Threads::Threads
 )
