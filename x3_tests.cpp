@@ -27,7 +27,6 @@ BOOST_AUTO_TEST_CASE(time_signature_1)
   BOOST_CHECK(!position.empty());
   BOOST_CHECK(position.begin() == input.begin());
   BOOST_CHECK(position.end() == input.end());
-  std::cout << ast->id_first << ' ' << ast->id_last << std::endl;
   //BOOST_CHECK_EQUAL(*ast, bmc::rational(3, 2));
 }
 
@@ -141,9 +140,15 @@ BOOST_AUTO_TEST_CASE(visitor_1)
     }
     std::size_t get_count() const { return count; }
   } count_rhythmic;
-  bmc::braille::parser::ast::score s;
-  BOOST_REQUIRE(count_rhythmic.traverse_score(s));
+  bmc::braille::parser::ast::score empty_score;
+  BOOST_REQUIRE(count_rhythmic.traverse_score(empty_score));
   BOOST_CHECK_EQUAL(count_rhythmic.get_count(), 0);
+  std::u32string const input = U"#=#=.!ydddddd==#=.=2k";
+  auto result = bmc::braille::parse_score(input, std::cout);
+  auto &ast = std::get<0>(result);
+  BOOST_REQUIRE(ast);
+  BOOST_REQUIRE(count_rhythmic.traverse_score(*ast));
+  BOOST_CHECK_EQUAL(count_rhythmic.get_count(), 7);
 }
 
 BOOST_AUTO_TEST_CASE(tuplet_start_1)
