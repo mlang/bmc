@@ -7,7 +7,9 @@
 #ifndef BMC_MATH_HPP
 #define BMC_MATH_HPP
 
+#if BOOST_VERSION < 106000
 #include <boost/integer/common_factor_rt.hpp>
+#endif
 #include <boost/rational.hpp>
 
 namespace boost {
@@ -55,6 +57,7 @@ namespace boost {
     return positive? result: reciprocal(result);
   }
 
+#if BOOST_VERSION < 106000
   namespace integer {
     template <typename IntType>
     struct gcd_evaluator< rational<IntType> >
@@ -84,6 +87,7 @@ namespace boost {
       }
     };
   }
+#endif
 
   // http://en.wikipedia.org/wiki/Dyadic_rational
   template <typename IntType>
