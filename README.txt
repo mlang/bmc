@@ -131,7 +131,7 @@ Getting the source
 ------------------
 
 
- $ git clone http://github.com/mlang/bmc
+ $ git clone --recursive http://github.com/mlang/bmc
 
 
 Building (on UNIX)
@@ -152,6 +152,15 @@ To build BMC, run the following commands:
 To execute the test-suite, run:
 
  $ make check
+
+
+Building (on Windows)
+---------------------
+
+After configuring via cmake, either open the Solution bmc in VS2015 or
+open a "MSBuild Command Prompt for VS2015" and run the following:
+
+ $ msbuild bmc.sln /t:bmc-ui /p:Configuration=Release
 
 
 Description of source code components

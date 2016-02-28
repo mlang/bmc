@@ -11,8 +11,7 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
   auto lilypondTab = new LilypondTab;
   auto timidityTab = new TimidityTab;
   auto uisettingsTab = new UISettingsTab();
-  
-  qDebug() << "od const";
+
   tabWidget->addTab(lilypondTab, tr("Lilypond settings"));
   tabWidget->addTab(uisettingsTab, tr("UI settings"));
   tabWidget->addTab(timidityTab, tr("Timidity settings"));
@@ -20,8 +19,10 @@ OptionsDialog::OptionsDialog(QWidget *parent): QDialog(parent) {
   buttonBox =
     new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(buttonBox, &QDialogButtonBox::accepted,
+          this, &OptionsDialog::accept);
+  connect(buttonBox, &QDialogButtonBox::rejected,
+          this, &OptionsDialog::reject);
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addWidget(tabWidget);
@@ -44,7 +45,6 @@ TimidityTab::TimidityTab(QWidget *parent) : GenericTab(parent) {
 }
 
 void TimidityTab::persistSettings() {
-  qDebug() << "persisting timidity settings";
   settings.setValue("timidity/executable", QString(timidityExeEdit->text()));
 }
 
@@ -89,13 +89,21 @@ LilypondTab::LilypondTab(QWidget *parent) : GenericTab(parent) {
 }
 
 void LilypondTab::persistSettings() {
-  qDebug() << "persisting lilypond settings";
   settings.setValue("lilypond/executable", QString(lilypondExeEdit->text()));
 
   settings.setValue("lilypond/verbose",
                     (int)(lilypondVerboseCheckbox->checkState()));
 }
 
+void UISettingsTab::showColorChooser() {
+  QColor col = QColorDialog::getColor(*highlightingColor, this);
+  if (!col.isValid()) return;
+
+  highlightingColor->setRgba(col.rgba());
+  highlightingPixmap->fill(col);
+  highlightingColorPushButton->setIcon(*highlightingPixmap);
+  highlightingColorPushButton->setIconSize(highlightingPixmap->rect().size());
+}
 
 void UISettingsTab::setup() {
   persistLayoutCheckBox = new QCheckBox(tr("Persist Layout"));
@@ -103,30 +111,41 @@ void UISettingsTab::setup() {
     Qt::CheckState(settings.value("ui/persist_layout", Qt::Checked).toInt()));
 
   persistWindowPosCheckBox = new QCheckBox(tr("Persist Window Position"));
-  persistWindowPosCheckBox->setCheckState(
-    Qt::CheckState(settings.value("ui/persist_window_position", Qt::Checked).toInt()));
+  persistWindowPosCheckBox->setCheckState(Qt::CheckState(
+    settings.value("ui/persist_window_position", Qt::Checked).toInt()));
 
-  
+  highlightingColorPushButton = new QPushButton("Highlighting color...");
+  highlightingPixmap = new QPixmap(32, 32);
+  highlightingColor = new QColor(230, 230, 250);
+  ;
+  if (settings.value("ui/highlighting_color").toUInt() > 0) {
+    highlightingColor->setRgba(
+      settings.value("ui/highlighting_color").toUInt());
+  }
+  highlightingPixmap->fill(*highlightingColor);
+  highlightingColorPushButton->setIcon(*highlightingPixmap);
+  highlightingColorPushButton->setIconSize(highlightingPixmap->rect().size());
+
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addWidget(persistLayoutCheckBox);
   mainLayout->addWidget(persistWindowPosCheckBox);
-  
-   setLayout(mainLayout);
+  mainLayout->addWidget(highlightingColorPushButton);
+
+  connect(highlightingColorPushButton, SIGNAL(released()), this,
+          SLOT(showColorChooser()));
+  setLayout(mainLayout);
 }
 
-UISettingsTab::UISettingsTab(QWidget *parent) : GenericTab(parent) {
-  setup();
-}
+UISettingsTab::UISettingsTab(QWidget *parent) : GenericTab(parent) { setup(); }
 
 void UISettingsTab::persistSettings() {
-  
   QSettings settings;
-  
   settings.beginGroup("ui");
-  
+
   settings.setValue("persist_layout",
                     (int)(persistLayoutCheckBox->checkState()));
   settings.setValue("persist_window_position",
                     (int)(persistWindowPosCheckBox->checkState()));
-  
+  settings.setValue("highlighting_color",
+                    (unsigned int)highlightingColor->rgba());
 }

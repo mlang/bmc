@@ -29,7 +29,7 @@ rational duration_gcd(braille::ast::score const &score) {
     rational value;
   public:
     bool visit_rhythmic(braille::ast::rhythmic const &rhythmic) {
-      value = boost::math::gcd(value, rhythmic.as_rational());
+      value = boost::integer::gcd(value, rhythmic.as_rational());
 
       return true;
     }
@@ -474,7 +474,7 @@ public:
   , global_attributes { }
     // The divisons element expresses the number of "ticks" per quarter note.
   , divisions {
-      rational{1, 4} / boost::math::gcd(duration_gcd(brl_score), rational{1, 4})
+    rational{1, 4} / boost::integer::gcd(duration_gcd(brl_score), rational{1, 4})
     }
   {
     BOOST_ASSERT(divisions.denominator() == 1);

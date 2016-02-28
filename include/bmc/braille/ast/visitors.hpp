@@ -19,14 +19,14 @@ namespace bmc {
 
       struct get_line : boost::static_visitor<int>
       {
-        result_type operator()(locatable const& lexeme) const { return lexeme.line; }
+        result_type operator()(locatable const& lexeme) const { return lexeme.begin_line; }
         result_type operator()(barline const&) const { return 0; }
         result_type operator()(hand_sign const&) const { return 0; }
       };
 
       struct get_column : boost::static_visitor<int>
       {
-        result_type operator()(locatable const& lexeme) const { return lexeme.column; }
+        result_type operator()(locatable const& lexeme) const { return lexeme.begin_column; }
         result_type operator()(barline const&) const { return 0; }
         result_type operator()(hand_sign const&) const { return 0; }
       };

@@ -18,6 +18,7 @@ private:
 
 signals:
   void clicked(int id);
+  void noteHovered(int id);
 
 public slots:
   void hilightNote(int id) {
@@ -31,7 +32,7 @@ public slots:
 
 private:
   QString _oldFillStyle;
-  int _oldid;
+  int _oldid = -1;
 
   void _hilightNote(int id, bool highlight) {
     QDomNodeList paths = doc.elementsByTagName("path");
@@ -60,7 +61,7 @@ private:
           paths.item(i).toElement().setAttribute("fill", this->_oldFillStyle);
         }
 
-        QByteArray bytearray = doc.toString().toLocal8Bit();
+        QByteArray bytearray = doc.toByteArray();
 
         //      qDebug()<< "reloading stuff!!";
         QSvgWidget::load(bytearray);
@@ -78,7 +79,7 @@ public:
   LilyPondSvgWidget(QString const &lilypondCode);
 
   void load(const QString filename);
-  void mouseMoveEvent(QMouseEvent *event) { mousePressEvent(event); }
+  void mouseMoveEvent(QMouseEvent *event); // { mousePressEvent(event); }
 
   void mousePressEvent(QMouseEvent *event);
 };

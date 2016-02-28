@@ -40,7 +40,6 @@ private:
     void setupFileActions();
     void setupEditActions();
     void setupOptionsActions();
-    void setupTextActions();
     bool load(const QString &f);
     bool maybeSave();
     void setCurrentFileName(const QString &fileName);
@@ -61,16 +60,11 @@ private slots:
 
     void editReformat();
 
-    void textBold();
-    void textUnderline();
-    void textItalic();
     void textFamily(const QString &f);
     void textSize(const QString &p);
-    void textColor();
 
     void showOptions();
 
-    void currentCharFormatChanged(const QTextCharFormat &format);
     void cursorPositionChanged();
     void textChanged();
 
@@ -85,9 +79,9 @@ private slots:
     void lilyPondError(QProcess::ProcessError error);
 
     void goToObject(int id);
-
+    void highlightObject(int id);
 signals:
-    void scoreAvailable(bool);
+  void scoreAvailable(bool);
 
 private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
@@ -96,10 +90,6 @@ private:
     void resizeEvent(QResizeEvent *event);
 
     QAction *actionSave;
-    QAction *actionTextBold;
-    QAction *actionTextUnderline;
-    QAction *actionTextItalic;
-    QAction *actionTextColor;
     QAction *actionUndo;
     QAction *actionRedo;
     QAction *actionCut;

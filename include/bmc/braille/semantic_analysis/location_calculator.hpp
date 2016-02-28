@@ -47,10 +47,12 @@ public:
   bool visit_locatable(ast::locatable& lexeme) {
     typedef typename ErrorHandler::iterator_type iterator_type;
     if (lexeme.id >= 0) {
-      BOOST_ASSERT(lexeme.id < handler.iters.size());
-      iterator_type const error_position(handler.iters[lexeme.id]);
-      iterator_type const line_start(handler.get_pos(error_position, lexeme.line));
-      lexeme.column = std::distance(line_start, error_position) + 1;
+      BOOST_ASSERT(lexeme.id < handler.ranges.size());
+      iterator_type const begin_line_start(handler.get_pos(handler.ranges[lexeme.id].begin(), lexeme.begin_line));
+      lexeme.begin_column = std::distance(begin_line_start, handler.ranges[lexeme.id].begin()) + 1;
+
+      iterator_type const end_line_start(handler.get_pos(handler.ranges[lexeme.id].end(), lexeme.end_line));
+      lexeme.end_column = std::distance(end_line_start, handler.ranges[lexeme.id].end()) + 1;
     }
 
     return true;
