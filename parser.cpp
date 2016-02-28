@@ -356,21 +356,15 @@ auto const tie_def =
   | arpeggio_tie >> attr(ast::tie::arpeggio)
   ;
 
-struct number_tag {};
 rule<struct doubled_tuplet_number, unsigned> const
 doubled_tuplet_number = "doubled_tuplet_number";
-auto const doubled_tuplet_number_def = []{
-  unsigned number;
-  return with<number_tag>(number)[
-      number_sign
-   >> lower_number[([](auto &ctx){ get<number_tag>(ctx) = _attr(ctx); })]
-   >> number_sign
-   >> lower_number[
-        ([](auto &ctx){ _pass(ctx) = (get<number_tag>(ctx) == _attr(ctx)); })
-      ]
-   >> brl(3)[([](auto &ctx){ _val(ctx) = get<number_tag>(ctx); })]
-  ];
-}();
+auto const doubled_tuplet_number_def =
+    number_sign
+ >> lower_number[([](auto &ctx){ _val(ctx) = _attr(ctx); })]
+ >> number_sign
+ >> lower_number[([](auto &ctx){ _pass(ctx) = (_val(ctx) == _attr(ctx)); })]
+ >> brl(3)
+  ;
 BOOST_SPIRIT_DEFINE(doubled_tuplet_number)
 
 auto const tuplet_start_def =
