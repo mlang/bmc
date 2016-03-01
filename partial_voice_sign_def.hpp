@@ -94,6 +94,13 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   value_distinction = value_distinction_sign;
 
+  finger_sign =
+    brl(1)   >> attr(1)
+  | brl(12)  >> attr(2)
+  | brl(123) >> attr(3)
+  | brl(2)   >> attr(4)
+  | brl(13)  >> attr(5)
+  ;
   finger_change = finger_sign >> brl(14) >> finger_sign;
   fingering = *(finger_change | finger_sign);
 
