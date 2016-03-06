@@ -87,7 +87,7 @@ private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 
     QAction *actionSave;
     QAction *actionUndo;

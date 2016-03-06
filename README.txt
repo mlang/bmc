@@ -35,35 +35,6 @@ Library files to the final executable.
  [3] http://www.boost.org/doc/libs/1_50_0/?view=filtered_header-only
 
 
-Parsing
--------
-
-So BMC was started to begin completely a new, this time, with the more complex
-task of parsing braille music code.  Braille music code was invented originally
-around 1880, and was later refined by several comittees.  Its aim was naturally
-to be unambiguous and allow verbatim transcriptions from visual music notation,
-but it was never particularily designed to be read by a computer.  This aspect
-of the history shows up in the more complex tricks that we will need to provide
-a parser that is as intelligent as possible.
-
-Instead of the more conservative yacc/lex approach, we are using a more
-modern parsing framework, namely Boost.Spirit[4].  Spirit is a C++ framework
-for creating parsers based on templates and meta-programming.
-A DSEL for EBNF-alike grammars is provided, and transformed at compile time
-into the necessary code to implement the actual parser.
-Using Boost.Fusion, Spirit can support a wide variety of desireable C++
-data structures as synthesized attributes of its grammars.  We can make use
-of STL containers and even more specific types like Boost.Variant or
-Boost.Optional to construct our abstract syntax tree.
-
- [4] http://www.boost.org/doc/libs/1_50_0/libs/spirit/doc/html/index.html
-
-We are using a helper-class called error_handler to save iterators into the
-original input data for parsed entities such that we can report the exact
-location (line and column) of error conditions during the parsing (and
-during later processing).
-
-
 heterogeneous containers
 ------------------------
 
@@ -83,56 +54,43 @@ results in type-safe code which eliminates a certain class of runtime bugs.  It
 makes code a little bit more verbose to write, but for the better, actually.
 
 
-User Interface(s)
------------------
-
-By the nature of BMC (and actually also its name), the basic interface should be
-a command-line tool, behaving roughly like a normal compiler (for instance,
-error reporting format) to support easy integration into existing editing
-environments (like GNU Emacs).
-
-However, to support the greatest possible user base (which is mostly blind
-people and people working with them) BMC should also have a graphical user
-interface (GUI) basically resembling a simple editor.  In that GUI, the user
-will open files containing braille music code or create new documents entering
-music manually.  Upon a special keypress or invocation of a menu item the
-program will try to parse the current document and either report errors sensibly
-or provide some sort of confirmation.  Once the document is successfully parsed,
-several more options will be available, like starting playback or jumping to a
-particular position in the document (like a particular measure of the music).
-The document could now also be converted to visual notation via some external
-program like Lilypond, and eventually displayed alongside the braille music code.
-
-Since the user base is definitely relying on accessibility being available on
-their respective operating systems, some extra care has to be taken when
-implementing the graphical user interface.  Some seemingly obvious choices are
-not possible.  For instance, the program is currently being developed under
-GNU/Linux.  A natural choice on Linux for an accessible GUI is GTK, which
-features well tested accessibility since a few years now.  GTK is actually also
-ported to Microsoft Windows, but it is not accessible on that platform.  We are
-aiming to support as many users as possible, so we do have to plan/provide a
-port to MS Windows.  Some may come up with wxWindows as a possible candidate
-since it features a GUI toolkit for Linux and Windows with the same API on the
-different systems.  Unfortuantely, the accessibility of wxWindows is not equally
-accessible on both platform (tested around 2009).
-
-It looks like we will have to solve this "the hard way": Implement natively
-accessible interfaces for both platforms separately: One for GTK on Linux and one
-for MFC (or whatever is best for C++) on Windows.
-
-To avoid substantial different behaviour on the two platforms, it might be
-desireable to develop some kind of common GUI layer which provides most of our
-application logic, and only a rather thin layer for the particular toolkits on
-the particular platforms below.  We want to minimize the bugs introduced by
-duplicated code.
-
-
 Getting the source
 ------------------
 
-
  $ git clone --recursive http://github.com/mlang/bmc
 
+
+Building on Mac OS X
+--------------------
+
+We assume you have Xcode installed.  A nice package manager is Homebrew:
+
+ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+If you have the Homebrew package manager, run the following commands to get
+all dependencies required to build and run BMC:
+
+ $ xcode-select --install
+ $ brew install cmake lame pkg-config python3 qt5 timidity xerces-c xsd
+ $ pip3 install sphinx
+ $ brew install caskroom/cask/brew-cask
+ $ brew cask install lilypond
+ $ brew install boost --with-python
+ $ brew install boost-python
+
+You can now run CMake to generate a build system:
+
+ $ cd bmc
+ $ cmake .
+
+When running the test suite, make sure you have a UTF-8 based locale:
+
+ $ export LANG=de_AT.UTF-8
+ $ make check
+
+Build the command-line tool and the user interface:
+
+ $ make bmc bmc-ui
 
 Building (on UNIX)
 ------------------
@@ -163,66 +121,6 @@ open a "MSBuild Command Prompt for VS2015" and run the following:
  $ msbuild bmc.sln /t:bmc-ui /p:Configuration=Release
 
 
-Description of source code components
--------------------------------------
-
-To ease review, here is a rough overview of the various source code files which
-make up this prototype:
-
- * Text to braille:
-   The subdirectory ttb/ contains source code for the mapping of character values
-   to braille dots.  The code has been borrowed from the BRLTTY[14] project,
-   and stripped down a little to avoid excessive code bloat.  It is therefore
-   compatible to the format of braille tables employed by BRLTTY (on purpose).
-   This part of the code is pretty well-tested and should not need to be changed.
-
-  [14] http://mielke.cc/brltty/
-
- * Parsing:
-   The files numbers.hpp, measure.hpp and score.hpp contain the toplevel
-   grammar declarations.  The actual grammars are defined in the accompanying
-   files numbers_def.hpp, measure_def.hpp and score_def.hpp.
-   The resulting class templates are instantiated into separate translation
-   units using the files numbers.cpp, measure.cpp and score.cpp.
-   The files error_handler.hpp and annotation.hpp provide input location
-   tracking for individual parsed entities.
-   brlsym.hpp and brlsym.cpp define a few symbol tables for the purpose of
-   parsing braille music code (used in the *_def.hpp files).
-   ast.hpp collects all the data types necessary to represent the result
-   of parsing the given input (in other words, the abstract syntax tree).
-   And finally, music.hpp contains basic utility types which seem common to
-   musical notation in general, not tied to a particular type of notation.
-   For instance, a rational data type is created using Boost.Rational.
-   Several enums, such as accidentals or diatonic steps are also defined here.
- * Compilation:
-   In the context of BMC, compilation refers to the process of post-processing
-   the bare result gained from parsing braille music code.
-   The file compiler.hpp defines the function object class
-   bmc::braille::compiler which is used as an entry point for all associated
-   algorithms.
-   disambiguate.hpp, octave_calculator.hpp and alteration_calculator.hpp
-   implement code required
-   for disambiguating note values, calcualting exact octaves of notes and
-   chords and calculating the alteration of pitches respectively.
-   compiler.cpp implements a few lengthy member function of
-   bmc::braille::compiler and comprises the top-level of the
-   compiler translation unit.
- * Conversion to musical notation formats:
-   lilypond.hpp implements code to convert a braille music score to LilyPond.
- * Playback:
-   As a proof of concept, some code exists to play the compiled musical score
-   on Linux using the FluidSynth package (a SoundFont-based software synthesizer).
-   The file midi.hpp implements a simple layer for storing MIDI data in memory.
-   It offers classes for representing most basic MIDI events and a priority_queue
-   based class for implicitly ordering MIDI events by their begin time.
-   fluidsynth.hpp and fluidsynth.cpp implement a simple wrapper around the
-   FluidSynth C API to allow playing of scores.
- * Testing and utilities:
-   The file test.cpp contains all the test cases implemented so far.
- * The program:
-   main.cpp contains the main routine necessary to link a final executable.
-
-         
 TODO
 ----
 
@@ -231,8 +129,6 @@ TODO
     Linux under Windows.  Ideally, create a common class for realtime MIDI
     playback which is platform independent, and implement FluidSynth (Linux) and
     Windows backends on top of that.
-  * Make the command-line part (bmc) and the testsuite (test) work on Windows.
-    Make sure the testsuite runs without errors.
   * Investigate encoding compatibility: BMC tries to be Unicode-based internally.
     On UNIX, wchar_t is 32bit wide, which allos for full Unicode compatibility.
     On Windows, it is 16bit wide and implicitly UTF16 coded (that is my current
@@ -283,10 +179,10 @@ TODO
   as in braille music, namely to reduce duplicated note material.  If we ever
   get to the stage of LilyPond export, we might want to use some of the braille
   repeats as cues to generate more human readable LilyPond files.
-* Port to Cococa and Cococa Touch:
+* Port Cococa Touch:
   iOS handles Unicode Braille just as expected.  It is displayed on screen
   with an appropriate font and works together with external braille displays as
-  well.  Given that, ports to Cocoa and Cocoa Touch seem quite feasable.
+  well.  Given that, a port to Cocoa Touch seem quite feasable.
 
 
 

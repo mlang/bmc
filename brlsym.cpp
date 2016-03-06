@@ -136,18 +136,6 @@ hand_symbols::hand_symbols()
 
 hand_symbols hand_sign;
 
-finger_symbols::finger_symbols()
-{
-  add(L"\u2801", 1)
-     (L"\u2803", 2)
-     (L"\u2807", 3)
-     (L"\u2802", 4)
-     (L"\u2805", 5)
-     ;
-}
-
-finger_symbols finger_sign;
-
 value_distinction_symbols::value_distinction_symbols()
 {
   add(L"\u2823\u2802", ast::value_distinction::distinct)

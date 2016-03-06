@@ -36,6 +36,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::moving_note()> moving_note;
   boost::spirit::qi::rule<Iterator, std::vector<ast::interval>()> moving_intervals;
   boost::spirit::qi::rule<Iterator, ast::interval()> interval;
+  boost::spirit::qi::rule<Iterator, unsigned()> finger_sign;
   boost::spirit::qi::rule<Iterator, braille::finger_change()> finger_change;
   boost::spirit::qi::rule<Iterator, braille::fingering_list()> fingering;
   tuplet_start_grammar<Iterator> tuplet_start;

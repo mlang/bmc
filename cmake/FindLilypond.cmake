@@ -9,8 +9,10 @@
 # LILYPOND_FOUND
 # LILYPOND_EXECUTABLE
 
+set(CMAKE_FIND_APPBUNDLE LAST)
 find_program(LILYPOND_EXECUTABLE
   NAMES lilypond
+  PATH_SUFFIXES lilypond.app/Contents/Resources/bin
   DOC "Path to lilypond executable"
 )
 

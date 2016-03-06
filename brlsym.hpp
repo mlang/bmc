@@ -44,7 +44,6 @@ BMC_DEFINE_SYMBOL_TABLE(step_and_value,
                         step_and_value_symbols, step_and_value_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::value, rest_symbols, rest_sign)
 BMC_DEFINE_SYMBOL_TABLE(interval, interval_symbols, interval_sign)
-BMC_DEFINE_SYMBOL_TABLE(unsigned, finger_symbols, finger_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::value_distinction::type,
                         value_distinction_symbols, value_distinction_sign)
 BMC_DEFINE_SYMBOL_TABLE(ast::slur::type, slur_symbols, slur_sign)
