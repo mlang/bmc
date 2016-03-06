@@ -134,6 +134,38 @@ Getting the source
  $ git clone --recursive http://github.com/mlang/bmc
 
 
+Building on Mac OS X
+--------------------
+
+We assume you have Xcode installed.  A nice package manager is Homebrew:
+
+ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+If you have the Homebrew package manager, run the following commands to get
+all dependencies required to build and run BMC:
+
+ $ xcode-select --install
+ $ brew install cmake pkg-config python3 qt5 xerces-c xsd
+ $ pip3 install sphinx
+ $ brew install caskroom/cask/brew-cask
+ $ brew cask install lilypond
+ $ brew install boost --with-python
+ $ brew install boost-python
+
+You can now run CMake to generate a build system:
+
+ $ cd bmc
+ $ cmake .
+
+When running the test suite, make sure you have a UTF-8 based locale:
+
+ $ export LANG=de_AT.UTF-8
+ $ make check
+
+Build the command-line tool and the user interface:
+
+ $ make bmc bmc-ui
+
 Building (on UNIX)
 ------------------
 
