@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
-
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+list(APPEND CMAKE_PREFIX_PATH /usr/local/Cellar/qt5/5.5.1_2)
 find_package(Qt5 REQUIRED Core Multimedia Svg Widgets Xml)
 qt5_add_resources(RESOURCES app.qrc)
 add_executable(bmc-ui
