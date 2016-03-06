@@ -1,3 +1,4 @@
+#include "config.h"
 #include <QtWidgets>
 
 #include <optionsdialog.h>
@@ -65,7 +66,7 @@ void TimidityTab::setup() {
 void LilypondTab::setup() {
   lilypondExeLabel = new QLabel(tr("lilypond executable:"));
   lilypondExeEdit = new QLineEdit(
-    settings.value("lilypond/executable", QString("foo/bat/bat12")).toString());
+    settings.value("lilypond/executable", QString(LILYPOND_EXECUTABLE)).toString());
   lilypondExeLabel->setBuddy(lilypondExeEdit);
 
   QVBoxLayout *mainLayout = new QVBoxLayout;

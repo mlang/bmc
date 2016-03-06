@@ -1,3 +1,4 @@
+#include "config.h"
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -456,7 +457,7 @@ void BrailleMusicEditor::runLilyPond(bool scoreAvailable) {
     lilypond.setWorkingDirectory(tmpdir->path());
     lilypond.setProcessChannelMode(QProcess::ForwardedChannels);
     QSettings settings;
-    lilypond.start(settings.value("lilypond/executable", "lilypond").toString(),
+    lilypond.start(settings.value("lilypond/executable", LILYPOND_EXECUTABLE).toString(),
                    QStringList() << "-o" << "out" << "-dbackend=svg" << "-");
   }
 }
