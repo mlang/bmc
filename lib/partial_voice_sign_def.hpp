@@ -7,12 +7,12 @@
 #ifndef BMC_PARTIAL_VOICE_SIGN_DEF_HPP
 #define BMC_PARTIAL_VOICE_SIGN_DEF_HPP
 
-#include "bmc/braille/parsing/grammar/partial_voice_sign.hpp"
-#include "bmc/braille/ast/fusion_adapt.hpp"
-#include "spirit/qi/primitive/brl.hpp"
+#include <bmc/braille/parsing/grammar/partial_voice_sign.hpp>
+#include <bmc/braille/ast/fusion_adapt.hpp>
+#include <bmc/braille/parsing/qi/primitive/brl.hpp>
 #include "brlsym.hpp"
-#include "bmc/braille/parsing/error_handler.hpp"
-#include "bmc/braille/parsing/annotation.hpp"
+#include <bmc/braille/parsing/error_handler.hpp>
+#include <bmc/braille/parsing/annotation.hpp>
 #include <boost/spirit/include/qi_core.hpp>
 #include <boost/spirit/include/qi_attr.hpp>
 #include <boost/spirit/include/qi_eol.hpp>

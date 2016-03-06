@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
   BOOST_CHECK_EQUAL(attribute, -2);
 }
 
-#include "spirit/qi/primitive/brl.hpp"
+#include "bmc/braille/parsing/qi/primitive/brl.hpp"
 
 BOOST_AUTO_TEST_CASE(brl_parser_test) {
   std::wstring const input(L"#A");
