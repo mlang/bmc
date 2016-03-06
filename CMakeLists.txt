@@ -210,6 +210,9 @@ endif(bmc_USE_PYTHON)
 
 # build a CPack driven installer package
 include(InstallRequiredSystemLibraries)
+if(APPLE)
+  set(CPACK_BINARY_DRAGNDROP ON)
+endif(APPLE)
 set(CPACK_RESOURCE_FILE_LICENSE "${bmc_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_PACKAGE_VERSION_MAJOR ${bmc_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${bmc_VERSION_MINOR})

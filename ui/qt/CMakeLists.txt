@@ -4,7 +4,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_PREFIX_PATH /usr/local/Cellar/qt5/5.5.1_2)
 find_package(Qt5 REQUIRED Core Multimedia Svg Widgets Xml)
 qt5_add_resources(RESOURCES app.qrc)
-add_executable(bmc-ui
+add_executable(bmc-ui MACOSX_BUNDLE WIN32
   app.cpp
   mainwindow.cpp mainwindow.h
   lilypondsvgwidget.cpp lilypondsvgwidget.h
@@ -17,5 +17,21 @@ target_link_libraries(bmc-ui
   Qt5::Widgets Qt5::Multimedia Qt5::Svg Qt5::Xml
   braillemusic-static
 )
-install(TARGETS bmc-ui DESTINATION bin)
+install(TARGETS bmc-ui
+  BUNDLE DESTINATION . COMPONENT Runtime
+  RUNTIME DESTINATION bin COMPONENT Runtime
+)
+set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui")
+if(APPLE)
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/bmc-ui.app")
+elseif(MSVC)
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui.exe")
+endif()
+set(DIRS ${QT_LIBRARY_DIRS})
+install(CODE "
+  include(BundleUtilities)
+  set(BU_CHMOD_BUNDLE_ITEMS ON)
+  fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")"
+  COMPONENT Runtime
+)
 
