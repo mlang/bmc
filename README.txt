@@ -71,7 +71,7 @@ If you have the Homebrew package manager, run the following commands to get
 all dependencies required to build and run BMC:
 
  $ xcode-select --install
- $ brew install cmake pkg-config python3 qt5 xerces-c xsd
+ $ brew install cmake lame pkg-config python3 qt5 timidity xerces-c xsd
  $ pip3 install sphinx
  $ brew install caskroom/cask/brew-cask
  $ brew cask install lilypond
