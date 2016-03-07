@@ -1,11 +1,11 @@
 add_library(braillemusic SHARED
-            text2braille.cpp
-            brlsym.cpp music.cpp ast.cpp
-            numbers.cpp key_signature.cpp time_signature.cpp
-            partial_voice_sign.cpp simile.cpp tuplet_start.cpp
-            measure.cpp score.cpp
-            value_disambiguation.cpp value_disambiguator.cpp
-            lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
+  text2braille.cpp
+  brlsym.cpp music.cpp ast.cpp
+  numbers.cpp key_signature.cpp time_signature.cpp
+  partial_voice_sign.cpp simile.cpp tuplet_start.cpp
+  measure.cpp score.cpp
+  value_disambiguation.cpp value_disambiguator.cpp
+  lilypond.cpp musicxml.cpp linebreaking.cpp reformat.cpp
 )
 set_target_properties(braillemusic
   PROPERTIES
