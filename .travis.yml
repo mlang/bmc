@@ -59,7 +59,8 @@ script:
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
-  - VERBOSE=1 make check
+  - cat CMakeCache.txt
+# - VERBOSE=1 make check
 
 notifications:
   recipients:
