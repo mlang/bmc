@@ -1,9 +1,5 @@
 language: cpp
 
-os:
-  - linux
-  - osx
-
 addons:
   apt:
     packages:
@@ -27,14 +23,23 @@ matrix:
             - llvm-toolchain-precise
 
 before install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update           ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install qt5 xerces-c xsd; fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew update
+      brew install qt5 xerces-c xsd
+    fi
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz       ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz                                                      ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz      ;fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then tar -xzf cmake-3.4.3-Darwin-x86_64.tar.gz                                                     ;fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz
+      tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then
+      wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz
+      tar -xzf cmake-3.4.3-Darwin-x86_64.tar.gz
+    fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       git clone --recursive https://github.com/boostorg/boost
@@ -43,6 +48,7 @@ install:
       git submodule update
       ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
       ./b2
+      cd ..
     fi
 
 script:
