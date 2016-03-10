@@ -4,14 +4,9 @@ os:
   - linux
   - osx
 
-compiler:
-  - clang
-
 addons:
   apt:
     packages:
-      - libboost-dev
-      - libboost-program-options-dev
       - xsdcxx
 
 matrix:
@@ -27,7 +22,6 @@ matrix:
           packages: ["clang-3.6"]
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.5
             - llvm-toolchain-precise-3.6
             - llvm-toolchain-precise-3.7
             - llvm-toolchain-precise
@@ -41,12 +35,21 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz                                                      ;fi
   - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz      ;fi
   - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then tar -xzf cmake-3.4.3-Darwin-x86_64.tar.gz                                                     ;fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      git clone --recursive https://github.com/boostorg/boost
+      cd boost
+      git checkout boost-1.58.0
+      git submodule update
+      ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
+      ./b2
+    fi
 
 script:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ../cmake-3.4.3-Linux-x86_64/bin/cmake -DCMAKE_CXX_COMPILER=$COMPILER ..;fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ../cmake-3.4.3-Linux-x86_64/bin/cmake -DBOST_ROOT=../boost -DCMAKE_CXX_COMPILER=$COMPILER ..;fi
   - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then ../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -DCMAKE_CXX_COMPILER=$COMPILER ..; fi
   - make bmc bmc-ui check
 
