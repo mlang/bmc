@@ -1,0 +1,33 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - libboost-dev
+      - libboost-program-options-dev
+      - xsdcxx
+
+before install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update           ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cmake qt5 xerces-c xsd; fi
+
+script:
+  - git submodule update --init --recursive
+  - mkdir build && cd build && cmake .. && make bmc bmc-ui check
+
+notifications:
+  recipients:
+    - mlang@blind.guru
+  email:
+    on_success: change
+    on_failure: always
+
