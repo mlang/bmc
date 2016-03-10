@@ -51,9 +51,13 @@ script:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ../cmake-3.4.3-Linux-x86_64/bin/cmake -DBOST_ROOT=../boost -DCMAKE_CXX_COMPILER=$COMPILER ..;fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then ../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -DCMAKE_CXX_COMPILER=$COMPILER ..; fi
-  - make bmc bmc-ui check
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then ../cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+    elif [[ "$TRAVIS_OS_NAME" == "osx"   ]]
+    then ../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
+    fi
+  - make bmc check
 
 notifications:
   recipients:
