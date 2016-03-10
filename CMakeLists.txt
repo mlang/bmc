@@ -19,8 +19,6 @@ if(bmc_USE_DOXYGEN)
   add_subdirectory(doxygen)
 endif(bmc_USE_DOXYGEN)
 
-add_subdirectory(xsdcxx-musicxml)
-include_directories(${XSDCXX_INCLUDE_DIR})
 option(bmc_USE_PYTHON "Build components that require Python" ON)
 set(bmc_REQUIRED_BOOST_COMPONENTS program_options)
 if(bmc_USE_PYTHON)
@@ -30,12 +28,13 @@ if(bmc_USE_PYTHON)
 endif(bmc_USE_PYTHON)
 find_package(Boost 1.58.0 REQUIRED COMPONENTS ${bmc_REQUIRED_BOOST_COMPONENTS})
 find_package(Threads)
+add_subdirectory(xsdcxx-musicxml)
 include_directories(
   ${bmc_BINARY_DIR}
   ${bmc_SOURCE_DIR}
   ${bmc_SOURCE_DIR}/include
   ${bmc_SOURCE_DIR}/xsdcxx-musicxml
-  ${Boost_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
 
 add_subdirectory(lib)

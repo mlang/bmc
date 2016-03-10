@@ -35,14 +35,14 @@ install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then git clone --quiet --branch boost-1.60.0 --depth 1 https://github.com/boostorg/boost.git
+    then cd ..
+         git clone --quiet --branch boost-1.60.0 --depth 1 https://github.com/boostorg/boost.git
          cd boost
          git submodule --quiet update --init --recursive
          ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
          ./b2 headers
          ./b2
-         ls -R boost
-         cd ..
+         cd ${TRAVIS_BUILD_DIR}
     fi
 
 script:
@@ -52,12 +52,10 @@ script:
   - cd build
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
-  - ls -l ${TRAVIS_BUILD_DIR}/boost/boost/algorithm/string/replace.hpp
-  - cat CMakeCache.txt
   - VERBOSE=1 make check
 
 notifications:
