@@ -20,41 +20,44 @@ before install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew update
-      brew install boost qt5 xerces-c xsd
     fi
 
 install:
-  - set -e
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz
-      tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then brew install boost qt5 xerces-c xsd
     fi
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then
-      wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz
-      tar -xzf cmake-3.4.3-Darwin-x86_64.tar.gz
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz
+         tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz
     fi
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      git clone --recursive https://github.com/boostorg/boost
-      cd boost
-      git checkout boost-1.58.0
-      git submodule update
-      ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
-      ./b2
-      cd ..
+    if [[ "$TRAVIS_OS_NAME" == "osx"   ]]
+    then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz
+         tar -xzf cmake-3.4.3-Darwin-x86_64.tar.gz
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then git clone --recursive https://github.com/boostorg/boost
+         cd boost
+         git checkout boost-1.58.0
+         git submodule update
+         ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
+         ./b2
+         cd ..
     fi
 
 script:
+  - set -e
   - git submodule update --init --recursive
   - mkdir build
   - cd build
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then ../cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
-    elif [[ "$TRAVIS_OS_NAME" == "osx"   ]]
-    then ../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
+    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
   - make check
 
