@@ -29,8 +29,7 @@ install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz
-         tar -xzf cmake-3.4.3-Linux-x86_64.tar.gz
+    then wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz | tar -xz
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx"   ]]
