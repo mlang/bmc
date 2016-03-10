@@ -20,7 +20,7 @@ before install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew update
-      brew install qt5 xerces-c xsd
+      brew install boost qt5 xerces-c xsd
     fi
 
 install:
