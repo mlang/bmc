@@ -1,11 +1,5 @@
 language: cpp
 
-addons:
-  apt:
-    packages:
-      - libxerces-c-dev
-      - xsdcxx
-
 matrix:
   include:
     - os: osx
@@ -16,7 +10,7 @@ matrix:
       env: COMPILER=clang++-3.6
       addons:
         apt:
-          packages: ["clang-3.6"]
+          packages: ["clang-3.6", "libxerces-c-dev", "xsdcxx"]
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
@@ -31,6 +25,7 @@ before install:
     fi
 
 install:
+  - set -e
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       wget --no-check-certificate http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz
