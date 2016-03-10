@@ -2,9 +2,9 @@ language: cpp
 
 matrix:
   include:
-    - os: osx
-      env: COMPILER=clang++
-      osx_image: xcode7
+    # - os: osx
+    #   env: COMPILER=clang++
+    #   osx_image: xcode7
     - os: linux
       env: COMPILER=clang++-3.6
       addons:
@@ -39,9 +39,9 @@ install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then git clone --recursive https://github.com/boostorg/boost
+    then git clone --recursive --quiet https://github.com/boostorg/boost
          cd boost
-         git checkout boost-1.58.0
+         git checkout boost-1.60.0
          git submodule update
          ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
          ./b2 headers
@@ -60,7 +60,7 @@ script:
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
-  - make check
+  - VERBOSE=1 make check
 
 notifications:
   recipients:
