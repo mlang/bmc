@@ -3,6 +3,7 @@ language: cpp
 addons:
   apt:
     packages:
+      - libxerces-c-dev
       - xsdcxx
 
 matrix:
