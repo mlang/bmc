@@ -38,19 +38,19 @@ install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then git clone --recursive --quiet https://github.com/boostorg/boost
+    then git clone --quiet --branch boost-1.60.0 --depth 1 https://github.com/boostorg/boost.git
          cd boost
-         git checkout boost-1.60.0
-         git submodule update
+         git submodule --quiet update --init --recursive
          ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
          ./b2 headers
          ./b2
+         ls -R boost
          cd ..
     fi
 
 script:
   - set -e
-  - git submodule update --init --recursive
+  - git submodule --quiet update --init --recursive
   - mkdir build
   - cd build
   - |
@@ -60,7 +60,7 @@ script:
     then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
   - cat CMakeCache.txt
-# - VERBOSE=1 make check
+  - VERBOSE=1 make check
 
 notifications:
   recipients:
