@@ -48,9 +48,8 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then cd ..
-         git clone --quiet --branch boost-${BOOST_VERSION} --depth 1 https://github.com/boostorg/boost.git
-         cd boost
-         git submodule --quiet update --init --recursive
+         mkdir boost
+         wget --no-check-certificate --quiet -O - http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//./_}.tar.bz2/download | tar jx --strip-components=1 -C boost
          ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
          ./b2 headers
          ./b2
