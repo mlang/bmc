@@ -2,11 +2,15 @@ language: cpp
 
 matrix:
   include:
-    # - os: osx
-    #   env: COMPILER=clang++
-    #   osx_image: xcode7
+    - os: osx
+      env: COMPILER=clang++
+      osx_image: xcode7
     - os: linux
-      env: COMPILER=clang++-3.6
+      env:
+        - COMPILER=clang++-3.6 BOOST_VERSION=1.58.0
+        - COMPILER=clang++-3.6 BOOST_VERSION=1.59.0
+        - COMPILER=clang++-3.6 BOOST_VERSION=1.60.0
+        - COMPILER=clang++-3.7 BOOST_VERSION=1.60.0
       addons:
         apt:
           packages: ["clang-3.6", "libxerces-c-dev"]
@@ -38,7 +42,7 @@ install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
     then cd ..
-         git clone --quiet --branch boost-1.60.0 --depth 1 https://github.com/boostorg/boost.git
+         git clone --quiet --branch boost-${BOOST_VERSION} --depth 1 https://github.com/boostorg/boost.git
          cd boost
          git submodule --quiet update --init --recursive
          ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
@@ -58,7 +62,7 @@ script:
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
     then ${TRAVIS_BUILD_DIR}/../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
-  - VERBOSE=1 make check
+  - make check
 
 notifications:
   recipients:
