@@ -1,5 +1,9 @@
+=============================
 BMC -- Braille Music Compiler
------------------------------
+=============================
+
+.. image:: https://secure.travis-ci.org/mlang/bmc.png?branch=master
+   :target: http://travis-ci.org/mlang/bmc
 
 BMC aims to become a system for parsing and generating braille music code.
 
@@ -7,11 +11,11 @@ BMC aims to become a system for parsing and generating braille music code.
 History
 -------
 
-A predecessor to this project is FreeDots[1], a Java-based program for
+A predecessor to this project is FreeDots_, a Java-based program for
 converting MusicXML Documents to Braille Music code, as well as offering
 playback and some interactive editing capabilities.
 
- [1] http://code.google.com/p/freedots/
+.. _FreeDots: http://code.google.com/p/freedots/
 
 FreeDots has been very helpful in providing a general understanding of the
 various aspects of braille music code.  However, it was only designed to cover
@@ -25,14 +29,9 @@ Dependencies
 
 Being a C++ program, BMC naturally uses the Standard Template Library (STL).
 
-In addition to that some Boost[2] C++ Libraries are employed.
-Currently however, to make the Boost dependencies as easy to handle as possible,
-we are only using Boost header-only libraries[3].  This means that the boost
-include directory is enough to build BMC.  There is no need to link any Boost
-Library files to the final executable.
+In addition to that some Boost_ C++ Libraries are employed.
 
- [2] http://www.boost.org/
- [3] http://www.boost.org/doc/libs/1_50_0/?view=filtered_header-only
+.. _Boost: http://www.boost.org/
 
 
 heterogeneous containers
@@ -57,40 +56,56 @@ makes code a little bit more verbose to write, but for the better, actually.
 Getting the source
 ------------------
 
- $ git clone --recursive http://github.com/mlang/bmc
+You need Git_ to retrieve the source repository.
 
+.. code-block:: bash
+
+   git clone --quiet https://github.com/mlang/bmc.git
+   git submodule --quiet update --init --recursive
+
+.. _Git: https://git-scm.com/
 
 Building on Mac OS X
 --------------------
 
 We assume you have Xcode installed.  A nice package manager is Homebrew:
 
- $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+.. code-block:: bash
+
+   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 If you have the Homebrew package manager, run the following commands to get
 all dependencies required to build and run BMC:
 
- $ xcode-select --install
- $ brew install cmake lame pkg-config python3 qt5 timidity xerces-c xsd
- $ pip3 install sphinx
- $ brew install caskroom/cask/brew-cask
- $ brew cask install lilypond
- $ brew install boost --with-python
- $ brew install boost-python
+.. code-block:: bash
+
+   xcode-select --install
+   brew install cmake lame pkg-config python3 qt5 timidity xerces-c xsd
+   pip3 install sphinx
+   brew install caskroom/cask/brew-cask
+   brew cask install lilypond
+   brew install boost --with-python
+   brew install boost-python
 
 You can now run CMake to generate a build system:
 
- $ cd bmc
- $ cmake .
+.. code-block:: bash
+
+   cd bmc
+   cmake .
 
 When running the test suite, make sure you have a UTF-8 based locale:
 
- $ export LANG=de_AT.UTF-8
- $ make check
+.. code-block:: bash
+
+   export LANG=de_AT.UTF-8
+   make check
 
 Build the command-line tool and the user interface:
 
- $ make bmc bmc-ui
+.. code-block:: bash
+
+   make bmc bmc-ui
 
 Building (on UNIX)
 ------------------
@@ -99,17 +114,23 @@ Compilation has only been tested with GCC 4.8 recently.
 
 On Debian GNU/Linux systems, you will need to install the following dependencies:
 
- $ sudo apt-get install cmake doxygen lib{boost-{program-options,test},fluidsynth,icu}-dev
+.. code-block:: bash
+
+   sudo apt-get install cmake doxygen lib{boost-{program-options,test},fluidsynth,icu}-dev
 
 To build BMC, run the following commands:
 
- $ cd bmc
- $ cmake .
- $ make
+.. code-block:: bash
+
+   cd bmc
+   cmake .
+   make
 
 To execute the test-suite, run:
 
- $ make check
+.. code-block:: bash
+
+   make check
 
 
 Building (on Windows)
@@ -118,13 +139,16 @@ Building (on Windows)
 After configuring via cmake, either open the Solution bmc in VS2015 or
 open a "MSBuild Command Prompt for VS2015" and run the following:
 
- $ msbuild bmc.sln /t:bmc-ui /p:Configuration=Release
+.. code-block:: console
+
+   msbuild bmc.sln /t:bmc-ui /p:Configuration=Release
 
 
 TODO
 ----
 
 * Port current codebase to Windows:
+
   * Figure out how to mimmick the FluidSynth functionality currently used under
     Linux under Windows.  Ideally, create a common class for realtime MIDI
     playback which is platform independent, and implement FluidSynth (Linux) and
@@ -137,6 +161,7 @@ TODO
     is to be prefered internally, always.  Is Unicode Braille supported
     on Windows in the command prompt?  Currently unit test input data is
     all encoded with UTF-8.  Figure out if this is a problem on Windows.
+
 * Improve error reporting during parsing: Some useful diagnostics
   are already printed, but in many other cases the parser does not produce
   helpful error messages.  It can be quite hard to start a braille music piece
