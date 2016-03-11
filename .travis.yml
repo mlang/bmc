@@ -9,7 +9,7 @@ matrix:
       env: COMPILER=clang++-3.6
       addons:
         apt:
-          packages: ["clang-3.6", "libxerces-c-dev", "xsdcxx"]
+          packages: ["clang-3.6", "libxerces-c-dev"]
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
@@ -17,10 +17,7 @@ matrix:
             - llvm-toolchain-precise
 
 before install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew update
-    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then; brew update; fi
 
 install:
   - |
@@ -29,9 +26,14 @@ install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz | tar -xz
+    then cd ..
+         wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz | tar -xz
+         wget --no-check-certificate --quiet -O - http://www.codesynthesis.com/download/xsd/4.0/linux-gnu/x86_64/xsd-4.0.0-x86_64-linux-gnu.tar.bz2 | tar -jx
+         cd ${TRAVIS_BUILD_DIR}
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz | tar -xz
+    then cd ..
+         wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz | tar -xz
+         cd ${TRAVIS_BUILD_DIR}
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
@@ -52,9 +54,9 @@ script:
   - cd build
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]
-    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+    then XSDDIR=${TRAVIS_BUILD_DIR}/../xsd-4.0.0-x86_64-linux-gnu ${TRAVIS_BUILD_DIR}/../cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
-    then ${TRAVIS_BUILD_DIR}/cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
+    then ${TRAVIS_BUILD_DIR}/../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
     fi
   - VERBOSE=1 make check
 
