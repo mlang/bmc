@@ -34,7 +34,7 @@ include_directories(
   ${bmc_SOURCE_DIR}
   ${bmc_SOURCE_DIR}/include
   ${bmc_SOURCE_DIR}/xsdcxx-musicxml
-  ${Boost_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS} ${XSDCXX_INCLUDE_DIR}
 )
 
 add_subdirectory(lib)
