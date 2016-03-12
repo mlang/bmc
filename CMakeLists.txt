@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.4.0)
 project(bmc VERSION 0.0.1 LANGUAGES CXX)
 add_definitions(-DBMC_VERSION="${bmc_VERSION}")
 option(bmc_USE_DOXYGEN "Use Doxygen to generate C++ class documentation" OFF)
