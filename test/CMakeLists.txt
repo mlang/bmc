@@ -1,8 +1,4 @@
 add_executable(bmc_test test.cpp)
-set_target_properties(bmc_test
-  PROPERTIES
-  COMPILE_DEFINITIONS CMAKE_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/"
-)
 target_compile_features(bmc_test PRIVATE cxx_range_for cxx_auto_type)
 target_link_libraries(bmc_test braillemusic)
 find_package(Boost QUIET COMPONENTS unit_test_framework)
@@ -56,6 +52,9 @@ set(BMC_TEST_NAMES
 foreach(test_name ${BMC_TEST_NAMES})
   add_test(NAME bmc_${test_name}
            COMMAND bmc_test --run_test=${test_name})
+  set_tests_properties(bmc_${test_name} PROPERTIES
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
 endforeach(test_name)
 # A kludge to workaround cmake's inability to add dependencies to the test target
 add_custom_target(check
