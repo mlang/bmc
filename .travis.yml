@@ -1,0 +1,80 @@
+sudo: false
+language: cpp
+
+matrix:
+  include:
+    - os: osx
+      env: COMPILER=clang++
+      osx_image: xcode7
+    - os: linux
+      env: COMPILER=clang++-3.6 BOOST_VERSION=1.58.0
+      addons:
+        apt:
+          packages: ["clang-3.6", "libxerces-c-dev"]
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise
+    - os: linux
+      env: COMPILER=clang++-3.6 BOOST_VERSION=1.59.0
+      addons:
+        apt:
+          packages: ["clang-3.6", "libxerces-c-dev"]
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.7
+            - llvm-toolchain-precise
+
+before install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then; brew update; fi
+
+install:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then brew install boost qt5 xerces-c xsd
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then cd ..
+         wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz | tar -xz
+         wget --no-check-certificate --quiet -O - http://www.codesynthesis.com/download/xsd/4.0/linux-gnu/x86_64/xsd-4.0.0-x86_64-linux-gnu.tar.bz2 | tar -jx
+         cd ${TRAVIS_BUILD_DIR}
+    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then cd ..
+         wget --no-check-certificate --quiet -O - http://cmake.org/files/v3.4/cmake-3.4.3-Darwin-x86_64.tar.gz | tar -xz
+         cd ${TRAVIS_BUILD_DIR}
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then cd ..
+         mkdir boost
+         wget --no-check-certificate --quiet -O - http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//./_}.tar.bz2/download | tar jx --strip-components=1 -C boost
+         cd boost
+         ./bootstrap.sh --with-toolset=clang --with-libraries=program_options
+         ./b2 headers
+         ./b2
+         cd ${TRAVIS_BUILD_DIR}
+    fi
+
+script:
+  - set -e
+  - git submodule --quiet update --init --recursive
+  - mkdir build
+  - cd build
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]
+    then XSDDIR=${TRAVIS_BUILD_DIR}/../xsd-4.0.0-x86_64-linux-gnu ${TRAVIS_BUILD_DIR}/../cmake-3.4.3-Linux-x86_64/bin/cmake -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=${TRAVIS_BUILD_DIR}/../boost -DCMAKE_CXX_COMPILER=$COMPILER ..
+    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]
+    then ${TRAVIS_BUILD_DIR}/../cmake-3.4.3-Darwin-x86_64/CMake.app/Contents/bin/cmake -Dbmc_USE_PYTHON=OFF -DCMAKE_CXX_COMPILER=$COMPILER ..
+    fi
+  - make check
+
+notifications:
+  recipients:
+    - mlang@blind.guru
+  email:
+    on_success: change
+    on_failure: always
+

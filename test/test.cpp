@@ -13,12 +13,6 @@
 #include <boost/test/included/unit_test.hpp>
 #endif
 
-#ifdef CMAKE_SOURCE_DIR
-#define DIR CMAKE_SOURCE_DIR
-#else
-#define DIR ""
-#endif
-
 #include <bmc/braille/text2braille.hpp>
 
 struct text_table
@@ -89,7 +83,7 @@ BOOST_AUTO_TEST_CASE(key_signature_grammar_test_3) {
   BOOST_CHECK_EQUAL(attribute, -2);
 }
 
-#include "spirit/qi/primitive/brl.hpp"
+#include "bmc/braille/parsing/qi/primitive/brl.hpp"
 
 BOOST_AUTO_TEST_CASE(brl_parser_test) {
   std::wstring const input(L"#A");
@@ -390,6 +384,8 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test3) {
 #include "bmc/lilypond.hpp"
 #include <sstream>
 #include <fstream>
+#include <boost/test/output_test_stream.hpp>
+using boost::test_tools::output_test_stream;
 
 BOOST_AUTO_TEST_CASE(score_tuplet_test4) {
   std::locale::global(std::locale(""));
@@ -410,17 +406,10 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test4) {
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/score_tuplet_test4.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  output_test_stream ts{"output/score_tuplet_test4.ly"};
+  ::bmc::lilypond_output_format(ts);
+  ts << attribute;
+  BOOST_REQUIRE(ts.match_pattern());
 }
 
 BOOST_AUTO_TEST_CASE(score_tuplet_test5) {
@@ -505,17 +494,10 @@ BOOST_AUTO_TEST_CASE(score_tuplet_test8) {
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_CHECK(compile(attribute));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/score_tuplet_test8.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  output_test_stream ts{"output/score_tuplet_test8.ly"};
+  ::bmc::lilypond_output_format(ts);
+  ts << attribute;
+  BOOST_CHECK(ts.match_pattern());
 }
 
 struct slur_count_of_first_note : boost::static_visitor<std::size_t> {
@@ -615,7 +597,7 @@ bool test_reformat(bmc::braille::ast::score const &score, unsigned width, std::s
 
 BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v01.bmc");
+  std::wifstream file("input/bwv988-v01.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -642,55 +624,34 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
 //BOOST_CHECK_EQUAL(duration(attribute.parts[0][0]), ::bmc::rational(3, 4) * 32);
 
   {
-    std::stringstream ss;
-    ::bmc::lilypond_output_format(ss);
-    ss << attribute;
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream ly_file(DIR "output/bwv988-v01.ly");
-    BOOST_REQUIRE(ly_file.good());
-    std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v01.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
   }
 
   { // LilyPond output including comments pointing back to braille locations
-    std::stringstream ss;
-    ::bmc::lilypond_output_format(ss);
-    ::bmc::include_locations_for_lilypond(ss);
-    ss << attribute;
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream ly_file(DIR "output/bwv988-v01.ly.locations.expected");
-    BOOST_REQUIRE(ly_file.good());
-    std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v01.ly.locations.expected"};
+    ::bmc::lilypond_output_format(ts);
+    ::bmc::include_locations_for_lilypond(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
   }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v01.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v01.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 
   for (unsigned i = 25; i <= 88; ++i)
-    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v01.ly",
-                                DIR "output/bwv988-v01.xml"));
+    BOOST_REQUIRE(test_reformat(attribute, i, "output/bwv988-v01.ly",
+                                "output/bwv988-v01.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v02) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v02.bmc");
+  std::wifstream file("input/bwv988-v02.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -714,39 +675,27 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(2, 4));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v02.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  {
+    output_test_stream ts{"output/bwv988-v02.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v02.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v02.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 
   for (unsigned i = 25; i <= 88; ++i)
-    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v02.ly",
-                                DIR "output/bwv988-v02.xml"));
+    BOOST_REQUIRE(test_reformat(attribute, i, "output/bwv988-v02.ly",
+                                "output/bwv988-v02.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v03) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v03.bmc");
+  std::wifstream file("input/bwv988-v03.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -770,38 +719,27 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(12, 8));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v03.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v03.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v03.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v03.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 
   for (unsigned i = 25; i <= 88; ++i)
-    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v03.ly",
-                                DIR "output/bwv988-v03.xml"));
+    BOOST_REQUIRE(test_reformat(attribute, i, "output/bwv988-v03.ly",
+                                "output/bwv988-v03.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v04) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v04.bmc");
+  std::wifstream file("input/bwv988-v04.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -824,37 +762,27 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(3, 8));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "output/bwv988-v04.ly");
-  BOOST_CHECK(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v04.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v04.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v04.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 
   for (unsigned i = 25; i <= 88; ++i)
-    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v04.ly",
-                                DIR "output/bwv988-v04.xml"));
+    BOOST_REQUIRE(test_reformat(attribute, i, "output/bwv988-v04.ly",
+                                "output/bwv988-v04.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v05) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v05.bmc");
+  std::wifstream file("input/bwv988-v05.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -878,39 +806,27 @@ BOOST_AUTO_TEST_CASE(bwv988_v05) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v05.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v05.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v05.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v05.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 
   for (unsigned i = 25; i <= 88; ++i)
-    BOOST_REQUIRE(test_reformat(attribute, i, DIR "output/bwv988-v05.ly",
-                                DIR "output/bwv988-v05.xml"));
+    BOOST_REQUIRE(test_reformat(attribute, i, "output/bwv988-v05.ly",
+                                "output/bwv988-v05.xml"));
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v06) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v06.bmc");
+  std::wifstream file("input/bwv988-v06.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -934,35 +850,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v06) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v06.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v06.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v06.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v06.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v07) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v07.bmc");
+  std::wifstream file("input/bwv988-v07.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -986,34 +890,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v07) {
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "output/bwv988-v07.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v07.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v07.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v07.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v08) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v08.bmc");
+  std::wifstream file("input/bwv988-v08.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1037,35 +930,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v08) {
   BOOST_CHECK(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v08.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v08.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v08.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v08.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v09) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v09.bmc");
+  std::wifstream file("input/bwv988-v09.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1089,35 +970,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v09) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v09.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v09.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v09.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v09.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v10) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v10.bmc");
+  std::wifstream file("input/bwv988-v10.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1141,35 +1010,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v10) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v10.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  {
+    output_test_stream ts{"output/bwv988-v10.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v10.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v10.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v11) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v11.bmc");
+  std::wifstream file("input/bwv988-v11.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1193,35 +1050,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v11) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v11.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v11.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v11.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v11.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v12) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v12.bmc");
+  std::wifstream file("input/bwv988-v12.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1245,35 +1090,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v12) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(attribute.parts.size(), attribute.unfolded_part.size());
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v12.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v12.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v12.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v12.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v13.bmc");
+  std::wifstream file("input/bwv988-v13.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1297,34 +1130,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(3, 4));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-
-  std::ifstream ly_file(DIR "output/bwv988-v13.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v13.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v13.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v13.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v16) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v16.bmc");
+  std::wifstream file("input/bwv988-v16.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1347,35 +1169,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_REQUIRE(compile(attribute));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v16.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v16.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v16.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v16.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v13.de.bmc");
+  std::wifstream file("input/bwv988-v13.de.bmc");
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1401,7 +1211,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
 
 BOOST_AUTO_TEST_CASE(bwv988_v14) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v14.bmc");
+  std::wifstream file("input/bwv988-v14.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1425,35 +1235,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v14) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(3, 4));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v14.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v14.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v14.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v14.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v15) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v15.bmc");
+  std::wifstream file("input/bwv988-v15.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1477,35 +1275,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v15) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(1, 2));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v15.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v15.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v15.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v15.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v17) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v17.bmc");
+  std::wifstream file("input/bwv988-v17.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1528,35 +1314,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v17) {
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_REQUIRE(compile(attribute));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v17.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v17.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v17.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v17.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v18) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v18.bmc");
+  std::wifstream file("input/bwv988-v18.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1579,35 +1353,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v18) {
   ::bmc::braille::compiler<error_handler_type> compile(errors);
   BOOST_REQUIRE(compile(attribute));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v18.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v18.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v18.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v18.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v19) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v19.bmc");
+  std::wifstream file("input/bwv988-v19.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1631,35 +1393,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(3, 8));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v19.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v19.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v19.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v19.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v22) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v22.bmc");
+  std::wifstream file("input/bwv988-v22.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1683,35 +1433,23 @@ BOOST_AUTO_TEST_CASE(bwv988_v22) {
   BOOST_REQUIRE(compile(attribute));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(1));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v22.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v22.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v22.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v22.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
 
 BOOST_AUTO_TEST_CASE(bwv988_v30) {
   std::locale::global(std::locale(""));
-  std::wifstream file(DIR "input/bwv988-v30.bmc");
+  std::wifstream file("input/bwv988-v30.bmc");
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<wchar_t> file_begin(file.rdbuf()), file_end;
   std::wstring const input(file_begin, file_end);
@@ -1736,28 +1474,16 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][0]), ::bmc::rational(1, 8));
   BOOST_CHECK_EQUAL(duration(attribute.parts[0][0].paragraphs[0][1]), ::bmc::rational(4, 4));
 
-  std::stringstream ss;
-  ::bmc::lilypond_output_format(ss);
-  ss << attribute;
-  BOOST_REQUIRE(!ss.str().empty());
-
-  std::ifstream ly_file(DIR "output/bwv988-v30.ly");
-  BOOST_REQUIRE(ly_file.good());
-  std::istreambuf_iterator<char> in_begin(ly_file.rdbuf()), in_end;
-  std::string expected(in_begin, in_end);
-  BOOST_REQUIRE(!expected.empty());
-  BOOST_CHECK_EQUAL(ss.str(), expected);
+  { // LilyPond output:
+    output_test_stream ts{"output/bwv988-v30.ly"};
+    ::bmc::lilypond_output_format(ts);
+    ts << attribute;
+    BOOST_CHECK(ts.match_pattern());
+  }
 
   { // MusicXML output:
-    std::stringstream ss;
-    ::bmc::musicxml(ss, attribute);
-    BOOST_REQUIRE(!ss.str().empty());
-
-    std::ifstream xml_file(DIR "output/bwv988-v30.xml");
-    BOOST_REQUIRE(xml_file.good());
-    std::istreambuf_iterator<char> in_begin(xml_file.rdbuf()), in_end;
-    std::string expected(in_begin, in_end);
-    BOOST_REQUIRE(!expected.empty());
-    BOOST_CHECK_EQUAL(ss.str(), expected);
+    output_test_stream ts{"output/bwv988-v30.xml"};
+    ::bmc::musicxml(ts, attribute);
+    BOOST_CHECK(ts.match_pattern());
   }
 }
