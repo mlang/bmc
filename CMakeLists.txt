@@ -97,7 +97,7 @@ if(bmc_USE_PYTHON)
 endif(bmc_USE_PYTHON)
 add_subdirectory(test)
 
-add_executable(x3_tests x3_tests.cpp text2braille.cpp parser.cpp)
+add_executable(x3_tests x3_tests.cpp lib/text2braille.cpp parser.cpp)
 target_compile_features(x3_tests PRIVATE cxx_auto_type)
 target_link_libraries(x3_tests ${Boost_SYSTEM_LIBRARY})
 
