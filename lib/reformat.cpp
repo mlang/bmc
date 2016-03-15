@@ -487,15 +487,15 @@ struct print_visitor: public ast::const_visitor<print_visitor> {
     return true;
   }
 
-  bool visit_value_distinction(ast::value_distinction const &vd) {
-    switch (vd.value) {
-    case ast::value_distinction::distinct:
+  bool visit_value_prefix(ast::value_prefix const &vp) {
+    switch (vp.value) {
+    case ast::value_prefix::distinct:
       add_to_para(new atom{distinct_value_sign});
       break;
-    case ast::value_distinction::small_follows:
+    case ast::value_prefix::small_follows:
       add_to_para(new atom{small_value_sign});
       break;
-    case ast::value_distinction::large_follows:
+    case ast::value_prefix::large_follows:
       add_to_para(new atom{large_value_sign});
       break;
     default: BOOST_ASSERT(false);

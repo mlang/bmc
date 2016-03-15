@@ -164,7 +164,7 @@ public:
 
   SIMPLE_BASE(interval, ast::interval, i)
 
-  SIMPLE_BASE(value_distinction, ast::value_distinction, v)
+  SIMPLE_BASE(value_prefix, ast::value_prefix, v)
   SIMPLE_BASE(hyphen, ast::hyphen, h)
   SIMPLE_BASE(tie, ast::tie, t)
   SIMPLE_BASE(tuplet_start, ast::tuplet_start, t)
@@ -210,7 +210,7 @@ public:
   CALL_OPERATOR(ast::rest, rest)
   CALL_OPERATOR(ast::chord, chord)
   CALL_OPERATOR(ast::moving_note, moving_note)
-  CALL_OPERATOR(ast::value_distinction, value_distinction)
+  CALL_OPERATOR(ast::value_prefix, value_prefix)
   CALL_OPERATOR(ast::hyphen, hyphen)
   CALL_OPERATOR(ast::tie, tie)
   CALL_OPERATOR(ast::tuplet_start, tuplet_start)

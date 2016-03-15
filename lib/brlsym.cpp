@@ -136,16 +136,6 @@ hand_symbols::hand_symbols()
 
 hand_symbols hand_sign;
 
-value_distinction_symbols::value_distinction_symbols()
-{
-  add(L"\u2823\u2802", ast::value_distinction::distinct)
-     (L"\u2820\u2823\u2802", ast::value_distinction::small_follows)
-     (L"\u2818\u2823\u2802", ast::value_distinction::large_follows)
-     ;
-}
-
-value_distinction_symbols value_distinction_sign;
-
 slur_symbols::slur_symbols()
 {
   add(L"\u2809",  ast::slur::type::single)

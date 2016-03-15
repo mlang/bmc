@@ -46,7 +46,7 @@ BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::moving_note,
   base, intervals
 )
 
-BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::value_distinction,
+BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::ast::value_prefix,
   value
 )
 

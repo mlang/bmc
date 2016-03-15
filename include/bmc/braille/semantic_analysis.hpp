@@ -48,7 +48,7 @@ public:
   {}
 
   // Value distinction signs, music hyphens and tuplet indicators are irrelevant from here on.
-  result_type operator() (ast::value_distinction const &) const
+  result_type operator() (ast::value_prefix const &) const
   { return sign_conversion_result::ok; }
   result_type operator() (ast::hyphen const &) const
   { return sign_conversion_result::ok; }

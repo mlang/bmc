@@ -56,7 +56,7 @@ namespace bmc {
         result_type operator()(simile const&) const { return 0; }
         result_type operator()(tie const&) const { return 0; }
         result_type operator()(tuplet_start const&) const { return 0; }
-        result_type operator()(value_distinction const&) const { return 0; }
+        result_type operator()(value_prefix const&) const { return 0; }
       };
 
       struct is_rhythmic : boost::static_visitor<bool>
@@ -82,20 +82,16 @@ namespace bmc {
       inline bool is_rest  (sign const &s) { return boost::get<ast::rest  >(&s); }
       inline bool is_simile(sign const &s) { return boost::get<ast::simile>(&s); }
 
-      class is_value_distinction : public boost::static_visitor<bool>
+      class is_value_prefix : public boost::static_visitor<bool>
       {
         bool check;
-        value_distinction::type expected;
+        value_prefix::type expected;
       public:
-        is_value_distinction()
-        : check(false) {}
+        is_value_prefix() : check(false) {}
+        is_value_prefix(value_prefix::type prefix) : check(true), expected(prefix) {}
 
-        is_value_distinction(value_distinction::type distinction)
-        : check(true)
-        , expected(distinction) {}
-
-        result_type operator() (value_distinction const& distinction) const
-        { return !check? true: distinction.value == expected; }
+        result_type operator() (value_prefix const& prefix) const
+        { return check ? prefix.value == expected : true; }
 
         template <class Sign>
         result_type operator()(Sign const &) const

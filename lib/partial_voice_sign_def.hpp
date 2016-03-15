@@ -53,7 +53,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   start = hyphen
         | moving_note | chord | note | rest
-        | value_distinction | tie | tuplet_start
+        | value_prefix | tie | tuplet_start
         | clef | hand_sign
         | simile
         | barline_sign
@@ -92,7 +92,13 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   slur = slur_sign;
   tie = tie_sign;
 
-  value_distinction = value_distinction_sign;
+  value_prefix =
+    ( brl(6)  >> attr(ast::value_prefix::small_follows)
+    | brl(45) >> attr(ast::value_prefix::large_follows)
+    |            attr(ast::value_prefix::distinct)
+    )
+    >> brl(126) >> brl(2);
+
 
   finger_sign =
     brl(1)   >> attr(1)
@@ -140,7 +146,7 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
   BMC_LOCATABLE_SET_ID(rest);
   BMC_LOCATABLE_SET_ID(interval);
   BMC_LOCATABLE_SET_ID(chord);
-  BMC_LOCATABLE_SET_ID(value_distinction);
+  BMC_LOCATABLE_SET_ID(value_prefix);
   BMC_LOCATABLE_SET_ID(hyphen);
   BMC_LOCATABLE_SET_ID(tie);
   BMC_LOCATABLE_SET_ID(clef);

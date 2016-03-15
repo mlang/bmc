@@ -206,7 +206,7 @@ struct moving_note final : locatable, rhythmic
   rational get_type() const override { return base.type; }
 };
 
-struct value_distinction : locatable
+struct value_prefix : locatable
 {
   enum type { distinct, large_follows, small_follows };
   type value;
@@ -259,7 +259,7 @@ struct clef : locatable
 };
 
 typedef boost::variant< note, rest, chord, moving_note
-		      , value_distinction, hyphen, tie, tuplet_start
+		      , value_prefix, hyphen, tie, tuplet_start
                       , hand_sign, clef, simile, barline
                       >
         sign;
@@ -318,7 +318,7 @@ typedef boost::make_variant_over
         < boost::mpl::remove
         < boost::mpl::remove
         < ast::sign::types
-        , value_distinction>::type
+        , value_prefix>::type
         , hyphen>::type
         , simile>::type
         , tuplet_start>::type

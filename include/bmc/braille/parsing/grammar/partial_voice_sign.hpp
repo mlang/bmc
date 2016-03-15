@@ -47,7 +47,7 @@ struct partial_voice_sign_grammar : boost::spirit::qi::grammar<Iterator, ast::si
   boost::spirit::qi::rule<Iterator, ast::slur()> slur;
   boost::spirit::qi::rule<Iterator, ast::tie()> tie, simple_tie;
   boost::spirit::qi::rule<Iterator> chord_tied_sign;
-  boost::spirit::qi::rule<Iterator, ast::value_distinction()> value_distinction;
+  boost::spirit::qi::rule<Iterator, ast::value_prefix()> value_prefix;
   boost::spirit::qi::rule<Iterator, ast::hyphen()> hyphen;
   boost::spirit::qi::rule<Iterator> optional_dot;
 };

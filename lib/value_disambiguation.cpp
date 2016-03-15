@@ -240,7 +240,7 @@ public:
     stack_end->set_tuplet_info(tuplet_begin, tuplet_end);
     stack_end++;
   }
-  result_type operator()(ast::value_distinction const &) { BOOST_ASSERT(false); }
+  result_type operator()(ast::value_prefix const &) { BOOST_ASSERT(false); }
   // A note group must never contain a music hyphen.
   result_type operator()(ast::hyphen const &) { BOOST_ASSERT(false); }
   result_type operator()(braille::ast::tie &) {}
@@ -322,7 +322,7 @@ public:
   { emplace_back(chord, category, rational(1)); }
   result_type operator()(ast::moving_note &chord)
   { emplace_back(chord, category, rational(1)); }
-  result_type operator()(ast::value_distinction const &) {}
+  result_type operator()(ast::value_prefix const &) {}
   template<typename Sign> result_type operator()(Sign const &)
   { BOOST_ASSERT(false); }
 };
@@ -330,10 +330,10 @@ public:
 ast::partial_voice::iterator
 same_category_end( ast::partial_voice::iterator const &begin
                  , ast::partial_voice::iterator const &end
-                 , ast::value_distinction::type distinction
+                 , ast::value_prefix::type prefix
                  )
 {
-  if (apply_visitor(ast::is_value_distinction(distinction), *begin)) {
+  if (apply_visitor(ast::is_value_prefix(prefix), *begin)) {
     ast::partial_voice::iterator iter(begin + 1);
     if (iter != end && apply_visitor(ast::is_rhythmic(), *iter)) {
       for (ast::value
@@ -436,7 +436,7 @@ public:
         large_and_small(iterator, end, stack_begin, stack_end, max_duration, position, tuplet);
       } else if ((tail = same_category_end
                          ( iterator, end
-                         , ast::value_distinction::large_follows
+                         , ast::value_prefix::large_follows
                          )
                  ) > iterator) {
         same_category const group(iterator, tail, large_value);
@@ -448,7 +448,7 @@ public:
         }
       } else if ((tail = same_category_end
                          ( iterator, end
-                         , ast::value_distinction::small_follows
+                         , ast::value_prefix::small_follows
                          )
                  ) > iterator) {
         same_category const group(iterator, tail, small_value);
@@ -674,7 +674,7 @@ public:
     }
     return true;
   }
-  result_type operator()(ast::value_distinction &) const { return false; }
+  result_type operator()(ast::value_prefix &) const { return false; }
   result_type operator()(ast::hyphen &) const { return false; }
   result_type operator()(braille::ast::hand_sign &) const { return false; }
   result_type operator()(ast::clef &) const { return false; }
