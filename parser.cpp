@@ -106,8 +106,8 @@ rule<struct lower_number, unsigned> const lower_number = "lower_number";
 struct time_signature;
 rule<struct time_signature, ast::time_signature> const
 time_signature = "time_signature";
-rule<struct upper_number_as_negative, unsigned> const
-upper_number_as_negative = "upper_number_as_negative";
+rule<struct negated_upper_number, int> const
+negated_upper_number = "negated_upper_number";
 struct key_signature;
 rule<struct key_signature, ast::key_signature> const
 key_signature = "key_signature";
@@ -201,25 +201,20 @@ auto const time_signature_def =
 auto const sharp_sign = brl(146);
 auto const flat_sign = brl(126);
 
-auto multiply_by_10_minus_attr = [](auto& ctx)
-{
-  _val(ctx) = 10 * _val(ctx) - _attr(ctx);
-};
-
-auto const upper_number_as_negative_def =
-    eps[assign_0] >> +upper_digit[multiply_by_10_minus_attr]
+auto const negated_upper_number_def =
+    upper_number[([](auto &&ctx) { _val(ctx) = -_attr(ctx); })]
   ;
 
 auto const key_signature_def =
     sharp_sign >> ( sharp_sign >> ( sharp_sign >> attr(3)
-                                  |               attr(2)                 )
-                  |                               attr(1)                 )
+                                  |               attr(2)             )
+                  |                               attr(1)             )
   | flat_sign  >> ( flat_sign  >> ( flat_sign  >> attr(-3)
-                                  |               attr(-2)                )
-                  |                               attr(-1)                )
-  | number_sign                >> ( upper_number             >> sharp_sign
-                                  | upper_number_as_negative >> flat_sign )
-  |                                 attr(0)
+                                  |               attr(-2)            )
+                  |                               attr(-1)            )
+  | number_sign >> ( upper_number         >> sharp_sign
+                   | negated_upper_number >> flat_sign )
+  | attr(0)
   ;
 
 auto const optional_dot = (!brl_mask(123)) | (brl(3) > &brl_mask(123));
@@ -286,15 +281,15 @@ auto const accidental =
   ;
 
 auto const octave =
-    brl(4, 4) >> attr(1)
-  | brl(4)    >> attr(2)
-  | brl(45)   >> attr(3)
-  | brl(456)  >> attr(4)
-  | brl(5)    >> attr(5)
-  | brl(46)   >> attr(6)
-  | brl(56)   >> attr(7)
-  | brl(6)    >> attr(8)
-  | brl(6, 6) >> attr(9)
+    brl(4)   >> ( brl(4) >> attr(1)
+                |           attr(2) )
+  | brl(45)  >> attr(3)
+  | brl(456) >> attr(4)
+  | brl(5)   >> attr(5)
+  | brl(46)  >> attr(6)
+  | brl(56)  >> attr(7)
+  | brl(6)   >> ( brl(6) >> attr(9)
+                |           attr(8) )
   ;
 
 auto const step =
@@ -593,7 +588,7 @@ struct measure : annotate_on_success {};
 struct score : annotate_on_success, report_on_error {};
 
 BOOST_SPIRIT_DEFINE(
-  upper_digit, upper_number, lower_digit, lower_number, upper_number_as_negative,
+  upper_digit, upper_number, lower_digit, lower_number, negated_upper_number,
   time_signature, key_signature, clef,
   augmentation_dots, fingering,
   note, rest, moving_note, chord, simile,
