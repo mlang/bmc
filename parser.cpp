@@ -410,9 +410,11 @@ auto const chord_def =
   ;
 
 auto const value_distinction_def =
-    brl(126, 2)     >> attr(ast::value_distinction::distinct)
-  | brl(6, 126, 2)  >> attr(ast::value_distinction::small_follows)
-  | brl(45, 126, 2) >> attr(ast::value_distinction::large_follows)
+  ( brl(6)  >> attr(ast::value_distinction::small_follows)
+  | brl(45) >> attr(ast::value_distinction::large_follows)
+  |            attr(ast::value_distinction::distinct)
+  )
+ >> brl(126, 2)
   ;
 
 auto const simile_def =
