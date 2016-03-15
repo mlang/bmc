@@ -4,22 +4,16 @@
 #include "ast.hpp"
 #include <boost/fusion/include/adapt_struct.hpp>
 
-BOOST_FUSION_ADAPT_STRUCT(
-  bmc::braille::parser::ast::time_signature,
-  (int, numerator)
-  (int, denominator)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::time_signature,
+  numerator, denominator
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  bmc::braille::parser::ast::key_signature,
-  (int, fifths)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::key_signature,
+  fifths
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::clef,
-  (::bmc::braille::parser::ast::clef::type, sign)
-  (::boost::optional<unsigned>, line)
-  (bool, other_staff)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::clef,
+  sign, line, other_staff
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -29,108 +23,68 @@ BOOST_FUSION_ADAPT_STRUCT(
   (bool, doubled)
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::note,
-  (std::vector<::bmc::articulation>, articulations)
-  (boost::optional<::bmc::accidental>, acc)
-  (boost::optional<unsigned>, octave_spec)
-  (::bmc::diatonic_step, step)
-  (::bmc::braille::parser::ast::ambiguous_value, ambiguous_value)
-  (unsigned, dots)
-//(std::vector<::bmc::braille::ast::slur>, slurs)
-  (::bmc::braille::parser::ast::fingering, fingers)
-//(boost::optional<::bmc::braille::ast::tie>, tie)
-//(std::vector<::bmc::braille::ast::stem>, extra_stems)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::note,
+  articulations, acc, octave_spec, step, ambiguous_value, dots,
+  fingers
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::rest,
-  (bool, by_transcriber)
-  (::bmc::braille::parser::ast::ambiguous_value, ambiguous_value)
-  (unsigned, dots)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::rest,
+  by_transcriber, ambiguous_value, dots
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::interval,
-  (boost::optional<::bmc::accidental>, acc)
-  (boost::optional<unsigned>, octave_spec)
-  (::bmc::interval, steps)
-  (::bmc::braille::parser::ast::fingering, fingers)
-//(boost::optional<::bmc::braille::ast::tie>, tie)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::interval,
+  acc, octave_spec, steps, fingers
 )
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::chord,
-  (::bmc::braille::parser::ast::note, base)
-  (std::vector<::bmc::braille::parser::ast::interval>, intervals)
-  (bool, all_tied)
-)
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::moving_note,
-  (::bmc::braille::parser::ast::note, base)
-  (std::vector<::bmc::braille::parser::ast::interval>, intervals)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::chord,
+  base, intervals, all_tied
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::value_distinction,
-  (::bmc::braille::parser::ast::value_distinction::type, value)
-)
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::tie,
-  (::bmc::braille::parser::ast::tie::type, value)
-)
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::hand_sign,
-  (::bmc::braille::parser::ast::hand_sign::type, value)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::moving_note,
+  base, intervals
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::barline,
-  (::bmc::braille::parser::ast::barline::type, value)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::value_distinction,
+  value
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::simile,
-  (boost::optional<unsigned>, octave_spec)
-  (unsigned, count)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::tie,
+  value
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::measure,
-  (boost::optional<unsigned>, ending)
-  (std::vector<::bmc::braille::parser::ast::voice>, voices)
+BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::parser::ast::hand_sign,
+  value
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::key_and_time_signature,
-  (::bmc::braille::parser::ast::key_signature, key)
-  (::bmc::braille::parser::ast::time_signature, time)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::barline,
+  value
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::measure_specification,
-  (::bmc::braille::parser::ast::measure_specification::number_type, number)
-  (boost::optional<::bmc::braille::parser::ast::measure_specification::number_type>, alternative)
+BOOST_FUSION_ADAPT_STRUCT(::bmc::braille::parser::ast::simile,
+  octave_spec, count
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::measure_range,
-  (::bmc::braille::parser::ast::measure_specification, first)
-  (::bmc::braille::parser::ast::measure_specification, last)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::measure,
+  ending, voices
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::section,
-  (boost::optional<::bmc::braille::parser::ast::key_and_time_signature>, key_and_time_sig)
-  (boost::optional<::bmc::braille::parser::ast::section::number_type>, number)
-  (boost::optional<::bmc::braille::parser::ast::measure_range>, range)
-  (std::vector<::bmc::braille::parser::ast::paragraph>, paragraphs)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::key_and_time_signature,
+  key, time
 )
 
-BOOST_FUSION_ADAPT_STRUCT(
-  ::bmc::braille::parser::ast::score,
-//(::bmc::braille::parser::ast::key_signature, key_sig)
-//(std::vector<::bmc::braille::parser::ast::time_signature>, time_sigs)
-  (std::vector<::bmc::braille::parser::ast::part>, parts)
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::measure_specification,
+  number, alternative
+)
+
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::measure_range,
+  first, last
+)
+
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::section,
+  key_and_time_sig, number, range, paragraphs
+)
+
+BOOST_FUSION_ADAPT_STRUCT(bmc::braille::parser::ast::score,
+  parts
 )
 
 #endif
