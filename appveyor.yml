@@ -1,0 +1,41 @@
+init:
+ - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+version: 1.0.{build}
+build:
+  verbosity: minimal
+  project: bmc.sln
+
+
+configuration: Release
+
+
+environment:
+  QTDIR: 'C:\Qt\5.5\msvc2013'
+  XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin'
+  #PATH: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;%PATH%'
+
+install:
+  - git submodule --quiet update --init --recursive
+  - curl.exe http://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi -o xsd-4.0.msi
+  - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
+  - type install.log
+
+before_build:
+  - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
+  - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
+  - echo "Building Boost program_optiosn module"
+  - cd c:\Libraries\boost_1_59_0
+  - bootstrap.bat --with-libraries=program_options
+  - b2.exe --with-program_options
+  - dir c:\libraries\boost_1_59_0\stage\lib
+  - echo Running cmake...
+  - cd c:\projects\bmc
+  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DBoost_DEBUG=1 -DBOOST_ROOT=C:\Libraries\boost_1_59_0 -DBOOST_INCLUDEDIR=C:\Libraries\boost_1_59_0 -DBOOST_LIBRARYDIR=C:\Libraries\boost_1_59_0\stage\lib -DBoost_PROGRAM_OPTIONS_LIBRARY_DEBUG=C:\Libraries\boost_1_59_0\stage\lib\libboost_program_options-vc140-mt-gd-1_59.lib -DBoost_PROGRAM_OPTIONS_LIBRARY_RELEASE=C:\Libraries\boost_1_59_0\stage\lib\libboost_program_options-vc140-mt-1_59.lib -DXercesC_INCLUDE_DIR="C:\Program Files (x86)\CodeSynthesis XSD 4.0\include" -DXercesC_LIBRARY_DEBUG="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3.lib" -DXSDCXX_EXECUTABLE="C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -DXSDCXX_INCLUDE_DIR="C:\Program Files (x86)\CodeSynthesis XSD 4.0\include" .
+  - type CMakeCache.txt
+
+build_script:
+  - msbuild bmc.sln /t:bmc_test /p:Configuration=Release
+  - cd c:\projects\bmc\test
+  - Release\bmc_test.exe
+
