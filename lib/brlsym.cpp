@@ -32,9 +32,9 @@ lower_digit_symbols lower_digit_sign;
 
 dots_123_symbols::dots_123_symbols()
 {
-  for (int i = 1; i < 0X40; ++i)
+  for (wchar_t i = 1; i < 0X40; ++i)
     if (i & 0X07) {
-      wchar_t const pattern[2] = { 0X2800 | i, 0 };
+      wchar_t const pattern[2] = { wchar_t(0X2800) | i, 0 };
       add(pattern);
     }
 }

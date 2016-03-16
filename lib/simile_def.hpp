@@ -34,7 +34,6 @@ simile_grammar<Iterator>::simile_grammar(error_handler<Iterator>& error_handler)
   ::bmc::braille::brl_type brl;
   boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
-  boost::spirit::_2_type _2;
   boost::spirit::_3_type _3;
   boost::spirit::_val_type _val;
   using boost::phoenix::at_c;

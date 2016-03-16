@@ -78,9 +78,15 @@ namespace bmc {
       inline bool is_grace(ast::chord const &chord) { return is_grace(chord.base); }
       inline bool is_grace(ast::moving_note &chord) { return is_grace(chord.base); }
 
-      inline bool is_hyphen(sign const &s) { return boost::get<ast::hyphen>(&s); }
-      inline bool is_rest  (sign const &s) { return boost::get<ast::rest  >(&s); }
-      inline bool is_simile(sign const &s) { return boost::get<ast::simile>(&s); }
+      inline bool is_hyphen(sign const &s) {
+        return boost::get<ast::hyphen>(&s) != nullptr;
+      }
+      inline bool is_rest  (sign const &s) {
+        return boost::get<ast::rest  >(&s) != nullptr;
+      }
+      inline bool is_simile(sign const &s) {
+        return boost::get<ast::simile>(&s) != nullptr;
+      }
 
       class is_value_prefix : public boost::static_visitor<bool>
       {

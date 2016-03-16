@@ -45,7 +45,6 @@ measure_grammar<Iterator>::measure_grammar(error_handler<Iterator>& error_handle
 
   boost::spirit::_val_type _val;
   boost::spirit::_1_type _1;
-  boost::spirit::_2_type _2;
   boost::spirit::_3_type _3;
   boost::spirit::repeat_type repeat;
   using boost::phoenix::at_c;

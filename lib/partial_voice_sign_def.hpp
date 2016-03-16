@@ -43,7 +43,6 @@ partial_voice_sign_grammar<Iterator>::partial_voice_sign_grammar(error_handler<I
 
   ::bmc::braille::brl_type brl;
   boost::spirit::_1_type _1;
-  boost::spirit::_2_type _2;
   boost::spirit::_3_type _3;
   boost::spirit::_val_type _val;
   boost::spirit::attr_type attr;

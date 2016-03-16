@@ -31,7 +31,6 @@ tuplet_start_grammar<Iterator>::tuplet_start_grammar(error_handler<Iterator>& er
   ::bmc::braille::brl_type brl;
   boost::spirit::qi::_a_type _a;
   boost::spirit::_1_type _1;
-  boost::spirit::_2_type _2;
   boost::spirit::_3_type _3;
   boost::spirit::_val_type _val;
   boost::spirit::qi::_pass_type _pass;
