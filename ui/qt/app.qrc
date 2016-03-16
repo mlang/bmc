@@ -5,7 +5,7 @@
     <file>./sounds/fail.wav</file>
     <file>./images/empty.svg</file>
 
-    <file alias="examples/bwv988-v01.bmc">../../input/bwv988-v01.bmc</file>
+    <file alias="examples/bwv988-v01.bmc">../../test/input/bwv988-v01.bmc</file>
   </qresource>
 </RCC>
 
