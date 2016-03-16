@@ -1,6 +1,6 @@
 add_executable(bmc_test test.cpp)
 target_compile_features(bmc_test PRIVATE cxx_range_for cxx_auto_type)
-target_link_libraries(bmc_test braillemusic)
+target_link_libraries(bmc_test braillemusic-static)
 find_package(Boost QUIET COMPONENTS unit_test_framework)
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
   get_target_property(bmc_test_cflags bmc_test COMPILE_DEFINITIONS)
