@@ -309,7 +309,7 @@ generator::operator() (braille::ast::rest const &rest)
   if (include_locations) {
     os << "%{" << rest.id << "%}";
   }
-  for (int i = 0; i < rest.tuplet_end; ++i) os << " }";
+  for (unsigned int i = 0; i < rest.tuplet_end; ++i) os << " }";
 }
 
 generator::result_type
@@ -371,7 +371,7 @@ generator::operator() (braille::ast::note const &note)
   if (include_locations) {
     os << "%{" << note.id << "%}";
   }
-  for (int i = 0; i < note.tuplet_end; ++i) os << " }";
+  for (unsigned int i = 0; i < note.tuplet_end; ++i) os << " }";
 }
 
 generator::result_type
