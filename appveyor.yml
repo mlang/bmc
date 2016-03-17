@@ -19,7 +19,7 @@ install:
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
   - type install.log
   - reg query "HKCU\Software\Code Synthesis Tools" /s
- 
+  - reg query "HKCU\Software\Code Synthesis Tools\{5BB83ECA-7A53-41F5-9821-639F79C2D969}" /s 
 before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
   - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
