@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.4.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_PREFIX_PATH /usr/local/Cellar/qt5/5.5.1_2)
