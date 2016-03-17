@@ -29,5 +29,3 @@ if __name__ == '__main__':
     with urlopen(api + 'buildjobs/' + jobId + '/log') as log:
       print(log.read().decode('UTF-8'))
 
-
-
