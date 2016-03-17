@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+# A simple helper script to retrieve AppVeyor logs from the command line.
+#
+# Set the following git config variables:
+#   appveyor.token = 'Your AppVeyor Toekn'
+#   appveyor.slug = 'Slug of your project, e.g. user/project'
+#
+from urllib.request import Request, urlopen
+import json
+from subprocess import check_output
+
+def git_config(key):
+  return check_output(['git', 'config', key]).decode('UTF-8').strip()
+
+def slug():
+  return git_config('appveyor.slug')
+
+def token():
+  return git_config('appveyor.token')
+
+api = 'https://ci.appveyor.com/api/'
+
+if __name__ == '__main__':
+  req = Request(api + 'projects/' + slug())
+  req.add_header('Authorization', 'Bearer ' + token())
+  with urlopen(req) as api_resp:
+    info = json.loads(api_resp.read().decode('UTF-8'))
+    jobId = info['build']['jobs'][0]['jobId']
+    with urlopen(api + 'buildjobs/' + jobId + '/log') as log:
+      print(log.read().decode('UTF-8'))
+
+
+
