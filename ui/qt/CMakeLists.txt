@@ -6,7 +6,7 @@ find_package(Qt5 COMPONENTS Core Multimedia Svg Widgets Xml)
 if(Qt5_FOUND)
   qt5_add_resources(RESOURCES app.qrc)
   configure_file(config.h.in config.h)
-  add_executable(bmc-ui MACOSX_BUNDLE WIN32
+  add_executable(bmc-ui MACOSX_BUNDLE
     app.cpp
     mainwindow.cpp mainwindow.h
     lilypondsvgwidget.cpp lilypondsvgwidget.h
@@ -23,18 +23,20 @@ if(Qt5_FOUND)
     BUNDLE DESTINATION . COMPONENT Runtime
     RUNTIME DESTINATION bin COMPONENT Runtime
   )
-  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui")
   if(APPLE)
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/bmc-ui.app")
-  elseif(MSVC)
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui.exe")
-  endif()
-  set(DIRS ${QT_LIBRARY_DIRS})
-  install(CODE "
-    include(BundleUtilities)
-    set(BU_CHMOD_BUNDLE_ITEMS ON)
-    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")"
-    COMPONENT Runtime
-  )
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui")
+    if(APPLE)
+      set(APPS "\${CMAKE_INSTALL_PREFIX}/bmc-ui.app")
+    elseif(MSVC)
+      set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/bmc-ui.exe")
+    endif()
+    set(DIRS ${QT_LIBRARY_DIRS})
+    install(CODE "
+      include(BundleUtilities)
+      set(BU_CHMOD_BUNDLE_ITEMS ON)
+      fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")"
+      COMPONENT Runtime
+    )
+  endif(APPLE)
 endif()
 
