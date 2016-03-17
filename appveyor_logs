@@ -2,8 +2,8 @@
 # A simple helper script to retrieve AppVeyor logs from the command line.
 #
 # Set the following git config variables:
-#   appveyor.token = 'Your AppVeyor Toekn'
-#   appveyor.slug = 'Slug of your project, e.g. user/project'
+# $ git config appveyor.token 'Your AppVeyor Toekn'
+# $ git config appveyor.slug = 'user/project'
 #
 from urllib.request import Request, urlopen
 import json
