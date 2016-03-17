@@ -18,7 +18,7 @@ install:
   - curl.exe -s -o xsd-4.0.msi http://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
   - type install.log
-  - reg query HKLM\SOFTWARE /f * /k
+  - reg query HKCU\Software /f * /k
 
 before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
