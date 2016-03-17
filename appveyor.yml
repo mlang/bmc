@@ -9,6 +9,7 @@ build:
 configuration: Release
 
 environment:
+  BOOST_ROOT: 'c:\Libraries\boost_1_59_0'
   QTDIR: 'C:\Qt\5.5\msvc2013'
   XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0'
 
@@ -21,13 +22,13 @@ before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%\bin;%PATH%
   - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
   - echo "Building Boost program_optiosn module"
-  - cd c:\Libraries\boost_1_59_0
+  - cd %BOOST_ROOT%
   - bootstrap.bat --with-libraries=program_options
   - b2.exe --build-type=complete --with-program_options stage
-  - dir c:\libraries\boost_1_59_0\stage\lib
+  - dir %BOOST_ROOT%\stage\lib
   - echo Running cmake...
   - cd c:\projects\bmc
-  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DBOOST_ROOT=C:\Libraries\boost_1_59_0 -DXercesC_INCLUDE_DIR="%XSDDIR%\include" -DXercesC_LIBRARY_DEBUG="%XSDDIR%\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="%XSDDIR%\lib\vc-12.0\xerces-c_3.lib" .
+  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DXercesC_INCLUDE_DIR="%XSDDIR%\include" -DXercesC_LIBRARY_DEBUG="%XSDDIR%\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="%XSDDIR%\lib\vc-12.0\xerces-c_3.lib" .
 
 build_script:
   - msbuild bmc.sln /t:bmc,bmc-ui,bmc_test /p:Configuration=Release
