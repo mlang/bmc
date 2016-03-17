@@ -10,7 +10,7 @@ configuration: Release
 
 environment:
   QTDIR: 'C:\Qt\5.5\msvc2013'
-  XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin'
+  XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0'
 
 install:
   - git submodule --quiet update --init --recursive
