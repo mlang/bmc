@@ -11,15 +11,11 @@ configuration: Release
 environment:
   QTDIR: 'C:\Qt\5.5\msvc2013'
   XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin'
-  #PATH: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin;%PATH%'
 
 install:
   - git submodule --quiet update --init --recursive
   - curl.exe -s -o xsd-4.0.msi http://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
-  - type install.log
-  - reg query "HKCU\Software\Code Synthesis Tools" /s
-  - reg query "HKCU\Software\Code Synthesis Tools\{5BB83ECA-7A53-41F5-9821-639F79C2D969}" /s 
 
 before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
@@ -31,7 +27,7 @@ before_build:
   - dir c:\libraries\boost_1_59_0\stage\lib
   - echo Running cmake...
   - cd c:\projects\bmc
-  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DBoost_DEBUG=1 -DBOOST_ROOT=C:\Libraries\boost_1_59_0 -DXercesC_INCLUDE_DIR="C:\Program Files (x86)\CodeSynthesis XSD 4.0\include" -DXercesC_LIBRARY_DEBUG="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3.lib" -DXSDCXX_EXECUTABLE="C:\Program Files (x86)\CodeSynthesis XSD 4.0\bin\xsd.exe" -DXSDCXX_INCLUDE_DIR="C:\Program Files (x86)\CodeSynthesis XSD 4.0\include" .
+  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DBoost_DEBUG=1 -DBOOST_ROOT=C:\Libraries\boost_1_59_0 -DXercesC_INCLUDE_DIR="C:\Program Files (x86)\CodeSynthesis XSD 4.0\include" -DXercesC_LIBRARY_DEBUG="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="C:\Program Files (x86)\CodeSynthesis XSD 4.0\lib\vc-12.0\xerces-c_3.lib" .
 
 build_script:
   - msbuild bmc.sln /t:bmc,bmc-ui,bmc_test /p:Configuration=Release
