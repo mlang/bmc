@@ -1,4 +1,4 @@
-// Copyright (C) 2011  Mario Lang <mlang@delysid.org>
+﻿// Copyright (C) 2011  Mario Lang <mlang@delysid.org>
 //
 // Distributed under the terms of the GNU General Public License version 3.
 // (see accompanying file LICENSE.txt or copy at
