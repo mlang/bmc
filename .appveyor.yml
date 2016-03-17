@@ -1,6 +1,3 @@
-init:
- - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
 version: 1.0.{build}
 build:
   verbosity: minimal
@@ -19,15 +16,12 @@ install:
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
 
 before_build:
-  - set PATH=%QTDIR%\bin;%XSDDIR%\bin;%PATH%
-  - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
-  - echo "Building Boost program_optiosn module"
   - cd %BOOST_ROOT%
   - bootstrap.bat --with-libraries=program_options
   - b2.exe --build-type=complete --with-program_options stage
-  - dir %BOOST_ROOT%\stage\lib
-  - echo Running cmake...
   - cd c:\projects\bmc
+  - set PATH=%QTDIR%\bin;%XSDDIR%\bin;%PATH%
+  - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
   - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DXercesC_INCLUDE_DIR="%XSDDIR%\include" -DXercesC_LIBRARY_DEBUG="%XSDDIR%\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="%XSDDIR%\lib\vc-12.0\xerces-c_3.lib" .
 
 build_script:
