@@ -18,7 +18,7 @@ install:
   - curl.exe -s -o xsd-4.0.msi http://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
   - type install.log
-  - reg query HKCU\Software /f * /k
+  - reg query "HKCU\Software\Code Synthesis Tools" /f * /k
 
 before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
@@ -26,7 +26,7 @@ before_build:
   - echo "Building Boost program_optiosn module"
   - cd c:\Libraries\boost_1_59_0
   - bootstrap.bat --with-libraries=program_options
-  - b2.exe --link=static --runtime-link=static --with-program_options
+  - b2.exe --build-type=complete --with-program_options stage
   - dir c:\libraries\boost_1_59_0\stage\lib
   - echo Running cmake...
   - cd c:\projects\bmc
