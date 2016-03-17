@@ -18,7 +18,7 @@ install:
   - curl.exe -s -o xsd-4.0.msi http://www.codesynthesis.com/download/xsd/4.0/windows/i686/xsd-4.0.msi
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
   - type install.log
-  - reg query "HKCU\Software\Code Synthesis Tools\{5BB83ECA-7A53-41F5-9821-639F79C2D969}" /f * /k
+  - reg query "HKCU\Software\Code Synthesis Tools" /s
  
 before_build:
   - set PATH=%QTDIR%\bin;%XSDDIR%;%PATH%
