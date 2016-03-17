@@ -600,7 +600,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v01) {
   std::ifstream file{"input/bwv988-v01.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin(file.rdbuf()), file_end;
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -653,7 +653,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v02) {
   std::ifstream file{"input/bwv988-v02.bmc"};
   BOOST_CHECK(file.good());
   std::istreambuf_iterator<char> file_begin(file.rdbuf()), file_end;
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -696,7 +696,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v03) {
   std::ifstream file{"input/bwv988-v03.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin(file.rdbuf()), file_end;
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -739,7 +739,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v04) {
   std::ifstream file{"input/bwv988-v04.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin(file.rdbuf()), file_end;
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
@@ -781,7 +781,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v05) {
   std::ifstream file{"input/bwv988-v05.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin(file.rdbuf()), file_end;
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -824,7 +824,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v06) {
   std::ifstream file{"input/bwv988-v06.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -863,7 +863,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v07) {
   std::ifstream file{"input/bwv988-v07.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -902,7 +902,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v08) {
   std::ifstream file{"input/bwv988-v08.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -941,7 +941,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v09) {
   std::ifstream file{"input/bwv988-v09.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -980,7 +980,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v10) {
   std::ifstream file{"input/bwv988-v10.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1019,7 +1019,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v11) {
   std::ifstream file{"input/bwv988-v11.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1058,7 +1058,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v12) {
   std::ifstream file{"input/bwv988-v12.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1097,7 +1097,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13) {
   std::ifstream file{"input/bwv988-v13.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1136,7 +1136,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v16) {
   std::ifstream file{"input/bwv988-v16.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1174,7 +1174,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v13_de) {
   std::ifstream file{"input/bwv988-v13.de.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
   iterator_type const end(input.end());
@@ -1199,7 +1199,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v14) {
   std::ifstream file{"input/bwv988-v14.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1238,7 +1238,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v15) {
   std::ifstream file{"input/bwv988-v15.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1277,7 +1277,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v17) {
   std::ifstream file{"input/bwv988-v17.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1315,7 +1315,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v18) {
   std::ifstream file{"input/bwv988-v18.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1353,7 +1353,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v19) {
   std::ifstream file{"input/bwv988-v19.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1392,7 +1392,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v22) {
   std::ifstream file{"input/bwv988-v22.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
@@ -1431,7 +1431,7 @@ BOOST_AUTO_TEST_CASE(bwv988_v30) {
   std::ifstream file{"input/bwv988-v30.bmc"};
   BOOST_REQUIRE(file.good());
   std::istreambuf_iterator<char> file_begin{file.rdbuf()}, file_end{};
-  auto const input{utf_to_utf<wchar_t>(std::string{file_begin, file_end})};
+  auto const input = utf_to_utf<wchar_t>(std::string(file_begin, file_end));
   BOOST_REQUIRE(!input.empty());
   typedef std::wstring::const_iterator iterator_type;
   iterator_type begin(input.begin());
