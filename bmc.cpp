@@ -4,6 +4,7 @@
 // (see accompanying file LICENSE.txt or copy at
 //  http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
+#include <string>
 #include "config.hpp"
 #include <fstream>
 #include <boost/spirit/include/qi_parse.hpp>
@@ -15,16 +16,19 @@
 
 #include "bmc/lilypond.hpp"
 #include "bmc/musicxml.hpp"
+#include <boost/locale/encoding_utf.hpp>
+using boost::locale::conv::utf_to_utf;
 
 namespace {
 
-int bmc2ly( std::wistream &wistream
+int bmc2ly( std::istream &istream
           , bool lilypond, bool musicxml
           , bool include_locations, std::string instrument, bool no_tagline
           , ::bmc::braille::format_style const &style
           ) {
-  std::istreambuf_iterator<wchar_t> wcin_begin(wistream.rdbuf()), wcin_end;
-  std::wstring source(wcin_begin, wcin_end);
+  std::istreambuf_iterator<char> cin_begin(istream.rdbuf()), cin_end;
+  auto const utf8 = std::string(cin_begin, cin_end);
+  auto const source = utf_to_utf<wchar_t>(utf8);
   typedef std::wstring::const_iterator iterator_type;
 
   iterator_type iter = source.begin();
@@ -108,9 +112,9 @@ int main(int argc, char const *argv[])
   bool const do_lilypond { bool(vm.count("lilypond")) }
            , do_musicxml { bool(vm.count("musicxml")) };
   for (auto const &file: input_files) {
-    if (file == "-") status = bmc2ly(std::wcin, do_lilypond, do_musicxml, locations, instrument, no_tagline, style);
+    if (file == "-") status = bmc2ly(std::cin, do_lilypond, do_musicxml, locations, instrument, no_tagline, style);
     else {
-      std::wifstream f(file);
+      std::ifstream f(file);
       if (f.good()) status = bmc2ly(f, do_lilypond, do_musicxml, locations, instrument, no_tagline, style);
     }
   }
