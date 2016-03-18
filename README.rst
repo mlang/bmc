@@ -2,17 +2,21 @@
 BMC -- Braille Music Compiler
 =============================
 
-.. image:: https://secure.travis-ci.org/mlang/bmc.png?branch=master
+.. image:: https://secure.travis-ci.org/mlang/bmc.svg?branch=master
+   :alt: Travis CI build status (Linux and Mac OS X)
    :target: http://travis-ci.org/mlang/bmc
+
+.. image:: https://ci.appveyor.com/api/projects/status/17o8stcrhi3cy8bw?svg=true
+   :alt: AppVeyor CI build status (Windows)
+   :target: https://ci.appveyor.com/project/mlang/bmc
 
 BMC aims to become a system for parsing and generating braille music code.
 
-
 History
--------
+=======
 
 A predecessor to this project is FreeDots_, a Java-based program for
-converting MusicXML Documents to Braille Music code, as well as offering
+converting MusicXML to Braille Music code, as well as offering
 playback and some interactive editing capabilities.
 
 .. _FreeDots: http://code.google.com/p/freedots/
@@ -25,50 +29,36 @@ eventually cover both directions.
 
 
 Dependencies
-------------
+============
 
 Being a C++ program, BMC naturally uses the Standard Template Library (STL).
 
 In addition to that some Boost_ C++ Libraries are employed.
 
+The MusicXML backend makes use of `CodeSynthesis XSD`_ to generate
+C++ bindings for MusicXML documents.
+
+The graphical user interface is implemented on top of Qt.
+
 .. _Boost: http://www.boost.org/
+.. _CodeSynthesis XSD: https://www.codesynthesis.com/products/xsd/
 
+Installing dependencies on Debian
+---------------------------------
 
-heterogeneous containers
-------------------------
-
-A common problem arising in the sort of data structures required to represent
-parsed braille music is the heterogenuity of the underlying sequences
-of objects.  Traditionally, virtual member functions and a common base class are
-used in C++ to implement a sequence of objects of varying purpose.  However,
-this approach is rather error-prone and requires the differing object types to
-at least have something in common to allow for a meaningful interface.
-Fortunately, Boost offers a very elegant solution to this type of problem, the
-Boost.Variant discriminated union container class template.  Boost.Variant is
-already implicitly used by Spirit to store alternative choices in the grammar.
-So it just falls naturally to use Boost.Variant for problems falling in the
-category of heterogeneous containers.  Using Boost.Variant implies the visitor
-pattern is used to access the data structures.  This is desireable because it
-results in type-safe code which eliminates a certain class of runtime bugs.  It
-makes code a little bit more verbose to write, but for the better, actually.
-
-
-Getting the source
-------------------
-
-You need Git_ to retrieve the source repository.
+On Debian GNU/Linux systems, you will need to install the following
+dependencies:
 
 .. code-block:: bash
 
-   git clone --quiet https://github.com/mlang/bmc.git
-   git submodule --quiet update --init --recursive
+   sudo apt-get install cmake doxygen lib{boost-{program-options,test},fluidsynth,icu}-dev
 
-.. _Git: https://git-scm.com/
+Installing dependencies on Mac OS X
+-----------------------------------
 
-Building on Mac OS X
---------------------
-
-We assume you have Xcode installed.  A nice package manager is Homebrew:
+We assume you have Xcode installed.  A nice package manager for Mac OS X is
+`Homebrew <https://brew.sh/>`__.  If you don't have it installed yet,
+here is how to do so:
 
 .. code-block:: bash
 
@@ -87,43 +77,38 @@ all dependencies required to build and run BMC:
    brew install boost --with-python
    brew install boost-python
 
-You can now run CMake to generate a build system:
+Getting the source
+==================
+
+You need Git_ to retrieve the source repository.
+
+.. code-block:: bash
+
+   git clone --quiet https://github.com/mlang/bmc.git
+   git submodule --quiet update --init --recursive
+
+.. _Git: https://git-scm.com/
+
+Running CMake
+=============
+
+You can now run CMake to generate a build system for your platform:
 
 .. code-block:: bash
 
    cd bmc
    cmake .
 
-When running the test suite, make sure you have a UTF-8 based locale:
+Building
+========
 
-.. code-block:: bash
-
-   export LANG=de_AT.UTF-8
-   make check
-
-Build the command-line tool and the user interface:
-
-.. code-block:: bash
-
-   make bmc bmc-ui
-
-Building (on UNIX)
-------------------
-
-Compilation has only been tested with GCC 4.8 recently.
-
-On Debian GNU/Linux systems, you will need to install the following dependencies:
-
-.. code-block:: bash
-
-   sudo apt-get install cmake doxygen lib{boost-{program-options,test},fluidsynth,icu}-dev
+UNIX and Mac OS X
+-----------------
 
 To build BMC, run the following commands:
 
 .. code-block:: bash
 
-   cd bmc
-   cmake .
    make
 
 To execute the test-suite, run:
@@ -132,11 +117,10 @@ To execute the test-suite, run:
 
    make check
 
+Windows
+-------
 
-Building (on Windows)
----------------------
-
-After configuring via cmake, either open the Solution bmc in VS2015 or
+After configuring via CMake, either open the Solution bmc in Visual Studio 14 (2015) or
 open a "MSBuild Command Prompt for VS2015" and run the following:
 
 .. code-block:: console
@@ -145,7 +129,7 @@ open a "MSBuild Command Prompt for VS2015" and run the following:
 
 
 TODO
-----
+====
 
 * Port current codebase to Windows:
 
