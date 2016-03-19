@@ -1,4 +1,4 @@
-#include <bmc/braille/reformat.hpp>
+﻿#include <bmc/braille/reformat.hpp>
 
 #include <bmc/braille/linebreaking.hpp>
 #include <bmc/braille/ast/visitor.hpp>
