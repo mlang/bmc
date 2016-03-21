@@ -28,4 +28,6 @@ if __name__ == '__main__':
     jobId = info['build']['jobs'][0]['jobId']
     with urlopen(api + 'buildjobs/' + jobId + '/log') as log:
       print(log.read().decode('UTF-8'))
+      print(api + 'projects/' + slug() + '/artifacts/Release/bmc.exe')
+
 
