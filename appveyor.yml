@@ -16,16 +16,20 @@ install:
   - msiexec.exe /i xsd-4.0.msi /quiet /qn /norestart /log install.log
 
 before_build:
+  - cd %XSDDIR%\xerces-c-3.1.1\projects\Win32\VC10\xerces-all
+  - msbuild xerces-all.sln /t:XercesLib /p:PlatformToolset=v140 /P:Configuration="Static Release"
   - cd %BOOST_ROOT%
   - bootstrap.bat --with-libraries=program_options
   - b2.exe --build-type=complete --with-program_options stage
   - cd c:\projects\bmc
   - set PATH=%QTDIR%\bin;%XSDDIR%\bin;%PATH%
   - set CMAKE_PREFIX_PATH=%QTDIR%;%CMAKE_PREFIX_PATH%
-  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DXercesC_INCLUDE_DIR="%XSDDIR%\include" -DXercesC_LIBRARY_DEBUG="%XSDDIR%\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="%XSDDIR%\lib\vc-12.0\xerces-c_3.lib" .
+  - cmake -G "Visual Studio 14 2015" -Dbmc_USE_PYTHON=OFF -DXercesC_INCLUDE_DIR="%XSDDIR%\include" -DXercesC_LIBRARY_DEBUG="%XSDDIR%\lib\vc-12.0\xerces-c_3D.lib" -DXercesC_LIBRARY_RELEASE="%XSDDIR%\xerces-c-3.1.1\Build\Win32\VC10\Static Release\xerces-c_static_3.lib" .
 
 build_script:
   - msbuild bmc.sln /t:bmc,bmc-ui,bmc_test /p:Configuration=Release
   - cd c:\projects\bmc\test
   - Release\bmc_test.exe
 
+artifacts:
+  - path: Release/bmc.exe
