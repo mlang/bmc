@@ -334,7 +334,7 @@ same_category_end( ast::partial_voice::iterator const &begin
                  )
 {
   if (apply_visitor(ast::is_value_prefix(prefix), *begin)) {
-    ast::partial_voice::iterator iter(begin + 1);
+    auto iter = begin + 1;
     if (iter != end && apply_visitor(ast::is_rhythmic(), *iter)) {
       for (ast::value
            initial = apply_visitor(ast::get_ambiguous_value(), *iter++);
