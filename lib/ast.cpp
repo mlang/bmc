@@ -1,20 +1,12 @@
 #include <bmc/braille/ast/ast.hpp>
 
-bmc::braille::ast::rhythmic::~rhythmic() {
-}
+namespace bmc { namespace braille { namespace ast {
 
-bmc::braille::ast::note::~note() {
-}
+rhythmic::~rhythmic() = default;
+note::~note() = default;
+rest::~rest() = default;
+stem::~stem() = default;
+chord::~chord() = default;
+moving_note::~moving_note() = default;
 
-bmc::braille::ast::rest::~rest() {
-}
-
-bmc::braille::ast::stem::~stem() {
-}
-
-bmc::braille::ast::chord::~chord() {
-}
-
-bmc::braille::ast::moving_note::~moving_note() {
-}
-
+}}}
