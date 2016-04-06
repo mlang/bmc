@@ -83,6 +83,7 @@ int main(int argc, char const *argv[])
   options_description desc("Allowed options");
   desc.add_options()
   ("help,h", "print usage message")
+  ("locale", value(&bmc::braille::default_table)->default_value(bmc::braille::default_table), "Braille locale")
   ("input-file", value(&input_files), "input file")
   ("instrument,i", value(&instrument), "default MIDI instrument")
   ("lilypond", "Produce LilyPond output.")
