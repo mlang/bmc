@@ -68,11 +68,11 @@ bool is_forced_break(linebreaking::objects::const_iterator const &i)
   return false;
 }
 
-int compute_sum(linebreaking::objects::const_iterator current,
-		linebreaking::objects::const_iterator end,
-		unsigned const &sum_width)
+unsigned
+compute_sum(linebreaking::objects::const_iterator current,
+            linebreaking::objects::const_iterator end)
 {
-  unsigned width = sum_width;
+  unsigned width = 0;
 
   for (auto i = current; i != end; ++i) {
     if (auto g = dynamic_cast<linebreaking::glue const *>(i->get())) {
@@ -130,7 +130,7 @@ void main_loop(linebreaking::objects::const_iterator index,
     if (candidate) {
       active_nodes.insert(i, std::make_shared<breakpoint>
 			     (index, candidate_demerits, candidate->line + 1,
-			      compute_sum(index, objs.end(), sum_width),
+			      sum_width + compute_sum(index, objs.end()),
 			      candidate
 			     )
                          );
