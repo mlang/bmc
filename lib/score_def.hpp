@@ -141,9 +141,9 @@ score_grammar<Iterator>::score_grammar(error_handler<Iterator>& error_handler)
   BMC_LOCATABLE_SET_ID(solo_section);
   BMC_LOCATABLE_SET_ID(last_solo_section);
 
+  const wchar_t *prefix = L"error: expecting ";
   boost::spirit::qi::on_error<boost::spirit::qi::fail>(start,
-    error_handler_function(error_handler)
-    (L"error: expecting ", _4, _3));
+    error_handler_function(error_handler)(prefix, _4, _3));
 }
 
 }}
