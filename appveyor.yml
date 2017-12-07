@@ -19,7 +19,6 @@ install:
 before_build:
   - cd %XSDDIR%\xerces-c-3.1.1\projects\Win32\VC10\xerces-all
   - msbuild xerces-all.sln /t:XercesLib /p:PlatformToolset=v140 /P:Configuration="Static Release"
-  - dir c:\Libraries
   - cd %BOOST_ROOT%
   - bootstrap.bat --with-libraries=program_options
   - b2.exe --build-type=complete --with-program_options stage
