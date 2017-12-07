@@ -7,7 +7,7 @@ build:
 configuration: Release
 
 environment:
-  BOOST_ROOT: 'c:\Libraries\boost_1_65_1'
+  BOOST_ROOT: 'c:\Libraries\boost_1_59_0'
   QTDIR: 'C:\Qt\5.5\msvc2013'
   XSDDIR: 'C:\Program Files (x86)\CodeSynthesis XSD 4.0'
 
