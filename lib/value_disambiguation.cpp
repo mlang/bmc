@@ -317,7 +317,7 @@ public:
   result_type operator()(ast::note &note)
   { emplace_back(note, category, rational(1)); }
   result_type operator()(ast::rest &rest)
-  { emplace_back(rest, category); }
+  { emplace_back(rest, category, rational(1)); }
   result_type operator()(ast::chord &chord)
   { emplace_back(chord, category, rational(1)); }
   result_type operator()(ast::moving_note &chord)
