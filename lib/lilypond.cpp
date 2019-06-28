@@ -414,7 +414,7 @@ generator::operator() (braille::ast::moving_note const &chord)
   (*this)(chord.base);
   os << "}\\\\{";
   // @todo Account for dotted intervals.
-  rational const moving_type(chord.base.as_rational() / chord.intervals.size());
+  rational const moving_type(chord.base.as_rational() / int(chord.intervals.size()));
   for (braille::ast::interval const& interval: chord.intervals) {
     os << " ";
     ly_pitch_step(interval.step);

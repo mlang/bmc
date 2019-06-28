@@ -266,7 +266,10 @@ public:
   {
     BOOST_ASSERT(stack_begin != stack_end);
     return std::accumulate(std::next(stack_begin), stack_end,
-                           static_cast<rational>(*stack_begin));
+                           static_cast<rational>(*stack_begin),
+                           [](rational const &a, value_proxy const &b) {
+                             return a + rational(b);
+                           });
   }
 
   tuplet_info const &tuplet_state() const { return tuplet; }
@@ -505,7 +508,7 @@ public:
             state.time_signature != 1 && maybe_whole_measure_rest(*iterator)) {
           *stack_end = value_proxy(boost::get<ast::rest>(*iterator), state.time_signature);
           recurse( std::next(iterator), end, stack_begin, std::next(stack_end)
-                 , zero, position + state.time_signature, tuplet);
+		   , zero, position + rational(state.time_signature), tuplet);
         }
       }
     }
@@ -589,7 +592,7 @@ public:
     if (!is_grace(value)) {
       value_proxy *const next = proxy + 1;
       if (fast_leq(*new(proxy)value_proxy(value, large_value, factor), max_duration)) {
-        rational const next_position(position + *proxy);
+        rational const next_position(position + rational(*proxy));
         // If this is a tuplet end, only accept it if its position makes sense.
         if (!dyadic_next_position || is_dyadic(next_position)) {
           if (std::distance(rest, end) >= 10 && state.threads < max_threads) {
@@ -604,7 +607,7 @@ public:
             new_proxy->set_tuplet_info(tuplet_begin, tuplet_end);
             future = std::async(std::launch::async, [&]() {
               interpreter.recurse( rest, end, new_stack.get(), new_proxy + 1
-                                 , max_duration - *new_proxy, next_position
+				 , max_duration - rational(*new_proxy), next_position
                                  , tuplet
                                  );
               state.threads--;
@@ -612,17 +615,17 @@ public:
           } else {
             proxy->set_tuplet_info(tuplet_begin, tuplet_end);
             interpreter.recurse( rest, end, stack_begin, next
-                               , max_duration - *proxy, next_position, tuplet
+			       , max_duration - rational(*proxy), next_position, tuplet
                                );
           }
         }
       }
       if (fast_leq(*new(proxy)value_proxy(value, small_value, factor), max_duration)) {
-        rational const next_position(position + *proxy);
+        rational const next_position(position + rational(*proxy));
         if (!dyadic_next_position || is_dyadic(next_position)) {
           proxy->set_tuplet_info(tuplet_begin, tuplet_end);
           interpreter.recurse( rest, end, stack_begin, next
-                             , max_duration - *proxy, next_position, tuplet
+			     , max_duration - rational(*proxy), next_position, tuplet
                              );
         }
       }
@@ -635,8 +638,7 @@ public:
   {
     if (!position) { // full measure simile
       BOOST_ASSERT(static_cast<bool>(interpreter.last_measure_duration()));
-      if (*new(proxy)value_proxy
-          (simile, interpreter.last_measure_duration()) > rational(0) &&
+      if (rational(*new(proxy)value_proxy(simile, interpreter.last_measure_duration())) > rational(0) &&
           fast_leq(static_cast<rational>(*proxy) / rational::int_type(simile.count), max_duration)) {
         rational const duration(static_cast<rational>(*proxy) / rational::int_type(simile.count));
         interpreter.recurse( rest, end, stack_begin, proxy + 1
@@ -666,7 +668,7 @@ public:
             tuplet.back().ttl = count_rhythmic(rest, tuplet_end(rest, end, tuplet.back().number, true));
           }
           interpreter.recurse( rest, end, stack_begin, proxy + 1
-                             , max_duration - *proxy, position + *proxy
+			       , max_duration - rational(*proxy), position + rational(*proxy)
                              , tuplet
                              );
         }

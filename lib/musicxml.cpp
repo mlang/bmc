@@ -437,11 +437,11 @@ private:
     for (auto &&interval: moving_note.intervals) {
       ::musicxml::note xml_note {
         pitch(interval),
-        duration(moving_note.base.as_rational() / moving_note.intervals.size(),
+        duration(moving_note.base.as_rational() / int(moving_note.intervals.size()),
                  divisions)
       };
 
-      xml_note.type(note_type(moving_note.base.get_type() / moving_note.intervals.size()));
+      xml_note.type(note_type(moving_note.base.get_type() / int(moving_note.intervals.size())));
       xml_note.dot(dots(moving_note.base));
       if (interval.acc) xml_note.accidental(accidental(*interval.acc));
       xml_note.staff(staff_number);
