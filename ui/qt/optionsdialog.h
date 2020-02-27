@@ -29,8 +29,8 @@ class LilypondTab : public GenericTab {
 
 public:
   explicit LilypondTab(QWidget *parent = 0);
-  void persistSettings();
-  void setup();
+  void persistSettings() override;
+  void setup() override;
 
 private:
   QLabel *lilypondExeLabel;
@@ -46,8 +46,8 @@ class TimidityTab : public GenericTab {
 public:
   explicit TimidityTab(QWidget *parent = 0);
 
-  void persistSettings();
-  void setup();
+  void persistSettings() override;
+  void setup() override;
 
 private:
   QLabel *timidityExeLabel;
@@ -61,8 +61,8 @@ class UISettingsTab : public GenericTab {
 public:
   explicit UISettingsTab(QWidget *parent = 0);
 
-  void persistSettings();
-  void setup();
+  void persistSettings() override;
+  void setup() override;
 
 private:
   QCheckBox *persistLayoutCheckBox;
